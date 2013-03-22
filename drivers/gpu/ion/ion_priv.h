@@ -238,6 +238,7 @@ void ion_system_contig_heap_destroy(struct ion_heap *);
 struct ion_heap *ion_carveout_heap_create(struct ion_platform_heap *);
 void ion_carveout_heap_destroy(struct ion_heap *);
 
+<<<<<<< HEAD
 struct ion_heap *ion_iommu_heap_create(struct ion_platform_heap *);
 void ion_iommu_heap_destroy(struct ion_heap *);
 
@@ -246,6 +247,12 @@ void ion_cp_heap_destroy(struct ion_heap *);
 
 struct ion_heap *ion_reusable_heap_create(struct ion_platform_heap *);
 void ion_reusable_heap_destroy(struct ion_heap *);
+=======
+struct ion_heap *ion_chunk_heap_create(struct ion_platform_heap *);
+void ion_chunk_heap_destroy(struct ion_heap *);
+struct ion_heap *ion_cma_heap_create(struct ion_platform_heap *);
+void ion_cma_heap_destroy(struct ion_heap *);
+>>>>>>> 73260c8... gpu: ion: add CMA heap
 
 /**
  * kernel api to allocate/free from carveout -- used when carveout is

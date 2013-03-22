@@ -29,17 +29,28 @@ struct ion_handle;
  * @ION_HEAP_TYPE_CARVEOUT:	 memory allocated from a prereserved
  * 				 carveout heap, allocations are physically
  * 				 contiguous
+<<<<<<< HEAD
  * @ION_HEAP_TYPE_IOMMU: IOMMU memory
  * @ION_HEAP_TYPE_CP:	 memory allocated from a prereserved
  *				carveout heap, allocations are physically
  *				contiguous. Used for content protection.
  * @ION_HEAP_TYPE_DMA:          memory allocated via DMA API
  * @ION_HEAP_END:		helper for iterating over heaps
+=======
+ * @ION_HEAP_TYPE_DMA:		 memory allocated via DMA API
+ * @ION_NUM_HEAPS:		 helper for iterating over heaps, a bit mask
+ * 				 is used to identify the heaps, so only 32
+ * 				 total heap types are supported
+>>>>>>> 73260c8... gpu: ion: add CMA heap
  */
 enum ion_heap_type {
 	ION_HEAP_TYPE_SYSTEM,
 	ION_HEAP_TYPE_SYSTEM_CONTIG,
 	ION_HEAP_TYPE_CARVEOUT,
+<<<<<<< HEAD
+=======
+	ION_HEAP_TYPE_CHUNK,
+>>>>>>> 73260c8... gpu: ion: add CMA heap
 	ION_HEAP_TYPE_DMA,
 	ION_HEAP_TYPE_CUSTOM, /* must be last so device specific heaps always
 				 are at the end of this enum */
@@ -49,7 +60,13 @@ enum ion_heap_type {
 #define ION_HEAP_SYSTEM_MASK		(1 << ION_HEAP_TYPE_SYSTEM)
 #define ION_HEAP_SYSTEM_CONTIG_MASK	(1 << ION_HEAP_TYPE_SYSTEM_CONTIG)
 #define ION_HEAP_CARVEOUT_MASK		(1 << ION_HEAP_TYPE_CARVEOUT)
+<<<<<<< HEAD
 #define ION_HEAP_TYPE_DMA_MASK         (1 << ION_HEAP_TYPE_DMA)
+=======
+#define ION_HEAP_TYPE_DMA_MASK		(1 << ION_HEAP_TYPE_DMA)
+
+#define ION_NUM_HEAP_IDS		sizeof(unsigned int) * 8
+>>>>>>> 73260c8... gpu: ion: add CMA heap
 
 /**
  * heap flags - the lower 16 bits are used by core ion, the upper 16
