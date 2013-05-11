@@ -71,13 +71,8 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	cp -R ../META-INF .
 	rm ramdisk.gz
 	rm zImage
-<<<<<<< HEAD
 	rm ../KT-SGS4-AOSP-JB-VZW*.zip
 	zip -r ../KT-SGS4-AOSP-JB-VZW-$curdate.zip .
-=======
-	rm ../KT-SGS4-TW-JB-VZW*.zip
-	zip -r ../KT-SGS4-TW-JB-VZW-$curdate.zip .
->>>>>>> 8e02426... Rename buildscripts
 	cd $KERNELDIR
 else
 	echo "KERNEL DID NOT BUILD! no zImage exist"
