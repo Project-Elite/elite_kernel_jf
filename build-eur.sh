@@ -56,11 +56,7 @@ fi;
 echo "Copy modules to Package"
 cp -a $(find . -name *.ko -print |grep -v initramfs) $PACKAGEDIR/system/lib/modules/
 cp 00post-init.sh $PACKAGEDIR/system/etc/init.d/00post-init.sh
-<<<<<<< HEAD
-cp 89chronic $PACKAGEDIR/system/etc/init.d/89chronic
-=======
-cp enable-oc.sh $PACKAGEDIR/system/etc/init.d/enable-oc.sh
->>>>>>> 12de32d... build-scripts: update all build script variants for use with my kernel
+cp $PACKAGEDIR../89chronic $PACKAGEDIR/system/etc/init.d/89chronic
 cp ../Ramdisks/libsqlite.so $PACKAGEDIR/system/lib/libsqlite.so
 
 if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
