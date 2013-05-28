@@ -42,7 +42,7 @@ rm $PACKAGEDIR/zImage
 rm arch/arm/boot/zImage
 
 echo "Make the kernel"
-make VARIANT_DEFCONFIG=jf_eur_defconfig SELINUX_DEFCONFIG=jfselinux_defconfig SELINUX_LOG_DEFCONFIG=jfselinux_log_defconfig KT_jf_defconfig
+make VARIANT_DEFCONFIG=jf_spr_defconfig SELINUX_DEFCONFIG=jfselinux_defconfig SELINUX_LOG_DEFCONFIG=jfselinux_log_defconfig KT_jf_defconfig
 
 HOST_CHECK=`uname -n`
 if [ $HOST_CHECK = 'ktoonsez-VirtualBox' ] || [ $HOST_CHECK = 'task650-Underwear' ]; then
@@ -56,11 +56,7 @@ fi;
 echo "Copy modules to Package"
 cp -a $(find . -name *.ko -print |grep -v initramfs) $PACKAGEDIR/system/lib/modules/
 cp 00post-init.sh $PACKAGEDIR/system/etc/init.d/00post-init.sh
-<<<<<<< HEAD
-cp 89chronic $PACKAGEDIR/system/etc/init.d/89chronic
-=======
 cp enable-oc.sh $PACKAGEDIR/system/etc/init.d/enable-oc.sh
->>>>>>> 12de32d... build-scripts: update all build script variants for use with my kernel
 cp ../Ramdisks/libsqlite.so $PACKAGEDIR/system/lib/libsqlite.so
 
 if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
@@ -75,8 +71,8 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	cp -R ../META-INF .
 	rm ramdisk.gz
 	rm zImage
-	rm ../ChronicKernel-JFeur*.zip
-	zip -r ../ChronicKernel-JFeur-$curdate.zip .
+	rm ../ChronicKernel-JFspr*.zip
+	zip -r ../ChronicKernel-JFspr-$curdate.zip .
 	cd $KERNELDIR
 else
 	echo "KERNEL DID NOT BUILD! no zImage exist"

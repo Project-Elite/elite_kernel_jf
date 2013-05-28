@@ -13,6 +13,7 @@ export ARCH=arm
 echo "Setting compiler toolchain..."
 export CROSS_COMPILE=/home/albinoman887/android/system/prebuilt/linux-x86/toolchain/linaro/bin/arm-unknown-linux-gnueabi-
 
+
 time_start=$(date +%s.%N)
 
 echo "Remove old Package Files"
@@ -42,7 +43,7 @@ rm $PACKAGEDIR/zImage
 rm arch/arm/boot/zImage
 
 echo "Make the kernel"
-make VARIANT_DEFCONFIG=jf_eur_defconfig SELINUX_DEFCONFIG=jfselinux_defconfig SELINUX_LOG_DEFCONFIG=jfselinux_log_defconfig KT_jf_defconfig
+make VARIANT_DEFCONFIG=jf_att_defconfig SELINUX_DEFCONFIG=jfselinux_defconfig SELINUX_LOG_DEFCONFIG=jfselinux_log_defconfig KT_jf_defconfig
 
 HOST_CHECK=`uname -n`
 if [ $HOST_CHECK = 'ktoonsez-VirtualBox' ] || [ $HOST_CHECK = 'task650-Underwear' ]; then
@@ -56,11 +57,8 @@ fi;
 echo "Copy modules to Package"
 cp -a $(find . -name *.ko -print |grep -v initramfs) $PACKAGEDIR/system/lib/modules/
 cp 00post-init.sh $PACKAGEDIR/system/etc/init.d/00post-init.sh
-<<<<<<< HEAD
-cp 89chronic $PACKAGEDIR/system/etc/init.d/89chronic
-=======
 cp enable-oc.sh $PACKAGEDIR/system/etc/init.d/enable-oc.sh
->>>>>>> 12de32d... build-scripts: update all build script variants for use with my kernel
+cp /home/ktoonsez/workspace/com.ktoonsez.KTweaker.apk $PACKAGEDIR/system/app/com.ktoonsez.KTweaker.apk
 cp ../Ramdisks/libsqlite.so $PACKAGEDIR/system/lib/libsqlite.so
 
 if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
@@ -71,12 +69,16 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	./mkbootfs $INITRAMFS_DEST | gzip > $PACKAGEDIR/ramdisk.gz
 	./mkbootimg --cmdline 'console = null androidboot.hardware=qcom user_debug=31 zcache' --kernel $PACKAGEDIR/zImage --ramdisk $PACKAGEDIR/ramdisk.gz --base 0x80200000 --pagesize 2048 --ramdisk_offset 0x02000000 --output $PACKAGEDIR/boot.img 
 	export curdate=`date "+%m-%d-%Y"`
+	echo "Executing loki"
+	./loki_patch-linux-x86_64 boot abootatt.img $PACKAGEDIR/boot.img $PACKAGEDIR/boot.lok
+	rm $PACKAGEDIR/boot.img
+	#cp loki_flash $PACKAGEDIR/loki_flash
 	cd $PACKAGEDIR
-	cp -R ../META-INF .
+	cp -R ../META-INF-SEC ./META-INF
 	rm ramdisk.gz
 	rm zImage
-	rm ../ChronicKernel-JFeur*.zip
-	zip -r ../ChronicKernel-JFeur-$curdate.zip .
+	rm ../ChronicKernel-JFatt*.zip
+	zip -r ../ChronicKernel-JFatt-$curdate.zip .
 	cd $KERNELDIR
 else
 	echo "KERNEL DID NOT BUILD! no zImage exist"
