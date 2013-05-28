@@ -778,7 +778,6 @@ static irqreturn_t cypress_touchkey_interrupt(int irq, void *dev_id)
 	code = (int)(buf[0] & KEYCODE_BIT_MASK) - 1;
 	printk(KERN_ERR
 		"[TouchKey]press=%d, code=%d\n", press, code);
-
 	if (code < 0) {
 		dev_err(&info->client->dev,
 				"not profer interrupt 0x%2X.\n", buf[0]);
