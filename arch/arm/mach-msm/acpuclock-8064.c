@@ -23,8 +23,6 @@
 #include "acpuclock.h"
 #include "acpuclock-krait.h"
 
-//KT Specifics
-// enable_oc
 static unsigned int isenable_oc = 0;
 
 static struct hfpll_data hfpll_data __initdata = {
@@ -111,7 +109,7 @@ static struct msm_bus_paths bw_level_tbl[] __initdata = {
 	[3] = BW_MBPS(2128), /* At least 266 MHz on bus. */
 	[4] = BW_MBPS(3200), /* At least 400 MHz on bus. */
 	[5] = BW_MBPS(4264), /* At least 533 MHz on bus. */
-	[6] = BW_MBPS(4796), /* At least 600 MHz on bus. */
+	[6] = BW_MBPS(4600), /* At least 600 MHz on bus. */
 };
 
 static struct msm_bus_scale_pdata bus_scale_data __initdata = {
@@ -503,7 +501,7 @@ static struct acpu_level tbl_PVS0_2000MHz[] __initdata = {
 	{ 1, {  1566000, HFPLL, 1, 0x3A }, L2(15), 1125000 },
 	{ 1, {  1674000, HFPLL, 1, 0x3E }, L2(15), 1175000 },
 	{ 1, {  1782000, HFPLL, 1, 0x42 }, L2(15), 1225000 },
-	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(15), 1287500 },
+	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(16), 1287500 },
 	{ 1, {  1998000, HFPLL, 1, 0x4A }, L2(16), 1300000 },
 	{ 1, {  2106000, HFPLL, 1, 0x4E }, L2(17), 1350000 },
 	{ 1, {  2214000, HFPLL, 1, 0x52 }, L2(17), 1400000 },
@@ -529,7 +527,7 @@ static struct acpu_level tbl_PVS1_2000MHz[] __initdata = {
 	{ 1, {  1566000, HFPLL, 1, 0x3A }, L2(15), 1100000 },
 	{ 1, {  1674000, HFPLL, 1, 0x3E }, L2(15), 1137500 },
 	{ 1, {  1782000, HFPLL, 1, 0x42 }, L2(15), 1187500 },
-	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(15), 1250000 },
+	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(16), 1250000 },
 	{ 1, {  1998000, HFPLL, 1, 0x4A }, L2(16), 1275000 },
 	{ 1, {  2106000, HFPLL, 1, 0x4E }, L2(17), 1325000 },
 	{ 1, {  2214000, HFPLL, 1, 0x52 }, L2(17), 1375000 },
@@ -555,7 +553,7 @@ static struct acpu_level tbl_PVS2_2000MHz[] __initdata = {
 	{ 1, {  1566000, HFPLL, 1, 0x3A }, L2(15), 1075000 },
 	{ 1, {  1674000, HFPLL, 1, 0x3E }, L2(15), 1112500 },
 	{ 1, {  1782000, HFPLL, 1, 0x42 }, L2(15), 1162500 },
-	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(15), 1212500 },
+	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(16), 1212500 },
 	{ 1, {  1998000, HFPLL, 1, 0x4A }, L2(16), 1250000 },
 	{ 1, {  2106000, HFPLL, 1, 0x4E }, L2(17), 1300000 },
 	{ 1, {  2214000, HFPLL, 1, 0x52 }, L2(17), 1350000 },
@@ -581,7 +579,7 @@ static struct acpu_level tbl_PVS3_2000MHz[] __initdata = {
 	{ 1, {  1566000, HFPLL, 1, 0x3A }, L2(15), 1050000 },
 	{ 1, {  1674000, HFPLL, 1, 0x3E }, L2(15), 1087500 },
 	{ 1, {  1782000, HFPLL, 1, 0x42 }, L2(15), 1137500 },
-	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(15), 1175000 },
+	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(16), 1175000 },
 	{ 1, {  1998000, HFPLL, 1, 0x4A }, L2(16), 1225000 },
 	{ 1, {  2106000, HFPLL, 1, 0x4E }, L2(17), 1275000 },
 	{ 1, {  2214000, HFPLL, 1, 0x52 }, L2(17), 1325000 },
@@ -607,7 +605,7 @@ static struct acpu_level tbl_PVS4_2000MHz[] __initdata = {
 	{ 1, {  1566000, HFPLL, 1, 0x3A }, L2(15), 1037500 },
 	{ 1, {  1674000, HFPLL, 1, 0x3E }, L2(15), 1075000 },
 	{ 1, {  1782000, HFPLL, 1, 0x42 }, L2(15), 1112500 },
-	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(15), 1150000 },
+	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(16), 1150000 },
 	{ 1, {  1998000, HFPLL, 1, 0x4A }, L2(16), 1200000 },
 	{ 1, {  2106000, HFPLL, 1, 0x4E }, L2(17), 1250000 },
 	{ 1, {  2214000, HFPLL, 1, 0x52 }, L2(17), 1300000 },
@@ -633,7 +631,7 @@ static struct acpu_level tbl_PVS5_2000MHz[] __initdata = {
 	{ 1, {  1566000, HFPLL, 1, 0x3A }, L2(15), 1012500 },
 	{ 1, {  1674000, HFPLL, 1, 0x3E }, L2(15), 1050000 },
 	{ 1, {  1782000, HFPLL, 1, 0x42 }, L2(15), 1087500 },
-	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(15), 1125000 },
+	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(16), 1125000 },
 	{ 1, {  1998000, HFPLL, 1, 0x4A }, L2(16), 1175000 },
 	{ 1, {  2106000, HFPLL, 1, 0x4E }, L2(17), 1225000 },
 	{ 1, {  2214000, HFPLL, 1, 0x52 }, L2(17), 1275000 },
@@ -659,7 +657,7 @@ static struct acpu_level tbl_PVS6_2000MHz[] __initdata = {
 	{ 1, {  1566000, HFPLL, 1, 0x3A }, L2(15), 1000000 },
 	{ 1, {  1674000, HFPLL, 1, 0x3E }, L2(15), 1025000 },
 	{ 1, {  1782000, HFPLL, 1, 0x42 }, L2(15), 1062500 },
-	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(15), 1100000 },
+	{ 1, {  1890000, HFPLL, 1, 0x46 }, L2(16), 1100000 },
 	{ 1, {  1998000, HFPLL, 1, 0x4A }, L2(16), 1150000 },
 	{ 1, {  2106000, HFPLL, 1, 0x4E }, L2(17), 1200000 },
 	{ 1, {  2214000, HFPLL, 1, 0x52 }, L2(17), 1250000 },
