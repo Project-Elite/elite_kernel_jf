@@ -2,7 +2,7 @@
 export KERNELDIR=`readlink -f .`
 export PARENT_DIR=`readlink -f ..`
 export INITRAMFS_DEST=$KERNELDIR/kernel/usr/initramfs
-export INITRAMFS_SOURCE=$KERNELDIR/Ramdisks/AOSP_ATT
+export INITRAMFS_SOURCE=`readlink -f ..`/Ramdisks/AOSP_ATT
 export CONFIG_AOSP_BUILD=y
 export PACKAGEDIR=$KERNELDIR/Packages/AOSP
 # enable ccache
