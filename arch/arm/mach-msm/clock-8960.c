@@ -597,7 +597,7 @@ static struct pll_clk pll15_clk = {
 	.parent = &pxo_clk.c,
 	.c = {
 		.dbg_name = "pll15_clk",
-		.rate = 900000000,
+		.rate = 975000000,
 		.ops = &clk_ops_local_pll,
 		CLK_INIT(pll15_clk.c),
 	},
@@ -6713,7 +6713,7 @@ static void __init msm8960_clock_pre_init(void)
 	else if (cpu_is_msm8930aa())
 		gfx3d_clk.c.fmax = fmax_gfx3d_8930aa;
 	if (cpu_is_msm8930() || cpu_is_msm8930aa() || cpu_is_msm8627()) {
-		pll15_clk.c.rate = 975000000;
+		pll15_clk.c.rate = 900000000;
 		gmem_axi_clk.c.depends = &gfx3d_axi_clk_8930.c;
 	} else if (cpu_is_msm8930ab()) {
 		gfx3d_clk.freq_tbl = clk_tbl_gfx3d_8930ab;
