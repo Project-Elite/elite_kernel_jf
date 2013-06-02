@@ -2,7 +2,7 @@
 export KERNELDIR=`readlink -f .`
 export PARENT_DIR=`readlink -f ..`
 export INITRAMFS_DEST=$KERNELDIR/kernel/usr/initramfs
-export INITRAMFS_SOURCE=$KERNELDIR/Ramdisks/AOSP_ATT
+export INITRAMFS_SOURCE=`readlink -f ..`/Ramdisks/AOSP_ATT
 export CONFIG_AOSP_BUILD=y
 export PACKAGEDIR=$KERNELDIR/Packages/AOSP
 # enable ccache
@@ -10,6 +10,7 @@ export USE_CCACHE=1
 #Enable FIPS mode
 export USE_SEC_FIPS_MODE=true
 export ARCH=arm
+echo "### AT&T KERNEL BUILD ###"
 echo "Setting compiler toolchain..."
 export CROSS_COMPILE=$PARENT_DIR/android-toolchain-eabi/bin/arm-eabi-
 
@@ -17,7 +18,7 @@ export CROSS_COMPILE=$PARENT_DIR/android-toolchain-eabi/bin/arm-eabi-
 time_start=$(date +%s.%N)
 
 echo "Remove old Package Files"
-rm -rf $PACKAGEDIR/*
+rm -rf $PACKAGEDIR/* > /dev/null 2>&1
 
 echo "Setup Package Directory"
 mkdir -p $PACKAGEDIR/system/app
@@ -28,19 +29,19 @@ echo "Create initramfs dir"
 mkdir -p $INITRAMFS_DEST
 
 echo "Remove old initramfs dir"
-rm -rf $INITRAMFS_DEST/*
+rm -rf $INITRAMFS_DEST/* > /dev/null 2>&1
 
 echo "Copy new initramfs dir"
 cp -R $INITRAMFS_SOURCE/* $INITRAMFS_DEST
 
 echo "chmod initramfs dir"
 chmod -R g-w $INITRAMFS_DEST/*
-rm $(find $INITRAMFS_DEST -name EMPTY_DIRECTORY -print)
+rm $(find $INITRAMFS_DEST -name EMPTY_DIRECTORY -print) > /dev/null 2>&1
 rm -rf $(find $INITRAMFS_DEST -name .git -print)
 
 echo "Remove old zImage"
-rm $PACKAGEDIR/zImage
-rm arch/arm/boot/zImage
+rm $PACKAGEDIR/zImage > /dev/null 2>&1
+rm arch/arm/boot/zImage > /dev/null 2>&1
 
 echo "Make the kernel"
 make VARIANT_DEFCONFIG=jf_att_defconfig SELINUX_DEFCONFIG=jfselinux_defconfig SELINUX_LOG_DEFCONFIG=jfselinux_log_defconfig Elite_Kernel_JF
@@ -56,10 +57,7 @@ fi;
 
 echo "Copy modules to Package"
 cp -a $(find . -name *.ko -print |grep -v initramfs) $PACKAGEDIR/system/lib/modules/
-cp 00post-init.sh $PACKAGEDIR/system/etc/init.d/00post-init.sh
-cp enable-oc.sh $PACKAGEDIR/system/etc/init.d/enable-oc.sh
-cp /home/ktoonsez/workspace/com.ktoonsez.KTweaker.apk $PACKAGEDIR/system/app/com.ktoonsez.KTweaker.apk
-cp ../Ramdisks/libsqlite.so $PACKAGEDIR/system/lib/libsqlite.so
+cp Packages/89chronic $PACKAGEDIR/system/etc/init.d/89chronic
 
 if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	echo "Copy zImage to Package"
@@ -77,7 +75,6 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	cp -R ../META-INF-SEC ./META-INF
 	rm ramdisk.gz
 	rm zImage
-	rm ../ChronicKernel-JFatt*.zip
 	zip -r ../ChronicKernel-JFatt-$curdate.zip .
 	cd $KERNELDIR
 else

@@ -18,6 +18,7 @@ time_start=$(date +%s.%N)
 
 echo "Remove old Package Files"
 rm -rf $PACKAGEDIR/* > /dev/null 2>&1
+
 echo "Setup Package Directory"
 mkdir -p $PACKAGEDIR/system/lib/modules
 mkdir -p $PACKAGEDIR/system/etc/init.d
@@ -27,6 +28,7 @@ mkdir -p $INITRAMFS_DEST
 
 echo "Remove old initramfs dir"
 rm -rf $INITRAMFS_DEST/* > /dev/null 2>&1
+
 echo "Copy new initramfs dir"
 cp -R $INITRAMFS_SOURCE/* $INITRAMFS_DEST
 
@@ -67,7 +69,6 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	cp -R ../META-INF .
 	rm ramdisk.gz
 	rm zImage
-	rm ../ChronicKernel-JFtmo*.zip > /dev/null 2>&1
 	zip -r ../ChronicKernel-JFtmo-$curdate.zip .
 	cd $KERNELDIR
 else
