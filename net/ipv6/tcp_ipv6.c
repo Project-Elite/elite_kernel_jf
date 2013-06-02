@@ -896,12 +896,7 @@ static void tcp_v6_send_response(struct sk_buff *skb, u32 seq, u32 ack, u32 win,
 	__tcp_v6_send_check(buff, &fl6.saddr, &fl6.daddr);
 
 	fl6.flowi6_proto = IPPROTO_TCP;
-<<<<<<< HEAD
 	fl6.flowi6_oif = inet6_iif(skb);
-=======
-	if (ipv6_addr_type(&fl6.daddr) & IPV6_ADDR_LINKLOCAL)
-		fl6.flowi6_oif = inet6_iif(skb);
->>>>>>> remotes/linux2/linux-3.4.y
 	fl6.fl6_dport = t1->dest;
 	fl6.fl6_sport = t1->source;
 	security_skb_classify_flow(skb, flowi6_to_flowi(&fl6));
@@ -1415,12 +1410,7 @@ static struct sock * tcp_v6_syn_recv_sock(struct sock *sk, struct sk_buff *skb,
 #endif
 
 	if (__inet_inherit_port(sk, newsk) < 0) {
-<<<<<<< HEAD
 		sock_put(newsk);
-=======
-		inet_csk_prepare_forced_close(newsk);
-		tcp_done(newsk);
->>>>>>> remotes/linux2/linux-3.4.y
 		goto out;
 	}
 	__inet6_hash(newsk, NULL);
@@ -2087,20 +2077,6 @@ void tcp6_proc_exit(struct net *net)
 }
 #endif
 
-<<<<<<< HEAD
-=======
-static void tcp_v6_clear_sk(struct sock *sk, int size)
-{
-	struct inet_sock *inet = inet_sk(sk);
-
-	/* we do not want to clear pinet6 field, because of RCU lookups */
-	sk_prot_clear_nulls(sk, offsetof(struct inet_sock, pinet6));
-
-	size -= offsetof(struct inet_sock, pinet6) + sizeof(inet->pinet6);
-	memset(&inet->pinet6 + 1, 0, size);
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 struct proto tcpv6_prot = {
 	.name			= "TCPv6",
 	.owner			= THIS_MODULE,
@@ -2142,10 +2118,6 @@ struct proto tcpv6_prot = {
 #ifdef CONFIG_CGROUP_MEM_RES_CTLR_KMEM
 	.proto_cgroup		= tcp_proto_cgroup,
 #endif
-<<<<<<< HEAD
-=======
-	.clear_sk		= tcp_v6_clear_sk,
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static const struct inet6_protocol tcpv6_protocol = {

@@ -132,10 +132,6 @@ struct snd_card {
 	int shutdown;			/* this card is going down */
 	int free_on_last_close;		/* free in context of file_release */
 	wait_queue_head_t shutdown_sleep;
-<<<<<<< HEAD
-=======
-	atomic_t refcount;		/* refcount for disconnection */
->>>>>>> remotes/linux2/linux-3.4.y
 	struct device *dev;		/* device assigned to this card */
 	struct device *card_dev;	/* cardX object for sysfs */
 
@@ -193,10 +189,6 @@ struct snd_minor {
 	const struct file_operations *f_ops;	/* file operations */
 	void *private_data;		/* private data for f_ops->open */
 	struct device *dev;		/* device for sysfs */
-<<<<<<< HEAD
-=======
-	struct snd_card *card_ptr;	/* assigned card instance */
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /* return a device pointer linked to each sound device as a parent */
@@ -303,10 +295,6 @@ int snd_card_info_done(void);
 int snd_component_add(struct snd_card *card, const char *component);
 int snd_card_file_add(struct snd_card *card, struct file *file);
 int snd_card_file_remove(struct snd_card *card, struct file *file);
-<<<<<<< HEAD
-=======
-void snd_card_unref(struct snd_card *card);
->>>>>>> remotes/linux2/linux-3.4.y
 
 #define snd_card_set_dev(card, devptr) ((card)->dev = (devptr))
 

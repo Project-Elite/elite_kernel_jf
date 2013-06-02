@@ -61,14 +61,11 @@ struct cgroup_subsys mem_cgroup_subsys __read_mostly;
 #define MEM_CGROUP_RECLAIM_RETRIES	5
 struct mem_cgroup *root_mem_cgroup __read_mostly;
 
-<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 #define MAX_SCAN_NO 2048
 #endif
 
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_CGROUP_MEM_RES_CTLR_SWAP
 /* Turned on only when memory cgroup is enabled && really_do_swap_account = 1 */
 int do_swap_account __read_mostly;
@@ -84,12 +81,9 @@ static int really_do_swap_account __initdata = 0;
 #define do_swap_account		(0)
 #endif
 
-<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 extern void need_soft_reclaim(void);
 #endif /* CONFIG_ZRAM_FOR_ANDROID */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Statistics for memory cgroup.
@@ -1503,7 +1497,6 @@ static int mem_cgroup_count_children(struct mem_cgroup *memcg)
 u64 mem_cgroup_get_limit(struct mem_cgroup *memcg)
 {
 	u64 limit;
-<<<<<<< HEAD
 	u64 memsw;
 
 	limit = res_counter_read_u64(&memcg->res, RES_LIMIT);
@@ -1515,28 +1508,6 @@ u64 mem_cgroup_get_limit(struct mem_cgroup *memcg)
 	 * to this memcg, return that limit.
 	 */
 	return min(limit, memsw);
-=======
-
-	limit = res_counter_read_u64(&memcg->res, RES_LIMIT);
-
-	/*
-	 * Do not consider swap space if we cannot swap due to swappiness
-	 */
-	if (mem_cgroup_swappiness(memcg)) {
-		u64 memsw;
-
-		limit += total_swap_pages << PAGE_SHIFT;
-		memsw = res_counter_read_u64(&memcg->memsw, RES_LIMIT);
-
-		/*
-		 * If memsw is finite and limits the amount of swap space
-		 * available to this memcg, return that limit.
-		 */
-		limit = min(limit, memsw);
-	}
-
-	return limit;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static unsigned long mem_cgroup_reclaim(struct mem_cgroup *memcg,
@@ -1758,13 +1729,10 @@ static int mem_cgroup_soft_reclaim(struct mem_cgroup *root_memcg,
 		total += mem_cgroup_shrink_node_zone(victim, gfp_mask, false,
 						     zone, &nr_scanned);
 		*total_scanned += nr_scanned;
-<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 		if(*total_scanned > MAX_SCAN_NO)
 			break;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		if (!res_counter_soft_limit_excess(&root_memcg->res))
 			break;
 	}
@@ -5057,7 +5025,6 @@ mem_cgroup_create(struct cgroup *cont)
 	if (parent)
 		memcg->swappiness = mem_cgroup_swappiness(parent);
 	atomic_set(&memcg->refcnt, 1);
-<<<<<<< HEAD
 
 #ifndef CONFIG_ZRAM_FOR_ANDROID
 	memcg->move_charge_at_immigrate = 0;
@@ -5065,9 +5032,6 @@ mem_cgroup_create(struct cgroup *cont)
 	memcg->move_charge_at_immigrate = 1;
 #endif /* CONFIG_ZRAM_FOR_ANDROID */
 
-=======
-	memcg->move_charge_at_immigrate = 0;
->>>>>>> remotes/linux2/linux-3.4.y
 	mutex_init(&memcg->thresholds_lock);
 	spin_lock_init(&memcg->move_lock);
 	return &memcg->css;
@@ -5655,7 +5619,6 @@ retry:
 	up_read(&mm->mmap_sem);
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 static struct cgroup *get_compcache_group(void)
 {
@@ -5683,8 +5646,6 @@ static struct mem_cgroup *get_compcache_memgrp(void)
 static struct mem_cgroup *compcache_grp = NULL;
 #endif /* CONFIG_ZRAM_FOR_ANDROID */
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static void mem_cgroup_move_task(struct cgroup *cont,
 				 struct cgroup_taskset *tset)
 {
@@ -5697,7 +5658,6 @@ static void mem_cgroup_move_task(struct cgroup *cont,
 		put_swap_token(mm);
 		mmput(mm);
 	}
-<<<<<<< HEAD
 
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 	if (compcache_grp == mc.to) {
@@ -5708,8 +5668,6 @@ static void mem_cgroup_move_task(struct cgroup *cont,
 	}
 #endif /* CONFIG_ZRAM_FOR_ANDROID */
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (mc.to)
 		mem_cgroup_clear_mc();
 }

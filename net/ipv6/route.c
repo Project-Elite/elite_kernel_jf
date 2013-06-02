@@ -203,11 +203,7 @@ static struct dst_ops ip6_dst_blackhole_ops = {
 };
 
 static const u32 ip6_template_metrics[RTAX_MAX] = {
-<<<<<<< HEAD
 	[RTAX_HOPLIMIT - 1] = 255,
-=======
-	[RTAX_HOPLIMIT - 1] = 0,
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static struct rt6_info ip6_null_entry_template = {
@@ -850,12 +846,7 @@ restart:
 	dst_hold(&rt->dst);
 	read_unlock_bh(&table->tb6_lock);
 
-<<<<<<< HEAD
 	if (!dst_get_neighbour_noref_raw(&rt->dst) && !(rt->rt6i_flags & RTF_NONEXTHOP))
-=======
-	if (!dst_get_neighbour_noref_raw(&rt->dst) &&
-	    !(rt->rt6i_flags & (RTF_NONEXTHOP | RTF_LOCAL)))
->>>>>>> remotes/linux2/linux-3.4.y
 		nrt = rt6_alloc_cow(rt, &fl6->daddr, &fl6->saddr);
 	else if (!(rt->dst.flags & DST_HOST))
 		nrt = rt6_alloc_clone(rt, &fl6->daddr);
@@ -1144,11 +1135,7 @@ struct dst_entry *icmp6_dst_alloc(struct net_device *dev,
 	rt->rt6i_dst.addr = fl6->daddr;
 	rt->rt6i_dst.plen = 128;
 	rt->rt6i_idev     = idev;
-<<<<<<< HEAD
 	dst_metric_set(&rt->dst, RTAX_HOPLIMIT, 255);
-=======
-	dst_metric_set(&rt->dst, RTAX_HOPLIMIT, 0);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	spin_lock_bh(&icmp6_dst_lock);
 	rt->dst.next = icmp6_dst_gc_list;
@@ -1498,7 +1485,6 @@ static int __ip6_del_rt(struct rt6_info *rt, struct nl_info *info)
 	struct fib6_table *table;
 	struct net *net = dev_net(rt->dst.dev);
 
-<<<<<<< HEAD
 	if (rt == net->ipv6.ip6_null_entry)
 		return -ENOENT;
 
@@ -1510,20 +1496,6 @@ static int __ip6_del_rt(struct rt6_info *rt, struct nl_info *info)
 
 	write_unlock_bh(&table->tb6_lock);
 
-=======
-	if (rt == net->ipv6.ip6_null_entry) {
-		err = -ENOENT;
-		goto out;
-	}
-
-	table = rt->rt6i_table;
-	write_lock_bh(&table->tb6_lock);
-	err = fib6_del(rt, info);
-	write_unlock_bh(&table->tb6_lock);
-
-out:
-	dst_release(&rt->dst);
->>>>>>> remotes/linux2/linux-3.4.y
 	return err;
 }
 
@@ -1999,12 +1971,7 @@ void rt6_purge_dflt_routers(struct net *net)
 restart:
 	read_lock_bh(&table->tb6_lock);
 	for (rt = table->tb6_root.leaf; rt; rt = rt->dst.rt6_next) {
-<<<<<<< HEAD
 		if (rt->rt6i_flags & (RTF_DEFAULT | RTF_ADDRCONF)) {
-=======
-		if (rt->rt6i_flags & (RTF_DEFAULT | RTF_ADDRCONF) &&
-		    (!rt->rt6i_idev || rt->rt6i_idev->cnf.accept_ra != 2)) {
->>>>>>> remotes/linux2/linux-3.4.y
 			dst_hold(&rt->dst);
 			read_unlock_bh(&table->tb6_lock);
 			ip6_del_rt(rt);
@@ -2986,13 +2953,10 @@ static int __net_init ip6_route_net_init(struct net *net)
 	net->ipv6.sysctl.ip6_rt_mtu_expires = 10*60*HZ;
 	net->ipv6.sysctl.ip6_rt_min_advmss = IPV6_MIN_MTU - 20 - 40;
 
-<<<<<<< HEAD
 #ifdef CONFIG_PROC_FS
 	proc_net_fops_create(net, "ipv6_route", 0, &ipv6_route_proc_fops);
 	proc_net_fops_create(net, "rt6_stats", S_IRUGO, &rt6_stats_seq_fops);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	net->ipv6.ip6_rt_gc_expire = 30*HZ;
 
 	ret = 0;
@@ -3013,13 +2977,10 @@ out_ip6_dst_ops:
 
 static void __net_exit ip6_route_net_exit(struct net *net)
 {
-<<<<<<< HEAD
 #ifdef CONFIG_PROC_FS
 	proc_net_remove(net, "ipv6_route");
 	proc_net_remove(net, "rt6_stats");
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	kfree(net->ipv6.ip6_null_entry);
 #ifdef CONFIG_IPV6_MULTIPLE_TABLES
 	kfree(net->ipv6.ip6_prohibit_entry);
@@ -3028,39 +2989,11 @@ static void __net_exit ip6_route_net_exit(struct net *net)
 	dst_entries_destroy(&net->ipv6.ip6_dst_ops);
 }
 
-<<<<<<< HEAD
-=======
-static int __net_init ip6_route_net_init_late(struct net *net)
-{
-#ifdef CONFIG_PROC_FS
-	proc_net_fops_create(net, "ipv6_route", 0, &ipv6_route_proc_fops);
-	proc_net_fops_create(net, "rt6_stats", S_IRUGO, &rt6_stats_seq_fops);
-#endif
-	return 0;
-}
-
-static void __net_exit ip6_route_net_exit_late(struct net *net)
-{
-#ifdef CONFIG_PROC_FS
-	proc_net_remove(net, "ipv6_route");
-	proc_net_remove(net, "rt6_stats");
-#endif
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 static struct pernet_operations ip6_route_net_ops = {
 	.init = ip6_route_net_init,
 	.exit = ip6_route_net_exit,
 };
 
-<<<<<<< HEAD
-=======
-static struct pernet_operations ip6_route_net_late_ops = {
-	.init = ip6_route_net_init_late,
-	.exit = ip6_route_net_exit_late,
-};
-
->>>>>>> remotes/linux2/linux-3.4.y
 static struct notifier_block ip6_route_dev_notifier = {
 	.notifier_call = ip6_route_dev_notify,
 	.priority = 0,
@@ -3110,39 +3043,19 @@ int __init ip6_route_init(void)
 	if (ret)
 		goto xfrm6_init;
 
-<<<<<<< HEAD
-=======
-	ret = register_pernet_subsys(&ip6_route_net_late_ops);
-	if (ret)
-		goto fib6_rules_init;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	ret = -ENOBUFS;
 	if (__rtnl_register(PF_INET6, RTM_NEWROUTE, inet6_rtm_newroute, NULL, NULL) ||
 	    __rtnl_register(PF_INET6, RTM_DELROUTE, inet6_rtm_delroute, NULL, NULL) ||
 	    __rtnl_register(PF_INET6, RTM_GETROUTE, inet6_rtm_getroute, NULL, NULL))
-<<<<<<< HEAD
 		goto fib6_rules_init;
 
 	ret = register_netdevice_notifier(&ip6_route_dev_notifier);
 	if (ret)
 		goto fib6_rules_init;
-=======
-		goto out_register_late_subsys;
-
-	ret = register_netdevice_notifier(&ip6_route_dev_notifier);
-	if (ret)
-		goto out_register_late_subsys;
->>>>>>> remotes/linux2/linux-3.4.y
 
 out:
 	return ret;
 
-<<<<<<< HEAD
-=======
-out_register_late_subsys:
-	unregister_pernet_subsys(&ip6_route_net_late_ops);
->>>>>>> remotes/linux2/linux-3.4.y
 fib6_rules_init:
 	fib6_rules_cleanup();
 xfrm6_init:
@@ -3161,10 +3074,6 @@ out_kmem_cache:
 void ip6_route_cleanup(void)
 {
 	unregister_netdevice_notifier(&ip6_route_dev_notifier);
-<<<<<<< HEAD
-=======
-	unregister_pernet_subsys(&ip6_route_net_late_ops);
->>>>>>> remotes/linux2/linux-3.4.y
 	fib6_rules_cleanup();
 	xfrm6_fini();
 	fib6_gc_cleanup();

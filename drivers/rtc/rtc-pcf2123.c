@@ -264,10 +264,6 @@ static int __devinit pcf2123_probe(struct spi_device *spi)
 
 	if (!(rxbuf[0] & 0x20)) {
 		dev_err(&spi->dev, "chip not found\n");
-<<<<<<< HEAD
-=======
-		ret = -ENODEV;
->>>>>>> remotes/linux2/linux-3.4.y
 		goto kfree_exit;
 	}
 

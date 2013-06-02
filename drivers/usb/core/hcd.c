@@ -897,12 +897,9 @@ static void usb_bus_init (struct usb_bus *bus)
 	bus->bandwidth_isoc_reqs = 0;
 
 	INIT_LIST_HEAD (&bus->bus_list);
-<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG
 	INIT_DELAYED_WORK(&bus->hnp_polling, usb_hnp_polling_work);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*-------------------------------------------------------------------------*/
@@ -932,14 +929,11 @@ static int usb_register_bus(struct usb_bus *bus)
 	/* Add it to the local list of buses */
 	list_add (&bus->bus_list, &usb_bus_list);
 	mutex_unlock(&usb_bus_list_lock);
-<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG
 	/* Obvioulsy HNP is supported on B-host */
 	if (bus->is_b_host)
 		bus->hnp_support = 1;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	usb_notify_add_bus(bus);
 
@@ -1016,14 +1010,10 @@ static int register_root_hub(struct usb_hcd *hcd)
 	if (retval) {
 		dev_err (parent_dev, "can't register root hub for %s, %d\n",
 				dev_name(&usb_dev->dev), retval);
-<<<<<<< HEAD
 	}
 	mutex_unlock(&usb_bus_list_lock);
 
 	if (retval == 0) {
-=======
-	} else {
->>>>>>> remotes/linux2/linux-3.4.y
 		spin_lock_irq (&hcd_root_hub_lock);
 		hcd->rh_registered = 1;
 		spin_unlock_irq (&hcd_root_hub_lock);
@@ -1032,10 +1022,6 @@ static int register_root_hub(struct usb_hcd *hcd)
 		if (HCD_DEAD(hcd))
 			usb_hc_died (hcd);	/* This time clean up */
 	}
-<<<<<<< HEAD
-=======
-	mutex_unlock(&usb_bus_list_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return retval;
 }
@@ -1487,11 +1473,8 @@ int usb_hcd_submit_urb (struct urb *urb, gfp_t mem_flags)
 	atomic_inc(&urb->use_count);
 	atomic_inc(&urb->dev->urbnum);
 	usbmon_urb_submit(&hcd->self, urb);
-<<<<<<< HEAD
 	if (hcd->driver->log_urb)
 		hcd->driver->log_urb(urb, "S", urb->status);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* NOTE requirements on root-hub callers (usbfs and the hub
 	 * driver, for now):  URBs' urb->transfer_buffer must be
@@ -1514,11 +1497,8 @@ int usb_hcd_submit_urb (struct urb *urb, gfp_t mem_flags)
 
 	if (unlikely(status)) {
 		usbmon_urb_submit_error(&hcd->self, urb, status);
-<<<<<<< HEAD
 		if (hcd->driver->log_urb)
 			hcd->driver->log_urb(urb, "E", status);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		urb->hcpriv = NULL;
 		INIT_LIST_HEAD(&urb->urb_list);
 		atomic_dec(&urb->use_count);
@@ -1621,11 +1601,8 @@ void usb_hcd_giveback_urb(struct usb_hcd *hcd, struct urb *urb, int status)
 
 	unmap_urb_for_dma(hcd, urb);
 	usbmon_urb_complete(&hcd->self, urb, status);
-<<<<<<< HEAD
 	if (hcd->driver->log_urb)
 		hcd->driver->log_urb(urb, "C", status);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	usb_unanchor_urb(urb);
 
 	/* pass ownership to the completion handler */

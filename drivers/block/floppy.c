@@ -4161,10 +4161,6 @@ static int __init floppy_init(void)
 
 		disks[dr]->queue = blk_init_queue(do_fd_request, &floppy_lock);
 		if (!disks[dr]->queue) {
-<<<<<<< HEAD
-=======
-			put_disk(disks[dr]);
->>>>>>> remotes/linux2/linux-3.4.y
 			err = -ENOMEM;
 			goto out_put_disk;
 		}

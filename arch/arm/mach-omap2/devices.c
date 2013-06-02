@@ -297,7 +297,6 @@ static inline void omap_init_mbox(void) { }
 
 static inline void omap_init_sti(void) {}
 
-<<<<<<< HEAD
 #if defined CONFIG_ARCH_OMAP4
 
 static struct platform_device codec_dmic0 = {
@@ -331,8 +330,6 @@ static inline void omap_init_abe(void)
 static inline void omap_init_abe(void) {}
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #if defined(CONFIG_SND_SOC) || defined(CONFIG_SND_SOC_MODULE)
 
 static struct platform_device omap_pcm = {
@@ -736,10 +733,7 @@ static int __init omap2_init_devices(void)
 	 * please keep these calls, and their implementations above,
 	 * in alphabetical order so they're easier to sort through.
 	 */
-<<<<<<< HEAD
 	omap_init_abe();
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	omap_init_audio();
 	omap_init_mcpdm();
 	omap_init_dmic();

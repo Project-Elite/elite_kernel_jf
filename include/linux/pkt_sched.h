@@ -118,10 +118,7 @@ struct tc_fifo_qopt {
 struct tc_prio_qopt {
 	int	bands;			/* Number of bands */
 	__u8	priomap[TC_PRIO_MAX+1];	/* Map: logical priority -> PRIO band */
-<<<<<<< HEAD
 	__u8	enable_flow;		/* Enable dequeue */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /* MULTIQ section */

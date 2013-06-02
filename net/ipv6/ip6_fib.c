@@ -818,13 +818,6 @@ int fib6_add(struct fib6_node *root, struct rt6_info *rt, struct nl_info *info)
 					offsetof(struct rt6_info, rt6i_src),
 					allow_create, replace_required);
 
-<<<<<<< HEAD
-=======
-			if (IS_ERR(sn)) {
-				err = PTR_ERR(sn);
-				sn = NULL;
-			}
->>>>>>> remotes/linux2/linux-3.4.y
 			if (!sn) {
 				/* If it is failed, discard just allocated
 				   root, and then (in st_failure) stale node
@@ -1567,11 +1560,7 @@ static int fib6_age(struct rt6_info *rt, void *arg)
 				neigh_flags = neigh->flags;
 				neigh_release(neigh);
 			}
-<<<<<<< HEAD
 			if (neigh_flags & NTF_ROUTER) {
-=======
-			if (!(neigh_flags & NTF_ROUTER)) {
->>>>>>> remotes/linux2/linux-3.4.y
 				RT6_TRACE("purging route %p via non-router but gateway\n",
 					  rt);
 				return -1;

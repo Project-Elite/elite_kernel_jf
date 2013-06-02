@@ -29,77 +29,6 @@
  * the sender.
  */
 
-<<<<<<< HEAD
-=======
-/*
- * We track the state of the socket on a given connection using
- * values defined below.  The transition to a new socket state is
- * handled by a function which verifies we aren't coming from an
- * unexpected state.
- *
- *      --------
- *      | NEW* |  transient initial state
- *      --------
- *          | con_sock_state_init()
- *          v
- *      ----------
- *      | CLOSED |  initialized, but no socket (and no
- *      ----------  TCP connection)
- *       ^      \
- *       |       \ con_sock_state_connecting()
- *       |        ----------------------
- *       |                              \
- *       + con_sock_state_closed()       \
- *       |+---------------------------    \
- *       | \                          \    \
- *       |  -----------                \    \
- *       |  | CLOSING |  socket event;  \    \
- *       |  -----------  await close     \    \
- *       |       ^                        \   |
- *       |       |                         \  |
- *       |       + con_sock_state_closing() \ |
- *       |      / \                         | |
- *       |     /   ---------------          | |
- *       |    /                   \         v v
- *       |   /                    --------------
- *       |  /    -----------------| CONNECTING |  socket created, TCP
- *       |  |   /                 --------------  connect initiated
- *       |  |   | con_sock_state_connected()
- *       |  |   v
- *      -------------
- *      | CONNECTED |  TCP connection established
- *      -------------
- *
- * State values for ceph_connection->sock_state; NEW is assumed to be 0.
- */
-
-#define CON_SOCK_STATE_NEW		0	/* -> CLOSED */
-#define CON_SOCK_STATE_CLOSED		1	/* -> CONNECTING */
-#define CON_SOCK_STATE_CONNECTING	2	/* -> CONNECTED or -> CLOSING */
-#define CON_SOCK_STATE_CONNECTED	3	/* -> CLOSING or -> CLOSED */
-#define CON_SOCK_STATE_CLOSING		4	/* -> CLOSED */
-
-/*
- * connection states
- */
-#define CON_STATE_CLOSED        1  /* -> PREOPEN */
-#define CON_STATE_PREOPEN       2  /* -> CONNECTING, CLOSED */
-#define CON_STATE_CONNECTING    3  /* -> NEGOTIATING, CLOSED */
-#define CON_STATE_NEGOTIATING   4  /* -> OPEN, CLOSED */
-#define CON_STATE_OPEN          5  /* -> STANDBY, CLOSED */
-#define CON_STATE_STANDBY       6  /* -> PREOPEN, CLOSED */
-
-/*
- * ceph_connection flag bits
- */
-#define CON_FLAG_LOSSYTX           0  /* we can close channel or drop
-				       * messages on errors */
-#define CON_FLAG_KEEPALIVE_PENDING 1  /* we need to send a keepalive */
-#define CON_FLAG_WRITE_PENDING	   2  /* we have data ready to send */
-#define CON_FLAG_SOCK_CLOSED	   3  /* socket state changed to closed */
-#define CON_FLAG_BACKOFF           4  /* need to retry queuing delayed work */
-
->>>>>>> remotes/linux2/linux-3.4.y
 /* static tag bytes (protocol control messages) */
 static char tag_msg = CEPH_MSGR_TAG_MSG;
 static char tag_ack = CEPH_MSGR_TAG_ACK;
@@ -218,142 +147,47 @@ void ceph_msgr_flush(void)
 }
 EXPORT_SYMBOL(ceph_msgr_flush);
 
-<<<<<<< HEAD
-=======
-/* Connection socket state transition functions */
-
-static void con_sock_state_init(struct ceph_connection *con)
-{
-	int old_state;
-
-	old_state = atomic_xchg(&con->sock_state, CON_SOCK_STATE_CLOSED);
-	if (WARN_ON(old_state != CON_SOCK_STATE_NEW))
-		printk("%s: unexpected old state %d\n", __func__, old_state);
-	dout("%s con %p sock %d -> %d\n", __func__, con, old_state,
-	     CON_SOCK_STATE_CLOSED);
-}
-
-static void con_sock_state_connecting(struct ceph_connection *con)
-{
-	int old_state;
-
-	old_state = atomic_xchg(&con->sock_state, CON_SOCK_STATE_CONNECTING);
-	if (WARN_ON(old_state != CON_SOCK_STATE_CLOSED))
-		printk("%s: unexpected old state %d\n", __func__, old_state);
-	dout("%s con %p sock %d -> %d\n", __func__, con, old_state,
-	     CON_SOCK_STATE_CONNECTING);
-}
-
-static void con_sock_state_connected(struct ceph_connection *con)
-{
-	int old_state;
-
-	old_state = atomic_xchg(&con->sock_state, CON_SOCK_STATE_CONNECTED);
-	if (WARN_ON(old_state != CON_SOCK_STATE_CONNECTING))
-		printk("%s: unexpected old state %d\n", __func__, old_state);
-	dout("%s con %p sock %d -> %d\n", __func__, con, old_state,
-	     CON_SOCK_STATE_CONNECTED);
-}
-
-static void con_sock_state_closing(struct ceph_connection *con)
-{
-	int old_state;
-
-	old_state = atomic_xchg(&con->sock_state, CON_SOCK_STATE_CLOSING);
-	if (WARN_ON(old_state != CON_SOCK_STATE_CONNECTING &&
-			old_state != CON_SOCK_STATE_CONNECTED &&
-			old_state != CON_SOCK_STATE_CLOSING))
-		printk("%s: unexpected old state %d\n", __func__, old_state);
-	dout("%s con %p sock %d -> %d\n", __func__, con, old_state,
-	     CON_SOCK_STATE_CLOSING);
-}
-
-static void con_sock_state_closed(struct ceph_connection *con)
-{
-	int old_state;
-
-	old_state = atomic_xchg(&con->sock_state, CON_SOCK_STATE_CLOSED);
-	if (WARN_ON(old_state != CON_SOCK_STATE_CONNECTED &&
-		    old_state != CON_SOCK_STATE_CLOSING &&
-		    old_state != CON_SOCK_STATE_CONNECTING &&
-		    old_state != CON_SOCK_STATE_CLOSED))
-		printk("%s: unexpected old state %d\n", __func__, old_state);
-	dout("%s con %p sock %d -> %d\n", __func__, con, old_state,
-	     CON_SOCK_STATE_CLOSED);
-}
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * socket callback functions
  */
 
 /* data available on socket, or listen socket received a connect */
-<<<<<<< HEAD
 static void ceph_data_ready(struct sock *sk, int count_unused)
 {
 	struct ceph_connection *con = sk->sk_user_data;
 
 	if (sk->sk_state != TCP_CLOSE_WAIT) {
 		dout("ceph_data_ready on %p state = %lu, queueing work\n",
-=======
-static void ceph_sock_data_ready(struct sock *sk, int count_unused)
-{
-	struct ceph_connection *con = sk->sk_user_data;
-	if (atomic_read(&con->msgr->stopping)) {
-		return;
-	}
-
-	if (sk->sk_state != TCP_CLOSE_WAIT) {
-		dout("%s on %p state = %lu, queueing work\n", __func__,
->>>>>>> remotes/linux2/linux-3.4.y
 		     con, con->state);
 		queue_con(con);
 	}
 }
 
 /* socket has buffer space for writing */
-<<<<<<< HEAD
 static void ceph_write_space(struct sock *sk)
-=======
-static void ceph_sock_write_space(struct sock *sk)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct ceph_connection *con = sk->sk_user_data;
 
 	/* only queue to workqueue if there is data we want to write,
 	 * and there is sufficient space in the socket buffer to accept
-<<<<<<< HEAD
 	 * more data.  clear SOCK_NOSPACE so that ceph_write_space()
-=======
-	 * more data.  clear SOCK_NOSPACE so that ceph_sock_write_space()
->>>>>>> remotes/linux2/linux-3.4.y
 	 * doesn't get called again until try_write() fills the socket
 	 * buffer. See net/ipv4/tcp_input.c:tcp_check_space()
 	 * and net/core/stream.c:sk_stream_write_space().
 	 */
-<<<<<<< HEAD
 	if (test_bit(WRITE_PENDING, &con->state)) {
 		if (sk_stream_wspace(sk) >= sk_stream_min_wspace(sk)) {
 			dout("ceph_write_space %p queueing write work\n", con);
-=======
-	if (test_bit(CON_FLAG_WRITE_PENDING, &con->flags)) {
-		if (sk_stream_wspace(sk) >= sk_stream_min_wspace(sk)) {
-			dout("%s %p queueing write work\n", __func__, con);
->>>>>>> remotes/linux2/linux-3.4.y
 			clear_bit(SOCK_NOSPACE, &sk->sk_socket->flags);
 			queue_con(con);
 		}
 	} else {
-<<<<<<< HEAD
 		dout("ceph_write_space %p nothing to write\n", con);
-=======
-		dout("%s %p nothing to write\n", __func__, con);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 
 /* socket's state has changed */
-<<<<<<< HEAD
 static void ceph_state_change(struct sock *sk)
 {
 	struct ceph_connection *con = sk->sk_user_data;
@@ -379,27 +213,6 @@ static void ceph_state_change(struct sock *sk)
 		break;
 	case TCP_ESTABLISHED:
 		dout("ceph_state_change TCP_ESTABLISHED\n");
-=======
-static void ceph_sock_state_change(struct sock *sk)
-{
-	struct ceph_connection *con = sk->sk_user_data;
-
-	dout("%s %p state = %lu sk_state = %u\n", __func__,
-	     con, con->state, sk->sk_state);
-
-	switch (sk->sk_state) {
-	case TCP_CLOSE:
-		dout("%s TCP_CLOSE\n", __func__);
-	case TCP_CLOSE_WAIT:
-		dout("%s TCP_CLOSE_WAIT\n", __func__);
-		con_sock_state_closing(con);
-		set_bit(CON_FLAG_SOCK_CLOSED, &con->flags);
-		queue_con(con);
-		break;
-	case TCP_ESTABLISHED:
-		dout("%s TCP_ESTABLISHED\n", __func__);
-		con_sock_state_connected(con);
->>>>>>> remotes/linux2/linux-3.4.y
 		queue_con(con);
 		break;
 	default:	/* Everything else is uninteresting */
@@ -415,15 +228,9 @@ static void set_sock_callbacks(struct socket *sock,
 {
 	struct sock *sk = sock->sk;
 	sk->sk_user_data = con;
-<<<<<<< HEAD
 	sk->sk_data_ready = ceph_data_ready;
 	sk->sk_write_space = ceph_write_space;
 	sk->sk_state_change = ceph_state_change;
-=======
-	sk->sk_data_ready = ceph_sock_data_ready;
-	sk->sk_write_space = ceph_sock_write_space;
-	sk->sk_state_change = ceph_sock_state_change;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 
@@ -455,10 +262,6 @@ static int ceph_tcp_connect(struct ceph_connection *con)
 
 	dout("connect %s\n", ceph_pr_addr(&con->peer_addr.in_addr));
 
-<<<<<<< HEAD
-=======
-	con_sock_state_connecting(con);
->>>>>>> remotes/linux2/linux-3.4.y
 	ret = sock->ops->connect(sock, (struct sockaddr *)paddr, sizeof(*paddr),
 				 O_NONBLOCK);
 	if (ret == -EINPROGRESS) {
@@ -474,10 +277,7 @@ static int ceph_tcp_connect(struct ceph_connection *con)
 		return ret;
 	}
 	con->sock = sock;
-<<<<<<< HEAD
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -533,7 +333,6 @@ static int ceph_tcp_sendpage(struct socket *sock, struct page *page,
  */
 static int con_close_socket(struct ceph_connection *con)
 {
-<<<<<<< HEAD
 	int rc;
 
 	dout("con_close_socket on %p sock %p\n", con, con->sock);
@@ -544,26 +343,6 @@ static int con_close_socket(struct ceph_connection *con)
 	sock_release(con->sock);
 	con->sock = NULL;
 	clear_bit(SOCK_CLOSED, &con->state);
-=======
-	int rc = 0;
-
-	dout("con_close_socket on %p sock %p\n", con, con->sock);
-	if (con->sock) {
-		rc = con->sock->ops->shutdown(con->sock, SHUT_RDWR);
-		sock_release(con->sock);
-		con->sock = NULL;
-	}
-
-	/*
-	 * Forcibly clear the SOCK_CLOSED flag.  It gets set
-	 * independent of the connection mutex, and we could have
-	 * received a socket close event before we had the chance to
-	 * shut the socket down.
-	 */
-	clear_bit(CON_FLAG_SOCK_CLOSED, &con->flags);
-
-	con_sock_state_closed(con);
->>>>>>> remotes/linux2/linux-3.4.y
 	return rc;
 }
 
@@ -574,13 +353,6 @@ static int con_close_socket(struct ceph_connection *con)
 static void ceph_msg_remove(struct ceph_msg *msg)
 {
 	list_del_init(&msg->list_head);
-<<<<<<< HEAD
-=======
-	BUG_ON(msg->con == NULL);
-	msg->con->ops->put(msg->con);
-	msg->con = NULL;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	ceph_msg_put(msg);
 }
 static void ceph_msg_remove_list(struct list_head *head)
@@ -596,24 +368,12 @@ static void reset_connection(struct ceph_connection *con)
 {
 	/* reset connection, out_queue, msg_ and connect_seq */
 	/* discard existing out_queue and msg_seq */
-<<<<<<< HEAD
-=======
-	dout("reset_connection %p\n", con);
->>>>>>> remotes/linux2/linux-3.4.y
 	ceph_msg_remove_list(&con->out_queue);
 	ceph_msg_remove_list(&con->out_sent);
 
 	if (con->in_msg) {
-<<<<<<< HEAD
 		ceph_msg_put(con->in_msg);
 		con->in_msg = NULL;
-=======
-		BUG_ON(con->in_msg->con != con);
-		con->in_msg->con = NULL;
-		ceph_msg_put(con->in_msg);
-		con->in_msg = NULL;
-		con->ops->put(con);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	con->connect_seq = 0;
@@ -631,7 +391,6 @@ static void reset_connection(struct ceph_connection *con)
  */
 void ceph_con_close(struct ceph_connection *con)
 {
-<<<<<<< HEAD
 	dout("con_close %p peer %s\n", con,
 	     ceph_pr_addr(&con->peer_addr.in_addr));
 	set_bit(CLOSED, &con->state);  /* in case there's queued work */
@@ -645,31 +404,12 @@ void ceph_con_close(struct ceph_connection *con)
 	cancel_delayed_work(&con->work);
 	mutex_unlock(&con->mutex);
 	queue_con(con);
-=======
-	mutex_lock(&con->mutex);
-	dout("con_close %p peer %s\n", con,
-	     ceph_pr_addr(&con->peer_addr.in_addr));
-	con->state = CON_STATE_CLOSED;
-
-	clear_bit(CON_FLAG_LOSSYTX, &con->flags); /* so we retry next connect */
-	clear_bit(CON_FLAG_KEEPALIVE_PENDING, &con->flags);
-	clear_bit(CON_FLAG_WRITE_PENDING, &con->flags);
-	clear_bit(CON_FLAG_KEEPALIVE_PENDING, &con->flags);
-	clear_bit(CON_FLAG_BACKOFF, &con->flags);
-
-	reset_connection(con);
-	con->peer_global_seq = 0;
-	cancel_delayed_work(&con->work);
-	con_close_socket(con);
-	mutex_unlock(&con->mutex);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL(ceph_con_close);
 
 /*
  * Reopen a closed connection, with a new peer address.
  */
-<<<<<<< HEAD
 void ceph_con_open(struct ceph_connection *con, struct ceph_entity_addr *addr)
 {
 	dout("con_open %p %s\n", con, ceph_pr_addr(&addr->in_addr));
@@ -677,24 +417,6 @@ void ceph_con_open(struct ceph_connection *con, struct ceph_entity_addr *addr)
 	clear_bit(CLOSED, &con->state);
 	memcpy(&con->peer_addr, addr, sizeof(*addr));
 	con->delay = 0;      /* reset backoff memory */
-=======
-void ceph_con_open(struct ceph_connection *con,
-		   __u8 entity_type, __u64 entity_num,
-		   struct ceph_entity_addr *addr)
-{
-	mutex_lock(&con->mutex);
-	dout("con_open %p %s\n", con, ceph_pr_addr(&addr->in_addr));
-
-	WARN_ON(con->state != CON_STATE_CLOSED);
-	con->state = CON_STATE_PREOPEN;
-
-	con->peer_name.type = (__u8) entity_type;
-	con->peer_name.num = cpu_to_le64(entity_num);
-
-	memcpy(&con->peer_addr, addr, sizeof(*addr));
-	con->delay = 0;      /* reset backoff memory */
-	mutex_unlock(&con->mutex);
->>>>>>> remotes/linux2/linux-3.4.y
 	queue_con(con);
 }
 EXPORT_SYMBOL(ceph_con_open);
@@ -708,7 +430,6 @@ bool ceph_con_opened(struct ceph_connection *con)
 }
 
 /*
-<<<<<<< HEAD
  * generic get/put
  */
 struct ceph_connection *ceph_con_get(struct ceph_connection *con)
@@ -741,31 +462,10 @@ void ceph_con_init(struct ceph_messenger *msgr, struct ceph_connection *con)
 	memset(con, 0, sizeof(*con));
 	atomic_set(&con->nref, 1);
 	con->msgr = msgr;
-=======
- * initialize a new connection.
- */
-void ceph_con_init(struct ceph_connection *con, void *private,
-	const struct ceph_connection_operations *ops,
-	struct ceph_messenger *msgr)
-{
-	dout("con_init %p\n", con);
-	memset(con, 0, sizeof(*con));
-	con->private = private;
-	con->ops = ops;
-	con->msgr = msgr;
-
-	con_sock_state_init(con);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	mutex_init(&con->mutex);
 	INIT_LIST_HEAD(&con->out_queue);
 	INIT_LIST_HEAD(&con->out_sent);
 	INIT_DELAYED_WORK(&con->work, con_work);
-<<<<<<< HEAD
-=======
-
-	con->state = CON_STATE_CLOSED;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL(ceph_con_init);
 
@@ -786,22 +486,14 @@ static u32 get_global_seq(struct ceph_messenger *msgr, u32 gt)
 	return ret;
 }
 
-<<<<<<< HEAD
 static void ceph_con_out_kvec_reset(struct ceph_connection *con)
-=======
-static void con_out_kvec_reset(struct ceph_connection *con)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	con->out_kvec_left = 0;
 	con->out_kvec_bytes = 0;
 	con->out_kvec_cur = &con->out_kvec[0];
 }
 
-<<<<<<< HEAD
 static void ceph_con_out_kvec_add(struct ceph_connection *con,
-=======
-static void con_out_kvec_add(struct ceph_connection *con,
->>>>>>> remotes/linux2/linux-3.4.y
 				size_t size, void *data)
 {
 	int index;
@@ -815,56 +507,6 @@ static void con_out_kvec_add(struct ceph_connection *con,
 	con->out_kvec_bytes += size;
 }
 
-<<<<<<< HEAD
-=======
-#ifdef CONFIG_BLOCK
-static void init_bio_iter(struct bio *bio, struct bio **iter, int *seg)
-{
-	if (!bio) {
-		*iter = NULL;
-		*seg = 0;
-		return;
-	}
-	*iter = bio;
-	*seg = bio->bi_idx;
-}
-
-static void iter_bio_next(struct bio **bio_iter, int *seg)
-{
-	if (*bio_iter == NULL)
-		return;
-
-	BUG_ON(*seg >= (*bio_iter)->bi_vcnt);
-
-	(*seg)++;
-	if (*seg == (*bio_iter)->bi_vcnt)
-		init_bio_iter((*bio_iter)->bi_next, bio_iter, seg);
-}
-#endif
-
-static void prepare_write_message_data(struct ceph_connection *con)
-{
-	struct ceph_msg *msg = con->out_msg;
-
-	BUG_ON(!msg);
-	BUG_ON(!msg->hdr.data_len);
-
-	/* initialize page iterator */
-	con->out_msg_pos.page = 0;
-	if (msg->pages)
-		con->out_msg_pos.page_pos = msg->page_alignment;
-	else
-		con->out_msg_pos.page_pos = 0;
-#ifdef CONFIG_BLOCK
-	if (msg->bio)
-		init_bio_iter(msg->bio, &msg->bio_iter, &msg->bio_seg);
-#endif
-	con->out_msg_pos.data_pos = 0;
-	con->out_msg_pos.did_page_crc = false;
-	con->out_more = 1;  /* data + footer will follow */
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Prepare footer for currently outgoing message, and finish things
  * off.  Assumes out_kvec* are already valid.. we just add on to the end.
@@ -874,11 +516,6 @@ static void prepare_write_message_footer(struct ceph_connection *con)
 	struct ceph_msg *m = con->out_msg;
 	int v = con->out_kvec_left;
 
-<<<<<<< HEAD
-=======
-	m->footer.flags |= CEPH_MSG_FOOTER_COMPLETE;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	dout("prepare_write_message_footer %p\n", con);
 	con->out_kvec_is_msg = true;
 	con->out_kvec[v].iov_base = &m->footer;
@@ -897,11 +534,7 @@ static void prepare_write_message(struct ceph_connection *con)
 	struct ceph_msg *m;
 	u32 crc;
 
-<<<<<<< HEAD
 	ceph_con_out_kvec_reset(con);
-=======
-	con_out_kvec_reset(con);
->>>>>>> remotes/linux2/linux-3.4.y
 	con->out_kvec_is_msg = true;
 	con->out_msg_done = false;
 
@@ -909,7 +542,6 @@ static void prepare_write_message(struct ceph_connection *con)
 	 * TCP packet that's a good thing. */
 	if (con->in_seq > con->in_seq_acked) {
 		con->in_seq_acked = con->in_seq;
-<<<<<<< HEAD
 		ceph_con_out_kvec_add(con, sizeof (tag_ack), &tag_ack);
 		con->out_temp_ack = cpu_to_le64(con->in_seq_acked);
 		ceph_con_out_kvec_add(con, sizeof (con->out_temp_ack),
@@ -918,18 +550,6 @@ static void prepare_write_message(struct ceph_connection *con)
 
 	m = list_first_entry(&con->out_queue, struct ceph_msg, list_head);
 	con->out_msg = m;
-=======
-		con_out_kvec_add(con, sizeof (tag_ack), &tag_ack);
-		con->out_temp_ack = cpu_to_le64(con->in_seq_acked);
-		con_out_kvec_add(con, sizeof (con->out_temp_ack),
-			&con->out_temp_ack);
-	}
-
-	BUG_ON(list_empty(&con->out_queue));
-	m = list_first_entry(&con->out_queue, struct ceph_msg, list_head);
-	con->out_msg = m;
-	BUG_ON(m->con != con);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* put message on sent list */
 	ceph_msg_get(m);
@@ -952,31 +572,18 @@ static void prepare_write_message(struct ceph_connection *con)
 	BUG_ON(le32_to_cpu(m->hdr.front_len) != m->front.iov_len);
 
 	/* tag + hdr + front + middle */
-<<<<<<< HEAD
 	ceph_con_out_kvec_add(con, sizeof (tag_msg), &tag_msg);
 	ceph_con_out_kvec_add(con, sizeof (m->hdr), &m->hdr);
 	ceph_con_out_kvec_add(con, m->front.iov_len, m->front.iov_base);
 
 	if (m->middle)
 		ceph_con_out_kvec_add(con, m->middle->vec.iov_len,
-=======
-	con_out_kvec_add(con, sizeof (tag_msg), &tag_msg);
-	con_out_kvec_add(con, sizeof (m->hdr), &m->hdr);
-	con_out_kvec_add(con, m->front.iov_len, m->front.iov_base);
-
-	if (m->middle)
-		con_out_kvec_add(con, m->middle->vec.iov_len,
->>>>>>> remotes/linux2/linux-3.4.y
 			m->middle->vec.iov_base);
 
 	/* fill in crc (except data pages), footer */
 	crc = crc32c(0, &m->hdr, offsetof(struct ceph_msg_header, crc));
 	con->out_msg->hdr.crc = cpu_to_le32(crc);
-<<<<<<< HEAD
 	con->out_msg->footer.flags = CEPH_MSG_FOOTER_COMPLETE;
-=======
-	con->out_msg->footer.flags = 0;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	crc = crc32c(0, m->front.iov_base, m->front.iov_len);
 	con->out_msg->footer.front_crc = cpu_to_le32(crc);
@@ -986,17 +593,12 @@ static void prepare_write_message(struct ceph_connection *con)
 		con->out_msg->footer.middle_crc = cpu_to_le32(crc);
 	} else
 		con->out_msg->footer.middle_crc = 0;
-<<<<<<< HEAD
 	con->out_msg->footer.data_crc = 0;
 	dout("prepare_write_message front_crc %u data_crc %u\n",
-=======
-	dout("%s front_crc %u middle_crc %u\n", __func__,
->>>>>>> remotes/linux2/linux-3.4.y
 	     le32_to_cpu(con->out_msg->footer.front_crc),
 	     le32_to_cpu(con->out_msg->footer.middle_crc));
 
 	/* is there a data payload? */
-<<<<<<< HEAD
 	if (le32_to_cpu(m->hdr.data_len) > 0) {
 		/* initialize page iterator */
 		con->out_msg_pos.page = 0;
@@ -1013,16 +615,6 @@ static void prepare_write_message(struct ceph_connection *con)
 	}
 
 	set_bit(WRITE_PENDING, &con->state);
-=======
-	con->out_msg->footer.data_crc = 0;
-	if (m->hdr.data_len)
-		prepare_write_message_data(con);
-	else
-		/* no, queue up footer too and be done */
-		prepare_write_message_footer(con);
-
-	set_bit(CON_FLAG_WRITE_PENDING, &con->flags);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -1034,7 +626,6 @@ static void prepare_write_ack(struct ceph_connection *con)
 	     con->in_seq_acked, con->in_seq);
 	con->in_seq_acked = con->in_seq;
 
-<<<<<<< HEAD
 	ceph_con_out_kvec_reset(con);
 
 	ceph_con_out_kvec_add(con, sizeof (tag_ack), &tag_ack);
@@ -1045,18 +636,6 @@ static void prepare_write_ack(struct ceph_connection *con)
 
 	con->out_more = 1;  /* more will follow.. eventually.. */
 	set_bit(WRITE_PENDING, &con->state);
-=======
-	con_out_kvec_reset(con);
-
-	con_out_kvec_add(con, sizeof (tag_ack), &tag_ack);
-
-	con->out_temp_ack = cpu_to_le64(con->in_seq_acked);
-	con_out_kvec_add(con, sizeof (con->out_temp_ack),
-				&con->out_temp_ack);
-
-	con->out_more = 1;  /* more will follow.. eventually.. */
-	set_bit(CON_FLAG_WRITE_PENDING, &con->flags);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -1065,22 +644,15 @@ static void prepare_write_ack(struct ceph_connection *con)
 static void prepare_write_keepalive(struct ceph_connection *con)
 {
 	dout("prepare_write_keepalive %p\n", con);
-<<<<<<< HEAD
 	ceph_con_out_kvec_reset(con);
 	ceph_con_out_kvec_add(con, sizeof (tag_keepalive), &tag_keepalive);
 	set_bit(WRITE_PENDING, &con->state);
-=======
-	con_out_kvec_reset(con);
-	con_out_kvec_add(con, sizeof (tag_keepalive), &tag_keepalive);
-	set_bit(CON_FLAG_WRITE_PENDING, &con->flags);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
  * Connection negotiation.
  */
 
-<<<<<<< HEAD
 static int prepare_connect_authorizer(struct ceph_connection *con)
 {
 	void *auth_buf;
@@ -1106,38 +678,11 @@ static int prepare_connect_authorizer(struct ceph_connection *con)
 		ceph_con_out_kvec_add(con, auth_len, auth_buf);
 
 	return 0;
-=======
-static struct ceph_auth_handshake *get_connect_authorizer(struct ceph_connection *con,
-						int *auth_proto)
-{
-	struct ceph_auth_handshake *auth;
-
-	if (!con->ops->get_authorizer) {
-		con->out_connect.authorizer_protocol = CEPH_AUTH_UNKNOWN;
-		con->out_connect.authorizer_len = 0;
-		return NULL;
-	}
-
-	/* Can't hold the mutex while getting authorizer */
-	mutex_unlock(&con->mutex);
-	auth = con->ops->get_authorizer(con, auth_proto, con->auth_retry);
-	mutex_lock(&con->mutex);
-
-	if (IS_ERR(auth))
-		return auth;
-	if (con->state != CON_STATE_NEGOTIATING)
-		return ERR_PTR(-EAGAIN);
-
-	con->auth_reply_buf = auth->authorizer_reply_buf;
-	con->auth_reply_buf_len = auth->authorizer_reply_buf_len;
-	return auth;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
  * We connected to a peer and are saying hello.
  */
-<<<<<<< HEAD
 static void prepare_write_banner(struct ceph_messenger *msgr,
 				 struct ceph_connection *con)
 {
@@ -1156,24 +701,6 @@ static int prepare_write_connect(struct ceph_messenger *msgr,
 {
 	unsigned global_seq = get_global_seq(con->msgr, 0);
 	int proto;
-=======
-static void prepare_write_banner(struct ceph_connection *con)
-{
-	con_out_kvec_add(con, strlen(CEPH_BANNER), CEPH_BANNER);
-	con_out_kvec_add(con, sizeof (con->msgr->my_enc_addr),
-					&con->msgr->my_enc_addr);
-
-	con->out_more = 0;
-	set_bit(CON_FLAG_WRITE_PENDING, &con->flags);
-}
-
-static int prepare_write_connect(struct ceph_connection *con)
-{
-	unsigned global_seq = get_global_seq(con->msgr, 0);
-	int proto;
-	int auth_proto;
-	struct ceph_auth_handshake *auth;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	switch (con->peer_name.type) {
 	case CEPH_ENTITY_TYPE_MON:
@@ -1192,18 +719,13 @@ static int prepare_write_connect(struct ceph_connection *con)
 	dout("prepare_write_connect %p cseq=%d gseq=%d proto=%d\n", con,
 	     con->connect_seq, global_seq, proto);
 
-<<<<<<< HEAD
 	con->out_connect.features = cpu_to_le64(msgr->supported_features);
-=======
-	con->out_connect.features = cpu_to_le64(con->msgr->supported_features);
->>>>>>> remotes/linux2/linux-3.4.y
 	con->out_connect.host_type = cpu_to_le32(CEPH_ENTITY_TYPE_CLIENT);
 	con->out_connect.connect_seq = cpu_to_le32(con->connect_seq);
 	con->out_connect.global_seq = cpu_to_le32(global_seq);
 	con->out_connect.protocol_version = cpu_to_le32(proto);
 	con->out_connect.flags = 0;
 
-<<<<<<< HEAD
 	if (include_banner)
 		prepare_write_banner(msgr, con);
 	else
@@ -1214,27 +736,6 @@ static int prepare_write_connect(struct ceph_connection *con)
 	set_bit(WRITE_PENDING, &con->state);
 
 	return prepare_connect_authorizer(con);
-=======
-	auth_proto = CEPH_AUTH_UNKNOWN;
-	auth = get_connect_authorizer(con, &auth_proto);
-	if (IS_ERR(auth))
-		return PTR_ERR(auth);
-
-	con->out_connect.authorizer_protocol = cpu_to_le32(auth_proto);
-	con->out_connect.authorizer_len = auth ?
-		cpu_to_le32(auth->authorizer_buf_len) : 0;
-
-	con_out_kvec_add(con, sizeof (con->out_connect),
-					&con->out_connect);
-	if (auth && auth->authorizer_buf_len)
-		con_out_kvec_add(con, auth->authorizer_buf_len,
-					auth->authorizer_buf);
-
-	con->out_more = 0;
-	set_bit(CON_FLAG_WRITE_PENDING, &con->flags);
-
-	return 0;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -1280,7 +781,6 @@ out:
 	return ret;  /* done! */
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_BLOCK
 static void init_bio_iter(struct bio *bio, struct bio **iter, int *seg)
 {
@@ -1305,36 +805,6 @@ static void iter_bio_next(struct bio **bio_iter, int *seg)
 		init_bio_iter((*bio_iter)->bi_next, bio_iter, seg);
 }
 #endif
-=======
-static void out_msg_pos_next(struct ceph_connection *con, struct page *page,
-			size_t len, size_t sent, bool in_trail)
-{
-	struct ceph_msg *msg = con->out_msg;
-
-	BUG_ON(!msg);
-	BUG_ON(!sent);
-
-	con->out_msg_pos.data_pos += sent;
-	con->out_msg_pos.page_pos += sent;
-	if (sent < len)
-		return;
-
-	BUG_ON(sent != len);
-	con->out_msg_pos.page_pos = 0;
-	con->out_msg_pos.page++;
-	con->out_msg_pos.did_page_crc = false;
-	if (in_trail)
-		list_move_tail(&page->lru,
-			       &msg->trail->head);
-	else if (msg->pagelist)
-		list_move_tail(&page->lru,
-			       &msg->pagelist->head);
-#ifdef CONFIG_BLOCK
-	else if (msg->bio)
-		iter_bio_next(&msg->bio_iter, &msg->bio_seg);
-#endif
-}
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Write as much message data payload as we can.  If we finish, queue
@@ -1351,7 +821,6 @@ static int write_partial_msg_pages(struct ceph_connection *con)
 	bool do_datacrc = !con->msgr->nocrc;
 	int ret;
 	int total_max_write;
-<<<<<<< HEAD
 	int in_trail = 0;
 	size_t trail_len = (msg->trail ? msg->trail->length : 0);
 
@@ -1364,30 +833,11 @@ static int write_partial_msg_pages(struct ceph_connection *con)
 		init_bio_iter(msg->bio, &msg->bio_iter, &msg->bio_seg);
 #endif
 
-=======
-	bool in_trail = false;
-	const size_t trail_len = (msg->trail ? msg->trail->length : 0);
-	const size_t trail_off = data_len - trail_len;
-
-	dout("write_partial_msg_pages %p msg %p page %d/%d offset %d\n",
-	     con, msg, con->out_msg_pos.page, msg->nr_pages,
-	     con->out_msg_pos.page_pos);
-
-	/*
-	 * Iterate through each page that contains data to be
-	 * written, and send as much as possible for each.
-	 *
-	 * If we are calculating the data crc (the default), we will
-	 * need to map the page.  If we have no pages, they have
-	 * been revoked, so use the zero page.
-	 */
->>>>>>> remotes/linux2/linux-3.4.y
 	while (data_len > con->out_msg_pos.data_pos) {
 		struct page *page = NULL;
 		int max_write = PAGE_SIZE;
 		int bio_offset = 0;
 
-<<<<<<< HEAD
 		total_max_write = data_len - trail_len -
 			con->out_msg_pos.data_pos;
 
@@ -1401,21 +851,11 @@ static int write_partial_msg_pages(struct ceph_connection *con)
 		if (con->out_msg_pos.data_pos >= data_len - trail_len) {
 			in_trail = 1;
 
-=======
-		in_trail = in_trail || con->out_msg_pos.data_pos >= trail_off;
-		if (!in_trail)
-			total_max_write = trail_off - con->out_msg_pos.data_pos;
-
-		if (in_trail) {
->>>>>>> remotes/linux2/linux-3.4.y
 			total_max_write = data_len - con->out_msg_pos.data_pos;
 
 			page = list_first_entry(&msg->trail->head,
 						struct page, lru);
-<<<<<<< HEAD
 			max_write = PAGE_SIZE;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		} else if (msg->pages) {
 			page = msg->pages[con->out_msg_pos.page];
 		} else if (msg->pagelist) {
@@ -1438,31 +878,20 @@ static int write_partial_msg_pages(struct ceph_connection *con)
 
 		if (do_datacrc && !con->out_msg_pos.did_page_crc) {
 			void *base;
-<<<<<<< HEAD
 			u32 crc;
 			u32 tmpcrc = le32_to_cpu(con->out_msg->footer.data_crc);
-=======
-			u32 crc = le32_to_cpu(msg->footer.data_crc);
->>>>>>> remotes/linux2/linux-3.4.y
 			char *kaddr;
 
 			kaddr = kmap(page);
 			BUG_ON(kaddr == NULL);
 			base = kaddr + con->out_msg_pos.page_pos + bio_offset;
-<<<<<<< HEAD
 			crc = crc32c(tmpcrc, base, len);
 			con->out_msg->footer.data_crc = cpu_to_le32(crc);
-=======
-			crc = crc32c(crc, base, len);
-			kunmap(page);
-			msg->footer.data_crc = cpu_to_le32(crc);
->>>>>>> remotes/linux2/linux-3.4.y
 			con->out_msg_pos.did_page_crc = true;
 		}
 		ret = ceph_tcp_sendpage(con->sock, page,
 				      con->out_msg_pos.page_pos + bio_offset,
 				      len, 1);
-<<<<<<< HEAD
 
 		if (do_datacrc)
 			kunmap(page);
@@ -1487,25 +916,14 @@ static int write_partial_msg_pages(struct ceph_connection *con)
 				iter_bio_next(&msg->bio_iter, &msg->bio_seg);
 #endif
 		}
-=======
-		if (ret <= 0)
-			goto out;
-
-		out_msg_pos_next(con, page, len, (size_t) ret, in_trail);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	dout("write_partial_msg_pages %p msg %p done\n", con, msg);
 
 	/* prepare and queue up footer, too */
 	if (!do_datacrc)
-<<<<<<< HEAD
 		con->out_msg->footer.flags |= CEPH_MSG_FOOTER_NOCRC;
 	ceph_con_out_kvec_reset(con);
-=======
-		msg->footer.flags |= CEPH_MSG_FOOTER_NOCRC;
-	con_out_kvec_reset(con);
->>>>>>> remotes/linux2/linux-3.4.y
 	prepare_write_message_footer(con);
 	ret = 1;
 out:
@@ -1574,18 +992,11 @@ static int prepare_read_message(struct ceph_connection *con)
 
 
 static int read_partial(struct ceph_connection *con,
-<<<<<<< HEAD
 			int *to, int size, void *object)
 {
 	*to += size;
 	while (con->in_base_pos < *to) {
 		int left = *to - con->in_base_pos;
-=======
-			int end, int size, void *object)
-{
-	while (con->in_base_pos < end) {
-		int left = end - con->in_base_pos;
->>>>>>> remotes/linux2/linux-3.4.y
 		int have = size - left;
 		int ret = ceph_tcp_recvmsg(con->sock, object + have, left);
 		if (ret <= 0)
@@ -1601,18 +1012,11 @@ static int read_partial(struct ceph_connection *con,
  */
 static int read_partial_banner(struct ceph_connection *con)
 {
-<<<<<<< HEAD
 	int ret, to = 0;
-=======
-	int size;
-	int end;
-	int ret;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	dout("read_partial_banner %p at %d\n", con, con->in_base_pos);
 
 	/* peer's banner */
-<<<<<<< HEAD
 	ret = read_partial(con, &to, strlen(CEPH_BANNER), con->in_banner);
 	if (ret <= 0)
 		goto out;
@@ -1624,33 +1028,12 @@ static int read_partial_banner(struct ceph_connection *con)
 			   &con->peer_addr_for_me);
 	if (ret <= 0)
 		goto out;
-=======
-	size = strlen(CEPH_BANNER);
-	end = size;
-	ret = read_partial(con, end, size, con->in_banner);
-	if (ret <= 0)
-		goto out;
-
-	size = sizeof (con->actual_peer_addr);
-	end += size;
-	ret = read_partial(con, end, size, &con->actual_peer_addr);
-	if (ret <= 0)
-		goto out;
-
-	size = sizeof (con->peer_addr_for_me);
-	end += size;
-	ret = read_partial(con, end, size, &con->peer_addr_for_me);
-	if (ret <= 0)
-		goto out;
-
->>>>>>> remotes/linux2/linux-3.4.y
 out:
 	return ret;
 }
 
 static int read_partial_connect(struct ceph_connection *con)
 {
-<<<<<<< HEAD
 	int ret, to = 0;
 
 	dout("read_partial_connect %p at %d\n", con, con->in_base_pos);
@@ -1660,23 +1043,6 @@ static int read_partial_connect(struct ceph_connection *con)
 		goto out;
 	ret = read_partial(con, &to, le32_to_cpu(con->in_reply.authorizer_len),
 			   con->auth_reply_buf);
-=======
-	int size;
-	int end;
-	int ret;
-
-	dout("read_partial_connect %p at %d\n", con, con->in_base_pos);
-
-	size = sizeof (con->in_reply);
-	end = size;
-	ret = read_partial(con, end, size, &con->in_reply);
-	if (ret <= 0)
-		goto out;
-
-	size = le32_to_cpu(con->in_reply.authorizer_len);
-	end += size;
-	ret = read_partial(con, end, size, con->auth_reply_buf);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (ret <= 0)
 		goto out;
 
@@ -1955,7 +1321,6 @@ static int process_banner(struct ceph_connection *con)
 		     ceph_pr_addr(&con->msgr->inst.addr.in_addr));
 	}
 
-<<<<<<< HEAD
 	set_bit(NEGOTIATING, &con->state);
 	prepare_read_connect(con);
 	return 0;
@@ -1972,11 +1337,6 @@ static void fail_protocol(struct ceph_connection *con)
 	mutex_lock(&con->mutex);
 }
 
-=======
-	return 0;
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 static int process_connect(struct ceph_connection *con)
 {
 	u64 sup_feat = con->msgr->supported_features;
@@ -1994,11 +1354,7 @@ static int process_connect(struct ceph_connection *con)
 		       ceph_pr_addr(&con->peer_addr.in_addr),
 		       sup_feat, server_feat, server_feat & ~sup_feat);
 		con->error_msg = "missing required protocol features";
-<<<<<<< HEAD
 		fail_protocol(con);
-=======
-		reset_connection(con);
->>>>>>> remotes/linux2/linux-3.4.y
 		return -1;
 
 	case CEPH_MSGR_TAG_BADPROTOVER:
@@ -2009,11 +1365,7 @@ static int process_connect(struct ceph_connection *con)
 		       le32_to_cpu(con->out_connect.protocol_version),
 		       le32_to_cpu(con->in_reply.protocol_version));
 		con->error_msg = "protocol version mismatch";
-<<<<<<< HEAD
 		fail_protocol(con);
-=======
-		reset_connection(con);
->>>>>>> remotes/linux2/linux-3.4.y
 		return -1;
 
 	case CEPH_MSGR_TAG_BADAUTHORIZER:
@@ -2025,12 +1377,7 @@ static int process_connect(struct ceph_connection *con)
 			return -1;
 		}
 		con->auth_retry = 1;
-<<<<<<< HEAD
 		ret = prepare_write_connect(con->msgr, con, 0);
-=======
-		con_out_kvec_reset(con);
-		ret = prepare_write_connect(con);
->>>>>>> remotes/linux2/linux-3.4.y
 		if (ret < 0)
 			return ret;
 		prepare_read_connect(con);
@@ -2045,23 +1392,12 @@ static int process_connect(struct ceph_connection *con)
 		 * dropped messages.
 		 */
 		dout("process_connect got RESET peer seq %u\n",
-<<<<<<< HEAD
 		     le32_to_cpu(con->in_connect.connect_seq));
-=======
-		     le32_to_cpu(con->in_reply.connect_seq));
->>>>>>> remotes/linux2/linux-3.4.y
 		pr_err("%s%lld %s connection reset\n",
 		       ENTITY_NAME(con->peer_name),
 		       ceph_pr_addr(&con->peer_addr.in_addr));
 		reset_connection(con);
-<<<<<<< HEAD
 		prepare_write_connect(con->msgr, con, 0);
-=======
-		con_out_kvec_reset(con);
-		ret = prepare_write_connect(con);
-		if (ret < 0)
-			return ret;
->>>>>>> remotes/linux2/linux-3.4.y
 		prepare_read_connect(con);
 
 		/* Tell ceph about it. */
@@ -2070,12 +1406,8 @@ static int process_connect(struct ceph_connection *con)
 		if (con->ops->peer_reset)
 			con->ops->peer_reset(con);
 		mutex_lock(&con->mutex);
-<<<<<<< HEAD
 		if (test_bit(CLOSED, &con->state) ||
 		    test_bit(OPENING, &con->state))
-=======
-		if (con->state != CON_STATE_NEGOTIATING)
->>>>>>> remotes/linux2/linux-3.4.y
 			return -EAGAIN;
 		break;
 
@@ -2084,22 +1416,11 @@ static int process_connect(struct ceph_connection *con)
 		 * If we sent a smaller connect_seq than the peer has, try
 		 * again with a larger value.
 		 */
-<<<<<<< HEAD
 		dout("process_connect got RETRY my seq = %u, peer_seq = %u\n",
 		     le32_to_cpu(con->out_connect.connect_seq),
 		     le32_to_cpu(con->in_connect.connect_seq));
 		con->connect_seq = le32_to_cpu(con->in_connect.connect_seq);
 		prepare_write_connect(con->msgr, con, 0);
-=======
-		dout("process_connect got RETRY_SESSION my seq %u, peer %u\n",
-		     le32_to_cpu(con->out_connect.connect_seq),
-		     le32_to_cpu(con->in_reply.connect_seq));
-		con->connect_seq = le32_to_cpu(con->in_reply.connect_seq);
-		con_out_kvec_reset(con);
-		ret = prepare_write_connect(con);
-		if (ret < 0)
-			return ret;
->>>>>>> remotes/linux2/linux-3.4.y
 		prepare_read_connect(con);
 		break;
 
@@ -2110,20 +1431,10 @@ static int process_connect(struct ceph_connection *con)
 		 */
 		dout("process_connect got RETRY_GLOBAL my %u peer_gseq %u\n",
 		     con->peer_global_seq,
-<<<<<<< HEAD
 		     le32_to_cpu(con->in_connect.global_seq));
 		get_global_seq(con->msgr,
 			       le32_to_cpu(con->in_connect.global_seq));
 		prepare_write_connect(con->msgr, con, 0);
-=======
-		     le32_to_cpu(con->in_reply.global_seq));
-		get_global_seq(con->msgr,
-			       le32_to_cpu(con->in_reply.global_seq));
-		con_out_kvec_reset(con);
-		ret = prepare_write_connect(con);
-		if (ret < 0)
-			return ret;
->>>>>>> remotes/linux2/linux-3.4.y
 		prepare_read_connect(con);
 		break;
 
@@ -2135,20 +1446,10 @@ static int process_connect(struct ceph_connection *con)
 			       ceph_pr_addr(&con->peer_addr.in_addr),
 			       req_feat, server_feat, req_feat & ~server_feat);
 			con->error_msg = "missing required protocol features";
-<<<<<<< HEAD
 			fail_protocol(con);
 			return -1;
 		}
 		clear_bit(CONNECTING, &con->state);
-=======
-			reset_connection(con);
-			return -1;
-		}
-
-		WARN_ON(con->state != CON_STATE_NEGOTIATING);
-		con->state = CON_STATE_OPEN;
-
->>>>>>> remotes/linux2/linux-3.4.y
 		con->peer_global_seq = le32_to_cpu(con->in_reply.global_seq);
 		con->connect_seq++;
 		con->peer_features = server_feat;
@@ -2160,13 +1461,7 @@ static int process_connect(struct ceph_connection *con)
 			le32_to_cpu(con->in_reply.connect_seq));
 
 		if (con->in_reply.flags & CEPH_MSG_CONNECT_LOSSY)
-<<<<<<< HEAD
 			set_bit(LOSSYTX, &con->state);
-=======
-			set_bit(CON_FLAG_LOSSYTX, &con->flags);
-
-		con->delay = 0;      /* reset backoff memory */
->>>>>>> remotes/linux2/linux-3.4.y
 
 		prepare_read_tag(con);
 		break;
@@ -2196,17 +1491,10 @@ static int process_connect(struct ceph_connection *con)
  */
 static int read_partial_ack(struct ceph_connection *con)
 {
-<<<<<<< HEAD
 	int to = 0;
 
 	return read_partial(con, &to, sizeof(con->in_temp_ack),
 			    &con->in_temp_ack);
-=======
-	int size = sizeof (con->in_temp_ack);
-	int end = size;
-
-	return read_partial(con, end, size, &con->in_temp_ack);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 
@@ -2259,14 +1547,10 @@ static int read_partial_message_section(struct ceph_connection *con,
 	return 1;
 }
 
-<<<<<<< HEAD
 static struct ceph_msg *ceph_alloc_msg(struct ceph_connection *con,
 				struct ceph_msg_header *hdr,
 				int *skip);
 
-=======
-static int ceph_con_in_msg_alloc(struct ceph_connection *con, int *skip);
->>>>>>> remotes/linux2/linux-3.4.y
 
 static int read_partial_message_pages(struct ceph_connection *con,
 				      struct page **pages,
@@ -2309,12 +1593,9 @@ static int read_partial_message_bio(struct ceph_connection *con,
 	void *p;
 	int ret, left;
 
-<<<<<<< HEAD
 	if (IS_ERR(bv))
 		return PTR_ERR(bv);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	left = min((int)(data_len - con->in_msg_pos.data_pos),
 		   (int)(bv->bv_len - con->in_msg_pos.page_pos));
 
@@ -2346,26 +1627,17 @@ static int read_partial_message_bio(struct ceph_connection *con,
 static int read_partial_message(struct ceph_connection *con)
 {
 	struct ceph_msg *m = con->in_msg;
-<<<<<<< HEAD
 	int ret;
 	int to, left;
 	unsigned front_len, middle_len, data_len;
 	bool do_datacrc = !con->msgr->nocrc;
 	int skip;
-=======
-	int size;
-	int end;
-	int ret;
-	unsigned front_len, middle_len, data_len;
-	bool do_datacrc = !con->msgr->nocrc;
->>>>>>> remotes/linux2/linux-3.4.y
 	u64 seq;
 	u32 crc;
 
 	dout("read_partial_message con %p msg %p\n", con, m);
 
 	/* header */
-<<<<<<< HEAD
 	while (con->in_base_pos < sizeof(con->in_hdr)) {
 		left = sizeof(con->in_hdr) - con->in_base_pos;
 		ret = ceph_tcp_recvmsg(con->sock,
@@ -2375,13 +1647,6 @@ static int read_partial_message(struct ceph_connection *con)
 			return ret;
 		con->in_base_pos += ret;
 	}
-=======
-	size = sizeof (con->in_hdr);
-	end = size;
-	ret = read_partial(con, end, size, &con->in_hdr);
-	if (ret <= 0)
-		return ret;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	crc = crc32c(0, &con->in_hdr, offsetof(struct ceph_msg_header, crc));
 	if (cpu_to_le32(crc) != con->in_hdr.crc) {
@@ -2421,20 +1686,10 @@ static int read_partial_message(struct ceph_connection *con)
 
 	/* allocate message? */
 	if (!con->in_msg) {
-<<<<<<< HEAD
 		dout("got hdr type %d front %d data %d\n", con->in_hdr.type,
 		     con->in_hdr.front_len, con->in_hdr.data_len);
 		skip = 0;
 		con->in_msg = ceph_alloc_msg(con, &con->in_hdr, &skip);
-=======
-		int skip = 0;
-
-		dout("got hdr type %d front %d data %d\n", con->in_hdr.type,
-		     con->in_hdr.front_len, con->in_hdr.data_len);
-		ret = ceph_con_in_msg_alloc(con, &skip);
-		if (ret < 0)
-			return ret;
->>>>>>> remotes/linux2/linux-3.4.y
 		if (skip) {
 			/* skip this message */
 			dout("alloc_msg said skip message\n");
@@ -2445,17 +1700,11 @@ static int read_partial_message(struct ceph_connection *con)
 			con->in_seq++;
 			return 0;
 		}
-<<<<<<< HEAD
 		if (!con->in_msg) {
 			con->error_msg =
 				"error allocating memory for incoming message";
 			return -ENOMEM;
 		}
-=======
-
-		BUG_ON(!con->in_msg);
-		BUG_ON(con->in_msg->con != con);
->>>>>>> remotes/linux2/linux-3.4.y
 		m = con->in_msg;
 		m->front.iov_len = 0;    /* haven't read it yet */
 		if (m->middle)
@@ -2467,14 +1716,6 @@ static int read_partial_message(struct ceph_connection *con)
 		else
 			con->in_msg_pos.page_pos = 0;
 		con->in_msg_pos.data_pos = 0;
-<<<<<<< HEAD
-=======
-
-#ifdef CONFIG_BLOCK
-		if (m->bio)
-			init_bio_iter(m->bio, &m->bio_iter, &m->bio_seg);
-#endif
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	/* front */
@@ -2491,13 +1732,10 @@ static int read_partial_message(struct ceph_connection *con)
 		if (ret <= 0)
 			return ret;
 	}
-<<<<<<< HEAD
 #ifdef CONFIG_BLOCK
 	if (m->bio && !m->bio_iter)
 		init_bio_iter(m->bio, &m->bio_iter, &m->bio_seg);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* (page) data */
 	while (con->in_msg_pos.data_pos < data_len) {
@@ -2508,11 +1746,7 @@ static int read_partial_message(struct ceph_connection *con)
 				return ret;
 #ifdef CONFIG_BLOCK
 		} else if (m->bio) {
-<<<<<<< HEAD
 
-=======
-			BUG_ON(!m->bio_iter);
->>>>>>> remotes/linux2/linux-3.4.y
 			ret = read_partial_message_bio(con,
 						 &m->bio_iter, &m->bio_seg,
 						 data_len, do_datacrc);
@@ -2525,7 +1759,6 @@ static int read_partial_message(struct ceph_connection *con)
 	}
 
 	/* footer */
-<<<<<<< HEAD
 	to = sizeof(m->hdr) + sizeof(m->footer);
 	while (con->in_base_pos < to) {
 		left = to - con->in_base_pos;
@@ -2536,14 +1769,6 @@ static int read_partial_message(struct ceph_connection *con)
 			return ret;
 		con->in_base_pos += ret;
 	}
-=======
-	size = sizeof (m->footer);
-	end += size;
-	ret = read_partial(con, end, size, &m->footer);
-	if (ret <= 0)
-		return ret;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	dout("read_partial_message got msg %p %d (%u) + %d (%u) + %d (%u)\n",
 	     m, front_len, m->footer.front_crc, middle_len,
 	     m->footer.middle_crc, data_len, m->footer.data_crc);
@@ -2579,16 +1804,8 @@ static void process_message(struct ceph_connection *con)
 {
 	struct ceph_msg *msg;
 
-<<<<<<< HEAD
 	msg = con->in_msg;
 	con->in_msg = NULL;
-=======
-	BUG_ON(con->in_msg->con != con);
-	con->in_msg->con = NULL;
-	msg = con->in_msg;
-	con->in_msg = NULL;
-	con->ops->put(con);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* if first message, set peer_name */
 	if (con->peer_name.type == 0)
@@ -2608,10 +1825,7 @@ static void process_message(struct ceph_connection *con)
 	con->ops->dispatch(con, msg);
 
 	mutex_lock(&con->mutex);
-<<<<<<< HEAD
 	prepare_read_tag(con);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 
@@ -2621,37 +1835,21 @@ static void process_message(struct ceph_connection *con)
  */
 static int try_write(struct ceph_connection *con)
 {
-<<<<<<< HEAD
 	struct ceph_messenger *msgr = con->msgr;
 	int ret = 1;
 
 	dout("try_write start %p state %lu nref %d\n", con, con->state,
 	     atomic_read(&con->nref));
-=======
-	int ret = 1;
-
-	dout("try_write start %p state %lu\n", con, con->state);
->>>>>>> remotes/linux2/linux-3.4.y
 
 more:
 	dout("try_write out_kvec_bytes %d\n", con->out_kvec_bytes);
 
 	/* open the socket first? */
-<<<<<<< HEAD
 	if (con->sock == NULL) {
 		prepare_write_connect(msgr, con, 1);
 		prepare_read_banner(con);
 		set_bit(CONNECTING, &con->state);
 		clear_bit(NEGOTIATING, &con->state);
-=======
-	if (con->state == CON_STATE_PREOPEN) {
-		BUG_ON(con->sock);
-		con->state = CON_STATE_CONNECTING;
-
-		con_out_kvec_reset(con);
-		prepare_write_banner(con);
-		prepare_read_banner(con);
->>>>>>> remotes/linux2/linux-3.4.y
 
 		BUG_ON(con->in_msg);
 		con->in_tag = CEPH_MSGR_TAG_READY;
@@ -2698,11 +1896,7 @@ more_kvec:
 	}
 
 do_next:
-<<<<<<< HEAD
 	if (!test_bit(CONNECTING, &con->state)) {
-=======
-	if (con->state == CON_STATE_OPEN) {
->>>>>>> remotes/linux2/linux-3.4.y
 		/* is anything else pending? */
 		if (!list_empty(&con->out_queue)) {
 			prepare_write_message(con);
@@ -2712,23 +1906,14 @@ do_next:
 			prepare_write_ack(con);
 			goto more;
 		}
-<<<<<<< HEAD
 		if (test_and_clear_bit(KEEPALIVE_PENDING, &con->state)) {
-=======
-		if (test_and_clear_bit(CON_FLAG_KEEPALIVE_PENDING,
-				       &con->flags)) {
->>>>>>> remotes/linux2/linux-3.4.y
 			prepare_write_keepalive(con);
 			goto more;
 		}
 	}
 
 	/* Nothing to do! */
-<<<<<<< HEAD
 	clear_bit(WRITE_PENDING, &con->state);
-=======
-	clear_bit(CON_FLAG_WRITE_PENDING, &con->flags);
->>>>>>> remotes/linux2/linux-3.4.y
 	dout("try_write nothing else to write.\n");
 	ret = 0;
 out:
@@ -2745,7 +1930,6 @@ static int try_read(struct ceph_connection *con)
 {
 	int ret = -1;
 
-<<<<<<< HEAD
 	if (!con->sock)
 		return 0;
 
@@ -2778,47 +1962,6 @@ more:
 			if (ret < 0)
 				goto out;
 		}
-=======
-more:
-	dout("try_read start on %p state %lu\n", con, con->state);
-	if (con->state != CON_STATE_CONNECTING &&
-	    con->state != CON_STATE_NEGOTIATING &&
-	    con->state != CON_STATE_OPEN)
-		return 0;
-
-	BUG_ON(!con->sock);
-
-	dout("try_read tag %d in_base_pos %d\n", (int)con->in_tag,
-	     con->in_base_pos);
-
-	if (con->state == CON_STATE_CONNECTING) {
-		dout("try_read connecting\n");
-		ret = read_partial_banner(con);
-		if (ret <= 0)
-			goto out;
-		ret = process_banner(con);
-		if (ret < 0)
-			goto out;
-
-		con->state = CON_STATE_NEGOTIATING;
-
-		/*
-		 * Received banner is good, exchange connection info.
-		 * Do not reset out_kvec, as sending our banner raced
-		 * with receiving peer banner after connect completed.
-		 */
-		ret = prepare_write_connect(con);
-		if (ret < 0)
-			goto out;
-		prepare_read_connect(con);
-
-		/* Send connection info before awaiting response */
-		goto out;
-	}
-
-	if (con->state == CON_STATE_NEGOTIATING) {
-		dout("try_read negotiating\n");
->>>>>>> remotes/linux2/linux-3.4.y
 		ret = read_partial_connect(con);
 		if (ret <= 0)
 			goto out;
@@ -2828,11 +1971,6 @@ more:
 		goto more;
 	}
 
-<<<<<<< HEAD
-=======
-	WARN_ON(con->state != CON_STATE_OPEN);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	if (con->in_base_pos < 0) {
 		/*
 		 * skipping + discarding content.
@@ -2866,12 +2004,7 @@ more:
 			prepare_read_ack(con);
 			break;
 		case CEPH_MSGR_TAG_CLOSE:
-<<<<<<< HEAD
 			set_bit(CLOSED, &con->state);   /* fixme */
-=======
-			con_close_socket(con);
-			con->state = CON_STATE_CLOSED;
->>>>>>> remotes/linux2/linux-3.4.y
 			goto out;
 		default:
 			goto bad_tag;
@@ -2894,11 +2027,6 @@ more:
 		if (con->in_tag == CEPH_MSGR_TAG_READY)
 			goto more;
 		process_message(con);
-<<<<<<< HEAD
-=======
-		if (con->state == CON_STATE_OPEN)
-			prepare_read_tag(con);
->>>>>>> remotes/linux2/linux-3.4.y
 		goto more;
 	}
 	if (con->in_tag == CEPH_MSGR_TAG_ACK) {
@@ -2927,15 +2055,12 @@ bad_tag:
  */
 static void queue_con(struct ceph_connection *con)
 {
-<<<<<<< HEAD
 	if (test_bit(DEAD, &con->state)) {
 		dout("queue_con %p ignoring: DEAD\n",
 		     con);
 		return;
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!con->ops->get(con)) {
 		dout("queue_con %p ref count 0\n", con);
 		return;
@@ -2949,38 +2074,6 @@ static void queue_con(struct ceph_connection *con)
 	}
 }
 
-<<<<<<< HEAD
-=======
-static bool con_sock_closed(struct ceph_connection *con)
-{
-	if (!test_and_clear_bit(CON_FLAG_SOCK_CLOSED, &con->flags))
-		return false;
-
-#define CASE(x)								\
-	case CON_STATE_ ## x:						\
-		con->error_msg = "socket closed (con state " #x ")";	\
-		break;
-
-	switch (con->state) {
-	CASE(CLOSED);
-	CASE(PREOPEN);
-	CASE(CONNECTING);
-	CASE(NEGOTIATING);
-	CASE(OPEN);
-	CASE(STANDBY);
-	default:
-		pr_warning("%s con %p unrecognized state %lu\n",
-			__func__, con, con->state);
-		con->error_msg = "unrecognized con state";
-		BUG();
-		break;
-	}
-#undef CASE
-
-	return true;
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Do some work on a connection.  Drop a connection ref when we're done.
  */
@@ -2992,14 +2085,7 @@ static void con_work(struct work_struct *work)
 
 	mutex_lock(&con->mutex);
 restart:
-<<<<<<< HEAD
 	if (test_and_clear_bit(BACKOFF, &con->state)) {
-=======
-	if (con_sock_closed(con))
-		goto fault;
-
-	if (test_and_clear_bit(CON_FLAG_BACKOFF, &con->flags)) {
->>>>>>> remotes/linux2/linux-3.4.y
 		dout("con_work %p backing off\n", con);
 		if (queue_delayed_work(ceph_msgr_wq, &con->work,
 				       round_jiffies_relative(con->delay))) {
@@ -3007,7 +2093,6 @@ restart:
 			mutex_unlock(&con->mutex);
 			return;
 		} else {
-<<<<<<< HEAD
 			con->ops->put(con);
 			dout("con_work %p FAILED to back off %lu\n", con,
 			     con->delay);
@@ -3037,49 +2122,12 @@ restart:
 		goto restart;
 	if (ret < 0)
 		goto fault;
-=======
-			dout("con_work %p FAILED to back off %lu\n", con,
-			     con->delay);
-			set_bit(CON_FLAG_BACKOFF, &con->flags);
-		}
-		goto done;
-	}
-
-	if (con->state == CON_STATE_STANDBY) {
-		dout("con_work %p STANDBY\n", con);
-		goto done;
-	}
-	if (con->state == CON_STATE_CLOSED) {
-		dout("con_work %p CLOSED\n", con);
-		BUG_ON(con->sock);
-		goto done;
-	}
-	if (con->state == CON_STATE_PREOPEN) {
-		dout("con_work OPENING\n");
-		BUG_ON(con->sock);
-	}
-
-	ret = try_read(con);
-	if (ret == -EAGAIN)
-		goto restart;
-	if (ret < 0) {
-		con->error_msg = "socket error on read";
-		goto fault;
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 
 	ret = try_write(con);
 	if (ret == -EAGAIN)
 		goto restart;
-<<<<<<< HEAD
 	if (ret < 0)
 		goto fault;
-=======
-	if (ret < 0) {
-		con->error_msg = "socket error on write";
-		goto fault;
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 
 done:
 	mutex_unlock(&con->mutex);
@@ -3088,10 +2136,7 @@ done_unlocked:
 	return;
 
 fault:
-<<<<<<< HEAD
 	mutex_unlock(&con->mutex);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	ceph_fault(con);     /* error/fault path */
 	goto done_unlocked;
 }
@@ -3102,19 +2147,12 @@ fault:
  * exponential backoff
  */
 static void ceph_fault(struct ceph_connection *con)
-<<<<<<< HEAD
 {
 	pr_err("%s%lld %s %s\n", ENTITY_NAME(con->peer_name),
-=======
-	__releases(con->mutex)
-{
-	pr_warning("%s%lld %s %s\n", ENTITY_NAME(con->peer_name),
->>>>>>> remotes/linux2/linux-3.4.y
 	       ceph_pr_addr(&con->peer_addr.in_addr), con->error_msg);
 	dout("fault %p state %lu to peer %s\n",
 	     con, con->state, ceph_pr_addr(&con->peer_addr.in_addr));
 
-<<<<<<< HEAD
 	if (test_bit(LOSSYTX, &con->state)) {
 		dout("fault on LOSSYTX channel\n");
 		goto out;
@@ -3129,26 +2167,6 @@ static void ceph_fault(struct ceph_connection *con)
 	if (con->in_msg) {
 		ceph_msg_put(con->in_msg);
 		con->in_msg = NULL;
-=======
-	WARN_ON(con->state != CON_STATE_CONNECTING &&
-	       con->state != CON_STATE_NEGOTIATING &&
-	       con->state != CON_STATE_OPEN);
-
-	con_close_socket(con);
-
-	if (test_bit(CON_FLAG_LOSSYTX, &con->flags)) {
-		dout("fault on LOSSYTX channel, marking CLOSED\n");
-		con->state = CON_STATE_CLOSED;
-		goto out_unlock;
-	}
-
-	if (con->in_msg) {
-		BUG_ON(con->in_msg->con != con);
-		con->in_msg->con = NULL;
-		ceph_msg_put(con->in_msg);
-		con->in_msg = NULL;
-		con->ops->put(con);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	/* Requeue anything that hasn't been acked */
@@ -3157,22 +2175,12 @@ static void ceph_fault(struct ceph_connection *con)
 	/* If there are no messages queued or keepalive pending, place
 	 * the connection in a STANDBY state */
 	if (list_empty(&con->out_queue) &&
-<<<<<<< HEAD
 	    !test_bit(KEEPALIVE_PENDING, &con->state)) {
 		dout("fault %p setting STANDBY clearing WRITE_PENDING\n", con);
 		clear_bit(WRITE_PENDING, &con->state);
 		set_bit(STANDBY, &con->state);
 	} else {
 		/* retry after a delay. */
-=======
-	    !test_bit(CON_FLAG_KEEPALIVE_PENDING, &con->flags)) {
-		dout("fault %p setting STANDBY clearing WRITE_PENDING\n", con);
-		clear_bit(CON_FLAG_WRITE_PENDING, &con->flags);
-		con->state = CON_STATE_STANDBY;
-	} else {
-		/* retry after a delay. */
-		con->state = CON_STATE_PREOPEN;
->>>>>>> remotes/linux2/linux-3.4.y
 		if (con->delay == 0)
 			con->delay = BASE_DELAY_INTERVAL;
 		else if (con->delay < MAX_DELAY_INTERVAL)
@@ -3193,20 +2201,13 @@ static void ceph_fault(struct ceph_connection *con)
 			 * that when con_work restarts we schedule the
 			 * delay then.
 			 */
-<<<<<<< HEAD
 			set_bit(BACKOFF, &con->state);
-=======
-			set_bit(CON_FLAG_BACKOFF, &con->flags);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 
 out_unlock:
 	mutex_unlock(&con->mutex);
-<<<<<<< HEAD
 out:
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * in case we faulted due to authentication, invalidate our
 	 * current tickets so that we can get new ones.
@@ -3223,7 +2224,6 @@ out:
 
 
 /*
-<<<<<<< HEAD
  * create a new messenger instance
  */
 struct ceph_messenger *ceph_messenger_create(struct ceph_entity_addr *myaddr,
@@ -3236,16 +2236,6 @@ struct ceph_messenger *ceph_messenger_create(struct ceph_entity_addr *myaddr,
 	if (msgr == NULL)
 		return ERR_PTR(-ENOMEM);
 
-=======
- * initialize a new messenger instance
- */
-void ceph_messenger_init(struct ceph_messenger *msgr,
-			struct ceph_entity_addr *myaddr,
-			u32 supported_features,
-			u32 required_features,
-			bool nocrc)
-{
->>>>>>> remotes/linux2/linux-3.4.y
 	msgr->supported_features = supported_features;
 	msgr->required_features = required_features;
 
@@ -3258,7 +2248,6 @@ void ceph_messenger_init(struct ceph_messenger *msgr,
 	msgr->inst.addr.type = 0;
 	get_random_bytes(&msgr->inst.addr.nonce, sizeof(msgr->inst.addr.nonce));
 	encode_my_addr(msgr);
-<<<<<<< HEAD
 
 	dout("messenger_create %p\n", msgr);
 	return msgr;
@@ -3272,20 +2261,10 @@ void ceph_messenger_destroy(struct ceph_messenger *msgr)
 	dout("destroyed messenger %p\n", msgr);
 }
 EXPORT_SYMBOL(ceph_messenger_destroy);
-=======
-	msgr->nocrc = nocrc;
-
-	atomic_set(&msgr->stopping, 0);
-
-	dout("%s %p\n", __func__, msgr);
-}
-EXPORT_SYMBOL(ceph_messenger_init);
->>>>>>> remotes/linux2/linux-3.4.y
 
 static void clear_standby(struct ceph_connection *con)
 {
 	/* come back from STANDBY? */
-<<<<<<< HEAD
 	if (test_and_clear_bit(STANDBY, &con->state)) {
 		mutex_lock(&con->mutex);
 		dout("clear_standby %p and ++connect_seq\n", con);
@@ -3293,14 +2272,6 @@ static void clear_standby(struct ceph_connection *con)
 		WARN_ON(test_bit(WRITE_PENDING, &con->state));
 		WARN_ON(test_bit(KEEPALIVE_PENDING, &con->state));
 		mutex_unlock(&con->mutex);
-=======
-	if (con->state == CON_STATE_STANDBY) {
-		dout("clear_standby %p and ++connect_seq\n", con);
-		con->state = CON_STATE_PREOPEN;
-		con->connect_seq++;
-		WARN_ON(test_bit(CON_FLAG_WRITE_PENDING, &con->flags));
-		WARN_ON(test_bit(CON_FLAG_KEEPALIVE_PENDING, &con->flags));
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 
@@ -3309,7 +2280,6 @@ static void clear_standby(struct ceph_connection *con)
  */
 void ceph_con_send(struct ceph_connection *con, struct ceph_msg *msg)
 {
-<<<<<<< HEAD
 	if (test_bit(CLOSED, &con->state)) {
 		dout("con_send %p closed, dropping %p\n", con, msg);
 		ceph_msg_put(msg);
@@ -3325,26 +2295,6 @@ void ceph_con_send(struct ceph_connection *con, struct ceph_msg *msg)
 
 	/* queue */
 	mutex_lock(&con->mutex);
-=======
-	/* set src+dst */
-	msg->hdr.src = con->msgr->inst.name;
-	BUG_ON(msg->front.iov_len != le32_to_cpu(msg->hdr.front_len));
-	msg->needs_out_seq = true;
-
-	mutex_lock(&con->mutex);
-
-	if (con->state == CON_STATE_CLOSED) {
-		dout("con_send %p closed, dropping %p\n", con, msg);
-		ceph_msg_put(msg);
-		mutex_unlock(&con->mutex);
-		return;
-	}
-
-	BUG_ON(msg->con != NULL);
-	msg->con = con->ops->get(con);
-	BUG_ON(msg->con == NULL);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	BUG_ON(!list_empty(&msg->list_head));
 	list_add_tail(&msg->list_head, &con->out_queue);
 	dout("----- %p to %s%lld %d=%s len %d+%d+%d -----\n", msg,
@@ -3353,21 +2303,12 @@ void ceph_con_send(struct ceph_connection *con, struct ceph_msg *msg)
 	     le32_to_cpu(msg->hdr.front_len),
 	     le32_to_cpu(msg->hdr.middle_len),
 	     le32_to_cpu(msg->hdr.data_len));
-<<<<<<< HEAD
-=======
-
-	clear_standby(con);
->>>>>>> remotes/linux2/linux-3.4.y
 	mutex_unlock(&con->mutex);
 
 	/* if there wasn't anything waiting to send before, queue
 	 * new work */
-<<<<<<< HEAD
 	clear_standby(con);
 	if (test_and_set_bit(WRITE_PENDING, &con->state) == 0)
-=======
-	if (test_and_set_bit(CON_FLAG_WRITE_PENDING, &con->flags) == 0)
->>>>>>> remotes/linux2/linux-3.4.y
 		queue_con(con);
 }
 EXPORT_SYMBOL(ceph_con_send);
@@ -3375,7 +2316,6 @@ EXPORT_SYMBOL(ceph_con_send);
 /*
  * Revoke a message that was previously queued for send
  */
-<<<<<<< HEAD
 void ceph_con_revoke(struct ceph_connection *con, struct ceph_msg *msg)
 {
 	mutex_lock(&con->mutex);
@@ -3387,41 +2327,13 @@ void ceph_con_revoke(struct ceph_connection *con, struct ceph_msg *msg)
 	}
 	if (con->out_msg == msg) {
 		dout("con_revoke %p msg %p - was sending\n", con, msg);
-=======
-void ceph_msg_revoke(struct ceph_msg *msg)
-{
-	struct ceph_connection *con = msg->con;
-
-	if (!con)
-		return;		/* Message not in our possession */
-
-	mutex_lock(&con->mutex);
-	if (!list_empty(&msg->list_head)) {
-		dout("%s %p msg %p - was on queue\n", __func__, con, msg);
-		list_del_init(&msg->list_head);
-		BUG_ON(msg->con == NULL);
-		msg->con->ops->put(msg->con);
-		msg->con = NULL;
-		msg->hdr.seq = 0;
-
-		ceph_msg_put(msg);
-	}
-	if (con->out_msg == msg) {
-		dout("%s %p msg %p - was sending\n", __func__, con, msg);
->>>>>>> remotes/linux2/linux-3.4.y
 		con->out_msg = NULL;
 		if (con->out_kvec_is_msg) {
 			con->out_skip = con->out_kvec_bytes;
 			con->out_kvec_is_msg = false;
 		}
-<<<<<<< HEAD
 		ceph_msg_put(msg);
 		msg->hdr.seq = 0;
-=======
-		msg->hdr.seq = 0;
-
-		ceph_msg_put(msg);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	mutex_unlock(&con->mutex);
 }
@@ -3429,39 +2341,17 @@ void ceph_msg_revoke(struct ceph_msg *msg)
 /*
  * Revoke a message that we may be reading data into
  */
-<<<<<<< HEAD
 void ceph_con_revoke_message(struct ceph_connection *con, struct ceph_msg *msg)
 {
 	mutex_lock(&con->mutex);
 	if (con->in_msg && con->in_msg == msg) {
-=======
-void ceph_msg_revoke_incoming(struct ceph_msg *msg)
-{
-	struct ceph_connection *con;
-
-	BUG_ON(msg == NULL);
-	if (!msg->con) {
-		dout("%s msg %p null con\n", __func__, msg);
-
-		return;		/* Message not in our possession */
-	}
-
-	con = msg->con;
-	mutex_lock(&con->mutex);
-	if (con->in_msg == msg) {
->>>>>>> remotes/linux2/linux-3.4.y
 		unsigned front_len = le32_to_cpu(con->in_hdr.front_len);
 		unsigned middle_len = le32_to_cpu(con->in_hdr.middle_len);
 		unsigned data_len = le32_to_cpu(con->in_hdr.data_len);
 
 		/* skip rest of message */
-<<<<<<< HEAD
 		dout("con_revoke_pages %p msg %p revoked\n", con, msg);
 			con->in_base_pos = con->in_base_pos -
-=======
-		dout("%s %p msg %p revoked\n", __func__, con, msg);
-		con->in_base_pos = con->in_base_pos -
->>>>>>> remotes/linux2/linux-3.4.y
 				sizeof(struct ceph_msg_header) -
 				front_len -
 				middle_len -
@@ -3472,13 +2362,8 @@ void ceph_msg_revoke_incoming(struct ceph_msg *msg)
 		con->in_tag = CEPH_MSGR_TAG_READY;
 		con->in_seq++;
 	} else {
-<<<<<<< HEAD
 		dout("con_revoke_pages %p msg %p pages %p no-op\n",
 		     con, con->in_msg, msg);
-=======
-		dout("%s %p in_msg %p msg %p no-op\n",
-		     __func__, con, con->in_msg, msg);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	mutex_unlock(&con->mutex);
 }
@@ -3489,17 +2374,9 @@ void ceph_msg_revoke_incoming(struct ceph_msg *msg)
 void ceph_con_keepalive(struct ceph_connection *con)
 {
 	dout("con_keepalive %p\n", con);
-<<<<<<< HEAD
 	clear_standby(con);
 	if (test_and_set_bit(KEEPALIVE_PENDING, &con->state) == 0 &&
 	    test_and_set_bit(WRITE_PENDING, &con->state) == 0)
-=======
-	mutex_lock(&con->mutex);
-	clear_standby(con);
-	mutex_unlock(&con->mutex);
-	if (test_and_set_bit(CON_FLAG_KEEPALIVE_PENDING, &con->flags) == 0 &&
-	    test_and_set_bit(CON_FLAG_WRITE_PENDING, &con->flags) == 0)
->>>>>>> remotes/linux2/linux-3.4.y
 		queue_con(con);
 }
 EXPORT_SYMBOL(ceph_con_keepalive);
@@ -3518,11 +2395,6 @@ struct ceph_msg *ceph_msg_new(int type, int front_len, gfp_t flags,
 	if (m == NULL)
 		goto out;
 	kref_init(&m->kref);
-<<<<<<< HEAD
-=======
-
-	m->con = NULL;
->>>>>>> remotes/linux2/linux-3.4.y
 	INIT_LIST_HEAD(&m->list_head);
 
 	m->hdr.tid = 0;
@@ -3618,7 +2490,6 @@ static int ceph_alloc_middle(struct ceph_connection *con, struct ceph_msg *msg)
 }
 
 /*
-<<<<<<< HEAD
  * Generic message allocator, for incoming messages.
  */
 static struct ceph_msg *ceph_alloc_msg(struct ceph_connection *con,
@@ -3659,80 +2530,6 @@ static struct ceph_msg *ceph_alloc_msg(struct ceph_connection *con,
 	}
 
 	return msg;
-=======
- * Allocate a message for receiving an incoming message on a
- * connection, and save the result in con->in_msg.  Uses the
- * connection's private alloc_msg op if available.
- *
- * Returns 0 on success, or a negative error code.
- *
- * On success, if we set *skip = 1:
- *  - the next message should be skipped and ignored.
- *  - con->in_msg == NULL
- * or if we set *skip = 0:
- *  - con->in_msg is non-null.
- * On error (ENOMEM, EAGAIN, ...),
- *  - con->in_msg == NULL
- */
-static int ceph_con_in_msg_alloc(struct ceph_connection *con, int *skip)
-{
-	struct ceph_msg_header *hdr = &con->in_hdr;
-	int type = le16_to_cpu(hdr->type);
-	int front_len = le32_to_cpu(hdr->front_len);
-	int middle_len = le32_to_cpu(hdr->middle_len);
-	int ret = 0;
-
-	BUG_ON(con->in_msg != NULL);
-
-	if (con->ops->alloc_msg) {
-		struct ceph_msg *msg;
-
-		mutex_unlock(&con->mutex);
-		msg = con->ops->alloc_msg(con, hdr, skip);
-		mutex_lock(&con->mutex);
-		if (con->state != CON_STATE_OPEN) {
-			if (msg)
-				ceph_msg_put(msg);
-			return -EAGAIN;
-		}
-		con->in_msg = msg;
-		if (con->in_msg) {
-			con->in_msg->con = con->ops->get(con);
-			BUG_ON(con->in_msg->con == NULL);
-		}
-		if (*skip) {
-			con->in_msg = NULL;
-			return 0;
-		}
-		if (!con->in_msg) {
-			con->error_msg =
-				"error allocating memory for incoming message";
-			return -ENOMEM;
-		}
-	}
-	if (!con->in_msg) {
-		con->in_msg = ceph_msg_new(type, front_len, GFP_NOFS, false);
-		if (!con->in_msg) {
-			pr_err("unable to allocate msg type %d len %d\n",
-			       type, front_len);
-			return -ENOMEM;
-		}
-		con->in_msg->con = con->ops->get(con);
-		BUG_ON(con->in_msg->con == NULL);
-		con->in_msg->page_alignment = le16_to_cpu(hdr->data_off);
-	}
-	memcpy(&con->in_msg->hdr, &con->in_hdr, sizeof(con->in_hdr));
-
-	if (middle_len && !con->in_msg->middle) {
-		ret = ceph_alloc_middle(con, con->in_msg);
-		if (ret < 0) {
-			ceph_msg_put(con->in_msg);
-			con->in_msg = NULL;
-		}
-	}
-
-	return ret;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 

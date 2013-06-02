@@ -32,15 +32,9 @@
  * @type: storage ruleset type (user defined)
  * @size: output set size
  */
-<<<<<<< HEAD
 int crush_find_rule(struct crush_map *map, int ruleset, int type, int size)
 {
 	int i;
-=======
-int crush_find_rule(const struct crush_map *map, int ruleset, int type, int size)
-{
-	__u32 i;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	for (i = 0; i < map->max_rules; i++) {
 		if (map->rules[i] &&
@@ -78,11 +72,7 @@ static int bucket_perm_choose(struct crush_bucket *bucket,
 	unsigned i, s;
 
 	/* start a new permutation if @x has changed */
-<<<<<<< HEAD
 	if (bucket->perm_x != x || bucket->perm_n == 0) {
-=======
-	if (bucket->perm_x != (__u32)x || bucket->perm_n == 0) {
->>>>>>> remotes/linux2/linux-3.4.y
 		dprintk("bucket %d new x=%d\n", bucket->id, x);
 		bucket->perm_x = x;
 
@@ -162,13 +152,8 @@ static int bucket_list_choose(struct crush_bucket_list *bucket,
 			return bucket->h.items[i];
 	}
 
-<<<<<<< HEAD
 	BUG_ON(1);
 	return 0;
-=======
-	dprintk("bad list sums for bucket %d\n", bucket->h.id);
-	return bucket->h.items[0];
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 
@@ -234,11 +219,7 @@ static int bucket_tree_choose(struct crush_bucket_tree *bucket,
 static int bucket_straw_choose(struct crush_bucket_straw *bucket,
 			       int x, int r)
 {
-<<<<<<< HEAD
 	int i;
-=======
-	__u32 i;
->>>>>>> remotes/linux2/linux-3.4.y
 	int high = 0;
 	__u64 high_draw = 0;
 	__u64 draw;
@@ -258,10 +239,6 @@ static int bucket_straw_choose(struct crush_bucket_straw *bucket,
 static int crush_bucket_choose(struct crush_bucket *in, int x, int r)
 {
 	dprintk(" crush_bucket_choose %d x=%d r=%d\n", in->id, x, r);
-<<<<<<< HEAD
-=======
-	BUG_ON(in->size == 0);
->>>>>>> remotes/linux2/linux-3.4.y
 	switch (in->alg) {
 	case CRUSH_BUCKET_UNIFORM:
 		return bucket_uniform_choose((struct crush_bucket_uniform *)in,
@@ -276,11 +253,7 @@ static int crush_bucket_choose(struct crush_bucket *in, int x, int r)
 		return bucket_straw_choose((struct crush_bucket_straw *)in,
 					   x, r);
 	default:
-<<<<<<< HEAD
 		BUG_ON(1);
-=======
-		dprintk("unknown bucket %d alg %d\n", in->id, in->alg);
->>>>>>> remotes/linux2/linux-3.4.y
 		return in->items[0];
 	}
 }
@@ -289,11 +262,7 @@ static int crush_bucket_choose(struct crush_bucket *in, int x, int r)
  * true if device is marked "out" (failed, fully offloaded)
  * of the cluster
  */
-<<<<<<< HEAD
 static int is_out(struct crush_map *map, __u32 *weight, int item, int x)
-=======
-static int is_out(const struct crush_map *map, const __u32 *weight, int item, int x)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	if (weight[item] >= 0x10000)
 		return 0;
@@ -318,26 +287,16 @@ static int is_out(const struct crush_map *map, const __u32 *weight, int item, in
  * @recurse_to_leaf: true if we want one device under each item of given type
  * @out2: second output vector for leaf items (if @recurse_to_leaf)
  */
-<<<<<<< HEAD
 static int crush_choose(struct crush_map *map,
 			struct crush_bucket *bucket,
 			__u32 *weight,
-=======
-static int crush_choose(const struct crush_map *map,
-			struct crush_bucket *bucket,
-			const __u32 *weight,
->>>>>>> remotes/linux2/linux-3.4.y
 			int x, int numrep, int type,
 			int *out, int outpos,
 			int firstn, int recurse_to_leaf,
 			int *out2)
 {
 	int rep;
-<<<<<<< HEAD
 	int ftotal, flocal;
-=======
-	unsigned int ftotal, flocal;
->>>>>>> remotes/linux2/linux-3.4.y
 	int retry_descent, retry_bucket, skip_rep;
 	struct crush_bucket *in = bucket;
 	int r;
@@ -345,11 +304,7 @@ static int crush_choose(const struct crush_map *map,
 	int item = 0;
 	int itemtype;
 	int collide, reject;
-<<<<<<< HEAD
 	const int orig_tries = 5; /* attempts before we fall back to search */
-=======
-	const unsigned int orig_tries = 5; /* attempts before we fall back to search */
->>>>>>> remotes/linux2/linux-3.4.y
 
 	dprintk("CHOOSE%s bucket %d x %d outpos %d numrep %d\n", recurse_to_leaf ? "_LEAF" : "",
 		bucket->id, x, outpos, numrep);
@@ -370,11 +325,7 @@ static int crush_choose(const struct crush_map *map,
 				r = rep;
 				if (in->alg == CRUSH_BUCKET_UNIFORM) {
 					/* be careful */
-<<<<<<< HEAD
 					if (firstn || numrep >= in->size)
-=======
-					if (firstn || (__u32)numrep >= in->size)
->>>>>>> remotes/linux2/linux-3.4.y
 						/* r' = r + f_total */
 						r += ftotal;
 					else if (in->size % numrep == 0)
@@ -403,15 +354,7 @@ static int crush_choose(const struct crush_map *map,
 					item = bucket_perm_choose(in, x, r);
 				else
 					item = crush_bucket_choose(in, x, r);
-<<<<<<< HEAD
 				BUG_ON(item >= map->max_devices);
-=======
-				if (item >= map->max_devices) {
-					dprintk("   bad item %d\n", item);
-					skip_rep = 1;
-					break;
-				}
->>>>>>> remotes/linux2/linux-3.4.y
 
 				/* desired type? */
 				if (item < 0)
@@ -422,17 +365,8 @@ static int crush_choose(const struct crush_map *map,
 
 				/* keep going? */
 				if (itemtype != type) {
-<<<<<<< HEAD
 					BUG_ON(item >= 0 ||
 					       (-1-item) >= map->max_buckets);
-=======
-					if (item >= 0 ||
-					    (-1-item) >= map->max_buckets) {
-						dprintk("   bad item type %d\n", type);
-						skip_rep = 1;
-						break;
-					}
->>>>>>> remotes/linux2/linux-3.4.y
 					in = map->buckets[-1-item];
 					retry_bucket = 1;
 					continue;
@@ -481,11 +415,7 @@ reject:
 					if (collide && flocal < 3)
 						/* retry locally a few times */
 						retry_bucket = 1;
-<<<<<<< HEAD
 					else if (flocal < in->size + orig_tries)
-=======
-					else if (flocal <= in->size + orig_tries)
->>>>>>> remotes/linux2/linux-3.4.y
 						/* exhaustive bucket search */
 						retry_bucket = 1;
 					else if (ftotal < 20)
@@ -495,11 +425,7 @@ reject:
 						/* else give up */
 						skip_rep = 1;
 					dprintk("  reject %d  collide %d  "
-<<<<<<< HEAD
 						"ftotal %d  flocal %d\n",
-=======
-						"ftotal %u  flocal %u\n",
->>>>>>> remotes/linux2/linux-3.4.y
 						reject, collide, ftotal,
 						flocal);
 				}
@@ -530,15 +456,9 @@ reject:
  * @result_max: maximum result size
  * @force: force initial replica choice; -1 for none
  */
-<<<<<<< HEAD
 int crush_do_rule(struct crush_map *map,
 		  int ruleno, int x, int *result, int result_max,
 		  int force, __u32 *weight)
-=======
-int crush_do_rule(const struct crush_map *map,
-		  int ruleno, int x, int *result, int result_max,
-		  int force, const __u32 *weight)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	int result_len;
 	int force_context[CRUSH_MAX_DEPTH];
@@ -553,23 +473,12 @@ int crush_do_rule(const struct crush_map *map,
 	int osize;
 	int *tmp;
 	struct crush_rule *rule;
-<<<<<<< HEAD
 	int step;
-=======
-	__u32 step;
->>>>>>> remotes/linux2/linux-3.4.y
 	int i, j;
 	int numrep;
 	int firstn;
 
-<<<<<<< HEAD
 	BUG_ON(ruleno >= map->max_rules);
-=======
-	if ((__u32)ruleno >= map->max_rules) {
-		dprintk(" bad ruleno %d\n", ruleno);
-		return 0;
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 
 	rule = map->rules[ruleno];
 	result_len = 0;
@@ -579,12 +488,7 @@ int crush_do_rule(const struct crush_map *map,
 	/*
 	 * determine hierarchical context of force, if any.  note
 	 * that this may or may not correspond to the specific types
-<<<<<<< HEAD
 	 * referenced by the crush rule.
-=======
-	 * referenced by the crush rule.  it will also only affect
-	 * the first descent (TAKE).
->>>>>>> remotes/linux2/linux-3.4.y
 	 */
 	if (force >= 0 &&
 	    force < map->max_devices &&
@@ -623,12 +527,7 @@ int crush_do_rule(const struct crush_map *map,
 			firstn = 1;
 		case CRUSH_RULE_CHOOSE_LEAF_INDEP:
 		case CRUSH_RULE_CHOOSE_INDEP:
-<<<<<<< HEAD
 			BUG_ON(wsize == 0);
-=======
-			if (wsize == 0)
-				break;
->>>>>>> remotes/linux2/linux-3.4.y
 
 			recurse_to_leaf =
 				rule->steps[step].op ==
@@ -697,13 +596,7 @@ int crush_do_rule(const struct crush_map *map,
 			break;
 
 		default:
-<<<<<<< HEAD
 			BUG_ON(1);
-=======
-			dprintk(" unknown op %d at step %d\n",
-				curstep->op, step);
-			break;
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 	return result_len;

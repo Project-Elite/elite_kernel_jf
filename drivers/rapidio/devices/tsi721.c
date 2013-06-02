@@ -439,12 +439,6 @@ static void tsi721_db_dpc(struct work_struct *work)
 				" info %4.4x\n", DBELL_SID(idb.bytes),
 				DBELL_TID(idb.bytes), DBELL_INF(idb.bytes));
 		}
-<<<<<<< HEAD
-=======
-
-		wr_ptr = ioread32(priv->regs +
-				  TSI721_IDQ_WP(IDB_QUEUE)) % IDB_QSIZE;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	iowrite32(rd_ptr & (IDB_QSIZE - 1),
@@ -455,13 +449,6 @@ static void tsi721_db_dpc(struct work_struct *work)
 	regval |= TSI721_SR_CHINT_IDBQRCV;
 	iowrite32(regval,
 		priv->regs + TSI721_SR_CHINTE(IDB_QUEUE));
-<<<<<<< HEAD
-=======
-
-	wr_ptr = ioread32(priv->regs + TSI721_IDQ_WP(IDB_QUEUE)) % IDB_QSIZE;
-	if (wr_ptr != rd_ptr)
-		schedule_work(&priv->idb_work);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /**
@@ -2168,11 +2155,7 @@ static int __devinit tsi721_probe(struct pci_dev *pdev,
 				  const struct pci_device_id *id)
 {
 	struct tsi721_device *priv;
-<<<<<<< HEAD
 	int i, cap;
-=======
-	int cap;
->>>>>>> remotes/linux2/linux-3.4.y
 	int err;
 	u32 regval;
 
@@ -2192,21 +2175,12 @@ static int __devinit tsi721_probe(struct pci_dev *pdev,
 	priv->pdev = pdev;
 
 #ifdef DEBUG
-<<<<<<< HEAD
-=======
-	{
-	int i;
->>>>>>> remotes/linux2/linux-3.4.y
 	for (i = 0; i <= PCI_STD_RESOURCE_END; i++) {
 		dev_dbg(&pdev->dev, "res[%d] @ 0x%llx (0x%lx, 0x%lx)\n",
 			i, (unsigned long long)pci_resource_start(pdev, i),
 			(unsigned long)pci_resource_len(pdev, i),
 			pci_resource_flags(pdev, i));
 	}
-<<<<<<< HEAD
-=======
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 #endif
 	/*
 	 * Verify BAR configuration

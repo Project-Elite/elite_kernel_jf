@@ -236,11 +236,7 @@ static struct rpc_clnt *rpc_get_client_for_event(struct net *net, int event)
 	spin_lock(&sn->rpc_client_lock);
 	list_for_each_entry(clnt, &sn->all_clients, cl_clients) {
 		if (clnt->cl_program->pipe_dir_name == NULL)
-<<<<<<< HEAD
 			break;
-=======
-			continue;
->>>>>>> remotes/linux2/linux-3.4.y
 		if (rpc_clnt_skip_event(clnt, event))
 			continue;
 		if (atomic_inc_not_zero(&clnt->cl_count) == 0)
@@ -1850,20 +1846,12 @@ call_timeout(struct rpc_task *task)
 		return;
 	}
 	if (RPC_IS_SOFT(task)) {
-<<<<<<< HEAD
 		if (clnt->cl_chatty)
-=======
-		if (clnt->cl_chatty) {
->>>>>>> remotes/linux2/linux-3.4.y
 			rcu_read_lock();
 			printk(KERN_NOTICE "%s: server %s not responding, timed out\n",
 				clnt->cl_protname,
 				rcu_dereference(clnt->cl_xprt)->servername);
 			rcu_read_unlock();
-<<<<<<< HEAD
-=======
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 		if (task->tk_flags & RPC_TASK_TIMEOUT)
 			rpc_exit(task, -ETIMEDOUT);
 		else

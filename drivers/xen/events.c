@@ -1365,13 +1365,8 @@ void xen_evtchn_do_upcall(struct pt_regs *regs)
 {
 	struct pt_regs *old_regs = set_irq_regs(regs);
 
-<<<<<<< HEAD
 	exit_idle();
 	irq_enter();
-=======
-	irq_enter();
-	exit_idle();
->>>>>>> remotes/linux2/linux-3.4.y
 
 	__xen_evtchn_do_upcall();
 

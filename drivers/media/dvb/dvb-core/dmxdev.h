@@ -4,11 +4,8 @@
  * Copyright (C) 2000 Ralph Metzler & Marcus Metzler
  *                    for convergence integrated media GmbH
  *
-<<<<<<< HEAD
  * Copyright (c) 2012, The Linux Foundation. All rights reserved.
  *
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
@@ -37,11 +34,7 @@
 #include <linux/string.h>
 #include <linux/mutex.h>
 #include <linux/slab.h>
-<<<<<<< HEAD
 #include <linux/kthread.h>
-=======
-
->>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/dvb/dmx.h>
 
 #include "dvbdev.h"
@@ -69,7 +62,6 @@ struct dmxdev_feed {
 	struct list_head next;
 };
 
-<<<<<<< HEAD
 struct dmxdev_events_queue {
 #define DMX_EVENT_QUEUE_SIZE	500 /* number of events */
 	/*
@@ -99,8 +91,6 @@ struct dmxdev_events_queue {
 	struct dmx_filter_event queue[DMX_EVENT_QUEUE_SIZE];
 };
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 struct dmxdev_filter {
 	union {
 		struct dmx_section_filter *sec;
@@ -117,16 +107,12 @@ struct dmxdev_filter {
 		struct dmx_pes_filter_params pes;
 	} params;
 
-<<<<<<< HEAD
 	struct dmxdev_events_queue events;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	enum dmxdev_type type;
 	enum dmxdev_state state;
 	struct dmxdev *dev;
 	struct dvb_ringbuffer buffer;
-<<<<<<< HEAD
 	void *priv_buff_handle;
 	enum dmx_buffer_mode buffer_mode;
 	u32 flush_data_len;
@@ -137,26 +123,15 @@ struct dmxdev_filter {
 	enum dmx_tsp_format_t dmx_tsp_format;
 	u32 rec_chunk_size;
 
-=======
-
-	struct mutex mutex;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	/* only for sections */
 	struct timer_list timer;
 	int todo;
 	u8 secheader[3];
-<<<<<<< HEAD
 
 	/* Decoder buffer(s) related */
 	struct dmx_decoder_buffers decoder_buffers;
 };
 
-=======
-};
-
-
->>>>>>> remotes/linux2/linux-3.4.y
 struct dmxdev {
 	struct dvb_device *dvbdev;
 	struct dvb_device *dvr_dvbdev;
@@ -166,7 +141,6 @@ struct dmxdev {
 
 	int filternum;
 	int capabilities;
-<<<<<<< HEAD
 #define DMXDEV_CAP_DUPLEX	0x01
 #define DMXDEV_CAP_PULL_MODE	0x02
 #define DMXDEV_CAP_INDEXING	0x04
@@ -193,22 +167,11 @@ struct dmxdev {
 	enum dmx_buffer_mode dvr_input_buffer_mode;
 	struct task_struct *dvr_input_thread;
 
-=======
-
-	unsigned int exit:1;
-#define DMXDEV_CAP_DUPLEX 1
-	struct dmx_frontend *dvr_orig_fe;
-
-	struct dvb_ringbuffer dvr_buffer;
->>>>>>> remotes/linux2/linux-3.4.y
 #define DVR_BUFFER_SIZE (10*188*1024)
 
 	struct mutex mutex;
 	spinlock_t lock;
-<<<<<<< HEAD
 	spinlock_t dvr_in_lock;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 

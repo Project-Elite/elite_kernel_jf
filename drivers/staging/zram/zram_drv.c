@@ -156,11 +156,7 @@ static void zram_free_page(struct zram *zram, size_t index)
 		goto out;
 	}
 
-<<<<<<< HEAD
 	zs_free(zram->mem_pool, (unsigned long)handle);
-=======
-	zs_free(zram->mem_pool, handle);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (zram->table[index].size <= PAGE_SIZE / 2)
 		zram_stat_dec(&zram->stats.good_compress);
@@ -251,11 +247,7 @@ static int zram_bvec_read(struct zram *zram, struct bio_vec *bvec,
 		uncmem = user_mem;
 	clen = PAGE_SIZE;
 
-<<<<<<< HEAD
 	cmem = zs_map_object(zram->mem_pool, (unsigned long)zram->table[index].handle, ZS_MM_RW);
-=======
-	cmem = zs_map_object(zram->mem_pool, zram->table[index].handle);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	ret = lzo1x_decompress_safe(cmem + sizeof(*zheader),
 				    zram->table[index].size,
@@ -267,11 +259,7 @@ static int zram_bvec_read(struct zram *zram, struct bio_vec *bvec,
 		kfree(uncmem);
 	}
 
-<<<<<<< HEAD
 	zs_unmap_object(zram->mem_pool, (unsigned long)zram->table[index].handle);
-=======
-	zs_unmap_object(zram->mem_pool, zram->table[index].handle);
->>>>>>> remotes/linux2/linux-3.4.y
 	kunmap_atomic(user_mem);
 
 	/* Should NEVER happen. Return bio error if it does. */
@@ -299,11 +287,7 @@ static int zram_read_before_write(struct zram *zram, char *mem, u32 index)
 		return 0;
 	}
 
-<<<<<<< HEAD
 	cmem = zs_map_object(zram->mem_pool, (unsigned long)zram->table[index].handle, ZS_MM_RO);
-=======
-	cmem = zs_map_object(zram->mem_pool, zram->table[index].handle);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Page is stored uncompressed since it's incompressible */
 	if (unlikely(zram_test_flag(zram, index, ZRAM_UNCOMPRESSED))) {
@@ -315,11 +299,7 @@ static int zram_read_before_write(struct zram *zram, char *mem, u32 index)
 	ret = lzo1x_decompress_safe(cmem + sizeof(*zheader),
 				    zram->table[index].size,
 				    mem, &clen);
-<<<<<<< HEAD
 	zs_unmap_object(zram->mem_pool, (unsigned long)zram->table[index].handle);
-=======
-	zs_unmap_object(zram->mem_pool, zram->table[index].handle);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Should NEVER happen. Return bio error if it does. */
 	if (unlikely(ret != LZO_E_OK)) {
@@ -425,22 +405,14 @@ static int zram_bvec_write(struct zram *zram, struct bio_vec *bvec, u32 index,
 		goto memstore;
 	}
 
-<<<<<<< HEAD
 	handle = (void *)zs_malloc(zram->mem_pool, clen + sizeof(*zheader));
-=======
-	handle = zs_malloc(zram->mem_pool, clen + sizeof(*zheader));
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!handle) {
 		pr_info("Error allocating memory for compressed "
 			"page: %u, size=%zu\n", index, clen);
 		ret = -ENOMEM;
 		goto out;
 	}
-<<<<<<< HEAD
 	cmem = zs_map_object(zram->mem_pool, (unsigned long)handle, ZS_MM_WO);
-=======
-	cmem = zs_map_object(zram->mem_pool, handle);
->>>>>>> remotes/linux2/linux-3.4.y
 
 memstore:
 #if 0
@@ -458,11 +430,7 @@ memstore:
 		kunmap_atomic(cmem);
 		kunmap_atomic(src);
 	} else {
-<<<<<<< HEAD
 		zs_unmap_object(zram->mem_pool, (unsigned long)handle);
-=======
-		zs_unmap_object(zram->mem_pool, handle);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	zram->table[index].handle = handle;
@@ -631,11 +599,7 @@ void __zram_reset_device(struct zram *zram)
 		if (unlikely(zram_test_flag(zram, index, ZRAM_UNCOMPRESSED)))
 			__free_page(handle);
 		else
-<<<<<<< HEAD
 			zs_free(zram->mem_pool, (unsigned long)handle);
-=======
-			zs_free(zram->mem_pool, handle);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	vfree(zram->table);

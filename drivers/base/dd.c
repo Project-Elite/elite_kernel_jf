@@ -160,11 +160,6 @@ static int deferred_probe_initcall(void)
 
 	driver_deferred_probe_enable = true;
 	driver_deferred_probe_trigger();
-<<<<<<< HEAD
-=======
-	/* Sort as many dependencies as possible before exiting initcalls */
-	flush_workqueue(deferred_wq);
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 late_initcall(deferred_probe_initcall);

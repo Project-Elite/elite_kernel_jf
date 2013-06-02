@@ -329,7 +329,6 @@ static psched_time_t packet_len_2_sched_time(unsigned int len, struct netem_sche
 	return PSCHED_NS2TICKS(ticks);
 }
 
-<<<<<<< HEAD
 static int tfifo_enqueue(struct sk_buff *nskb, struct Qdisc *sch)
 {
 	struct sk_buff_head *list = &sch->q;
@@ -353,24 +352,6 @@ static int tfifo_enqueue(struct sk_buff *nskb, struct Qdisc *sch)
 	}
 
 	return qdisc_reshape_fail(nskb, sch);
-=======
-static void tfifo_enqueue(struct sk_buff *nskb, struct Qdisc *sch)
-{
-	struct sk_buff_head *list = &sch->q;
-	psched_time_t tnext = netem_skb_cb(nskb)->time_to_send;
-	struct sk_buff *skb = skb_peek_tail(list);
-
-	/* Optimize for add at tail */
-	if (likely(!skb || tnext >= netem_skb_cb(skb)->time_to_send))
-		return __skb_queue_tail(list, nskb);
-
-	skb_queue_reverse_walk(list, skb) {
-		if (tnext >= netem_skb_cb(skb)->time_to_send)
-			break;
-	}
-
-	__skb_queue_after(list, skb, nskb);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -385,10 +366,7 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	/* We don't fill cb now as skb_unshare() may invalidate it */
 	struct netem_skb_cb *cb;
 	struct sk_buff *skb2;
-<<<<<<< HEAD
 	int ret;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	int count = 1;
 
 	/* Random duplication */
@@ -436,14 +414,6 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		skb->data[net_random() % skb_headlen(skb)] ^= 1<<(net_random() % 8);
 	}
 
-<<<<<<< HEAD
-=======
-	if (unlikely(skb_queue_len(&sch->q) >= sch->limit))
-		return qdisc_reshape_fail(skb, sch);
-
-	sch->qstats.backlog += qdisc_pkt_len(skb);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	cb = netem_skb_cb(skb);
 	if (q->gap == 0 ||		/* not doing reordering */
 	    q->counter < q->gap - 1 ||	/* inside last reordering gap */
@@ -475,11 +445,7 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 
 		cb->time_to_send = now + delay;
 		++q->counter;
-<<<<<<< HEAD
 		ret = tfifo_enqueue(skb, sch);
-=======
-		tfifo_enqueue(skb, sch);
->>>>>>> remotes/linux2/linux-3.4.y
 	} else {
 		/*
 		 * Do re-ordering by putting one out of N packets at the front
@@ -489,7 +455,6 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		q->counter = 0;
 
 		__skb_queue_head(&sch->q, skb);
-<<<<<<< HEAD
 		sch->qstats.backlog += qdisc_pkt_len(skb);
 		sch->qstats.requeues++;
 		ret = NET_XMIT_SUCCESS;
@@ -500,9 +465,6 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 			sch->qstats.drops++;
 			return ret;
 		}
-=======
-		sch->qstats.requeues++;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return NET_XMIT_SUCCESS;

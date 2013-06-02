@@ -980,12 +980,7 @@ u8 rtl_is_special_data(struct ieee80211_hw *hw, struct sk_buff *skb, u8 is_tx)
 					 is_tx ? "Tx" : "Rx");
 
 				if (is_tx) {
-<<<<<<< HEAD
 					rtl_lps_leave(hw);
-=======
-					schedule_work(&rtlpriv->
-						      works.lps_leave_work);
->>>>>>> remotes/linux2/linux-3.4.y
 					ppsc->last_delaylps_stamp_jiffies =
 					    jiffies;
 				}
@@ -995,11 +990,7 @@ u8 rtl_is_special_data(struct ieee80211_hw *hw, struct sk_buff *skb, u8 is_tx)
 		}
 	} else if (ETH_P_ARP == ether_type) {
 		if (is_tx) {
-<<<<<<< HEAD
 			rtl_lps_leave(hw);
-=======
-			schedule_work(&rtlpriv->works.lps_leave_work);
->>>>>>> remotes/linux2/linux-3.4.y
 			ppsc->last_delaylps_stamp_jiffies = jiffies;
 		}
 
@@ -1009,11 +1000,7 @@ u8 rtl_is_special_data(struct ieee80211_hw *hw, struct sk_buff *skb, u8 is_tx)
 			 "802.1X %s EAPOL pkt!!\n", is_tx ? "Tx" : "Rx");
 
 		if (is_tx) {
-<<<<<<< HEAD
 			rtl_lps_leave(hw);
-=======
-			schedule_work(&rtlpriv->works.lps_leave_work);
->>>>>>> remotes/linux2/linux-3.4.y
 			ppsc->last_delaylps_stamp_jiffies = jiffies;
 		}
 

@@ -297,22 +297,18 @@ EXPORT_SYMBOL(blk_sync_queue);
  * Description:
  *    See @blk_run_queue. This variant must be called with the queue lock
  *    held and interrupts disabled.
-<<<<<<< HEAD
  *    Device driver will be notified of an urgent request
  *    pending under the following conditions:
  *    1. The driver and the current scheduler support urgent reques handling
  *    2. There is an urgent request pending in the scheduler
  *    3. There isn't already an urgent request in flight, meaning previously
  *       notified urgent request completed (!q->notified_urgent)
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  */
 void __blk_run_queue(struct request_queue *q)
 {
 	if (unlikely(blk_queue_stopped(q)))
 		return;
 
-<<<<<<< HEAD
 	if (!q->notified_urgent &&
 		q->elevator->type->ops.elevator_is_urgent_fn &&
 		q->urgent_request_fn &&
@@ -321,9 +317,6 @@ void __blk_run_queue(struct request_queue *q)
 		q->urgent_request_fn(q);
 	} else
 		q->request_fn(q);
-=======
-	q->request_fn(q);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL(__blk_run_queue);
 
@@ -621,11 +614,7 @@ blk_init_allocated_queue(struct request_queue *q, request_fn_proc *rfn,
 	q->request_fn		= rfn;
 	q->prep_rq_fn		= NULL;
 	q->unprep_rq_fn		= NULL;
-<<<<<<< HEAD
 	q->queue_flags		= QUEUE_FLAG_DEFAULT;
-=======
-	q->queue_flags		|= QUEUE_FLAG_DEFAULT;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Override internal queue lock with supplied lock pointer */
 	if (lock)
@@ -1001,11 +990,6 @@ struct request *blk_get_request(struct request_queue *q, int rw, gfp_t gfp_mask)
 {
 	struct request *rq;
 
-<<<<<<< HEAD
-=======
-	BUG_ON(rw != READ && rw != WRITE);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	spin_lock_irq(q->queue_lock);
 	if (gfp_mask & __GFP_WAIT)
 		rq = get_request_wait(q, rw, NULL);
@@ -1095,7 +1079,6 @@ void blk_requeue_request(struct request_queue *q, struct request *rq)
 
 	BUG_ON(blk_queued_rq(rq));
 
-<<<<<<< HEAD
 	if (rq->cmd_flags & REQ_URGENT) {
 		/*
 		 * It's not compliant with the design to re-insert
@@ -1106,13 +1089,10 @@ void blk_requeue_request(struct request_queue *q, struct request *rq)
 		WARN_ON(!q->dispatched_urgent);
 		q->dispatched_urgent = false;
 	}
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	elv_requeue_request(q, rq);
 }
 EXPORT_SYMBOL(blk_requeue_request);
 
-<<<<<<< HEAD
 /**
  * blk_reinsert_request() - Insert a request back to the scheduler
  * @q:		request queue
@@ -1167,8 +1147,6 @@ bool blk_reinsert_req_sup(struct request_queue *q)
 }
 EXPORT_SYMBOL(blk_reinsert_req_sup);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static void add_acct_request(struct request_queue *q, struct request *rq,
 			     int where)
 {
@@ -1408,10 +1386,7 @@ void init_request_from_bio(struct request *req, struct bio *bio)
 	req->ioprio = bio_prio(bio);
 	blk_rq_bio_prep(req->q, req, bio);
 }
-<<<<<<< HEAD
 EXPORT_SYMBOL(init_request_from_bio);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 void blk_queue_bio(struct request_queue *q, struct bio *bio)
 {
@@ -1647,11 +1622,7 @@ generic_make_request_checks(struct bio *bio)
 		goto end_io;
 	}
 
-<<<<<<< HEAD
 	if (unlikely(!(bio->bi_rw & (REQ_DISCARD | REQ_SANITIZE)) &&
-=======
-	if (unlikely(!(bio->bi_rw & REQ_DISCARD) &&
->>>>>>> remotes/linux2/linux-3.4.y
 		     nr_sectors > queue_max_hw_sectors(q))) {
 		printk(KERN_ERR "bio too big device %s (%u > %u)\n",
 		       bdevname(bio->bi_bdev, b),
@@ -1699,7 +1670,6 @@ generic_make_request_checks(struct bio *bio)
 		goto end_io;
 	}
 
-<<<<<<< HEAD
 	if ((bio->bi_rw & REQ_SANITIZE) &&
 	    (!blk_queue_sanitize(q))) {
 		pr_info("%s - got a SANITIZE request but the queue "
@@ -1708,8 +1678,6 @@ generic_make_request_checks(struct bio *bio)
 		goto end_io;
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (blk_throtl_bio(q, bio))
 		return false;	/* throttled, will be resubmitted later */
 
@@ -1815,12 +1783,8 @@ void submit_bio(int rw, struct bio *bio)
 	 * If it's a regular read/write or a barrier with data attached,
 	 * go through the normal accounting stuff before submission.
 	 */
-<<<<<<< HEAD
 	if (bio_has_data(bio) &&
 	    (!(rw & (REQ_DISCARD | REQ_SANITIZE)))) {
-=======
-	if (bio_has_data(bio) && !(rw & REQ_DISCARD)) {
->>>>>>> remotes/linux2/linux-3.4.y
 		if (rw & WRITE) {
 			count_vm_events(PGPGOUT, count);
 		} else {
@@ -1866,11 +1830,7 @@ EXPORT_SYMBOL(submit_bio);
  */
 int blk_rq_check_limits(struct request_queue *q, struct request *rq)
 {
-<<<<<<< HEAD
 	if (rq->cmd_flags & (REQ_DISCARD | REQ_SANITIZE))
-=======
-	if (rq->cmd_flags & REQ_DISCARD)
->>>>>>> remotes/linux2/linux-3.4.y
 		return 0;
 
 	if (blk_rq_sectors(rq) > queue_max_sectors(q) ||
@@ -2190,7 +2150,6 @@ struct request *blk_fetch_request(struct request_queue *q)
 	struct request *rq;
 
 	rq = blk_peek_request(q);
-<<<<<<< HEAD
 	if (rq) {
 		if (rq->cmd_flags & REQ_URGENT) {
 			WARN_ON(q->dispatched_urgent);
@@ -2198,10 +2157,6 @@ struct request *blk_fetch_request(struct request_queue *q)
 		}
 		blk_start_request(rq);
 	}
-=======
-	if (rq)
-		blk_start_request(rq);
->>>>>>> remotes/linux2/linux-3.4.y
 	return rq;
 }
 EXPORT_SYMBOL(blk_fetch_request);

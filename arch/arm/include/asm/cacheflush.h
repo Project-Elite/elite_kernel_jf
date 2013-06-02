@@ -16,10 +16,7 @@
 #include <asm/shmparam.h>
 #include <asm/cachetype.h>
 #include <asm/outercache.h>
-<<<<<<< HEAD
 #include <asm/rodata.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 #define CACHE_COLOUR(vaddr)	((vaddr & (SHMLBA - 1)) >> PAGE_SHIFT)
 
@@ -91,7 +88,6 @@
  *	DMA Cache Coherency
  *	===================
  *
-<<<<<<< HEAD
  *	dma_inv_range(start, end)
  *
  *		Invalidate (discard) the specified virtual address range.
@@ -107,8 +103,6 @@
  *		- start  - virtual start address
  *		- end    - virtual end address
  *
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  *	dma_flush_range(start, end)
  *
  *		Clean and invalidate the specified virtual address range.
@@ -129,11 +123,8 @@ struct cpu_cache_fns {
 	void (*dma_map_area)(const void *, size_t, int);
 	void (*dma_unmap_area)(const void *, size_t, int);
 
-<<<<<<< HEAD
 	void (*dma_inv_range)(const void *, const void *);
 	void (*dma_clean_range)(const void *, const void *);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	void (*dma_flush_range)(const void *, const void *);
 };
 
@@ -160,11 +151,8 @@ extern struct cpu_cache_fns cpu_cache;
  */
 #define dmac_map_area			cpu_cache.dma_map_area
 #define dmac_unmap_area			cpu_cache.dma_unmap_area
-<<<<<<< HEAD
 #define dmac_inv_range			cpu_cache.dma_inv_range
 #define dmac_clean_range		cpu_cache.dma_clean_range
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #define dmac_flush_range		cpu_cache.dma_flush_range
 
 #else
@@ -185,11 +173,8 @@ extern void __cpuc_flush_dcache_area(void *, size_t);
  */
 extern void dmac_map_area(const void *, size_t, int);
 extern void dmac_unmap_area(const void *, size_t, int);
-<<<<<<< HEAD
 extern void dmac_inv_range(const void *, const void *);
 extern void dmac_clean_range(const void *, const void *);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 extern void dmac_flush_range(const void *, const void *);
 
 #endif
@@ -252,13 +237,7 @@ static inline void vivt_flush_cache_mm(struct mm_struct *mm)
 static inline void
 vivt_flush_cache_range(struct vm_area_struct *vma, unsigned long start, unsigned long end)
 {
-<<<<<<< HEAD
 	if (cpumask_test_cpu(smp_processor_id(), mm_cpumask(vma->vm_mm)))
-=======
-	struct mm_struct *mm = vma->vm_mm;
-
-	if (!mm || cpumask_test_cpu(smp_processor_id(), mm_cpumask(mm)))
->>>>>>> remotes/linux2/linux-3.4.y
 		__cpuc_flush_user_range(start & PAGE_MASK, PAGE_ALIGN(end),
 					vma->vm_flags);
 }
@@ -266,13 +245,7 @@ vivt_flush_cache_range(struct vm_area_struct *vma, unsigned long start, unsigned
 static inline void
 vivt_flush_cache_page(struct vm_area_struct *vma, unsigned long user_addr, unsigned long pfn)
 {
-<<<<<<< HEAD
 	if (cpumask_test_cpu(smp_processor_id(), mm_cpumask(vma->vm_mm))) {
-=======
-	struct mm_struct *mm = vma->vm_mm;
-
-	if (!mm || cpumask_test_cpu(smp_processor_id(), mm_cpumask(mm))) {
->>>>>>> remotes/linux2/linux-3.4.y
 		unsigned long addr = user_addr & PAGE_MASK;
 		__cpuc_flush_user_range(addr, addr + PAGE_SIZE, vma->vm_flags);
 	}

@@ -2890,12 +2890,8 @@ static ssize_t mtf_test_write(struct file *file, const char __user *buf,
 	}
 
 #ifdef CONFIG_HIGHMEM
-<<<<<<< HEAD
 	if (test->highmem)
 		__free_pages(test->highmem, BUFFER_ORDER);
-=======
-	__free_pages(test->highmem, BUFFER_ORDER);
->>>>>>> remotes/linux2/linux-3.4.y
 #endif
 	kfree(test->buffer);
 	kfree(test);

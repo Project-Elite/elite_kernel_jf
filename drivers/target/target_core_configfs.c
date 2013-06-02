@@ -3115,10 +3115,6 @@ static int __init target_core_init_configfs(void)
 				GFP_KERNEL);
 	if (!target_cg->default_groups) {
 		pr_err("Unable to allocate target_cg->default_groups\n");
-<<<<<<< HEAD
-=======
-		ret = -ENOMEM;
->>>>>>> remotes/linux2/linux-3.4.y
 		goto out_global;
 	}
 
@@ -3134,10 +3130,6 @@ static int __init target_core_init_configfs(void)
 				GFP_KERNEL);
 	if (!hba_cg->default_groups) {
 		pr_err("Unable to allocate hba_cg->default_groups\n");
-<<<<<<< HEAD
-=======
-		ret = -ENOMEM;
->>>>>>> remotes/linux2/linux-3.4.y
 		goto out_global;
 	}
 	config_group_init_type_name(&alua_group,
@@ -3153,10 +3145,6 @@ static int __init target_core_init_configfs(void)
 			GFP_KERNEL);
 	if (!alua_cg->default_groups) {
 		pr_err("Unable to allocate alua_cg->default_groups\n");
-<<<<<<< HEAD
-=======
-		ret = -ENOMEM;
->>>>>>> remotes/linux2/linux-3.4.y
 		goto out_global;
 	}
 
@@ -3168,25 +3156,14 @@ static int __init target_core_init_configfs(void)
 	 * Add core/alua/lu_gps/default_lu_gp
 	 */
 	lu_gp = core_alua_allocate_lu_gp("default_lu_gp", 1);
-<<<<<<< HEAD
 	if (IS_ERR(lu_gp))
 		goto out_global;
-=======
-	if (IS_ERR(lu_gp)) {
-		ret = -ENOMEM;
-		goto out_global;
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 
 	lu_gp_cg = &alua_lu_gps_group;
 	lu_gp_cg->default_groups = kzalloc(sizeof(struct config_group) * 2,
 			GFP_KERNEL);
 	if (!lu_gp_cg->default_groups) {
 		pr_err("Unable to allocate lu_gp_cg->default_groups\n");
-<<<<<<< HEAD
-=======
-		ret = -ENOMEM;
->>>>>>> remotes/linux2/linux-3.4.y
 		goto out_global;
 	}
 
@@ -3214,12 +3191,7 @@ static int __init target_core_init_configfs(void)
 	if (ret < 0)
 		goto out;
 
-<<<<<<< HEAD
 	if (core_dev_setup_virtual_lun0() < 0)
-=======
-	ret = core_dev_setup_virtual_lun0();
-	if (ret < 0)
->>>>>>> remotes/linux2/linux-3.4.y
 		goto out;
 
 	return 0;

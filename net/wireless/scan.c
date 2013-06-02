@@ -18,11 +18,7 @@
 #include "nl80211.h"
 #include "wext-compat.h"
 
-<<<<<<< HEAD
 #define IEEE80211_SCAN_RESULT_EXPIRE	(3 * HZ)
-=======
-#define IEEE80211_SCAN_RESULT_EXPIRE	(15 * HZ)
->>>>>>> remotes/linux2/linux-3.4.y
 
 void ___cfg80211_scan_done(struct cfg80211_registered_device *rdev, bool leak)
 {
@@ -1018,11 +1014,8 @@ int cfg80211_wext_siwscan(struct net_device *dev,
 		if (wreq->scan_type == IW_SCAN_TYPE_PASSIVE)
 			creq->n_ssids = 0;
 	}
-<<<<<<< HEAD
 	for (i = 0; i < IEEE80211_NUM_BANDS; i++)
 		creq->rates[i] = (1 << wiphy->bands[i]->n_bitrates) - 1;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	for (i = 0; i < IEEE80211_NUM_BANDS; i++)
 		if (wiphy->bands[i])

@@ -96,14 +96,11 @@
 #define NUM_SEL_MNT_OPTS 5
 
 extern struct security_operations *security_ops;
-<<<<<<< HEAD
 /* TmmSecure start */
 #ifdef SECSUBLSM_ENABLE
 extern struct security_operations seclsm_Operations;
 #endif
 /* TmmSecure end */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* SECMARK reference count */
 static atomic_t selinux_secmark_refcount = ATOMIC_INIT(0);
@@ -1493,14 +1490,11 @@ static int inode_has_perm(const struct cred *cred,
 	sid = cred_sid(cred);
 	isec = inode->i_security;
 
-<<<<<<< HEAD
 	if (unlikely(!isec)){
 		printk(KERN_CRIT "[SELinux] isec is NULL, inode->i_security is already freed. \n");
 		return -EACCES;
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return avc_has_perm_flags(sid, isec->sid, isec->sclass, perms, adp, flags);
 }
 
@@ -1834,7 +1828,6 @@ static inline u32 open_file_to_av(struct file *file)
 
 /* Hook functions begin here. */
 
-<<<<<<< HEAD
 static int selinux_binder_set_context_mgr(struct task_struct *mgr)
 {
 	u32 mysid = current_sid();
@@ -1897,8 +1890,6 @@ static int selinux_binder_transfer_file(struct task_struct *from, struct task_st
 			    &ad);
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static int selinux_ptrace_access_check(struct task_struct *child,
 				     unsigned int mode)
 {
@@ -1907,7 +1898,6 @@ static int selinux_ptrace_access_check(struct task_struct *child,
 	rc = cap_ptrace_access_check(child, mode);
 	if (rc)
 		return rc;
-<<<<<<< HEAD
     
 /* TmmSecure start */
 #ifdef SECSUBLSM_ENABLE
@@ -1919,9 +1909,6 @@ static int selinux_ptrace_access_check(struct task_struct *child,
 #endif
 /* TmmSecure end */
     
-=======
-
->>>>>>> remotes/linux2/linux-3.4.y
 	if (mode & PTRACE_MODE_READ) {
 		u32 sid = current_sid();
 		u32 csid = task_sid(child);
@@ -2257,11 +2244,7 @@ static inline void flush_unauthorized_files(const struct cred *cred,
 		int fd;
 
 		j++;
-<<<<<<< HEAD
 		i = j * __NFDBITS;
-=======
-		i = j * BITS_PER_LONG;
->>>>>>> remotes/linux2/linux-3.4.y
 		fdt = files_fdtable(files);
 		if (i >= fdt->max_fds)
 			break;
@@ -2628,7 +2611,6 @@ static int selinux_mount(char *dev_name,
 {
 	const struct cred *cred = current_cred();
 
-<<<<<<< HEAD
 /* TmmSecure start */
 #ifdef SECSUBLSM_ENABLE
    	int rc;
@@ -2638,8 +2620,6 @@ static int selinux_mount(char *dev_name,
 #endif
 /* TmmSecure end */
     
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (flags & MS_REMOUNT)
 		return superblock_has_perm(cred, path->dentry->d_sb,
 					   FILESYSTEM__REMOUNT, NULL);
@@ -3345,7 +3325,6 @@ static int selinux_dentry_open(struct file *file, const struct cred *cred)
 	struct inode *inode;
 	struct inode_security_struct *isec;
 
-<<<<<<< HEAD
 /* TmmSecure start */
 #ifdef SECSUBLSM_ENABLE
    	int rc;
@@ -3355,8 +3334,6 @@ static int selinux_dentry_open(struct file *file, const struct cred *cred)
 #endif
 /* TmmSecure end */
     
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	inode = file->f_path.dentry->d_inode;
 	fsec = file->f_security;
 	isec = inode->i_security;
@@ -3878,14 +3855,11 @@ static int sock_has_perm(struct task_struct *task, struct sock *sk, u32 perms)
 	struct lsm_network_audit net = {0,};
 	u32 tsid = task_sid(task);
 
-<<<<<<< HEAD
 	if (unlikely(!sksec)){
 		printk(KERN_CRIT "[SELinux] sksec is NULL, socket is already freed. \n");
 		return -EINVAL;
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (sksec->sid == SECINITSID_KERNEL)
 		return 0;
 
@@ -5651,7 +5625,6 @@ static int selinux_key_getsecurity(struct key *key, char **_buffer)
 
 #endif
 
-<<<<<<< HEAD
 /* TmmSecure start */
 #ifdef SECSUBLSM_ENABLE
 #ifdef CONFIG_SECURITY_PATH
@@ -5697,11 +5670,6 @@ static struct security_operations selinux_ops = {
 	.binder_transfer_binder =	selinux_binder_transfer_binder,
 	.binder_transfer_file =		selinux_binder_transfer_file,
 
-=======
-static struct security_operations selinux_ops = {
-	.name =				"selinux",
-
->>>>>>> remotes/linux2/linux-3.4.y
 	.ptrace_access_check =		selinux_ptrace_access_check,
 	.ptrace_traceme =		selinux_ptrace_traceme,
 	.capget =			selinux_capget,
@@ -5733,7 +5701,6 @@ static struct security_operations selinux_ops = {
 	.sb_parse_opts_str = 		selinux_parse_opts_str,
 
 
-<<<<<<< HEAD
 /* TmmSecure start */
 #ifdef SECSUBLSM_ENABLE
 #ifdef CONFIG_SECURITY_PATH
@@ -5745,8 +5712,6 @@ static struct security_operations selinux_ops = {
 #endif
 /* TmmSecure end */
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	.inode_alloc_security =		selinux_inode_alloc_security,
 	.inode_free_security =		selinux_inode_free_security,
 	.inode_init_security =		selinux_inode_init_security,
@@ -5910,15 +5875,12 @@ static struct security_operations selinux_ops = {
 #endif
 };
 
-<<<<<<< HEAD
 /* TmmSecure start */
 #ifdef SECSUBLSM_ENABLE
 void seclsm_init(void);
 #endif
 /* TmmSecure end */
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static __init int selinux_init(void)
 {
 	if (!security_module_enable(&selinux_ops)) {
@@ -5951,14 +5913,11 @@ static __init int selinux_init(void)
 	else
 		printk(KERN_DEBUG "SELinux:  Starting in permissive mode\n");
 
-<<<<<<< HEAD
     /* TmmSecure start */
 #ifdef SECSUBLSM_ENABLE
    seclsm_init();
 #endif
     /* TmmSecure end */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 

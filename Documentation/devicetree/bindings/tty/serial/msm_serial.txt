@@ -25,7 +25,6 @@ Example:
 		      <0x19c00000 0x1000>;
 		interrupts = <195>;
 	};
-<<<<<<< HEAD
 
 * Qualcomm MSM HSUART
 
@@ -42,5 +41,3 @@ Example:
 		reg = <0x19c40000 0x1000">;
 		interrupts = <195>;
 	};
-=======
->>>>>>> remotes/linux2/linux-3.4.y

@@ -13,18 +13,10 @@
 #ifndef __LINUX_SND_SOC_DAPM_H
 #define __LINUX_SND_SOC_DAPM_H
 
-<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/types.h>
 #include <sound/control.h>
 
-=======
-#include <linux/types.h>
-#include <sound/control.h>
-
-struct device;
-
->>>>>>> remotes/linux2/linux-3.4.y
 /* widget has no PM register bit */
 #define SND_SOC_NOPM	-1
 
@@ -251,13 +243,6 @@ struct device;
 {	.id = snd_soc_dapm_supply, .name = wname, .reg = wreg,	\
 	.shift = wshift, .invert = winvert, .event = wevent, \
 	.event_flags = wflags}
-<<<<<<< HEAD
-=======
-#define SND_SOC_DAPM_REGULATOR_SUPPLY(wname, wdelay) \
-{	.id = snd_soc_dapm_regulator_supply, .name = wname, \
-	.reg = SND_SOC_NOPM, .shift = wdelay, .event = dapm_regulator_event, \
-	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* dapm kcontrol types */
 #define SOC_DAPM_SINGLE(xname, reg, shift, max, invert) \
@@ -290,15 +275,12 @@ struct device;
 	.get = xget, \
 	.put = xput, \
 	.private_value = (unsigned long)&xenum }
-<<<<<<< HEAD
 #define SOC_DAPM_ENUM_EXT(xname, xenum, xget, xput) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
 	.info = snd_soc_info_enum_double, \
 	.get = xget, \
 	.put = xput, \
 	.private_value = (unsigned long)&xenum }
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #define SOC_DAPM_VALUE_ENUM(xname, xenum) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
 	.info = snd_soc_info_enum_double, \
@@ -343,18 +325,10 @@ struct snd_soc_dapm_path;
 struct snd_soc_dapm_pin;
 struct snd_soc_dapm_route;
 struct snd_soc_dapm_context;
-<<<<<<< HEAD
 struct snd_soc_dapm_widget_list;
 
 int dapm_reg_event(struct snd_soc_dapm_widget *w,
 		   struct snd_kcontrol *kcontrol, int event);
-=======
-
-int dapm_reg_event(struct snd_soc_dapm_widget *w,
-		   struct snd_kcontrol *kcontrol, int event);
-int dapm_regulator_event(struct snd_soc_dapm_widget *w,
-			 struct snd_kcontrol *kcontrol, int event);
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* dapm controls */
 int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
@@ -379,20 +353,11 @@ int snd_soc_dapm_get_pin_switch(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *uncontrol);
 int snd_soc_dapm_put_pin_switch(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *uncontrol);
-<<<<<<< HEAD
 int snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
 	const struct snd_soc_dapm_widget *widget);
 int snd_soc_dapm_new_controls(struct snd_soc_dapm_context *dapm,
 	const struct snd_soc_dapm_widget *widget,
 	int num);
-=======
-int snd_soc_dapm_new_controls(struct snd_soc_dapm_context *dapm,
-	const struct snd_soc_dapm_widget *widget,
-	int num);
-int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
-				 struct snd_soc_dai *dai);
-int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card);
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* dapm path setup */
 int snd_soc_dapm_new_widgets(struct snd_soc_dapm_context *dapm);
@@ -403,7 +368,6 @@ int snd_soc_dapm_weak_routes(struct snd_soc_dapm_context *dapm,
 			     const struct snd_soc_dapm_route *route, int num);
 
 /* dapm events */
-<<<<<<< HEAD
 void snd_soc_dapm_codec_stream_event(struct snd_soc_codec *codec,
 	const char *stream, int event);
 int snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd,
@@ -411,22 +375,12 @@ int snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd,
 void snd_soc_dapm_rtd_stream_event(struct snd_soc_pcm_runtime *rtd,
 	int stream, int event);
 void snd_soc_dapm_shutdown(struct snd_soc_card *card);
-=======
-int snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
-			      struct snd_soc_dai *dai, int event);
-void snd_soc_dapm_shutdown(struct snd_soc_card *card);
-
->>>>>>> remotes/linux2/linux-3.4.y
 /* external DAPM widget events */
 int snd_soc_dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
 		struct snd_kcontrol *kcontrol, int connect);
 int snd_soc_dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
-<<<<<<< HEAD
 				 struct snd_kcontrol *kcontrol, int change,
 				 int mux, struct soc_enum *e);
-=======
-				 struct snd_kcontrol *kcontrol, int mux, struct soc_enum *e);
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* dapm sys fs - used by the core */
 int snd_soc_dapm_sys_add(struct device *dev);
@@ -451,7 +405,6 @@ void snd_soc_dapm_auto_nc_codec_pins(struct snd_soc_codec *codec);
 /* Mostly internal - should not normally be used */
 void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason);
 
-<<<<<<< HEAD
 struct snd_soc_dapm_widget *snd_soc_get_codec_widget(struct snd_soc_card *card,
 		struct snd_soc_codec *codec, const char *name);
 struct snd_soc_dapm_widget *snd_soc_get_platform_widget(struct snd_soc_card *card,
@@ -461,8 +414,6 @@ struct snd_soc_dapm_widget *snd_soc_get_platform_widget(struct snd_soc_card *car
 int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
 	struct snd_soc_dapm_widget_list **list);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /* dapm widget types */
 enum snd_soc_dapm_type {
 	snd_soc_dapm_input = 0,		/* input pin */
@@ -486,17 +437,9 @@ enum snd_soc_dapm_type {
 	snd_soc_dapm_pre,			/* machine specific pre widget - exec first */
 	snd_soc_dapm_post,			/* machine specific post widget - exec last */
 	snd_soc_dapm_supply,		/* power/clock supply */
-<<<<<<< HEAD
 	snd_soc_dapm_aif_in,		/* audio interface input */
 	snd_soc_dapm_aif_out,		/* audio interface output */
 	snd_soc_dapm_siggen,		/* signal generator */
-=======
-	snd_soc_dapm_regulator_supply,	/* external regulator */
-	snd_soc_dapm_aif_in,		/* audio interface input */
-	snd_soc_dapm_aif_out,		/* audio interface output */
-	snd_soc_dapm_siggen,		/* signal generator */
-	snd_soc_dapm_dai,		/* link to DAI structure */
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /*
@@ -517,13 +460,8 @@ struct snd_soc_dapm_route {
 
 /* dapm audio path between two widgets */
 struct snd_soc_dapm_path {
-<<<<<<< HEAD
 	char *name;
 	char *long_name;
-=======
-	const char *name;
-	const char *long_name;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* source (input) and sink (output) widgets */
 	struct snd_soc_dapm_widget *source;
@@ -546,7 +484,6 @@ struct snd_soc_dapm_path {
 /* dapm widget */
 struct snd_soc_dapm_widget {
 	enum snd_soc_dapm_type id;
-<<<<<<< HEAD
 	char *name;		/* widget name */
 	const char *sname;	/* stream name */
 	struct snd_soc_codec *codec;
@@ -555,17 +492,6 @@ struct snd_soc_dapm_widget {
 	struct list_head list;
 	struct snd_soc_dapm_context *dapm;
 
-=======
-	const char *name;		/* widget name */
-	const char *sname;	/* stream name */
-	struct snd_soc_codec *codec;
-	struct snd_soc_platform *platform;
-	struct list_head list;
-	struct snd_soc_dapm_context *dapm;
-
-	void *priv;				/* widget specific data */
-
->>>>>>> remotes/linux2/linux-3.4.y
 	/* dapm control */
 	short reg;						/* negative reg = no direct dapm */
 	unsigned char shift;			/* bits to shift */
@@ -585,10 +511,7 @@ struct snd_soc_dapm_widget {
 	unsigned char new_power:1;		/* power from this run */
 	unsigned char power_checked:1;		/* power checked this run */
 	int subseq;				/* sort within widget type */
-<<<<<<< HEAD
 	void *private_data;			/* for widget specific data */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	int (*power_check)(struct snd_soc_dapm_widget *w);
 
@@ -636,10 +559,7 @@ struct snd_soc_dapm_context {
 	struct device *dev; /* from parent - for debug */
 	struct snd_soc_codec *codec; /* parent codec */
 	struct snd_soc_platform *platform; /* parent platform */
-<<<<<<< HEAD
 	struct snd_soc_dai *dai; /* parent DAI */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	struct snd_soc_card *card; /* parent card */
 
 	/* used during DAPM updates */
@@ -665,7 +585,6 @@ struct snd_soc_dapm_stats {
 	int neighbour_checks;
 };
 
-<<<<<<< HEAD
 /* Accessors for snd_soc_dapm_widget->private_data */
 static inline void *snd_soc_dapm_widget_get_pdata(struct snd_soc_dapm_widget *w)
 {
@@ -678,6 +597,4 @@ static inline void snd_soc_dapm_widget_set_pdata(struct snd_soc_dapm_widget *w,
 	w->private_data = data;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #endif

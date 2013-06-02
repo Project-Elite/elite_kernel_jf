@@ -54,11 +54,7 @@ int install_user_keyrings(void)
 
 	kenter("%p{%u}", user, user->uid);
 
-<<<<<<< HEAD
 	if (user->uid_keyring) {
-=======
-	if (user->uid_keyring && user->session_keyring) {
->>>>>>> remotes/linux2/linux-3.4.y
 		kleave(" = 0 [exist]");
 		return 0;
 	}

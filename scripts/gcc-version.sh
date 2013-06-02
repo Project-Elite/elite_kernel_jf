@@ -22,17 +22,10 @@ if [ ${#compiler} -eq 0 ]; then
 	exit 1
 fi
 
-<<<<<<< HEAD
 MAJOR=$(echo __GNUC__ | $compiler -E -xc - | tail -n 1)
 MINOR=$(echo __GNUC_MINOR__ | $compiler -E -xc - | tail -n 1)
 if [ "x$with_patchlevel" != "x" ] ; then
 	PATCHLEVEL=$(echo __GNUC_PATCHLEVEL__ | $compiler -E -xc - | tail -n 1)
-=======
-MAJOR=$(echo __GNUC__ | $compiler -E -x c - | tail -n 1)
-MINOR=$(echo __GNUC_MINOR__ | $compiler -E -x c - | tail -n 1)
-if [ "x$with_patchlevel" != "x" ] ; then
-	PATCHLEVEL=$(echo __GNUC_PATCHLEVEL__ | $compiler -E -x c - | tail -n 1)
->>>>>>> remotes/linux2/linux-3.4.y
 	printf "%02d%02d%02d\\n" $MAJOR $MINOR $PATCHLEVEL
 else
 	printf "%02d%02d\\n" $MAJOR $MINOR

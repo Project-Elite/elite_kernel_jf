@@ -125,11 +125,7 @@ static int ll_open(struct hci_uart *hu)
 
 	BT_DBG("hu %p", hu);
 
-<<<<<<< HEAD
 	ll = kzalloc(sizeof(*ll), GFP_ATOMIC);
-=======
-	ll = kzalloc(sizeof(*ll), GFP_KERNEL);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!ll)
 		return -ENOMEM;
 
@@ -211,11 +207,7 @@ static void ll_device_want_to_wakeup(struct hci_uart *hu)
 		/*
 		 * This state means that both the host and the BRF chip
 		 * have simultaneously sent a wake-up-indication packet.
-<<<<<<< HEAD
 		 * Traditionaly, in this case, receiving a wake-up-indication
-=======
-		 * Traditionally, in this case, receiving a wake-up-indication
->>>>>>> remotes/linux2/linux-3.4.y
 		 * was enough and an additional wake-up-ack wasn't needed.
 		 * This has changed with the BRF6350, which does require an
 		 * explicit wake-up-ack. Other BRF versions, which do not

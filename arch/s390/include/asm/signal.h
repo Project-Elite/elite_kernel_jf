@@ -131,10 +131,6 @@ struct sigaction {
         void (*sa_restorer)(void);
         sigset_t sa_mask;               /* mask last for extensibility */
 };
-<<<<<<< HEAD
-=======
-#define __ARCH_HAS_SA_RESTORER
->>>>>>> remotes/linux2/linux-3.4.y
 
 struct k_sigaction {
         struct sigaction sa;

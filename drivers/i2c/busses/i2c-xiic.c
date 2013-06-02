@@ -311,15 +311,10 @@ static void xiic_fill_tx_fifo(struct xiic_i2c *i2c)
 			/* last message in transfer -> STOP */
 			data |= XIIC_TX_DYN_STOP_MASK;
 			dev_dbg(i2c->adap.dev.parent, "%s TX STOP\n", __func__);
-<<<<<<< HEAD
 
 			xiic_setreg16(i2c, XIIC_DTR_REG_OFFSET, data);
 		} else
 			xiic_setreg8(i2c, XIIC_DTR_REG_OFFSET, data);
-=======
-		}
-		xiic_setreg16(i2c, XIIC_DTR_REG_OFFSET, data);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 

@@ -323,11 +323,7 @@ static void sp_cleanup(void)
 	fdt = files_fdtable(files);
 	for (;;) {
 		unsigned long set;
-<<<<<<< HEAD
 		i = j * __NFDBITS;
-=======
-		i = j * BITS_PER_LONG;
->>>>>>> remotes/linux2/linux-3.4.y
 		if (i >= fdt->max_fds)
 			break;
 		set = fdt->open_fds[j++];

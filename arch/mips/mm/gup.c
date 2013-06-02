@@ -152,11 +152,6 @@ static int gup_huge_pud(pud_t pud, unsigned long addr, unsigned long end,
 	do {
 		VM_BUG_ON(compound_head(page) != head);
 		pages[*nr] = page;
-<<<<<<< HEAD
-=======
-		if (PageTail(page))
-			get_huge_page_tail(page);
->>>>>>> remotes/linux2/linux-3.4.y
 		(*nr)++;
 		page++;
 		refs++;

@@ -289,10 +289,7 @@ struct vb2_queue {
 	atomic_t			queued_count;
 	struct list_head		done_list;
 	spinlock_t			done_lock;
-<<<<<<< HEAD
 	struct mutex		q_lock;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	wait_queue_head_t		done_wq;
 
 	void				*alloc_ctx[VIDEO_MAX_PLANES];

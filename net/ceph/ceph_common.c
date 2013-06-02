@@ -83,10 +83,7 @@ int ceph_check_fsid(struct ceph_client *client, struct ceph_fsid *fsid)
 			return -1;
 		}
 	} else {
-<<<<<<< HEAD
 		pr_info("client%lld fsid %pU\n", ceph_client_id(client), fsid);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		memcpy(&client->fsid, fsid, sizeof(*fsid));
 	}
 	return 0;
@@ -308,10 +305,7 @@ ceph_parse_options(char *options, const char *dev_name,
 
 	/* start with defaults */
 	opt->flags = CEPH_OPT_DEFAULT;
-<<<<<<< HEAD
 	opt->osd_timeout = CEPH_OSD_TIMEOUT_DEFAULT;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	opt->osd_keepalive_timeout = CEPH_OSD_KEEPALIVE_DEFAULT;
 	opt->mount_timeout = CEPH_MOUNT_TIMEOUT_DEFAULT; /* seconds */
 	opt->osd_idle_ttl = CEPH_OSD_IDLE_TTL_DEFAULT;   /* seconds */
@@ -397,11 +391,7 @@ ceph_parse_options(char *options, const char *dev_name,
 
 			/* misc */
 		case Opt_osdtimeout:
-<<<<<<< HEAD
 			opt->osd_timeout = intval;
-=======
-			pr_warning("ignoring deprecated osdtimeout option\n");
->>>>>>> remotes/linux2/linux-3.4.y
 			break;
 		case Opt_osdkeepalivetimeout:
 			opt->osd_keepalive_timeout = intval;
@@ -478,7 +468,6 @@ struct ceph_client *ceph_create_client(struct ceph_options *opt, void *private,
 	/* msgr */
 	if (ceph_test_opt(client, MYIP))
 		myaddr = &client->options->my_addr;
-<<<<<<< HEAD
 	client->msgr = ceph_messenger_create(myaddr,
 					     client->supported_features,
 					     client->required_features);
@@ -487,21 +476,11 @@ struct ceph_client *ceph_create_client(struct ceph_options *opt, void *private,
 		goto fail;
 	}
 	client->msgr->nocrc = ceph_test_opt(client, NOCRC);
-=======
-	ceph_messenger_init(&client->msgr, myaddr,
-		client->supported_features,
-		client->required_features,
-		ceph_test_opt(client, NOCRC));
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* subsystems */
 	err = ceph_monc_init(&client->monc, client);
 	if (err < 0)
-<<<<<<< HEAD
 		goto fail_msgr;
-=======
-		goto fail;
->>>>>>> remotes/linux2/linux-3.4.y
 	err = ceph_osdc_init(&client->osdc, client);
 	if (err < 0)
 		goto fail_monc;
@@ -510,11 +489,8 @@ struct ceph_client *ceph_create_client(struct ceph_options *opt, void *private,
 
 fail_monc:
 	ceph_monc_stop(&client->monc);
-<<<<<<< HEAD
 fail_msgr:
 	ceph_messenger_destroy(client->msgr);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 fail:
 	kfree(client);
 	return ERR_PTR(err);
@@ -525,7 +501,6 @@ void ceph_destroy_client(struct ceph_client *client)
 {
 	dout("destroy_client %p\n", client);
 
-<<<<<<< HEAD
 	/* unmount */
 	ceph_osdc_stop(&client->osdc);
 
@@ -536,22 +511,12 @@ void ceph_destroy_client(struct ceph_client *client)
 	 */
 	ceph_msgr_flush();
 
-=======
-	atomic_set(&client->msgr.stopping, 1);
-
-	/* unmount */
-	ceph_osdc_stop(&client->osdc);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	ceph_monc_stop(&client->monc);
 
 	ceph_debugfs_client_cleanup(client);
 
-<<<<<<< HEAD
 	ceph_messenger_destroy(client->msgr);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	ceph_destroy_options(client->options);
 
 	kfree(client);

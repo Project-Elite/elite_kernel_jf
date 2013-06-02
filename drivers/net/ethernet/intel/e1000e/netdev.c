@@ -495,11 +495,7 @@ static void e1000_receive_skb(struct e1000_adapter *adapter,
  * @sk_buff: socket buffer with received data
  **/
 static void e1000_rx_checksum(struct e1000_adapter *adapter, u32 status_err,
-<<<<<<< HEAD
 			      __le16 csum, struct sk_buff *skb)
-=======
-			      struct sk_buff *skb)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	u16 status = (u16)status_err;
 	u8 errors = (u8)(status_err >> 24);
@@ -514,13 +510,8 @@ static void e1000_rx_checksum(struct e1000_adapter *adapter, u32 status_err,
 	if (status & E1000_RXD_STAT_IXSM)
 		return;
 
-<<<<<<< HEAD
 	/* TCP/UDP checksum error bit is set */
 	if (errors & E1000_RXD_ERR_TCPE) {
-=======
-	/* TCP/UDP checksum error bit or IP checksum error bit is set */
-	if (errors & (E1000_RXD_ERR_TCPE | E1000_RXD_ERR_IPE)) {
->>>>>>> remotes/linux2/linux-3.4.y
 		/* let the stack verify checksum errors */
 		adapter->hw_csum_err++;
 		return;
@@ -531,7 +522,6 @@ static void e1000_rx_checksum(struct e1000_adapter *adapter, u32 status_err,
 		return;
 
 	/* It must be a TCP or UDP packet with a valid checksum */
-<<<<<<< HEAD
 	if (status & E1000_RXD_STAT_TCPCS) {
 		/* TCP checksum is good */
 		skb->ip_summed = CHECKSUM_UNNECESSARY;
@@ -545,9 +535,6 @@ static void e1000_rx_checksum(struct e1000_adapter *adapter, u32 status_err,
 		skb->csum = csum_unfold(~sum);
 		skb->ip_summed = CHECKSUM_COMPLETE;
 	}
-=======
-	skb->ip_summed = CHECKSUM_UNNECESSARY;
->>>>>>> remotes/linux2/linux-3.4.y
 	adapter->hw_csum_good++;
 }
 
@@ -991,12 +978,8 @@ static bool e1000_clean_rx_irq(struct e1000_ring *rx_ring, int *work_done,
 		skb_put(skb, length);
 
 		/* Receive Checksum Offload */
-<<<<<<< HEAD
 		e1000_rx_checksum(adapter, staterr,
 				  rx_desc->wb.lower.hi_dword.csum_ip.csum, skb);
-=======
-		e1000_rx_checksum(adapter, staterr, skb);
->>>>>>> remotes/linux2/linux-3.4.y
 
 		e1000_rx_hash(netdev, rx_desc->wb.lower.hi_dword.rss, skb);
 
@@ -1377,12 +1360,8 @@ copydone:
 		total_rx_bytes += skb->len;
 		total_rx_packets++;
 
-<<<<<<< HEAD
 		e1000_rx_checksum(adapter, staterr,
 				  rx_desc->wb.lower.hi_dword.csum_ip.csum, skb);
-=======
-		e1000_rx_checksum(adapter, staterr, skb);
->>>>>>> remotes/linux2/linux-3.4.y
 
 		e1000_rx_hash(netdev, rx_desc->wb.lower.hi_dword.rss, skb);
 
@@ -1552,14 +1531,9 @@ static bool e1000_clean_jumbo_rx_irq(struct e1000_ring *rx_ring, int *work_done,
 			}
 		}
 
-<<<<<<< HEAD
 		/* Receive Checksum Offload XXX recompute due to CRC strip? */
 		e1000_rx_checksum(adapter, staterr,
 				  rx_desc->wb.lower.hi_dword.csum_ip.csum, skb);
-=======
-		/* Receive Checksum Offload */
-		e1000_rx_checksum(adapter, staterr, skb);
->>>>>>> remotes/linux2/linux-3.4.y
 
 		e1000_rx_hash(netdev, rx_desc->wb.lower.hi_dword.rss, skb);
 
@@ -2847,11 +2821,7 @@ static void e1000_configure_tx(struct e1000_adapter *adapter)
 		 * set up some performance related parameters to encourage the
 		 * hardware to use the bus more efficiently in bursts, depends
 		 * on the tx_int_delay to be enabled,
-<<<<<<< HEAD
 		 * wthresh = 5 ==> burst write a cacheline (64 bytes) at a time
-=======
-		 * wthresh = 1 ==> burst write is disabled to avoid Tx stalls
->>>>>>> remotes/linux2/linux-3.4.y
 		 * hthresh = 1 ==> prefetch when one or more available
 		 * pthresh = 0x1f ==> prefetch if internal cache 31 or less
 		 * BEWARE: this seems to work but should be considered first if
@@ -3150,7 +3120,6 @@ static void e1000_configure_rx(struct e1000_adapter *adapter)
 
 	/* Enable Receive Checksum Offload for TCP and UDP */
 	rxcsum = er32(RXCSUM);
-<<<<<<< HEAD
 	if (adapter->netdev->features & NETIF_F_RXCSUM) {
 		rxcsum |= E1000_RXCSUM_TUOFL;
 
@@ -3164,12 +3133,6 @@ static void e1000_configure_rx(struct e1000_adapter *adapter)
 		rxcsum &= ~E1000_RXCSUM_TUOFL;
 		/* no need to clear IPPCSE as it defaults to 0 */
 	}
-=======
-	if (adapter->netdev->features & NETIF_F_RXCSUM)
-		rxcsum |= E1000_RXCSUM_TUOFL;
-	else
-		rxcsum &= ~E1000_RXCSUM_TUOFL;
->>>>>>> remotes/linux2/linux-3.4.y
 	ew32(RXCSUM, rxcsum);
 
 	if (adapter->hw.mac.type == e1000_pch2lan) {
@@ -5297,7 +5260,6 @@ static int e1000_change_mtu(struct net_device *netdev, int new_mtu)
 	int max_frame = new_mtu + ETH_HLEN + ETH_FCS_LEN;
 
 	/* Jumbo frame support */
-<<<<<<< HEAD
 	if (max_frame > ETH_FRAME_LEN + ETH_FCS_LEN) {
 		if (!(adapter->flags & FLAG_HAS_JUMBO_FRAMES)) {
 			e_err("Jumbo Frames not supported.\n");
@@ -5314,12 +5276,6 @@ static int e1000_change_mtu(struct net_device *netdev, int new_mtu)
 			e_err("Jumbo frames cannot be enabled when both receive checksum offload and receive hashing are enabled.  Disable one of the receive offload features before enabling jumbos.\n");
 			return -EINVAL;
 		}
-=======
-	if ((max_frame > ETH_FRAME_LEN + ETH_FCS_LEN) &&
-	    !(adapter->flags & FLAG_HAS_JUMBO_FRAMES)) {
-		e_err("Jumbo Frames not supported.\n");
-		return -EINVAL;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	/* Supported frame sizes */
@@ -5615,11 +5571,7 @@ static int __e1000_shutdown(struct pci_dev *pdev, bool *enable_wake,
 	 */
 	e1000e_release_hw_control(adapter);
 
-<<<<<<< HEAD
 	pci_disable_device(pdev);
-=======
-	pci_clear_master(pdev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -6097,7 +6049,6 @@ static int e1000_set_features(struct net_device *netdev,
 			 NETIF_F_RXALL)))
 		return 0;
 
-<<<<<<< HEAD
 	/*
 	 * IP payload checksum (enabled with jumbos/packet-split when Rx
 	 * checksum is enabled) and generation of RSS hash is mutually
@@ -6109,8 +6060,6 @@ static int e1000_set_features(struct net_device *netdev,
 		return -EINVAL;
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (changed & NETIF_F_RXFCS) {
 		if (features & NETIF_F_RXFCS) {
 			adapter->flags2 &= ~FLAG2_CRC_STRIPPING;
@@ -6307,11 +6256,7 @@ static int __devinit e1000_probe(struct pci_dev *pdev,
 		adapter->hw.phy.ms_type = e1000_ms_hw_default;
 	}
 
-<<<<<<< HEAD
 	if (hw->phy.ops.check_reset_block(hw))
-=======
-	if (hw->phy.ops.check_reset_block && hw->phy.ops.check_reset_block(hw))
->>>>>>> remotes/linux2/linux-3.4.y
 		e_info("PHY reset is blocked due to SOL/IDER session.\n");
 
 	/* Set initial default active device features */
@@ -6478,11 +6423,7 @@ err_register:
 	if (!(adapter->flags & FLAG_HAS_AMT))
 		e1000e_release_hw_control(adapter);
 err_eeprom:
-<<<<<<< HEAD
 	if (!hw->phy.ops.check_reset_block(hw))
-=======
-	if (hw->phy.ops.check_reset_block && !hw->phy.ops.check_reset_block(hw))
->>>>>>> remotes/linux2/linux-3.4.y
 		e1000_phy_hw_reset(&adapter->hw);
 err_hw_init:
 	kfree(adapter->tx_ring);

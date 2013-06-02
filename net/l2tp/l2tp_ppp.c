@@ -360,10 +360,6 @@ static int pppol2tp_sendmsg(struct kiocb *iocb, struct socket *sock, struct msgh
 	l2tp_xmit_skb(session, skb, session->hdr_len);
 
 	sock_put(ps->tunnel_sock);
-<<<<<<< HEAD
-=======
-	sock_put(sk);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return error;
 

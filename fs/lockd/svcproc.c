@@ -67,12 +67,7 @@ nlmsvc_retrieve_args(struct svc_rqst *rqstp, struct nlm_args *argp,
 
 	/* Obtain file pointer. Not used by FREE_ALL call. */
 	if (filp != NULL) {
-<<<<<<< HEAD
 		if ((error = nlm_lookup_file(rqstp, &file, &lock->fh)) != 0)
-=======
-		error = cast_status(nlm_lookup_file(rqstp, &file, &lock->fh));
-		if (error != 0)
->>>>>>> remotes/linux2/linux-3.4.y
 			goto no_locks;
 		*filp = file;
 

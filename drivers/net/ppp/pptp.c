@@ -189,11 +189,7 @@ static int pptp_xmit(struct ppp_channel *chan, struct sk_buff *skb)
 	if (sk_pppox(po)->sk_state & PPPOX_DEAD)
 		goto tx_error;
 
-<<<<<<< HEAD
 	rt = ip_route_output_ports(&init_net, &fl4, NULL,
-=======
-	rt = ip_route_output_ports(sock_net(sk), &fl4, NULL,
->>>>>>> remotes/linux2/linux-3.4.y
 				   opt->dst_addr.sin_addr.s_addr,
 				   opt->src_addr.sin_addr.s_addr,
 				   0, 0, IPPROTO_GRE,
@@ -472,11 +468,7 @@ static int pptp_connect(struct socket *sock, struct sockaddr *uservaddr,
 	po->chan.private = sk;
 	po->chan.ops = &pptp_chan_ops;
 
-<<<<<<< HEAD
 	rt = ip_route_output_ports(&init_net, &fl4, sk,
-=======
-	rt = ip_route_output_ports(sock_net(sk), &fl4, sk,
->>>>>>> remotes/linux2/linux-3.4.y
 				   opt->dst_addr.sin_addr.s_addr,
 				   opt->src_addr.sin_addr.s_addr,
 				   0, 0,

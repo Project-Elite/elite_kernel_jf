@@ -407,17 +407,6 @@ static int svc_uses_rpcbind(struct svc_serv *serv)
 	return 0;
 }
 
-<<<<<<< HEAD
-=======
-int svc_bind(struct svc_serv *serv, struct net *net)
-{
-	if (!svc_uses_rpcbind(serv))
-		return 0;
-	return svc_rpcb_setup(serv, net);
-}
-EXPORT_SYMBOL_GPL(svc_bind);
-
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Create an RPC service
  */
@@ -482,7 +471,6 @@ __svc_create(struct svc_program *prog, unsigned int bufsize, int npools,
 		spin_lock_init(&pool->sp_lock);
 	}
 
-<<<<<<< HEAD
 	if (svc_uses_rpcbind(serv)) {
 		if (svc_rpcb_setup(serv, current->nsproxy->net_ns) < 0) {
 			kfree(serv->sv_pools);
@@ -492,10 +480,6 @@ __svc_create(struct svc_program *prog, unsigned int bufsize, int npools,
 		if (!serv->sv_shutdown)
 			serv->sv_shutdown = svc_rpcb_cleanup;
 	}
-=======
-	if (svc_uses_rpcbind(serv) && (!serv->sv_shutdown))
-		serv->sv_shutdown = svc_rpcb_cleanup;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return serv;
 }
@@ -552,11 +536,8 @@ EXPORT_SYMBOL_GPL(svc_shutdown_net);
 void
 svc_destroy(struct svc_serv *serv)
 {
-<<<<<<< HEAD
 	struct net *net = current->nsproxy->net_ns;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	dprintk("svc: svc_destroy(%s, %d)\n",
 				serv->sv_program->pg_name,
 				serv->sv_nrthreads);
@@ -571,11 +552,8 @@ svc_destroy(struct svc_serv *serv)
 
 	del_timer_sync(&serv->sv_temptimer);
 
-<<<<<<< HEAD
 	svc_shutdown_net(serv, net);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * The last user is gone and thus all sockets have to be destroyed to
 	 * the point. Check this.

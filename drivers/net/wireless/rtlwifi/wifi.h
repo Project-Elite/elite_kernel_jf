@@ -1555,10 +1555,6 @@ struct rtl_locks {
 	spinlock_t rf_ps_lock;
 	spinlock_t rf_lock;
 	spinlock_t waitq_lock;
-<<<<<<< HEAD
-=======
-	spinlock_t usb_lock;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*Dual mac*/
 	spinlock_t cck_and_rw_pagea_lock;

@@ -74,11 +74,6 @@ struct udl_framebuffer {
 	struct drm_framebuffer base;
 	struct udl_gem_object *obj;
 	bool active_16; /* active on the 16-bit channel */
-<<<<<<< HEAD
-=======
-	int x1, y1, x2, y2; /* dirty rect */
-	spinlock_t dirty_lock;
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 #define to_udl_fb(x) container_of(x, struct udl_framebuffer, base)
@@ -108,11 +103,7 @@ udl_fb_user_fb_create(struct drm_device *dev,
 
 int udl_render_hline(struct drm_device *dev, int bpp, struct urb **urb_ptr,
 		     const char *front, char **urb_buf_ptr,
-<<<<<<< HEAD
 		     u32 byte_offset, u32 byte_width,
-=======
-		     u32 byte_offset, u32 device_byte_offset, u32 byte_width,
->>>>>>> remotes/linux2/linux-3.4.y
 		     int *ident_ptr, int *sent_ptr);
 
 int udl_dumb_create(struct drm_file *file_priv,

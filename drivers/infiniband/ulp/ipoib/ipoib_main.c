@@ -148,11 +148,7 @@ static int ipoib_stop(struct net_device *dev)
 
 	netif_stop_queue(dev);
 
-<<<<<<< HEAD
 	ipoib_ib_dev_down(dev, 0);
-=======
-	ipoib_ib_dev_down(dev, 1);
->>>>>>> remotes/linux2/linux-3.4.y
 	ipoib_ib_dev_stop(dev, 0);
 
 	if (!test_bit(IPOIB_FLAG_SUBINTERFACE, &priv->flags)) {

@@ -953,15 +953,12 @@ config SYSCTL
 config ANON_INODES
 	bool
 
-<<<<<<< HEAD
 config PANIC_TIMEOUT
 	int "Default panic timeout"
 	default 0
 	help
 	  Set default panic timeout.
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 menuconfig EXPERT
 	bool "Configure standard kernel features (expert users)"
 	# Unhide debug options, to make the on-by-default options visible
@@ -1135,7 +1132,6 @@ config SHMEM
 	  option replaces shmem and tmpfs with the much simpler ramfs code,
 	  which may be appropriate on small systems without swap.
 
-<<<<<<< HEAD
 config ASHMEM
 	bool "Enable the Anonymous Shared Memory Subsystem"
 	default n
@@ -1145,8 +1141,6 @@ config ASHMEM
 	  POSIX SHM but with different behavior and sporting a simpler
 	  file-based API.
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 config AIO
 	bool "Enable AIO support" if EXPERT
 	default y
@@ -1285,10 +1279,7 @@ config SLAB
 	  per cpu and per node queues.
 
 config SLUB
-<<<<<<< HEAD
 	depends on BROKEN || NUMA || !DISCONTIGMEM
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	bool "SLUB (Unqueued Allocator)"
 	help
 	   SLUB is a slab allocator that minimizes cache line usage

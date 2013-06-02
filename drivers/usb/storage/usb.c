@@ -120,20 +120,6 @@ MODULE_PARM_DESC(quirks, "supplemental list of device IDs and their quirks");
 	.useTransport = use_transport,	\
 }
 
-<<<<<<< HEAD
-=======
-#define UNUSUAL_VENDOR_INTF(idVendor, cl, sc, pr, \
-		vendor_name, product_name, use_protocol, use_transport, \
-		init_function, Flags) \
-{ \
-	.vendorName = vendor_name,	\
-	.productName = product_name,	\
-	.useProtocol = use_protocol,	\
-	.useTransport = use_transport,	\
-	.initFunction = init_function,	\
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 static struct us_unusual_dev us_unusual_dev_list[] = {
 #	include "unusual_devs.h" 
 	{ }		/* Terminating entry */
@@ -145,10 +131,6 @@ static struct us_unusual_dev for_dynamic_ids =
 #undef UNUSUAL_DEV
 #undef COMPLIANT_DEV
 #undef USUAL_DEV
-<<<<<<< HEAD
-=======
-#undef UNUSUAL_VENDOR_INTF
->>>>>>> remotes/linux2/linux-3.4.y
 
 #ifdef CONFIG_LOCKDEP
 
@@ -937,12 +919,9 @@ int usb_stor_probe1(struct us_data **pus,
 	/*
 	 * Allow 16-byte CDBs and thus > 2TB
 	 */
-<<<<<<< HEAD
 #ifdef CONFIG_USB_STORAGE_DETECT
 	host->by_usb = 1;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	host->max_cmd_len = 16;
 	host->sg_tablesize = usb_stor_sg_tablesize(intf);
 	*pus = us = host_to_us(host);

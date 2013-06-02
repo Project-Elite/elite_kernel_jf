@@ -131,7 +131,6 @@ config TPS65010
 	  This driver can also be built as a module.  If so, the module
 	  will be called tps65010.
 
-<<<<<<< HEAD
 config TPS65023
         tristate "TPS65023 Power Management chip"
         depends on I2C && ARCH_MSM_SCORPION && !MSM_SMP
@@ -164,8 +163,6 @@ config MARIMBA_TSADC
 	  Say yes here if you want to include support for TSADC in the
 	  Qualcomm Marimba chip.
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 config TPS6507X
 	tristate "TPS6507x Power Management / Touch Screen chips"
 	select MFD_CORE
@@ -249,7 +246,6 @@ config MENELAUS
 	  and other features that are often used in portable devices like
 	  cell phones and PDAs.
 
-<<<<<<< HEAD
 config MARIMBA_CORE
 	tristate "Marimba Core"
 	depends on I2C && (ARCH_MSM7X30 || ARCH_MSM8X60 || ARCH_MSM7X27A)
@@ -277,8 +273,6 @@ config TIMPANI_CODEC
 	 This driver programs Timpani Wideband Codec for input/output of
 	 audio signal.
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 config TWL4030_CORE
 	bool "Texas Instruments TWL4030/TWL5030/TWL6030/TPS659x0 Support"
 	depends on I2C=y && GENERIC_HARDIRQS
@@ -506,7 +500,6 @@ config MFD_MAX8998
 	  additional drivers must be enabled in order to use the functionality
 	  of the device.
 
-<<<<<<< HEAD
 config MFD_MAX77693
 	bool "Maxim Semiconductor MAX77693 PMIC Support"
 	depends on I2C=y && GENERIC_HARDIRQS
@@ -518,8 +511,6 @@ config MFD_MAX77693
 	  This driver provides common support for accessing the device;
 	  additional drivers
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 config MFD_S5M_CORE
 	bool "SAMSUNG S5M Series Support"
 	depends on I2C=y && GENERIC_HARDIRQS
@@ -901,7 +892,6 @@ config MFD_PM8921_CORE
 	  Say M here if you want to include support for PM8921 chip as a module.
 	  This will build a module called "pm8921-core".
 
-<<<<<<< HEAD
 config MFD_PM8821_CORE
 	tristate "Qualcomm PM8821 PMIC chip"
 	depends on MSM_SSBI
@@ -947,8 +937,6 @@ config MFD_PM8038_CORE
 	  Say M here if you want to include support for PM8038 chip as a module.
 	  This will build a module called "pm8038-core".
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 config MFD_PM8XXX_IRQ
 	bool "Support for Qualcomm PM8xxx IRQ features"
 	depends on MFD_PM8XXX
@@ -959,7 +947,6 @@ config MFD_PM8XXX_IRQ
 	  This is required to use certain other PM 8xxx features, such as GPIO
 	  and MPP.
 
-<<<<<<< HEAD
 config MFD_PM8821_IRQ
 	bool "Support for Qualcomm PM8821 IRQ features"
 	default y if MFD_PM8821_CORE
@@ -968,8 +955,6 @@ config MFD_PM8821_IRQ
 
 	  This is required to use certain other PM 8821 features, such as MPPs.
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 config TPS65911_COMPARATOR
 	tristate
 
@@ -1004,7 +989,6 @@ config MFD_INTEL_MSIC
 	  Passage) chip. This chip embeds audio, battery, GPIO, etc.
 	  devices used in Intel Medfield platforms.
 
-<<<<<<< HEAD
 config MFD_PM8XXX_DEBUG
 	tristate "Qualcomm PM8xxx debugfs support"
 	depends on MFD_PM8XXX && DEBUG_FS
@@ -1082,8 +1066,6 @@ config WCD9320_CODEC
 	  control and data exchnage with master processor.
 
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 config MFD_RC5T583
 	bool "Ricoh RC5T583 Power Management system device"
 	depends on I2C=y && GENERIC_HARDIRQS

@@ -337,11 +337,7 @@ static void xen_blkbk_unmap(struct pending_req *req)
 		invcount++;
 	}
 
-<<<<<<< HEAD
 	ret = gnttab_unmap_refs(unmap, pages, invcount, false);
-=======
-	ret = gnttab_unmap_refs(unmap, NULL, pages, invcount);
->>>>>>> remotes/linux2/linux-3.4.y
 	BUG_ON(ret);
 }
 
@@ -426,19 +422,6 @@ static int dispatch_discard_io(struct xen_blkif *blkif,
 	return err;
 }
 
-<<<<<<< HEAD
-=======
-static int dispatch_other_io(struct xen_blkif *blkif,
-			     struct blkif_request *req,
-			     struct pending_req *pending_req)
-{
-	free_req(pending_req);
-	make_response(blkif, req->u.other.id, req->operation,
-		      BLKIF_RSP_EOPNOTSUPP);
-	return -EIO;
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 static void xen_blk_drain_io(struct xen_blkif *blkif)
 {
 	atomic_set(&blkif->drain, 1);
@@ -560,43 +543,17 @@ __do_block_io_op(struct xen_blkif *blkif)
 
 		/* Apply all sanity checks to /private copy/ of request. */
 		barrier();
-<<<<<<< HEAD
 		if (unlikely(req.operation == BLKIF_OP_DISCARD)) {
 			free_req(pending_req);
 			if (dispatch_discard_io(blkif, &req))
 				break;
 		} else if (dispatch_rw_block_io(blkif, &req, pending_req))
 			break;
-=======
-
-		switch (req.operation) {
-		case BLKIF_OP_READ:
-		case BLKIF_OP_WRITE:
-		case BLKIF_OP_WRITE_BARRIER:
-		case BLKIF_OP_FLUSH_DISKCACHE:
-			if (dispatch_rw_block_io(blkif, &req, pending_req))
-				goto done;
-			break;
-		case BLKIF_OP_DISCARD:
-			free_req(pending_req);
-			if (dispatch_discard_io(blkif, &req))
-				goto done;
-			break;
-		default:
-			if (dispatch_other_io(blkif, &req, pending_req))
-				goto done;
-			break;
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 
 		/* Yield point for this unbounded loop. */
 		cond_resched();
 	}
-<<<<<<< HEAD
 
-=======
-done:
->>>>>>> remotes/linux2/linux-3.4.y
 	return more_to_do;
 }
 
@@ -763,7 +720,6 @@ static int dispatch_rw_block_io(struct xen_blkif *blkif,
 		bio->bi_end_io  = end_block_io_op;
 	}
 
-<<<<<<< HEAD
 	/*
 	 * We set it one so that the last submit_bio does not have to call
 	 * atomic_inc.
@@ -771,9 +727,6 @@ static int dispatch_rw_block_io(struct xen_blkif *blkif,
 	atomic_set(&pending_req->pendcnt, nbio);
 
 	/* Get a reference count for the disk queue and start sending I/O */
-=======
-	atomic_set(&pending_req->pendcnt, nbio);
->>>>>>> remotes/linux2/linux-3.4.y
 	blk_start_plug(&plug);
 
 	for (i = 0; i < nbio; i++)
@@ -801,10 +754,6 @@ static int dispatch_rw_block_io(struct xen_blkif *blkif,
  fail_put_bio:
 	for (i = 0; i < nbio; i++)
 		bio_put(biolist[i]);
-<<<<<<< HEAD
-=======
-	atomic_set(&pending_req->pendcnt, 1);
->>>>>>> remotes/linux2/linux-3.4.y
 	__end_block_io_op(pending_req, -EINVAL);
 	msleep(1); /* back off a bit */
 	return -EIO;

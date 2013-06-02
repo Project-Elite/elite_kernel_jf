@@ -110,7 +110,6 @@ void pgd_free(struct mm_struct *mm, pgd_t *pgd_base)
 	pud_t *pud;
 	pmd_t *pmd;
 	pgtable_t pte;
-<<<<<<< HEAD
 #ifdef  TIMA_PGD_FREE_MANAGE
 	unsigned long cmd_id = 0x3f80b221;
 	unsigned long pmd_base;
@@ -118,8 +117,6 @@ void pgd_free(struct mm_struct *mm, pgd_t *pgd_base)
         __asm__ __volatile__(".arch_extension sec\n");
 #endif
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!pgd_base)
 		return;
@@ -165,7 +162,6 @@ no_pgd:
 		pud_free(mm, pud);
 	}
 #endif
-<<<<<<< HEAD
 #ifdef  TIMA_PGD_FREE_MANAGE
 	__asm__ __volatile__ (
 		"stmfd  sp!,{r0-r1, r11}\n"
@@ -186,7 +182,5 @@ no_pgd:
 	tima_verify_state(pmd_base + 0x2000, 0, 0, 3);
 	tima_verify_state(pmd_base + 0x3000, 0, 0, 3);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	__pgd_free(pgd_base);
 }

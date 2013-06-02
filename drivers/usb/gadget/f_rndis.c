@@ -25,13 +25,10 @@
 #include "u_ether.h"
 #include "rndis.h"
 
-<<<<<<< HEAD
 static bool rndis_multipacket_dl_disable;
 module_param(rndis_multipacket_dl_disable, bool, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(rndis_multipacket_dl_disable,
 	"Disable RNDIS Multi-packet support in DownLink");
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * This function is an RNDIS Ethernet port -- a Microsoft protocol that's
@@ -78,11 +75,8 @@ struct f_rndis {
 	struct gether			port;
 	u8				ctrl_id, data_id;
 	u8				ethaddr[ETH_ALEN];
-<<<<<<< HEAD
 	u32				vendorID;
 	const char			*manufacturer;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	int				config;
 
 	struct usb_ep			*notify;
@@ -418,7 +412,6 @@ static void rndis_response_available(void *_rndis)
 static void rndis_response_complete(struct usb_ep *ep, struct usb_request *req)
 {
 	struct f_rndis			*rndis = req->context;
-<<<<<<< HEAD
 	struct usb_composite_dev	*cdev;
 
 	int				status = req->status;
@@ -428,11 +421,6 @@ static void rndis_response_complete(struct usb_ep *ep, struct usb_request *req)
 	else
 		cdev = rndis->port.func.config->cdev;
 
-=======
-	struct usb_composite_dev	*cdev = rndis->port.func.config->cdev;
-	int				status = req->status;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	/* after TX:
 	 *  - USB_CDC_GET_ENCAPSULATED_RESPONSE (ep0/control)
 	 *  - RNDIS_RESPONSE_AVAILABLE (status/irq)
@@ -469,7 +457,6 @@ static void rndis_response_complete(struct usb_ep *ep, struct usb_request *req)
 static void rndis_command_complete(struct usb_ep *ep, struct usb_request *req)
 {
 	struct f_rndis			*rndis = req->context;
-<<<<<<< HEAD
 	struct usb_composite_dev	*cdev;
 
 	int				status;
@@ -479,10 +466,6 @@ static void rndis_command_complete(struct usb_ep *ep, struct usb_request *req)
 		return;
 	else
 		cdev = rndis->port.func.config->cdev;
-=======
-	struct usb_composite_dev	*cdev = rndis->port.func.config->cdev;
-	int				status;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* received RNDIS command from USB_CDC_SEND_ENCAPSULATED_COMMAND */
 //	spin_lock(&dev->lock);
@@ -490,7 +473,6 @@ static void rndis_command_complete(struct usb_ep *ep, struct usb_request *req)
 	if (status < 0)
 		ERROR(cdev, "RNDIS command error %d, %d/%d\n",
 			status, req->actual, req->length);
-<<<<<<< HEAD
 
 	buf = (rndis_init_msg_type *)req->buf;
 
@@ -506,8 +488,6 @@ static void rndis_command_complete(struct usb_ep *ep, struct usb_request *req)
 		if (rndis_multipacket_dl_disable)
 			rndis->port.multi_pkt_xfer = 0;
 	}
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 //	spin_unlock(&dev->lock);
 }
 
@@ -822,19 +802,10 @@ rndis_bind(struct usb_configuration *c, struct usb_function *f)
 	rndis_set_param_medium(rndis->config, NDIS_MEDIUM_802_3, 0);
 	rndis_set_host_mac(rndis->config, rndis->ethaddr);
 
-<<<<<<< HEAD
 	if (rndis->manufacturer && rndis->vendorID &&
 			rndis_set_param_vendor(rndis->config, rndis->vendorID,
 					       rndis->manufacturer))
 		goto fail;
-=======
-#if 0
-// FIXME
-	if (rndis_set_param_vendor(rndis->config, vendorID,
-				manufacturer))
-		goto fail0;
-#endif
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* NOTE:  all that is done without knowing or caring about
 	 * the network link ... which is unavailable to this code
@@ -864,15 +835,9 @@ fail:
 	/* we might as well release our claims on endpoints */
 	if (rndis->notify)
 		rndis->notify->driver_data = NULL;
-<<<<<<< HEAD
 	if (rndis->port.out_ep->desc)
 		rndis->port.out_ep->driver_data = NULL;
 	if (rndis->port.in_ep->desc)
-=======
-	if (rndis->port.out_ep)
-		rndis->port.out_ep->driver_data = NULL;
-	if (rndis->port.in_ep)
->>>>>>> remotes/linux2/linux-3.4.y
 		rndis->port.in_ep->driver_data = NULL;
 
 	ERROR(cdev, "%s: can't bind, err %d\n", f->name, status);
@@ -887,10 +852,7 @@ rndis_unbind(struct usb_configuration *c, struct usb_function *f)
 
 	rndis_deregister(rndis->config);
 	rndis_exit();
-<<<<<<< HEAD
 	rndis_string_defs[0].id = 0;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (gadget_is_superspeed(c->cdev->gadget))
 		usb_free_descriptors(f->ss_descriptors);
@@ -926,7 +888,6 @@ static inline bool can_support_rndis(struct usb_configuration *c)
 int
 rndis_bind_config(struct usb_configuration *c, u8 ethaddr[ETH_ALEN])
 {
-<<<<<<< HEAD
 	return rndis_bind_config_vendor(c, ethaddr, 0, NULL);
 }
 
@@ -934,15 +895,12 @@ int
 rndis_bind_config_vendor(struct usb_configuration *c, u8 ethaddr[ETH_ALEN],
 				u32 vendorID, const char *manufacturer)
 {
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	struct f_rndis	*rndis;
 	int		status;
 
 	if (!can_support_rndis(c) || !ethaddr)
 		return -EINVAL;
 
-<<<<<<< HEAD
 	/* setup RNDIS itself */
 	status = rndis_init();
 	if (status < 0)
@@ -951,16 +909,6 @@ rndis_bind_config_vendor(struct usb_configuration *c, u8 ethaddr[ETH_ALEN],
 	/* maybe allocate device-global string IDs */
 	if (rndis_string_defs[0].id == 0) {
 
-=======
-	/* maybe allocate device-global string IDs */
-	if (rndis_string_defs[0].id == 0) {
-
-		/* ... and setup RNDIS itself */
-		status = rndis_init();
-		if (status < 0)
-			return status;
-
->>>>>>> remotes/linux2/linux-3.4.y
 		/* control interface label */
 		status = usb_string_id(c->cdev);
 		if (status < 0)
@@ -990,11 +938,8 @@ rndis_bind_config_vendor(struct usb_configuration *c, u8 ethaddr[ETH_ALEN],
 		goto fail;
 
 	memcpy(rndis->ethaddr, ethaddr, ETH_ALEN);
-<<<<<<< HEAD
 	rndis->vendorID = vendorID;
 	rndis->manufacturer = manufacturer;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* RNDIS activates when the host changes this filter */
 	rndis->port.cdc_filter = 0;

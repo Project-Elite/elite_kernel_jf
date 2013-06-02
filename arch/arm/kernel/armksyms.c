@@ -48,13 +48,6 @@ extern void __aeabi_ulcmp(void);
 
 extern void fpundefinstr(void);
 
-<<<<<<< HEAD
-=======
-	/* platform dependent support */
-EXPORT_SYMBOL(__udelay);
-EXPORT_SYMBOL(__const_udelay);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	/* networking */
 EXPORT_SYMBOL(csum_partial);
 EXPORT_SYMBOL(csum_partial_copy_from_user);

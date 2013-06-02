@@ -966,11 +966,7 @@ int nfc_llcp_register_device(struct nfc_dev *ndev)
 	local->remote_lto = LLCP_DEFAULT_LTO;
 	local->remote_rw = LLCP_DEFAULT_RW;
 
-<<<<<<< HEAD
 	list_add(&llcp_devices, &local->list);
-=======
-	list_add(&local->list, &llcp_devices);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 

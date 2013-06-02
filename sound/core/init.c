@@ -22,20 +22,12 @@
 #include <linux/init.h>
 #include <linux/sched.h>
 #include <linux/module.h>
-<<<<<<< HEAD
-=======
-#include <linux/device.h>
->>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/file.h>
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/ctype.h>
 #include <linux/pm.h>
-<<<<<<< HEAD
 #include <linux/device.h>
-=======
-
->>>>>>> remotes/linux2/linux-3.4.y
 #include <sound/core.h>
 #include <sound/control.h>
 #include <sound/info.h>
@@ -220,10 +212,6 @@ int snd_card_create(int idx, const char *xid,
 	spin_lock_init(&card->files_lock);
 	INIT_LIST_HEAD(&card->files_list);
 	init_waitqueue_head(&card->shutdown_sleep);
-<<<<<<< HEAD
-=======
-	atomic_set(&card->refcount, 0);
->>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_PM
 	mutex_init(&card->power_lock);
 	init_waitqueue_head(&card->power_sleep);
@@ -457,7 +445,6 @@ static int snd_card_do_free(struct snd_card *card)
 	return 0;
 }
 
-<<<<<<< HEAD
 int snd_card_free_when_closed(struct snd_card *card)
 {
 	int free_now = 0;
@@ -473,38 +460,6 @@ int snd_card_free_when_closed(struct snd_card *card)
 	spin_unlock(&card->files_lock);
 
 	if (free_now)
-=======
-/**
- * snd_card_unref - release the reference counter
- * @card: the card instance
- *
- * Decrements the reference counter.  When it reaches to zero, wake up
- * the sleeper and call the destructor if needed.
- */
-void snd_card_unref(struct snd_card *card)
-{
-	if (atomic_dec_and_test(&card->refcount)) {
-		wake_up(&card->shutdown_sleep);
-		if (card->free_on_last_close)
-			snd_card_do_free(card);
-	}
-}
-EXPORT_SYMBOL(snd_card_unref);
-
-int snd_card_free_when_closed(struct snd_card *card)
-{
-	int ret;
-
-	atomic_inc(&card->refcount);
-	ret = snd_card_disconnect(card);
-	if (ret) {
-		atomic_dec(&card->refcount);
-		return ret;
-	}
-
-	card->free_on_last_close = 1;
-	if (atomic_dec_and_test(&card->refcount))
->>>>>>> remotes/linux2/linux-3.4.y
 		snd_card_do_free(card);
 	return 0;
 }
@@ -518,18 +473,13 @@ int snd_card_free(struct snd_card *card)
 		return ret;
 
 	/* wait, until all devices are ready for the free operation */
-<<<<<<< HEAD
 	wait_event(card->shutdown_sleep, list_empty(&card->files_list));
-=======
-	wait_event(card->shutdown_sleep, !atomic_read(&card->refcount));
->>>>>>> remotes/linux2/linux-3.4.y
 	snd_card_do_free(card);
 	return 0;
 }
 
 EXPORT_SYMBOL(snd_card_free);
 
-<<<<<<< HEAD
 static void snd_card_set_id_no_lock(struct snd_card *card, const char *nid)
 {
 	int i, len, idx_flag = 0, loops = SNDRV_CARDS;
@@ -598,106 +548,6 @@ static void snd_card_set_id_no_lock(struct snd_card *card, const char *nid)
 			idx_flag++;
 		}
 	}
-=======
-/* retrieve the last word of shortname or longname */
-static const char *retrieve_id_from_card_name(const char *name)
-{
-	const char *spos = name;
-
-	while (*name) {
-		if (isspace(*name) && isalnum(name[1]))
-			spos = name + 1;
-		name++;
-	}
-	return spos;
-}
-
-/* return true if the given id string doesn't conflict any other card ids */
-static bool card_id_ok(struct snd_card *card, const char *id)
-{
-	int i;
-	if (!snd_info_check_reserved_words(id))
-		return false;
-	for (i = 0; i < snd_ecards_limit; i++) {
-		if (snd_cards[i] && snd_cards[i] != card &&
-		    !strcmp(snd_cards[i]->id, id))
-			return false;
-	}
-	return true;
-}
-
-/* copy to card->id only with valid letters from nid */
-static void copy_valid_id_string(struct snd_card *card, const char *src,
-				 const char *nid)
-{
-	char *id = card->id;
-
-	while (*nid && !isalnum(*nid))
-		nid++;
-	if (isdigit(*nid))
-		*id++ = isalpha(*src) ? *src : 'D';
-	while (*nid && (size_t)(id - card->id) < sizeof(card->id) - 1) {
-		if (isalnum(*nid))
-			*id++ = *nid;
-		nid++;
-	}
-	*id = 0;
-}
-
-/* Set card->id from the given string
- * If the string conflicts with other ids, add a suffix to make it unique.
- */
-static void snd_card_set_id_no_lock(struct snd_card *card, const char *src,
-				    const char *nid)
-{
-	int len, loops;
-	bool with_suffix;
-	bool is_default = false;
-	char *id;
-	
-	copy_valid_id_string(card, src, nid);
-	id = card->id;
-
- again:
-	/* use "Default" for obviously invalid strings
-	 * ("card" conflicts with proc directories)
-	 */
-	if (!*id || !strncmp(id, "card", 4)) {
-		strcpy(id, "Default");
-		is_default = true;
-	}
-
-	with_suffix = false;
-	for (loops = 0; loops < SNDRV_CARDS; loops++) {
-		if (card_id_ok(card, id))
-			return; /* OK */
-
-		len = strlen(id);
-		if (!with_suffix) {
-			/* add the "_X" suffix */
-			char *spos = id + len;
-			if (len >  sizeof(card->id) - 3)
-				spos = id + sizeof(card->id) - 3;
-			strcpy(spos, "_1");
-			with_suffix = true;
-		} else {
-			/* modify the existing suffix */
-			if (id[len - 1] != '9')
-				id[len - 1]++;
-			else
-				id[len - 1] = 'A';
-		}
-	}
-	/* fallback to the default id */
-	if (!is_default) {
-		*id = 0;
-		goto again;
-	}
-	/* last resort... */
-	snd_printk(KERN_ERR "unable to set card id (%s)\n", id);
-	if (card->proc_root->name)
-		strcpy(card->id, card->proc_root->name);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /**
@@ -714,11 +564,7 @@ void snd_card_set_id(struct snd_card *card, const char *nid)
 	if (card->id[0] != '\0')
 		return;
 	mutex_lock(&snd_card_mutex);
-<<<<<<< HEAD
 	snd_card_set_id_no_lock(card, nid);
-=======
-	snd_card_set_id_no_lock(card, nid, nid);
->>>>>>> remotes/linux2/linux-3.4.y
 	mutex_unlock(&snd_card_mutex);
 }
 EXPORT_SYMBOL(snd_card_set_id);
@@ -750,7 +596,6 @@ card_id_store_attr(struct device *dev, struct device_attribute *attr,
 	memcpy(buf1, buf, copy);
 	buf1[copy] = '\0';
 	mutex_lock(&snd_card_mutex);
-<<<<<<< HEAD
 	if (!snd_info_check_reserved_words(buf1)) {
 	     __exist:
 		mutex_unlock(&snd_card_mutex);
@@ -767,14 +612,6 @@ card_id_store_attr(struct device *dev, struct device_attribute *attr,
 	strcpy(card->id, buf1);
 	snd_info_card_id_change(card);
 __ok:
-=======
-	if (!card_id_ok(NULL, buf1)) {
-		mutex_unlock(&snd_card_mutex);
-		return -EEXIST;
-	}
-	strcpy(card->id, buf1);
-	snd_info_card_id_change(card);
->>>>>>> remotes/linux2/linux-3.4.y
 	mutex_unlock(&snd_card_mutex);
 
 	return count;
@@ -828,22 +665,7 @@ int snd_card_register(struct snd_card *card)
 		mutex_unlock(&snd_card_mutex);
 		return 0;
 	}
-<<<<<<< HEAD
 	snd_card_set_id_no_lock(card, card->id[0] == '\0' ? NULL : card->id);
-=======
-	if (*card->id) {
-		/* make a unique id name from the given string */
-		char tmpid[sizeof(card->id)];
-		memcpy(tmpid, card->id, sizeof(card->id));
-		snd_card_set_id_no_lock(card, tmpid, tmpid);
-	} else {
-		/* create an id from either shortname or longname */
-		const char *src;
-		src = *card->shortname ? card->shortname : card->longname;
-		snd_card_set_id_no_lock(card, src,
-					retrieve_id_from_card_name(src));
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 	snd_cards[card->number] = card;
 	mutex_unlock(&snd_card_mutex);
 	init_info_for_card(card);
@@ -1032,10 +854,6 @@ int snd_card_file_add(struct snd_card *card, struct file *file)
 		return -ENODEV;
 	}
 	list_add(&mfile->list, &card->files_list);
-<<<<<<< HEAD
-=======
-	atomic_inc(&card->refcount);
->>>>>>> remotes/linux2/linux-3.4.y
 	spin_unlock(&card->files_lock);
 	return 0;
 }
@@ -1058,10 +876,7 @@ EXPORT_SYMBOL(snd_card_file_add);
 int snd_card_file_remove(struct snd_card *card, struct file *file)
 {
 	struct snd_monitor_file *mfile, *found = NULL;
-<<<<<<< HEAD
 	int last_close = 0;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	spin_lock(&card->files_lock);
 	list_for_each_entry(mfile, &card->files_list, list) {
@@ -1076,7 +891,6 @@ int snd_card_file_remove(struct snd_card *card, struct file *file)
 			break;
 		}
 	}
-<<<<<<< HEAD
 	if (list_empty(&card->files_list))
 		last_close = 1;
 	spin_unlock(&card->files_lock);
@@ -1085,18 +899,11 @@ int snd_card_file_remove(struct snd_card *card, struct file *file)
 		if (card->free_on_last_close)
 			snd_card_do_free(card);
 	}
-=======
-	spin_unlock(&card->files_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!found) {
 		snd_printk(KERN_ERR "ALSA card file remove problem (%p)\n", file);
 		return -ENOENT;
 	}
 	kfree(found);
-<<<<<<< HEAD
-=======
-	snd_card_unref(card);
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 

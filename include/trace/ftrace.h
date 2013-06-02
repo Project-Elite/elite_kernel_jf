@@ -17,10 +17,7 @@
  */
 
 #include <linux/ftrace_event.h>
-<<<<<<< HEAD
 #include <linux/coresight-stm.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * DECLARE_EVENT_CLASS can be used to add a generic function
@@ -548,18 +545,12 @@ ftrace_raw_event_##call(void *__data, proto)				\
 									\
 	{ assign; }							\
 									\
-<<<<<<< HEAD
 	if (!filter_current_check_discard(buffer, event_call, entry, event)) { \
 		stm_log(OST_ENTITY_FTRACE_EVENTS, entry,		\
 			sizeof(*entry) + __data_size);			\
 		trace_nowake_buffer_unlock_commit(buffer,		\
 						  event, irq_flags, pc); \
 	}								\
-=======
-	if (!filter_current_check_discard(buffer, event_call, entry, event)) \
-		trace_nowake_buffer_unlock_commit(buffer,		\
-						  event, irq_flags, pc); \
->>>>>>> remotes/linux2/linux-3.4.y
 }
 /*
  * The ftrace_test_probe is compiled out, it is only here as a build time check

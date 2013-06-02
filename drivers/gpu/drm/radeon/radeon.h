@@ -138,7 +138,6 @@ struct radeon_device;
 /*
  * BIOS.
  */
-<<<<<<< HEAD
 #define ATRM_BIOS_PAGE 4096
 
 #if defined(CONFIG_VGA_SWITCHEROO)
@@ -154,8 +153,6 @@ static inline int radeon_atrm_get_bios_chunk(uint8_t *bios, int offset, int len)
 	return -EINVAL;
 }
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 bool radeon_get_bios(struct radeon_device *rdev);
 
 

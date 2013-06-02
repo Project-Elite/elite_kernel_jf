@@ -53,10 +53,7 @@ config USB_ARCH_HAS_EHCI
 # some non-PCI HCDs implement xHCI
 config USB_ARCH_HAS_XHCI
 	boolean
-<<<<<<< HEAD
 	default y if ARCH_MSM8974
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	default PCI
 
 menuconfig USB_SUPPORT
@@ -137,11 +134,6 @@ source "drivers/usb/host/Kconfig"
 
 source "drivers/usb/musb/Kconfig"
 
-<<<<<<< HEAD
-=======
-source "drivers/usb/renesas_usbhs/Kconfig"
-
->>>>>>> remotes/linux2/linux-3.4.y
 source "drivers/usb/class/Kconfig"
 
 source "drivers/usb/storage/Kconfig"
@@ -190,9 +182,6 @@ source "drivers/usb/gadget/Kconfig"
 
 source "drivers/usb/otg/Kconfig"
 
-<<<<<<< HEAD
 source "drivers/usb/notify/Kconfig"
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 endif # USB_SUPPORT

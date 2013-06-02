@@ -187,21 +187,6 @@ static unsigned long highmem_dirtyable_memory(unsigned long total)
 		     zone_reclaimable_pages(z) - z->dirty_balance_reserve;
 	}
 	/*
-<<<<<<< HEAD
-=======
-	 * Unreclaimable memory (kernel memory or anonymous memory
-	 * without swap) can bring down the dirtyable pages below
-	 * the zone's dirty balance reserve and the above calculation
-	 * will underflow.  However we still want to add in nodes
-	 * which are below threshold (negative values) to get a more
-	 * accurate calculation but make sure that the total never
-	 * underflows.
-	 */
-	if ((long)x < 0)
-		x = 0;
-
-	/*
->>>>>>> remotes/linux2/linux-3.4.y
 	 * Make sure that the number of highmem pages is never larger
 	 * than the number of the total dirtyable memory. This can only
 	 * occur in very strange VM situations but we want to make sure
@@ -223,13 +208,8 @@ unsigned long global_dirtyable_memory(void)
 {
 	unsigned long x;
 
-<<<<<<< HEAD
 	x = global_page_state(NR_FREE_PAGES) + global_reclaimable_pages() -
 	    dirty_balance_reserve;
-=======
-	x = global_page_state(NR_FREE_PAGES) + global_reclaimable_pages();
-	x -= min(x, dirty_balance_reserve);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!vm_highmem_is_dirtyable)
 		x -= highmem_dirtyable_memory(x);
@@ -296,18 +276,9 @@ static unsigned long zone_dirtyable_memory(struct zone *zone)
 	 * highmem zone can hold its share of dirty pages, so we don't
 	 * care about vm_highmem_is_dirtyable here.
 	 */
-<<<<<<< HEAD
 	return zone_page_state(zone, NR_FREE_PAGES) +
 	       zone_reclaimable_pages(zone) -
 	       zone->dirty_balance_reserve;
-=======
-	unsigned long nr_pages = zone_page_state(zone, NR_FREE_PAGES) +
-		zone_reclaimable_pages(zone);
-
-	/* don't allow this to underflow */
-	nr_pages -= min(nr_pages, zone->dirty_balance_reserve);
-	return nr_pages;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /**

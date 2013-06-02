@@ -31,12 +31,6 @@ MODULE_DESCRIPTION("AMD Family 15h CPU processor power monitor");
 MODULE_AUTHOR("Andreas Herrmann <andreas.herrmann3@amd.com>");
 MODULE_LICENSE("GPL");
 
-<<<<<<< HEAD
-=======
-/* Family 16h Northbridge's function 4 PCI ID */
-#define PCI_DEVICE_ID_AMD_16H_NB_F4	0x1534
-
->>>>>>> remotes/linux2/linux-3.4.y
 /* D18F3 */
 #define REG_NORTHBRIDGE_CAP		0xe8
 
@@ -134,20 +128,12 @@ static bool __devinit fam15h_power_is_internal_node0(struct pci_dev *f4)
  * counter saturations resulting in bogus power readings.
  * We correct this value ourselves to cope with older BIOSes.
  */
-<<<<<<< HEAD
 static DEFINE_PCI_DEVICE_TABLE(affected_device) = {
-=======
-static const struct pci_device_id affected_device[] = {
->>>>>>> remotes/linux2/linux-3.4.y
 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_15H_NB_F4) },
 	{ 0 }
 };
 
-<<<<<<< HEAD
 static void __devinit tweak_runavg_range(struct pci_dev *pdev)
-=======
-static void tweak_runavg_range(struct pci_dev *pdev)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	u32 val;
 
@@ -171,19 +157,6 @@ static void tweak_runavg_range(struct pci_dev *pdev)
 		REG_TDP_RUNNING_AVERAGE, val);
 }
 
-<<<<<<< HEAD
-=======
-#ifdef CONFIG_PM
-static int fam15h_power_resume(struct pci_dev *pdev)
-{
-	tweak_runavg_range(pdev);
-	return 0;
-}
-#else
-#define fam15h_power_resume NULL
-#endif
-
->>>>>>> remotes/linux2/linux-3.4.y
 static void __devinit fam15h_power_init_data(struct pci_dev *f4,
 					     struct fam15h_power_data *data)
 {
@@ -273,10 +246,6 @@ static void __devexit fam15h_power_remove(struct pci_dev *pdev)
 
 static DEFINE_PCI_DEVICE_TABLE(fam15h_power_id_table) = {
 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_15H_NB_F4) },
-<<<<<<< HEAD
-=======
-	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_16H_NB_F4) },
->>>>>>> remotes/linux2/linux-3.4.y
 	{}
 };
 MODULE_DEVICE_TABLE(pci, fam15h_power_id_table);
@@ -286,10 +255,6 @@ static struct pci_driver fam15h_power_driver = {
 	.id_table = fam15h_power_id_table,
 	.probe = fam15h_power_probe,
 	.remove = __devexit_p(fam15h_power_remove),
-<<<<<<< HEAD
-=======
-	.resume = fam15h_power_resume,
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static int __init fam15h_power_init(void)

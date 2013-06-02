@@ -1,11 +1,6 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
-<<<<<<< HEAD
    Copyright (c) 2000-2001, 2010-2012 The Linux Foundation.  All rights reserved.
-=======
-   Copyright (C) 2000-2001 Qualcomm Incorporated
-   Copyright (C) 2011 ProFUSION Embedded Systems
->>>>>>> remotes/linux2/linux-3.4.y
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -44,19 +39,13 @@
 #include <linux/skbuff.h>
 #include <linux/workqueue.h>
 #include <linux/interrupt.h>
-<<<<<<< HEAD
 #include <linux/notifier.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/rfkill.h>
 #include <linux/timer.h>
 #include <linux/crypto.h>
 #include <net/sock.h>
 
-<<<<<<< HEAD
 #include <asm/system.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/uaccess.h>
 #include <asm/unaligned.h>
 
@@ -65,7 +54,6 @@
 
 #define AUTO_OFF_TIMEOUT 2000
 
-<<<<<<< HEAD
 static void hci_cmd_task(unsigned long arg);
 static void hci_rx_task(unsigned long arg);
 static void hci_tx_task(unsigned long arg);
@@ -73,11 +61,6 @@ static void hci_tx_task(unsigned long arg);
 static DEFINE_RWLOCK(hci_task_lock);
 
 static bool enable_smp = 1;
-=======
-static void hci_rx_work(struct work_struct *work);
-static void hci_cmd_work(struct work_struct *work);
-static void hci_tx_work(struct work_struct *work);
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* HCI device list */
 LIST_HEAD(hci_dev_list);
@@ -87,7 +70,6 @@ DEFINE_RWLOCK(hci_dev_list_lock);
 LIST_HEAD(hci_cb_list);
 DEFINE_RWLOCK(hci_cb_list_lock);
 
-<<<<<<< HEAD
 /* AMP Manager event callbacks */
 LIST_HEAD(amp_mgr_cb_list);
 DEFINE_RWLOCK(amp_mgr_cb_list_lock);
@@ -114,13 +96,6 @@ int hci_unregister_notifier(struct notifier_block *nb)
 static void hci_notify(struct hci_dev *hdev, int event)
 {
 	atomic_notifier_call_chain(&hci_notifier, event, hdev);
-=======
-/* ---- HCI notifications ---- */
-
-static void hci_notify(struct hci_dev *hdev, int event)
-{
-	hci_sock_dev_event(hdev, event);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /* ---- HCI requests ---- */
@@ -132,33 +107,8 @@ void hci_req_complete(struct hci_dev *hdev, __u16 cmd, int result)
 	/* If this is the init phase check if the completed command matches
 	 * the last init command, and if not just return.
 	 */
-<<<<<<< HEAD
 	if (test_bit(HCI_INIT, &hdev->flags) && hdev->init_last_cmd != cmd)
 		return;
-=======
-	if (test_bit(HCI_INIT, &hdev->flags) && hdev->init_last_cmd != cmd) {
-		struct hci_command_hdr *sent = (void *) hdev->sent_cmd->data;
-		struct sk_buff *skb;
-
-		/* Some CSR based controllers generate a spontaneous
-		 * reset complete event during init and any pending
-		 * command will never be completed. In such a case we
-		 * need to resend whatever was the last sent
-		 * command.
-		 */
-
-		if (cmd != HCI_OP_RESET || sent->opcode == HCI_OP_RESET)
-			return;
-
-		skb = skb_clone(hdev->sent_cmd, GFP_ATOMIC);
-		if (skb) {
-			skb_queue_head(&hdev->cmd_q, skb);
-			queue_work(hdev->workqueue, &hdev->cmd_work);
-		}
-
-		return;
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (hdev->req_status == HCI_REQ_PEND) {
 		hdev->req_result = result;
@@ -202,11 +152,7 @@ static int __hci_request(struct hci_dev *hdev, void (*req)(struct hci_dev *hdev,
 
 	switch (hdev->req_status) {
 	case HCI_REQ_DONE:
-<<<<<<< HEAD
 		err = -bt_err(hdev->req_result);
-=======
-		err = -bt_to_errno(hdev->req_result);
->>>>>>> remotes/linux2/linux-3.4.y
 		break;
 
 	case HCI_REQ_CANCELED:
@@ -247,7 +193,6 @@ static void hci_reset_req(struct hci_dev *hdev, unsigned long opt)
 
 	/* Reset device */
 	set_bit(HCI_RESET, &hdev->flags);
-<<<<<<< HEAD
 	memset(&hdev->features, 0, sizeof(hdev->features));
 	hci_send_cmd(hdev, HCI_OP_RESET, 0, NULL);
 }
@@ -272,24 +217,11 @@ static void hci_init_req(struct hci_dev *hdev, unsigned long opt)
 		tasklet_schedule(&hdev->cmd_task);
 	}
 	skb_queue_purge(&hdev->driver_init);
-=======
-	hci_send_cmd(hdev, HCI_OP_RESET, 0, NULL);
-}
-
-static void bredr_init(struct hci_dev *hdev)
-{
-	struct hci_cp_delete_stored_link_key cp;
-	__le16 param;
-	__u8 flt_type;
-
-	hdev->flow_ctl_mode = HCI_FLOW_CTL_MODE_PACKET_BASED;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Mandatory initialization */
 
 	/* Reset */
 	if (!test_bit(HCI_QUIRK_NO_RESET, &hdev->quirks)) {
-<<<<<<< HEAD
 			set_bit(HCI_RESET, &hdev->flags);
 			hci_send_cmd(hdev, HCI_OP_RESET, 0, NULL);
 	}
@@ -365,91 +297,6 @@ static void bredr_init(struct hci_dev *hdev)
 		/* Read AMP Info */
 		hci_send_cmd(hdev, HCI_OP_READ_LOCAL_AMP_INFO, 0, NULL);
 	}
-=======
-		set_bit(HCI_RESET, &hdev->flags);
-		hci_send_cmd(hdev, HCI_OP_RESET, 0, NULL);
-	}
-
-	/* Read Local Supported Features */
-	hci_send_cmd(hdev, HCI_OP_READ_LOCAL_FEATURES, 0, NULL);
-
-	/* Read Local Version */
-	hci_send_cmd(hdev, HCI_OP_READ_LOCAL_VERSION, 0, NULL);
-
-	/* Read Buffer Size (ACL mtu, max pkt, etc.) */
-	hci_send_cmd(hdev, HCI_OP_READ_BUFFER_SIZE, 0, NULL);
-
-	/* Read BD Address */
-	hci_send_cmd(hdev, HCI_OP_READ_BD_ADDR, 0, NULL);
-
-	/* Read Class of Device */
-	hci_send_cmd(hdev, HCI_OP_READ_CLASS_OF_DEV, 0, NULL);
-
-	/* Read Local Name */
-	hci_send_cmd(hdev, HCI_OP_READ_LOCAL_NAME, 0, NULL);
-
-	/* Read Voice Setting */
-	hci_send_cmd(hdev, HCI_OP_READ_VOICE_SETTING, 0, NULL);
-
-	/* Optional initialization */
-
-	/* Clear Event Filters */
-	flt_type = HCI_FLT_CLEAR_ALL;
-	hci_send_cmd(hdev, HCI_OP_SET_EVENT_FLT, 1, &flt_type);
-
-	/* Connection accept timeout ~20 secs */
-	param = cpu_to_le16(0x7d00);
-	hci_send_cmd(hdev, HCI_OP_WRITE_CA_TIMEOUT, 2, &param);
-
-	bacpy(&cp.bdaddr, BDADDR_ANY);
-	cp.delete_all = 1;
-	hci_send_cmd(hdev, HCI_OP_DELETE_STORED_LINK_KEY, sizeof(cp), &cp);
-}
-
-static void amp_init(struct hci_dev *hdev)
-{
-	hdev->flow_ctl_mode = HCI_FLOW_CTL_MODE_BLOCK_BASED;
-
-	/* Reset */
-	hci_send_cmd(hdev, HCI_OP_RESET, 0, NULL);
-
-	/* Read Local Version */
-	hci_send_cmd(hdev, HCI_OP_READ_LOCAL_VERSION, 0, NULL);
-}
-
-static void hci_init_req(struct hci_dev *hdev, unsigned long opt)
-{
-	struct sk_buff *skb;
-
-	BT_DBG("%s %ld", hdev->name, opt);
-
-	/* Driver initialization */
-
-	/* Special commands */
-	while ((skb = skb_dequeue(&hdev->driver_init))) {
-		bt_cb(skb)->pkt_type = HCI_COMMAND_PKT;
-		skb->dev = (void *) hdev;
-
-		skb_queue_tail(&hdev->cmd_q, skb);
-		queue_work(hdev->workqueue, &hdev->cmd_work);
-	}
-	skb_queue_purge(&hdev->driver_init);
-
-	switch (hdev->dev_type) {
-	case HCI_BREDR:
-		bredr_init(hdev);
-		break;
-
-	case HCI_AMP:
-		amp_init(hdev);
-		break;
-
-	default:
-		BT_ERR("Unknown device type %d", hdev->dev_type);
-		break;
-	}
-
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_le_init_req(struct hci_dev *hdev, unsigned long opt)
@@ -458,15 +305,12 @@ static void hci_le_init_req(struct hci_dev *hdev, unsigned long opt)
 
 	/* Read LE buffer size */
 	hci_send_cmd(hdev, HCI_OP_LE_READ_BUFFER_SIZE, 0, NULL);
-<<<<<<< HEAD
 
 	/* Read LE clear white list */
 	hci_send_cmd(hdev, HCI_OP_LE_CLEAR_WHITE_LIST, 0, NULL);
 
 	/* Read LE white list size */
 	hci_send_cmd(hdev, HCI_OP_LE_READ_WHITE_LIST_SIZE, 0, NULL);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_scan_req(struct hci_dev *hdev, unsigned long opt)
@@ -513,12 +357,8 @@ static void hci_linkpol_req(struct hci_dev *hdev, unsigned long opt)
  * Device is held on return. */
 struct hci_dev *hci_dev_get(int index)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = NULL;
 	struct list_head *p;
-=======
-	struct hci_dev *hdev = NULL, *d;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	BT_DBG("%d", index);
 
@@ -526,12 +366,8 @@ struct hci_dev *hci_dev_get(int index)
 		return NULL;
 
 	read_lock(&hci_dev_list_lock);
-<<<<<<< HEAD
 	list_for_each(p, &hci_dev_list) {
 		struct hci_dev *d = list_entry(p, struct hci_dev, list);
-=======
-	list_for_each_entry(d, &hci_dev_list, list) {
->>>>>>> remotes/linux2/linux-3.4.y
 		if (d->id == index) {
 			hdev = hci_dev_hold(d);
 			break;
@@ -540,7 +376,6 @@ struct hci_dev *hci_dev_get(int index)
 	read_unlock(&hci_dev_list_lock);
 	return hdev;
 }
-<<<<<<< HEAD
 EXPORT_SYMBOL(hci_dev_get);
 
 /* ---- Inquiry support ---- */
@@ -556,94 +391,15 @@ static void inquiry_cache_flush(struct hci_dev *hdev)
 		next = e->next;
 		kfree(e);
 	}
-=======
-
-/* ---- Inquiry support ---- */
-
-bool hci_discovery_active(struct hci_dev *hdev)
-{
-	struct discovery_state *discov = &hdev->discovery;
-
-	switch (discov->state) {
-	case DISCOVERY_FINDING:
-	case DISCOVERY_RESOLVING:
-		return true;
-
-	default:
-		return false;
-	}
-}
-
-void hci_discovery_set_state(struct hci_dev *hdev, int state)
-{
-	BT_DBG("%s state %u -> %u", hdev->name, hdev->discovery.state, state);
-
-	if (hdev->discovery.state == state)
-		return;
-
-	switch (state) {
-	case DISCOVERY_STOPPED:
-		if (hdev->discovery.state != DISCOVERY_STARTING)
-			mgmt_discovering(hdev, 0);
-		hdev->discovery.type = 0;
-		break;
-	case DISCOVERY_STARTING:
-		break;
-	case DISCOVERY_FINDING:
-		mgmt_discovering(hdev, 1);
-		break;
-	case DISCOVERY_RESOLVING:
-		break;
-	case DISCOVERY_STOPPING:
-		break;
-	}
-
-	hdev->discovery.state = state;
-}
-
-static void inquiry_cache_flush(struct hci_dev *hdev)
-{
-	struct discovery_state *cache = &hdev->discovery;
-	struct inquiry_entry *p, *n;
-
-	list_for_each_entry_safe(p, n, &cache->all, all) {
-		list_del(&p->all);
-		kfree(p);
-	}
-
-	INIT_LIST_HEAD(&cache->unknown);
-	INIT_LIST_HEAD(&cache->resolve);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 struct inquiry_entry *hci_inquiry_cache_lookup(struct hci_dev *hdev, bdaddr_t *bdaddr)
 {
-<<<<<<< HEAD
 	struct inquiry_cache *cache = &hdev->inq_cache;
-=======
-	struct discovery_state *cache = &hdev->discovery;
 	struct inquiry_entry *e;
 
 	BT_DBG("cache %p, %s", cache, batostr(bdaddr));
 
-	list_for_each_entry(e, &cache->all, all) {
-		if (!bacmp(&e->data.bdaddr, bdaddr))
-			return e;
-	}
-
-	return NULL;
-}
-
-struct inquiry_entry *hci_inquiry_cache_lookup_unknown(struct hci_dev *hdev,
-						       bdaddr_t *bdaddr)
-{
-	struct discovery_state *cache = &hdev->discovery;
->>>>>>> remotes/linux2/linux-3.4.y
-	struct inquiry_entry *e;
-
-	BT_DBG("cache %p, %s", cache, batostr(bdaddr));
-
-<<<<<<< HEAD
 	for (e = cache->list; e; e = e->next)
 		if (!bacmp(&e->data.bdaddr, bdaddr))
 			break;
@@ -653,63 +409,10 @@ struct inquiry_entry *hci_inquiry_cache_lookup_unknown(struct hci_dev *hdev,
 void hci_inquiry_cache_update(struct hci_dev *hdev, struct inquiry_data *data)
 {
 	struct inquiry_cache *cache = &hdev->inq_cache;
-=======
-	list_for_each_entry(e, &cache->unknown, list) {
-		if (!bacmp(&e->data.bdaddr, bdaddr))
-			return e;
-	}
-
-	return NULL;
-}
-
-struct inquiry_entry *hci_inquiry_cache_lookup_resolve(struct hci_dev *hdev,
-						       bdaddr_t *bdaddr,
-						       int state)
-{
-	struct discovery_state *cache = &hdev->discovery;
-	struct inquiry_entry *e;
-
-	BT_DBG("cache %p bdaddr %s state %d", cache, batostr(bdaddr), state);
-
-	list_for_each_entry(e, &cache->resolve, list) {
-		if (!bacmp(bdaddr, BDADDR_ANY) && e->name_state == state)
-			return e;
-		if (!bacmp(&e->data.bdaddr, bdaddr))
-			return e;
-	}
-
-	return NULL;
-}
-
-void hci_inquiry_cache_update_resolve(struct hci_dev *hdev,
-				      struct inquiry_entry *ie)
-{
-	struct discovery_state *cache = &hdev->discovery;
-	struct list_head *pos = &cache->resolve;
-	struct inquiry_entry *p;
-
-	list_del(&ie->list);
-
-	list_for_each_entry(p, &cache->resolve, list) {
-		if (p->name_state != NAME_PENDING &&
-				abs(p->data.rssi) >= abs(ie->data.rssi))
-			break;
-		pos = &p->list;
-	}
-
-	list_add(&ie->list, pos);
-}
-
-bool hci_inquiry_cache_update(struct hci_dev *hdev, struct inquiry_data *data,
-			      bool name_known, bool *ssp)
-{
-	struct discovery_state *cache = &hdev->discovery;
->>>>>>> remotes/linux2/linux-3.4.y
 	struct inquiry_entry *ie;
 
 	BT_DBG("cache %p, %s", cache, batostr(&data->bdaddr));
 
-<<<<<<< HEAD
 	ie = hci_inquiry_cache_lookup(hdev, &data->bdaddr);
 	if (!ie) {
 		/* Entry not in the cache. Add new one. */
@@ -719,94 +422,29 @@ bool hci_inquiry_cache_update(struct hci_dev *hdev, struct inquiry_data *data,
 
 		ie->next = cache->list;
 		cache->list = ie;
-=======
-	if (ssp)
-		*ssp = data->ssp_mode;
-
-	ie = hci_inquiry_cache_lookup(hdev, &data->bdaddr);
-	if (ie) {
-		if (ie->data.ssp_mode && ssp)
-			*ssp = true;
-
-		if (ie->name_state == NAME_NEEDED &&
-						data->rssi != ie->data.rssi) {
-			ie->data.rssi = data->rssi;
-			hci_inquiry_cache_update_resolve(hdev, ie);
-		}
-
-		goto update;
-	}
-
-	/* Entry not in the cache. Add new one. */
-	ie = kzalloc(sizeof(struct inquiry_entry), GFP_ATOMIC);
-	if (!ie)
-		return false;
-
-	list_add(&ie->all, &cache->all);
-
-	if (name_known) {
-		ie->name_state = NAME_KNOWN;
-	} else {
-		ie->name_state = NAME_NOT_KNOWN;
-		list_add(&ie->list, &cache->unknown);
-	}
-
-update:
-	if (name_known && ie->name_state != NAME_KNOWN &&
-					ie->name_state != NAME_PENDING) {
-		ie->name_state = NAME_KNOWN;
-		list_del(&ie->list);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	memcpy(&ie->data, data, sizeof(*data));
 	ie->timestamp = jiffies;
 	cache->timestamp = jiffies;
-<<<<<<< HEAD
-=======
-
-	if (ie->name_state == NAME_NOT_KNOWN)
-		return false;
-
-	return true;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int inquiry_cache_dump(struct hci_dev *hdev, int num, __u8 *buf)
 {
-<<<<<<< HEAD
 	struct inquiry_cache *cache = &hdev->inq_cache;
-=======
-	struct discovery_state *cache = &hdev->discovery;
->>>>>>> remotes/linux2/linux-3.4.y
 	struct inquiry_info *info = (struct inquiry_info *) buf;
 	struct inquiry_entry *e;
 	int copied = 0;
 
-<<<<<<< HEAD
 	for (e = cache->list; e && copied < num; e = e->next, copied++) {
 		struct inquiry_data *data = &e->data;
-=======
-	list_for_each_entry(e, &cache->all, all) {
-		struct inquiry_data *data = &e->data;
-
-		if (copied >= num)
-			break;
-
->>>>>>> remotes/linux2/linux-3.4.y
 		bacpy(&info->bdaddr, &data->bdaddr);
 		info->pscan_rep_mode	= data->pscan_rep_mode;
 		info->pscan_period_mode	= data->pscan_period_mode;
 		info->pscan_mode	= data->pscan_mode;
 		memcpy(info->dev_class, data->dev_class, 3);
 		info->clock_offset	= data->clock_offset;
-<<<<<<< HEAD
 		info++;
-=======
-
-		info++;
-		copied++;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	BT_DBG("cache %p, copied %d", cache, copied);
@@ -846,22 +484,14 @@ int hci_inquiry(void __user *arg)
 	if (!hdev)
 		return -ENODEV;
 
-<<<<<<< HEAD
 	hci_dev_lock_bh(hdev);
-=======
-	hci_dev_lock(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (inquiry_cache_age(hdev) > INQUIRY_CACHE_AGE_MAX ||
 				inquiry_cache_empty(hdev) ||
 				ir.flags & IREQ_CACHE_FLUSH) {
 		inquiry_cache_flush(hdev);
 		do_inquiry = 1;
 	}
-<<<<<<< HEAD
 	hci_dev_unlock_bh(hdev);
-=======
-	hci_dev_unlock(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	timeo = ir.length * msecs_to_jiffies(2000);
 
@@ -883,15 +513,9 @@ int hci_inquiry(void __user *arg)
 		goto done;
 	}
 
-<<<<<<< HEAD
 	hci_dev_lock_bh(hdev);
 	ir.num_rsp = inquiry_cache_dump(hdev, max_rsp, buf);
 	hci_dev_unlock_bh(hdev);
-=======
-	hci_dev_lock(hdev);
-	ir.num_rsp = inquiry_cache_dump(hdev, max_rsp, buf);
-	hci_dev_unlock(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	BT_DBG("num_rsp %d", ir.num_rsp);
 
@@ -925,14 +549,6 @@ int hci_dev_open(__u16 dev)
 
 	hci_req_lock(hdev);
 
-<<<<<<< HEAD
-=======
-	if (test_bit(HCI_UNREGISTER, &hdev->dev_flags)) {
-		ret = -ENODEV;
-		goto done;
-	}
-
->>>>>>> remotes/linux2/linux-3.4.y
 	if (hdev->rfkill && rfkill_blocked(hdev->rfkill)) {
 		ret = -ERFKILL;
 		goto done;
@@ -946,20 +562,11 @@ int hci_dev_open(__u16 dev)
 	if (test_bit(HCI_QUIRK_RAW_DEVICE, &hdev->quirks))
 		set_bit(HCI_RAW, &hdev->flags);
 
-<<<<<<< HEAD
-=======
-	/* Treat all non BR/EDR controllers as raw devices if
-	   enable_hs is not set */
-	if (hdev->dev_type != HCI_BREDR && !enable_hs)
-		set_bit(HCI_RAW, &hdev->flags);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	if (hdev->open(hdev)) {
 		ret = -EIO;
 		goto done;
 	}
 
-<<<<<<< HEAD
 	if (!skb_queue_empty(&hdev->cmd_q)) {
 		BT_ERR("command queue is not empty, purging");
 		skb_queue_purge(&hdev->cmd_q);
@@ -973,8 +580,6 @@ int hci_dev_open(__u16 dev)
 		skb_queue_purge(&hdev->raw_q);
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!test_bit(HCI_RAW, &hdev->flags)) {
 		atomic_set(&hdev->cmd_cnt, 1);
 		set_bit(HCI_INIT, &hdev->flags);
@@ -983,11 +588,7 @@ int hci_dev_open(__u16 dev)
 		ret = __hci_request(hdev, hci_init_req, 0,
 					msecs_to_jiffies(HCI_INIT_TIMEOUT));
 
-<<<<<<< HEAD
 		if (lmp_le_capable(hdev))
-=======
-		if (lmp_host_le_capable(hdev))
->>>>>>> remotes/linux2/linux-3.4.y
 			ret = __hci_request(hdev, hci_le_init_req, 0,
 					msecs_to_jiffies(HCI_INIT_TIMEOUT));
 
@@ -998,7 +599,6 @@ int hci_dev_open(__u16 dev)
 		hci_dev_hold(hdev);
 		set_bit(HCI_UP, &hdev->flags);
 		hci_notify(hdev, HCI_DEV_UP);
-<<<<<<< HEAD
 		if (!test_bit(HCI_SETUP, &hdev->flags) &&
 				hdev->dev_type == HCI_BREDR) {
 			hci_dev_lock_bh(hdev);
@@ -1010,18 +610,6 @@ int hci_dev_open(__u16 dev)
 		tasklet_kill(&hdev->rx_task);
 		tasklet_kill(&hdev->tx_task);
 		tasklet_kill(&hdev->cmd_task);
-=======
-		if (!test_bit(HCI_SETUP, &hdev->dev_flags)) {
-			hci_dev_lock(hdev);
-			mgmt_powered(hdev, 1);
-			hci_dev_unlock(hdev);
-		}
-	} else {
-		/* Init failed, cleanup */
-		flush_work(&hdev->tx_work);
-		flush_work(&hdev->cmd_work);
-		flush_work(&hdev->rx_work);
->>>>>>> remotes/linux2/linux-3.4.y
 
 		skb_queue_purge(&hdev->cmd_q);
 		skb_queue_purge(&hdev->rx_q);
@@ -1044,23 +632,12 @@ done:
 	return ret;
 }
 
-<<<<<<< HEAD
 static int hci_dev_do_close(struct hci_dev *hdev, u8 is_process)
 {
 	unsigned long keepflags = 0;
 
 	BT_DBG("%s %p", hdev->name, hdev);
 
-=======
-static int hci_dev_do_close(struct hci_dev *hdev)
-{
-	BT_DBG("%s %p", hdev->name, hdev);
-
-	cancel_work_sync(&hdev->le_scan);
-
-	cancel_delayed_work(&hdev->power_off);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	hci_req_cancel(hdev, ENODEV);
 	hci_req_lock(hdev);
 
@@ -1070,7 +647,6 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 		return 0;
 	}
 
-<<<<<<< HEAD
 	/* Kill RX and TX tasks */
 	tasklet_kill(&hdev->rx_task);
 	tasklet_kill(&hdev->tx_task);
@@ -1088,55 +664,21 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 		hci_dev_unlock_bh(hdev);
 	}
 
-=======
-	/* Flush RX and TX works */
-	flush_work(&hdev->tx_work);
-	flush_work(&hdev->rx_work);
-
-	if (hdev->discov_timeout > 0) {
-		cancel_delayed_work(&hdev->discov_off);
-		hdev->discov_timeout = 0;
-		clear_bit(HCI_DISCOVERABLE, &hdev->dev_flags);
-	}
-
-	if (test_and_clear_bit(HCI_SERVICE_CACHE, &hdev->dev_flags))
-		cancel_delayed_work(&hdev->service_cache);
-
-	cancel_delayed_work_sync(&hdev->le_scan_disable);
-
-	hci_dev_lock(hdev);
-	inquiry_cache_flush(hdev);
-	hci_conn_hash_flush(hdev);
-	hci_dev_unlock(hdev);
-
-	hci_notify(hdev, HCI_DEV_DOWN);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	if (hdev->flush)
 		hdev->flush(hdev);
 
 	/* Reset device */
 	skb_queue_purge(&hdev->cmd_q);
 	atomic_set(&hdev->cmd_cnt, 1);
-<<<<<<< HEAD
 	if (!test_bit(HCI_RAW, &hdev->flags)) {
-=======
-	if (!test_bit(HCI_RAW, &hdev->flags) &&
-				test_bit(HCI_QUIRK_NO_RESET, &hdev->quirks)) {
->>>>>>> remotes/linux2/linux-3.4.y
 		set_bit(HCI_INIT, &hdev->flags);
 		__hci_request(hdev, hci_reset_req, 0,
 					msecs_to_jiffies(250));
 		clear_bit(HCI_INIT, &hdev->flags);
 	}
 
-<<<<<<< HEAD
 	/* Kill cmd task */
 	tasklet_kill(&hdev->cmd_task);
-=======
-	/* flush cmd  work */
-	flush_work(&hdev->cmd_work);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Drop queues */
 	skb_queue_purge(&hdev->rx_q);
@@ -1154,7 +696,6 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 	 * and no tasks are scheduled. */
 	hdev->close(hdev);
 
-<<<<<<< HEAD
 	/* Clear only non-persistent flags */
 	if (test_bit(HCI_MGMT, &hdev->flags))
 		set_bit(HCI_MGMT, &keepflags);
@@ -1164,19 +705,6 @@ static int hci_dev_do_close(struct hci_dev *hdev)
 		set_bit(HCI_DEBUG_KEYS, &keepflags);
 
 	hdev->flags = keepflags;
-=======
-	if (!test_and_clear_bit(HCI_AUTO_OFF, &hdev->dev_flags)) {
-		hci_dev_lock(hdev);
-		mgmt_powered(hdev, 0);
-		hci_dev_unlock(hdev);
-	}
-
-	/* Clear flags */
-	hdev->flags = 0;
-
-	memset(hdev->eir, 0, sizeof(hdev->eir));
-	memset(hdev->dev_class, 0, sizeof(hdev->dev_class));
->>>>>>> remotes/linux2/linux-3.4.y
 
 	hci_req_unlock(hdev);
 
@@ -1192,16 +720,7 @@ int hci_dev_close(__u16 dev)
 	hdev = hci_dev_get(dev);
 	if (!hdev)
 		return -ENODEV;
-<<<<<<< HEAD
 	err = hci_dev_do_close(hdev, 1);
-=======
-
-	if (test_and_clear_bit(HCI_AUTO_OFF, &hdev->dev_flags))
-		cancel_delayed_work(&hdev->power_off);
-
-	err = hci_dev_do_close(hdev);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	hci_dev_put(hdev);
 	return err;
 }
@@ -1216,10 +735,7 @@ int hci_dev_reset(__u16 dev)
 		return -ENODEV;
 
 	hci_req_lock(hdev);
-<<<<<<< HEAD
 	tasklet_disable(&hdev->tx_task);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!test_bit(HCI_UP, &hdev->flags))
 		goto done;
@@ -1228,17 +744,10 @@ int hci_dev_reset(__u16 dev)
 	skb_queue_purge(&hdev->rx_q);
 	skb_queue_purge(&hdev->cmd_q);
 
-<<<<<<< HEAD
 	hci_dev_lock_bh(hdev);
 	inquiry_cache_flush(hdev);
 	hci_conn_hash_flush(hdev, 0);
 	hci_dev_unlock_bh(hdev);
-=======
-	hci_dev_lock(hdev);
-	inquiry_cache_flush(hdev);
-	hci_conn_hash_flush(hdev);
-	hci_dev_unlock(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (hdev->flush)
 		hdev->flush(hdev);
@@ -1251,10 +760,7 @@ int hci_dev_reset(__u16 dev)
 					msecs_to_jiffies(HCI_INIT_TIMEOUT));
 
 done:
-<<<<<<< HEAD
 	tasklet_enable(&hdev->tx_task);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	hci_req_unlock(hdev);
 	hci_dev_put(hdev);
 	return ret;
@@ -1353,15 +859,9 @@ int hci_dev_cmd(unsigned int cmd, void __user *arg)
 
 int hci_get_dev_list(void __user *arg)
 {
-<<<<<<< HEAD
 	struct hci_dev_list_req *dl;
 	struct hci_dev_req *dr;
 	struct list_head *p;
-=======
-	struct hci_dev *hdev;
-	struct hci_dev_list_req *dl;
-	struct hci_dev_req *dr;
->>>>>>> remotes/linux2/linux-3.4.y
 	int n = 0, size, err;
 	__u16 dev_num;
 
@@ -1379,7 +879,6 @@ int hci_get_dev_list(void __user *arg)
 
 	dr = dl->dev_req;
 
-<<<<<<< HEAD
 	read_lock_bh(&hci_dev_list_lock);
 	list_for_each(p, &hci_dev_list) {
 		struct hci_dev *hdev;
@@ -1390,15 +889,6 @@ int hci_get_dev_list(void __user *arg)
 
 		if (!test_bit(HCI_MGMT, &hdev->flags))
 			set_bit(HCI_PAIRABLE, &hdev->flags);
-=======
-	read_lock(&hci_dev_list_lock);
-	list_for_each_entry(hdev, &hci_dev_list, list) {
-		if (test_and_clear_bit(HCI_AUTO_OFF, &hdev->dev_flags))
-			cancel_delayed_work(&hdev->power_off);
-
-		if (!test_bit(HCI_MGMT, &hdev->dev_flags))
-			set_bit(HCI_PAIRABLE, &hdev->dev_flags);
->>>>>>> remotes/linux2/linux-3.4.y
 
 		(dr + n)->dev_id  = hdev->id;
 		(dr + n)->dev_opt = hdev->flags;
@@ -1406,11 +896,7 @@ int hci_get_dev_list(void __user *arg)
 		if (++n >= dev_num)
 			break;
 	}
-<<<<<<< HEAD
 	read_unlock_bh(&hci_dev_list_lock);
-=======
-	read_unlock(&hci_dev_list_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	dl->dev_num = n;
 	size = sizeof(*dl) + n * sizeof(*dr);
@@ -1434,18 +920,10 @@ int hci_get_dev_info(void __user *arg)
 	if (!hdev)
 		return -ENODEV;
 
-<<<<<<< HEAD
 	hci_del_off_timer(hdev);
 
 	if (!test_bit(HCI_MGMT, &hdev->flags))
 		set_bit(HCI_PAIRABLE, &hdev->flags);
-=======
-	if (test_and_clear_bit(HCI_AUTO_OFF, &hdev->dev_flags))
-		cancel_delayed_work_sync(&hdev->power_off);
-
-	if (!test_bit(HCI_MGMT, &hdev->dev_flags))
-		set_bit(HCI_PAIRABLE, &hdev->dev_flags);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	strcpy(di.name, hdev->name);
 	di.bdaddr   = hdev->bdaddr;
@@ -1481,11 +959,7 @@ static int hci_rfkill_set_block(void *data, bool blocked)
 	if (!blocked)
 		return 0;
 
-<<<<<<< HEAD
 	hci_dev_do_close(hdev, 0);
-=======
-	hci_dev_do_close(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -1503,10 +977,6 @@ struct hci_dev *hci_alloc_dev(void)
 	if (!hdev)
 		return NULL;
 
-<<<<<<< HEAD
-=======
-	hci_init_sysfs(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 	skb_queue_head_init(&hdev->driver_init);
 
 	return hdev;
@@ -1526,7 +996,6 @@ EXPORT_SYMBOL(hci_free_dev);
 static void hci_power_on(struct work_struct *work)
 {
 	struct hci_dev *hdev = container_of(work, struct hci_dev, power_on);
-<<<<<<< HEAD
 	int err;
 
 	BT_DBG("%s", hdev->name);
@@ -1543,25 +1012,10 @@ static void hci_power_on(struct work_struct *work)
 	if (test_and_clear_bit(HCI_SETUP, &hdev->flags) &&
 				hdev->dev_type == HCI_BREDR)
 		mgmt_index_added(hdev->id);
-=======
-
-	BT_DBG("%s", hdev->name);
-
-	if (hci_dev_open(hdev->id) < 0)
-		return;
-
-	if (test_bit(HCI_AUTO_OFF, &hdev->dev_flags))
-		schedule_delayed_work(&hdev->power_off,
-					msecs_to_jiffies(AUTO_OFF_TIMEOUT));
-
-	if (test_and_clear_bit(HCI_SETUP, &hdev->dev_flags))
-		mgmt_index_added(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_power_off(struct work_struct *work)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = container_of(work, struct hci_dev, power_off);
 
 	BT_DBG("%s", hdev->name);
@@ -1586,32 +1040,6 @@ void hci_del_off_timer(struct hci_dev *hdev)
 
 	clear_bit(HCI_AUTO_OFF, &hdev->flags);
 	del_timer(&hdev->off_timer);
-=======
-	struct hci_dev *hdev = container_of(work, struct hci_dev,
-							power_off.work);
-
-	BT_DBG("%s", hdev->name);
-
-	hci_dev_do_close(hdev);
-}
-
-static void hci_discov_off(struct work_struct *work)
-{
-	struct hci_dev *hdev;
-	u8 scan = SCAN_PAGE;
-
-	hdev = container_of(work, struct hci_dev, discov_off.work);
-
-	BT_DBG("%s", hdev->name);
-
-	hci_dev_lock(hdev);
-
-	hci_send_cmd(hdev, HCI_OP_WRITE_SCAN_ENABLE, sizeof(scan), &scan);
-
-	hdev->discov_timeout = 0;
-
-	hci_dev_unlock(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 int hci_uuids_clear(struct hci_dev *hdev)
@@ -1646,7 +1074,6 @@ int hci_link_keys_clear(struct hci_dev *hdev)
 	return 0;
 }
 
-<<<<<<< HEAD
 struct link_key *hci_find_link_key(struct hci_dev *hdev, bdaddr_t *bdaddr)
 {
 	struct list_head *p;
@@ -1659,32 +1086,10 @@ struct link_key *hci_find_link_key(struct hci_dev *hdev, bdaddr_t *bdaddr)
 		if (bacmp(bdaddr, &k->bdaddr) == 0)
 			return k;
 	}
-=======
-int hci_smp_ltks_clear(struct hci_dev *hdev)
-{
-	struct smp_ltk *k, *tmp;
-
-	list_for_each_entry_safe(k, tmp, &hdev->long_term_keys, list) {
-		list_del(&k->list);
-		kfree(k);
-	}
-
-	return 0;
-}
-
-struct link_key *hci_find_link_key(struct hci_dev *hdev, bdaddr_t *bdaddr)
-{
-	struct link_key *k;
-
-	list_for_each_entry(k, &hdev->link_keys, list)
-		if (bacmp(bdaddr, &k->bdaddr) == 0)
-			return k;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return NULL;
 }
 
-<<<<<<< HEAD
 struct link_key *hci_find_ltk(struct hci_dev *hdev, __le16 ediv, u8 rand[8])
 {
 	struct list_head *p;
@@ -1705,61 +1110,12 @@ struct link_key *hci_find_ltk(struct hci_dev *hdev, __le16 ediv, u8 rand[8])
 		if (id->ediv == ediv &&
 				(memcmp(rand, id->rand, sizeof(id->rand)) == 0))
 			return k;
-=======
-static bool hci_persistent_key(struct hci_dev *hdev, struct hci_conn *conn,
-						u8 key_type, u8 old_key_type)
-{
-	/* Legacy key */
-	if (key_type < 0x03)
-		return true;
-
-	/* Debug keys are insecure so don't store them persistently */
-	if (key_type == HCI_LK_DEBUG_COMBINATION)
-		return false;
-
-	/* Changed combination key and there's no previous one */
-	if (key_type == HCI_LK_CHANGED_COMBINATION && old_key_type == 0xff)
-		return false;
-
-	/* Security mode 3 case */
-	if (!conn)
-		return true;
-
-	/* Neither local nor remote side had no-bonding as requirement */
-	if (conn->auth_type > 0x01 && conn->remote_auth > 0x01)
-		return true;
-
-	/* Local side had dedicated bonding as requirement */
-	if (conn->auth_type == 0x02 || conn->auth_type == 0x03)
-		return true;
-
-	/* Remote side had dedicated bonding as requirement */
-	if (conn->remote_auth == 0x02 || conn->remote_auth == 0x03)
-		return true;
-
-	/* If none of the above criteria match, then don't store the key
-	 * persistently */
-	return false;
-}
-
-struct smp_ltk *hci_find_ltk(struct hci_dev *hdev, __le16 ediv, u8 rand[8])
-{
-	struct smp_ltk *k;
-
-	list_for_each_entry(k, &hdev->long_term_keys, list) {
-		if (k->ediv != ediv ||
-				memcmp(rand, k->rand, sizeof(k->rand)))
-			continue;
-
-		return k;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return NULL;
 }
 EXPORT_SYMBOL(hci_find_ltk);
 
-<<<<<<< HEAD
 struct link_key *hci_find_link_key_type(struct hci_dev *hdev,
 					bdaddr_t *bdaddr, u8 type)
 {
@@ -1792,35 +1148,6 @@ int hci_add_link_key(struct hci_dev *hdev, int new_key, bdaddr_t *bdaddr,
 		key = old_key;
 	} else {
 		old_key_type = 0xff;
-=======
-struct smp_ltk *hci_find_ltk_by_addr(struct hci_dev *hdev, bdaddr_t *bdaddr,
-				     u8 addr_type)
-{
-	struct smp_ltk *k;
-
-	list_for_each_entry(k, &hdev->long_term_keys, list)
-		if (addr_type == k->bdaddr_type &&
-					bacmp(bdaddr, &k->bdaddr) == 0)
-			return k;
-
-	return NULL;
-}
-EXPORT_SYMBOL(hci_find_ltk_by_addr);
-
-int hci_add_link_key(struct hci_dev *hdev, struct hci_conn *conn, int new_key,
-		     bdaddr_t *bdaddr, u8 *val, u8 type, u8 pin_len)
-{
-	struct link_key *key, *old_key;
-	u8 old_key_type;
-	bool persistent;
-
-	old_key = hci_find_link_key(hdev, bdaddr);
-	if (old_key) {
-		old_key_type = old_key->type;
-		key = old_key;
-	} else {
-		old_key_type = conn ? conn->key_type : 0xff;
->>>>>>> remotes/linux2/linux-3.4.y
 		key = kzalloc(sizeof(*key), GFP_ATOMIC);
 		if (!key)
 			return -ENOMEM;
@@ -1829,7 +1156,6 @@ int hci_add_link_key(struct hci_dev *hdev, struct hci_conn *conn, int new_key,
 
 	BT_DBG("%s key for %s type %u", hdev->name, batostr(bdaddr), type);
 
-<<<<<<< HEAD
 	bacpy(&key->bdaddr, bdaddr);
 	memcpy(key->val, val, 16);
 	key->auth = 0x01;
@@ -1861,42 +1187,10 @@ int hci_add_link_key(struct hci_dev *hdev, struct hci_conn *conn, int new_key,
 
 	if (type == 0x06)
 		key->key_type = old_key_type;
-=======
-	/* Some buggy controller combinations generate a changed
-	 * combination key for legacy pairing even when there's no
-	 * previous key */
-	if (type == HCI_LK_CHANGED_COMBINATION &&
-					(!conn || conn->remote_auth == 0xff) &&
-					old_key_type == 0xff) {
-		type = HCI_LK_COMBINATION;
-		if (conn)
-			conn->key_type = type;
-	}
-
-	bacpy(&key->bdaddr, bdaddr);
-	memcpy(key->val, val, 16);
-	key->pin_len = pin_len;
-
-	if (type == HCI_LK_CHANGED_COMBINATION)
-		key->type = old_key_type;
-	else
-		key->type = type;
-
-	if (!new_key)
-		return 0;
-
-	persistent = hci_persistent_key(hdev, conn, type, old_key_type);
-
-	mgmt_new_link_key(hdev, key, persistent);
-
-	if (conn)
-		conn->flush_key = !persistent;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
 
-<<<<<<< HEAD
 int hci_add_ltk(struct hci_dev *hdev, int new_key, bdaddr_t *bdaddr,
 			u8 addr_type, u8 key_size, u8 auth,
 			__le16 ediv, u8 rand[8], u8 ltk[16])
@@ -1932,41 +1226,6 @@ int hci_add_ltk(struct hci_dev *hdev, int new_key, bdaddr_t *bdaddr,
 
 	if (new_key)
 		mgmt_new_key(hdev->id, key, auth & 0x01);
-=======
-int hci_add_ltk(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 addr_type, u8 type,
-		int new_key, u8 authenticated, u8 tk[16], u8 enc_size, u16
-		ediv, u8 rand[8])
-{
-	struct smp_ltk *key, *old_key;
-
-	if (!(type & HCI_SMP_STK) && !(type & HCI_SMP_LTK))
-		return 0;
-
-	old_key = hci_find_ltk_by_addr(hdev, bdaddr, addr_type);
-	if (old_key)
-		key = old_key;
-	else {
-		key = kzalloc(sizeof(*key), GFP_ATOMIC);
-		if (!key)
-			return -ENOMEM;
-		list_add(&key->list, &hdev->long_term_keys);
-	}
-
-	bacpy(&key->bdaddr, bdaddr);
-	key->bdaddr_type = addr_type;
-	memcpy(key->val, tk, sizeof(key->val));
-	key->authenticated = authenticated;
-	key->ediv = ediv;
-	key->enc_size = enc_size;
-	key->type = type;
-	memcpy(key->rand, rand, sizeof(key->rand));
-
-	if (!new_key)
-		return 0;
-
-	if (type & HCI_SMP_LTK)
-		mgmt_new_ltk(hdev, key, 1);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -1987,26 +1246,6 @@ int hci_remove_link_key(struct hci_dev *hdev, bdaddr_t *bdaddr)
 	return 0;
 }
 
-<<<<<<< HEAD
-=======
-int hci_remove_ltk(struct hci_dev *hdev, bdaddr_t *bdaddr)
-{
-	struct smp_ltk *k, *tmp;
-
-	list_for_each_entry_safe(k, tmp, &hdev->long_term_keys, list) {
-		if (bacmp(bdaddr, &k->bdaddr))
-			continue;
-
-		BT_DBG("%s removing %s", hdev->name, batostr(bdaddr));
-
-		list_del(&k->list);
-		kfree(k);
-	}
-
-	return 0;
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 /* HCI command timer function */
 static void hci_cmd_timer(unsigned long arg)
 {
@@ -2014,20 +1253,12 @@ static void hci_cmd_timer(unsigned long arg)
 
 	BT_ERR("%s command tx timeout", hdev->name);
 	atomic_set(&hdev->cmd_cnt, 1);
-<<<<<<< HEAD
 	clear_bit(HCI_RESET, &hdev->flags);
 	tasklet_schedule(&hdev->cmd_task);
 }
 
 struct oob_data *hci_find_remote_oob_data(struct hci_dev *hdev,
 							bdaddr_t *bdaddr)
-=======
-	queue_work(hdev->workqueue, &hdev->cmd_work);
-}
-
-struct oob_data *hci_find_remote_oob_data(struct hci_dev *hdev,
-					  bdaddr_t *bdaddr)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct oob_data *data;
 
@@ -2066,7 +1297,6 @@ int hci_remote_oob_data_clear(struct hci_dev *hdev)
 	return 0;
 }
 
-<<<<<<< HEAD
 static void hci_adv_clear(unsigned long arg)
 {
 	struct hci_dev *hdev = (void *) arg;
@@ -2091,60 +1321,10 @@ int hci_adv_entries_clear(struct hci_dev *hdev)
 	}
 
 	write_unlock_bh(&hdev->adv_entries_lock);
-=======
-int hci_add_remote_oob_data(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 *hash,
-			    u8 *randomizer)
-{
-	struct oob_data *data;
-
-	data = hci_find_remote_oob_data(hdev, bdaddr);
-
-	if (!data) {
-		data = kmalloc(sizeof(*data), GFP_ATOMIC);
-		if (!data)
-			return -ENOMEM;
-
-		bacpy(&data->bdaddr, bdaddr);
-		list_add(&data->list, &hdev->remote_oob_data);
-	}
-
-	memcpy(data->hash, hash, sizeof(data->hash));
-	memcpy(data->randomizer, randomizer, sizeof(data->randomizer));
-
-	BT_DBG("%s for %s", hdev->name, batostr(bdaddr));
 
 	return 0;
 }
 
-struct bdaddr_list *hci_blacklist_lookup(struct hci_dev *hdev, bdaddr_t *bdaddr)
-{
-	struct bdaddr_list *b;
-
-	list_for_each_entry(b, &hdev->blacklist, list)
-		if (bacmp(bdaddr, &b->bdaddr) == 0)
-			return b;
-
-	return NULL;
-}
-
-int hci_blacklist_clear(struct hci_dev *hdev)
-{
-	struct list_head *p, *n;
-
-	list_for_each_safe(p, n, &hdev->blacklist) {
-		struct bdaddr_list *b;
-
-		b = list_entry(p, struct bdaddr_list, list);
-
-		list_del(p);
-		kfree(b);
-	}
->>>>>>> remotes/linux2/linux-3.4.y
-
-	return 0;
-}
-
-<<<<<<< HEAD
 struct adv_entry *hci_find_adv_entry(struct hci_dev *hdev, bdaddr_t *bdaddr)
 {
 	struct list_head *p;
@@ -2196,73 +1376,10 @@ int hci_add_remote_oob_data(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 *hash,
 	memcpy(data->randomizer, randomizer, sizeof(data->randomizer));
 
 	BT_DBG("%s for %s", hdev->name, batostr(bdaddr));
-=======
-int hci_blacklist_add(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 type)
-{
-	struct bdaddr_list *entry;
-
-	if (bacmp(bdaddr, BDADDR_ANY) == 0)
-		return -EBADF;
-
-	if (hci_blacklist_lookup(hdev, bdaddr))
-		return -EEXIST;
-
-	entry = kzalloc(sizeof(struct bdaddr_list), GFP_KERNEL);
-	if (!entry)
-		return -ENOMEM;
-
-	bacpy(&entry->bdaddr, bdaddr);
-
-	list_add(&entry->list, &hdev->blacklist);
-
-	return mgmt_device_blocked(hdev, bdaddr, type);
-}
-
-int hci_blacklist_del(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 type)
-{
-	struct bdaddr_list *entry;
-
-	if (bacmp(bdaddr, BDADDR_ANY) == 0)
-		return hci_blacklist_clear(hdev);
-
-	entry = hci_blacklist_lookup(hdev, bdaddr);
-	if (!entry)
-		return -ENOENT;
-
-	list_del(&entry->list);
-	kfree(entry);
-
-	return mgmt_device_unblocked(hdev, bdaddr, type);
-}
-
-static void hci_clear_adv_cache(struct work_struct *work)
-{
-	struct hci_dev *hdev = container_of(work, struct hci_dev,
-					    adv_work.work);
-
-	hci_dev_lock(hdev);
-
-	hci_adv_entries_clear(hdev);
-
-	hci_dev_unlock(hdev);
-}
-
-int hci_adv_entries_clear(struct hci_dev *hdev)
-{
-	struct adv_entry *entry, *tmp;
-
-	list_for_each_entry_safe(entry, tmp, &hdev->adv_entries, list) {
-		list_del(&entry->list);
-		kfree(entry);
-	}
-
-	BT_DBG("%s adv cache cleared", hdev->name);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
 
-<<<<<<< HEAD
 int hci_add_adv_entry(struct hci_dev *hdev,
 					struct hci_ev_le_advertising_info *ev)
 {
@@ -2295,174 +1412,32 @@ int hci_add_adv_entry(struct hci_dev *hdev,
 	}
 
 	entry = kzalloc(sizeof(*entry), GFP_ATOMIC);
-=======
-struct adv_entry *hci_find_adv_entry(struct hci_dev *hdev, bdaddr_t *bdaddr)
-{
-	struct adv_entry *entry;
-
-	list_for_each_entry(entry, &hdev->adv_entries, list)
-		if (bacmp(bdaddr, &entry->bdaddr) == 0)
-			return entry;
-
-	return NULL;
-}
-
-static inline int is_connectable_adv(u8 evt_type)
-{
-	if (evt_type == ADV_IND || evt_type == ADV_DIRECT_IND)
-		return 1;
-
-	return 0;
-}
-
-int hci_add_adv_entry(struct hci_dev *hdev,
-					struct hci_ev_le_advertising_info *ev) { struct adv_entry *entry; if (!is_connectable_adv(ev->evt_type))
-		return -EINVAL;
-
-	/* Only new entries should be added to adv_entries. So, if
-	 * bdaddr was found, don't add it. */
-	if (hci_find_adv_entry(hdev, &ev->bdaddr))
-		return 0;
-
-	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!entry)
 		return -ENOMEM;
 
 	bacpy(&entry->bdaddr, &ev->bdaddr);
 	entry->bdaddr_type = ev->bdaddr_type;
-<<<<<<< HEAD
 	entry->flags = flags;
 
 	write_lock(&hdev->adv_entries_lock);
 	list_add(&entry->list, &hdev->adv_entries);
 	write_unlock(&hdev->adv_entries_lock);
-=======
-
-	list_add(&entry->list, &hdev->adv_entries);
-
-	BT_DBG("%s adv entry added: address %s type %u", hdev->name,
-				batostr(&entry->bdaddr), entry->bdaddr_type);
 
 	return 0;
 }
 
-static void le_scan_param_req(struct hci_dev *hdev, unsigned long opt)
-{
-	struct le_scan_params *param =  (struct le_scan_params *) opt;
-	struct hci_cp_le_set_scan_param cp;
-
-	memset(&cp, 0, sizeof(cp));
-	cp.type = param->type;
-	cp.interval = cpu_to_le16(param->interval);
-	cp.window = cpu_to_le16(param->window);
-
-	hci_send_cmd(hdev, HCI_OP_LE_SET_SCAN_PARAM, sizeof(cp), &cp);
-}
-
-static void le_scan_enable_req(struct hci_dev *hdev, unsigned long opt)
-{
-	struct hci_cp_le_set_scan_enable cp;
-
-	memset(&cp, 0, sizeof(cp));
-	cp.enable = 1;
-
-	hci_send_cmd(hdev, HCI_OP_LE_SET_SCAN_ENABLE, sizeof(cp), &cp);
-}
-
-static int hci_do_le_scan(struct hci_dev *hdev, u8 type, u16 interval,
-			  u16 window, int timeout)
-{
-	long timeo = msecs_to_jiffies(3000);
-	struct le_scan_params param;
-	int err;
-
-	BT_DBG("%s", hdev->name);
-
-	if (test_bit(HCI_LE_SCAN, &hdev->dev_flags))
-		return -EINPROGRESS;
-
-	param.type = type;
-	param.interval = interval;
-	param.window = window;
-
-	hci_req_lock(hdev);
-
-	err = __hci_request(hdev, le_scan_param_req, (unsigned long) &param,
-			    timeo);
-	if (!err)
-		err = __hci_request(hdev, le_scan_enable_req, 0, timeo);
-
-	hci_req_unlock(hdev);
-
-	if (err < 0)
-		return err;
-
-	schedule_delayed_work(&hdev->le_scan_disable,
-			      msecs_to_jiffies(timeout));
->>>>>>> remotes/linux2/linux-3.4.y
-
-	return 0;
-}
-
-<<<<<<< HEAD
 static struct crypto_blkcipher *alloc_cypher(void)
 {
 	if (enable_smp)
 		return crypto_alloc_blkcipher("ecb(aes)", 0, CRYPTO_ALG_ASYNC);
 
 	return ERR_PTR(-ENOTSUPP);
-=======
-static void le_scan_disable_work(struct work_struct *work)
-{
-	struct hci_dev *hdev = container_of(work, struct hci_dev,
-					    le_scan_disable.work);
-	struct hci_cp_le_set_scan_enable cp;
-
-	BT_DBG("%s", hdev->name);
-
-	memset(&cp, 0, sizeof(cp));
-
-	hci_send_cmd(hdev, HCI_OP_LE_SET_SCAN_ENABLE, sizeof(cp), &cp);
-}
-
-static void le_scan_work(struct work_struct *work)
-{
-	struct hci_dev *hdev = container_of(work, struct hci_dev, le_scan);
-	struct le_scan_params *param = &hdev->le_scan_params;
-
-	BT_DBG("%s", hdev->name);
-
-	hci_do_le_scan(hdev, param->type, param->interval, param->window,
-		       param->timeout);
-}
-
-int hci_le_scan(struct hci_dev *hdev, u8 type, u16 interval, u16 window,
-		int timeout)
-{
-	struct le_scan_params *param = &hdev->le_scan_params;
-
-	BT_DBG("%s", hdev->name);
-
-	if (work_busy(&hdev->le_scan))
-		return -EINPROGRESS;
-
-	param->type = type;
-	param->interval = interval;
-	param->window = window;
-	param->timeout = timeout;
-
-	queue_work(system_long_wq, &hdev->le_scan);
-
-	return 0;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /* Register HCI device */
 int hci_register_dev(struct hci_dev *hdev)
 {
 	struct list_head *head = &hci_dev_list, *p;
-<<<<<<< HEAD
 	int i, id;
 
 	BT_DBG("%p name %s bus %d owner %p", hdev, hdev->name,
@@ -2474,21 +1449,6 @@ int hci_register_dev(struct hci_dev *hdev)
 	id = (hdev->dev_type == HCI_BREDR) ? 0 : 1;
 
 	write_lock_bh(&hci_dev_list_lock);
-=======
-	int i, id, error;
-
-	BT_DBG("%p name %s bus %d", hdev, hdev->name, hdev->bus);
-
-	if (!hdev->open || !hdev->close)
-		return -EINVAL;
-
-	/* Do not allow HCI_AMP devices to register at index 0,
-	 * so the index can be used as the AMP controller ID.
-	 */
-	id = (hdev->dev_type == HCI_BREDR) ? 0 : 1;
-
-	write_lock(&hci_dev_list_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Find first available device id */
 	list_for_each(p, &hci_dev_list) {
@@ -2499,21 +1459,12 @@ int hci_register_dev(struct hci_dev *hdev)
 
 	sprintf(hdev->name, "hci%d", id);
 	hdev->id = id;
-<<<<<<< HEAD
 	list_add(&hdev->list, head);
 
 	atomic_set(&hdev->refcnt, 1);
 	spin_lock_init(&hdev->lock);
 
 	hdev->flags = 0;
-=======
-	list_add_tail(&hdev->list, head);
-
-	mutex_init(&hdev->lock);
-
-	hdev->flags = 0;
-	hdev->dev_flags = 0;
->>>>>>> remotes/linux2/linux-3.4.y
 	hdev->pkt_type  = (HCI_DM1 | HCI_DH1 | HCI_HV1);
 	hdev->esco_type = (ESCO_HV1);
 	hdev->link_mode = (HCI_LM_ACCEPT);
@@ -2523,29 +1474,19 @@ int hci_register_dev(struct hci_dev *hdev)
 	hdev->sniff_max_interval = 800;
 	hdev->sniff_min_interval = 80;
 
-<<<<<<< HEAD
 	tasklet_init(&hdev->cmd_task, hci_cmd_task, (unsigned long) hdev);
 	tasklet_init(&hdev->rx_task, hci_rx_task, (unsigned long) hdev);
 	tasklet_init(&hdev->tx_task, hci_tx_task, (unsigned long) hdev);
-=======
-	INIT_WORK(&hdev->rx_work, hci_rx_work);
-	INIT_WORK(&hdev->cmd_work, hci_cmd_work);
-	INIT_WORK(&hdev->tx_work, hci_tx_work);
-
->>>>>>> remotes/linux2/linux-3.4.y
 
 	skb_queue_head_init(&hdev->rx_q);
 	skb_queue_head_init(&hdev->cmd_q);
 	skb_queue_head_init(&hdev->raw_q);
 
 	setup_timer(&hdev->cmd_timer, hci_cmd_timer, (unsigned long) hdev);
-<<<<<<< HEAD
 	setup_timer(&hdev->disco_timer, mgmt_disco_timeout,
 						(unsigned long) hdev);
 	setup_timer(&hdev->disco_le_timer, mgmt_disco_le_timeout,
 						(unsigned long) hdev);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	for (i = 0; i < NUM_REASSEMBLY; i++)
 		hdev->reassembly[i] = NULL;
@@ -2553,53 +1494,31 @@ int hci_register_dev(struct hci_dev *hdev)
 	init_waitqueue_head(&hdev->req_wait_q);
 	mutex_init(&hdev->req_lock);
 
-<<<<<<< HEAD
 	inquiry_cache_init(hdev);
 
 	hci_conn_hash_init(hdev);
 	hci_chan_list_init(hdev);
-=======
-	discovery_init(hdev);
-
-	hci_conn_hash_init(hdev);
-
-	INIT_LIST_HEAD(&hdev->mgmt_pending);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	INIT_LIST_HEAD(&hdev->blacklist);
 
 	INIT_LIST_HEAD(&hdev->uuids);
 
 	INIT_LIST_HEAD(&hdev->link_keys);
-<<<<<<< HEAD
-=======
-	INIT_LIST_HEAD(&hdev->long_term_keys);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	INIT_LIST_HEAD(&hdev->remote_oob_data);
 
 	INIT_LIST_HEAD(&hdev->adv_entries);
-<<<<<<< HEAD
 	rwlock_init(&hdev->adv_entries_lock);
 	setup_timer(&hdev->adv_timer, hci_adv_clear, (unsigned long) hdev);
 
 	INIT_WORK(&hdev->power_on, hci_power_on);
 	INIT_WORK(&hdev->power_off, hci_power_off);
 	setup_timer(&hdev->off_timer, hci_auto_off, (unsigned long) hdev);
-=======
-
-	INIT_DELAYED_WORK(&hdev->adv_work, hci_clear_adv_cache);
-	INIT_WORK(&hdev->power_on, hci_power_on);
-	INIT_DELAYED_WORK(&hdev->power_off, hci_power_off);
-
-	INIT_DELAYED_WORK(&hdev->discov_off, hci_discov_off);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	memset(&hdev->stat, 0, sizeof(struct hci_dev_stats));
 
 	atomic_set(&hdev->promisc, 0);
 
-<<<<<<< HEAD
 	write_unlock_bh(&hci_dev_list_lock);
 
 	hdev->workqueue = create_singlethread_workqueue(hdev->name);
@@ -2612,24 +1531,6 @@ int hci_register_dev(struct hci_dev *hdev)
 							PTR_ERR(hdev->tfm));
 
 	hci_register_sysfs(hdev);
-=======
-	INIT_WORK(&hdev->le_scan, le_scan_work);
-
-	INIT_DELAYED_WORK(&hdev->le_scan_disable, le_scan_disable_work);
-
-	write_unlock(&hci_dev_list_lock);
-
-	hdev->workqueue = alloc_workqueue(hdev->name, WQ_HIGHPRI | WQ_UNBOUND |
-							WQ_MEM_RECLAIM, 1);
-	if (!hdev->workqueue) {
-		error = -ENOMEM;
-		goto err;
-	}
-
-	error = hci_add_sysfs(hdev);
-	if (error < 0)
-		goto err_wqueue;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	hdev->rfkill = rfkill_alloc(hdev->name, &hdev->dev,
 				RFKILL_TYPE_BLUETOOTH, &hci_rfkill_ops, hdev);
@@ -2640,7 +1541,6 @@ int hci_register_dev(struct hci_dev *hdev)
 		}
 	}
 
-<<<<<<< HEAD
 	set_bit(HCI_AUTO_OFF, &hdev->flags);
 	set_bit(HCI_SETUP, &hdev->flags);
 	queue_work(hdev->workqueue, &hdev->power_on);
@@ -2655,59 +1555,25 @@ nomem:
 	write_unlock_bh(&hci_dev_list_lock);
 
 	return -ENOMEM;
-=======
-	set_bit(HCI_AUTO_OFF, &hdev->dev_flags);
-	set_bit(HCI_SETUP, &hdev->dev_flags);
-	schedule_work(&hdev->power_on);
-
-	hci_notify(hdev, HCI_DEV_REG);
-	hci_dev_hold(hdev);
-
-	return id;
-
-err_wqueue:
-	destroy_workqueue(hdev->workqueue);
-err:
-	write_lock(&hci_dev_list_lock);
-	list_del(&hdev->list);
-	write_unlock(&hci_dev_list_lock);
-
-	return error;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL(hci_register_dev);
 
 /* Unregister HCI device */
-<<<<<<< HEAD
 int hci_unregister_dev(struct hci_dev *hdev)
-=======
-void hci_unregister_dev(struct hci_dev *hdev)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	int i;
 
 	BT_DBG("%p name %s bus %d", hdev, hdev->name, hdev->bus);
 
-<<<<<<< HEAD
 	write_lock_bh(&hci_dev_list_lock);
 	list_del(&hdev->list);
 	write_unlock_bh(&hci_dev_list_lock);
 
 	hci_dev_do_close(hdev, hdev->bus == HCI_SMD);
-=======
-	set_bit(HCI_UNREGISTER, &hdev->dev_flags);
-
-	write_lock(&hci_dev_list_lock);
-	list_del(&hdev->list);
-	write_unlock(&hci_dev_list_lock);
-
-	hci_dev_do_close(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	for (i = 0; i < NUM_REASSEMBLY; i++)
 		kfree_skb(hdev->reassembly[i]);
 
-<<<<<<< HEAD
 	if (!test_bit(HCI_INIT, &hdev->flags) &&
 				!test_bit(HCI_SETUP, &hdev->flags) &&
 				hdev->dev_type == HCI_BREDR) {
@@ -2718,20 +1584,6 @@ void hci_unregister_dev(struct hci_dev *hdev)
 
 	if (!IS_ERR(hdev->tfm))
 		crypto_free_blkcipher(hdev->tfm);
-=======
-	cancel_work_sync(&hdev->power_on);
-
-	if (!test_bit(HCI_INIT, &hdev->flags) &&
-				!test_bit(HCI_SETUP, &hdev->dev_flags)) {
-		hci_dev_lock(hdev);
-		mgmt_index_removed(hdev);
-		hci_dev_unlock(hdev);
-	}
-
-	/* mgmt_index_removed should take care of emptying the
-	 * pending list */
-	BUG_ON(!list_empty(&hdev->mgmt_pending));
->>>>>>> remotes/linux2/linux-3.4.y
 
 	hci_notify(hdev, HCI_DEV_UNREG);
 
@@ -2740,7 +1592,6 @@ void hci_unregister_dev(struct hci_dev *hdev)
 		rfkill_destroy(hdev->rfkill);
 	}
 
-<<<<<<< HEAD
 	hci_unregister_sysfs(hdev);
 
 	/* Disable all timers */
@@ -2763,24 +1614,6 @@ void hci_unregister_dev(struct hci_dev *hdev)
 	__hci_dev_put(hdev);
 
 	return 0;
-=======
-	hci_del_sysfs(hdev);
-
-	cancel_delayed_work_sync(&hdev->adv_work);
-
-	destroy_workqueue(hdev->workqueue);
-
-	hci_dev_lock(hdev);
-	hci_blacklist_clear(hdev);
-	hci_uuids_clear(hdev);
-	hci_link_keys_clear(hdev);
-	hci_smp_ltks_clear(hdev);
-	hci_remote_oob_data_clear(hdev);
-	hci_adv_entries_clear(hdev);
-	hci_dev_unlock(hdev);
-
-	hci_dev_put(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL(hci_unregister_dev);
 
@@ -2816,14 +1649,9 @@ int hci_recv_frame(struct sk_buff *skb)
 	/* Time stamp */
 	__net_timestamp(skb);
 
-<<<<<<< HEAD
 	/* Queue frame for rx task */
 	skb_queue_tail(&hdev->rx_q, skb);
 	tasklet_schedule(&hdev->rx_task);
-=======
-	skb_queue_tail(&hdev->rx_q, skb);
-	queue_work(hdev->workqueue, &hdev->rx_work);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -2874,11 +1702,7 @@ static int hci_reassembly(struct hci_dev *hdev, int type, void *data,
 
 	while (count) {
 		scb = (void *) skb->cb;
-<<<<<<< HEAD
 		len = min(scb->expect, (__u16)count);
-=======
-		len = min_t(uint, scb->expect, count);
->>>>>>> remotes/linux2/linux-3.4.y
 
 		memcpy(skb_put(skb, len), data, len);
 
@@ -2956,11 +1780,7 @@ int hci_recv_fragment(struct hci_dev *hdev, int type, void *data, int count)
 
 		data += (count - rem);
 		count = rem;
-<<<<<<< HEAD
 	};
-=======
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return rem;
 }
@@ -2995,11 +1815,7 @@ int hci_recv_stream_fragment(struct hci_dev *hdev, void *data, int count)
 
 		data += (count - rem);
 		count = rem;
-<<<<<<< HEAD
 	};
-=======
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return rem;
 }
@@ -3007,7 +1823,6 @@ EXPORT_SYMBOL(hci_recv_stream_fragment);
 
 /* ---- Interface to upper protocols ---- */
 
-<<<<<<< HEAD
 /* Register/Unregister protocols.
  * hci_task_lock is used to ensure that no tasks are running. */
 int hci_register_proto(struct hci_proto *hp)
@@ -3054,21 +1869,13 @@ int hci_unregister_proto(struct hci_proto *hp)
 }
 EXPORT_SYMBOL(hci_unregister_proto);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 int hci_register_cb(struct hci_cb *cb)
 {
 	BT_DBG("%p name %s", cb, cb->name);
 
-<<<<<<< HEAD
 	write_lock_bh(&hci_cb_list_lock);
 	list_add(&cb->list, &hci_cb_list);
 	write_unlock_bh(&hci_cb_list_lock);
-=======
-	write_lock(&hci_cb_list_lock);
-	list_add(&cb->list, &hci_cb_list);
-	write_unlock(&hci_cb_list_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -3078,21 +1885,14 @@ int hci_unregister_cb(struct hci_cb *cb)
 {
 	BT_DBG("%p name %s", cb, cb->name);
 
-<<<<<<< HEAD
 	write_lock_bh(&hci_cb_list_lock);
 	list_del(&cb->list);
 	write_unlock_bh(&hci_cb_list_lock);
-=======
-	write_lock(&hci_cb_list_lock);
-	list_del(&cb->list);
-	write_unlock(&hci_cb_list_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
 EXPORT_SYMBOL(hci_unregister_cb);
 
-<<<<<<< HEAD
 int hci_register_amp(struct amp_mgr_cb *cb)
 {
 	BT_DBG("%p", cb);
@@ -3161,8 +1961,6 @@ void hci_amp_event_packet(struct hci_dev *hdev, __u8 ev_code,
 	read_unlock_bh(&amp_mgr_cb_list_lock);
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static int hci_send_frame(struct sk_buff *skb)
 {
 	struct hci_dev *hdev = (struct hci_dev *) skb->dev;
@@ -3174,32 +1972,17 @@ static int hci_send_frame(struct sk_buff *skb)
 
 	BT_DBG("%s type %d len %d", hdev->name, bt_cb(skb)->pkt_type, skb->len);
 
-<<<<<<< HEAD
 	if (atomic_read(&hdev->promisc)) {
 		/* Time stamp */
 		__net_timestamp(skb);
 
 		hci_send_to_sock(hdev, skb, NULL);
-=======
-	/* Time stamp */
-	__net_timestamp(skb);
-
-	/* Send copy to monitor */
-	hci_send_to_monitor(hdev, skb);
-
-	if (atomic_read(&hdev->promisc)) {
-		/* Send copy to the sockets */
-		hci_send_to_sock(hdev, skb);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	/* Get rid of skb owner, prior to sending to the driver. */
 	skb_orphan(skb);
 
-<<<<<<< HEAD
 	hci_notify(hdev, HCI_DEV_WRITE);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return hdev->send(skb);
 }
 
@@ -3234,18 +2017,11 @@ int hci_send_cmd(struct hci_dev *hdev, __u16 opcode, __u32 plen, void *param)
 		hdev->init_last_cmd = opcode;
 
 	skb_queue_tail(&hdev->cmd_q, skb);
-<<<<<<< HEAD
 	tasklet_schedule(&hdev->cmd_task);
 
 	return 0;
 }
 EXPORT_SYMBOL(hci_send_cmd);
-=======
-	queue_work(hdev->workqueue, &hdev->cmd_work);
-
-	return 0;
-}
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* Get data from the previously sent command */
 void *hci_sent_cmd_data(struct hci_dev *hdev, __u16 opcode)
@@ -3278,18 +2054,12 @@ static void hci_add_acl_hdr(struct sk_buff *skb, __u16 handle, __u16 flags)
 	hdr->dlen   = cpu_to_le16(len);
 }
 
-<<<<<<< HEAD
 void hci_send_acl(struct hci_conn *conn, struct hci_chan *chan,
 		struct sk_buff *skb, __u16 flags)
-=======
-static void hci_queue_acl(struct hci_conn *conn, struct sk_buff_head *queue,
-				struct sk_buff *skb, __u16 flags)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct hci_dev *hdev = conn->hdev;
 	struct sk_buff *list;
 
-<<<<<<< HEAD
 	BT_DBG("%s conn %p chan %p flags 0x%x", hdev->name, conn, chan, flags);
 
 	skb->dev = (void *) hdev;
@@ -3299,18 +2069,12 @@ static void hci_queue_acl(struct hci_conn *conn, struct sk_buff_head *queue,
 	else
 		hci_add_acl_hdr(skb, chan->ll_handle, flags);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	list = skb_shinfo(skb)->frag_list;
 	if (!list) {
 		/* Non fragmented */
 		BT_DBG("%s nonfrag skb %p len %d", hdev->name, skb, skb->len);
 
-<<<<<<< HEAD
 		skb_queue_tail(&conn->data_q, skb);
-=======
-		skb_queue_tail(queue, skb);
->>>>>>> remotes/linux2/linux-3.4.y
 	} else {
 		/* Fragmented */
 		BT_DBG("%s frag %p len %d", hdev->name, skb, skb->len);
@@ -3318,18 +2082,10 @@ static void hci_queue_acl(struct hci_conn *conn, struct sk_buff_head *queue,
 		skb_shinfo(skb)->frag_list = NULL;
 
 		/* Queue all fragments atomically */
-<<<<<<< HEAD
 		spin_lock_bh(&conn->data_q.lock);
 
 		__skb_queue_tail(&conn->data_q, skb);
 		flags &= ~ACL_PB_MASK;
-=======
-		spin_lock(&queue->lock);
-
-		__skb_queue_tail(queue, skb);
-
-		flags &= ~ACL_START;
->>>>>>> remotes/linux2/linux-3.4.y
 		flags |= ACL_CONT;
 		do {
 			skb = list; list = list->next;
@@ -3340,7 +2096,6 @@ static void hci_queue_acl(struct hci_conn *conn, struct sk_buff_head *queue,
 
 			BT_DBG("%s frag %p len %d", hdev->name, skb, skb->len);
 
-<<<<<<< HEAD
 			__skb_queue_tail(&conn->data_q, skb);
 		} while (list);
 
@@ -3348,29 +2103,6 @@ static void hci_queue_acl(struct hci_conn *conn, struct sk_buff_head *queue,
 	}
 
 	tasklet_schedule(&hdev->tx_task);
-=======
-			__skb_queue_tail(queue, skb);
-		} while (list);
-
-		spin_unlock(&queue->lock);
-	}
-}
-
-void hci_send_acl(struct hci_chan *chan, struct sk_buff *skb, __u16 flags)
-{
-	struct hci_conn *conn = chan->conn;
-	struct hci_dev *hdev = conn->hdev;
-
-	BT_DBG("%s chan %p flags 0x%x", hdev->name, chan, flags);
-
-	skb->dev = (void *) hdev;
-	bt_cb(skb)->pkt_type = HCI_ACLDATA_PKT;
-	hci_add_acl_hdr(skb, conn->handle, flags);
-
-	hci_queue_acl(conn, &chan->data_q, skb, flags);
-
-	queue_work(hdev->workqueue, &hdev->tx_work);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL(hci_send_acl);
 
@@ -3393,16 +2125,11 @@ void hci_send_sco(struct hci_conn *conn, struct sk_buff *skb)
 	bt_cb(skb)->pkt_type = HCI_SCODATA_PKT;
 
 	skb_queue_tail(&conn->data_q, skb);
-<<<<<<< HEAD
 	tasklet_schedule(&hdev->tx_task);
-=======
-	queue_work(hdev->workqueue, &hdev->tx_work);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL(hci_send_sco);
 
 /* ---- HCI TX task (outgoing data) ---- */
-<<<<<<< HEAD
 /* HCI ACL Connection scheduler */
 static inline struct hci_conn *hci_low_sent_acl(struct hci_dev *hdev,
 								int *quote)
@@ -3452,14 +2179,11 @@ static inline struct hci_conn *hci_low_sent_acl(struct hci_dev *hdev,
 	BT_DBG("conn %p quote %d", conn, *quote);
 	return conn;
 }
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* HCI Connection scheduler */
 static inline struct hci_conn *hci_low_sent(struct hci_dev *hdev, __u8 type, int *quote)
 {
 	struct hci_conn_hash *h = &hdev->conn_hash;
-<<<<<<< HEAD
 	struct hci_conn *conn = NULL;
 	int num = 0, min = ~0;
 	struct list_head *p;
@@ -3470,17 +2194,6 @@ static inline struct hci_conn *hci_low_sent(struct hci_dev *hdev, __u8 type, int
 		struct hci_conn *c;
 		c = list_entry(p, struct hci_conn, list);
 
-=======
-	struct hci_conn *conn = NULL, *c;
-	int num = 0, min = ~0;
-
-	/* We don't have to lock device here. Connections are always
-	 * added and removed with TX task disabled. */
-
-	rcu_read_lock();
-
-	list_for_each_entry_rcu(c, &h->list, list) {
->>>>>>> remotes/linux2/linux-3.4.y
 		if (c->type != type || skb_queue_empty(&c->data_q))
 			continue;
 
@@ -3493,18 +2206,8 @@ static inline struct hci_conn *hci_low_sent(struct hci_dev *hdev, __u8 type, int
 			min  = c->sent;
 			conn = c;
 		}
-<<<<<<< HEAD
 	}
 
-=======
-
-		if (hci_conn_num(hdev, type) == num)
-			break;
-	}
-
-	rcu_read_unlock();
-
->>>>>>> remotes/linux2/linux-3.4.y
 	if (conn) {
 		int cnt, q;
 
@@ -3536,7 +2239,6 @@ static inline struct hci_conn *hci_low_sent(struct hci_dev *hdev, __u8 type, int
 static inline void hci_link_tx_to(struct hci_dev *hdev, __u8 type)
 {
 	struct hci_conn_hash *h = &hdev->conn_hash;
-<<<<<<< HEAD
 	struct list_head *p;
 	struct hci_conn  *c;
 
@@ -3545,23 +2247,12 @@ static inline void hci_link_tx_to(struct hci_dev *hdev, __u8 type)
 	/* Kill stalled connections */
 	list_for_each(p, &h->list) {
 		c = list_entry(p, struct hci_conn, list);
-=======
-	struct hci_conn *c;
-
-	BT_ERR("%s link tx timeout", hdev->name);
-
-	rcu_read_lock();
-
-	/* Kill stalled connections */
-	list_for_each_entry_rcu(c, &h->list, list) {
->>>>>>> remotes/linux2/linux-3.4.y
 		if (c->type == type && c->sent) {
 			BT_ERR("%s killing stalled connection %s",
 				hdev->name, batostr(&c->dst));
 			hci_acl_disconn(c, 0x13);
 		}
 	}
-<<<<<<< HEAD
 }
 
 static inline void hci_sched_acl(struct hci_dev *hdev)
@@ -3601,267 +2292,16 @@ static inline void hci_sched_acl(struct hci_dev *hdev)
 				return;
 
 			hci_conn_enter_active_mode(conn, bt_cb(skb)->force_active);
-=======
-
-	rcu_read_unlock();
-}
-
-static inline struct hci_chan *hci_chan_sent(struct hci_dev *hdev, __u8 type,
-						int *quote)
-{
-	struct hci_conn_hash *h = &hdev->conn_hash;
-	struct hci_chan *chan = NULL;
-	int num = 0, min = ~0, cur_prio = 0;
-	struct hci_conn *conn;
-	int cnt, q, conn_num = 0;
-
-	BT_DBG("%s", hdev->name);
-
-	rcu_read_lock();
-
-	list_for_each_entry_rcu(conn, &h->list, list) {
-		struct hci_chan *tmp;
-
-		if (conn->type != type)
-			continue;
-
-		if (conn->state != BT_CONNECTED && conn->state != BT_CONFIG)
-			continue;
-
-		conn_num++;
-
-		list_for_each_entry_rcu(tmp, &conn->chan_list, list) {
-			struct sk_buff *skb;
-
-			if (skb_queue_empty(&tmp->data_q))
-				continue;
-
-			skb = skb_peek(&tmp->data_q);
-			if (skb->priority < cur_prio)
-				continue;
-
-			if (skb->priority > cur_prio) {
-				num = 0;
-				min = ~0;
-				cur_prio = skb->priority;
-			}
-
-			num++;
-
-			if (conn->sent < min) {
-				min  = conn->sent;
-				chan = tmp;
-			}
-		}
-
-		if (hci_conn_num(hdev, type) == conn_num)
-			break;
-	}
-
-	rcu_read_unlock();
-
-	if (!chan)
-		return NULL;
-
-	switch (chan->conn->type) {
-	case ACL_LINK:
-		cnt = hdev->acl_cnt;
-		break;
-	case SCO_LINK:
-	case ESCO_LINK:
-		cnt = hdev->sco_cnt;
-		break;
-	case LE_LINK:
-		cnt = hdev->le_mtu ? hdev->le_cnt : hdev->acl_cnt;
-		break;
-	default:
-		cnt = 0;
-		BT_ERR("Unknown link type");
-	}
-
-	q = cnt / num;
-	*quote = q ? q : 1;
-	BT_DBG("chan %p quote %d", chan, *quote);
-	return chan;
-}
-
-static void hci_prio_recalculate(struct hci_dev *hdev, __u8 type)
-{
-	struct hci_conn_hash *h = &hdev->conn_hash;
-	struct hci_conn *conn;
-	int num = 0;
-
-	BT_DBG("%s", hdev->name);
-
-	rcu_read_lock();
-
-	list_for_each_entry_rcu(conn, &h->list, list) {
-		struct hci_chan *chan;
-
-		if (conn->type != type)
-			continue;
-
-		if (conn->state != BT_CONNECTED && conn->state != BT_CONFIG)
-			continue;
-
-		num++;
-
-		list_for_each_entry_rcu(chan, &conn->chan_list, list) {
-			struct sk_buff *skb;
-
-			if (chan->sent) {
-				chan->sent = 0;
-				continue;
-			}
-
-			if (skb_queue_empty(&chan->data_q))
-				continue;
-
-			skb = skb_peek(&chan->data_q);
-			if (skb->priority >= HCI_PRIO_MAX - 1)
-				continue;
-
-			skb->priority = HCI_PRIO_MAX - 1;
-
-			BT_DBG("chan %p skb %p promoted to %d", chan, skb,
-								skb->priority);
-		}
-
-		if (hci_conn_num(hdev, type) == num)
-			break;
-	}
-
-	rcu_read_unlock();
-
-}
-
-static inline int __get_blocks(struct hci_dev *hdev, struct sk_buff *skb)
-{
-	/* Calculate count of blocks used by this packet */
-	return DIV_ROUND_UP(skb->len - HCI_ACL_HDR_SIZE, hdev->block_len);
-}
-
-static inline void __check_timeout(struct hci_dev *hdev, unsigned int cnt)
-{
-	if (!test_bit(HCI_RAW, &hdev->flags)) {
-		/* ACL tx timeout must be longer than maximum
-		 * link supervision timeout (40.9 seconds) */
-		if (!cnt && time_after(jiffies, hdev->acl_last_tx +
-					msecs_to_jiffies(HCI_ACL_TX_TIMEOUT)))
-			hci_link_tx_to(hdev, ACL_LINK);
-	}
-}
-
-static inline void hci_sched_acl_pkt(struct hci_dev *hdev)
-{
-	unsigned int cnt = hdev->acl_cnt;
-	struct hci_chan *chan;
-	struct sk_buff *skb;
-	int quote;
-
-	__check_timeout(hdev, cnt);
-
-	while (hdev->acl_cnt &&
-			(chan = hci_chan_sent(hdev, ACL_LINK, &quote))) {
-		u32 priority = (skb_peek(&chan->data_q))->priority;
-		while (quote-- && (skb = skb_peek(&chan->data_q))) {
-			BT_DBG("chan %p skb %p len %d priority %u", chan, skb,
-					skb->len, skb->priority);
-
-			/* Stop if priority has changed */
-			if (skb->priority < priority)
-				break;
-
-			skb = skb_dequeue(&chan->data_q);
-
-			hci_conn_enter_active_mode(chan->conn,
-						   bt_cb(skb)->force_active);
 
 			hci_send_frame(skb);
 			hdev->acl_last_tx = jiffies;
 
-			hdev->acl_cnt--;
-			chan->sent++;
-			chan->conn->sent++;
-		}
-	}
-
-	if (cnt != hdev->acl_cnt)
-		hci_prio_recalculate(hdev, ACL_LINK);
-}
-
-static inline void hci_sched_acl_blk(struct hci_dev *hdev)
-{
-	unsigned int cnt = hdev->block_cnt;
-	struct hci_chan *chan;
-	struct sk_buff *skb;
-	int quote;
-
-	__check_timeout(hdev, cnt);
-
-	while (hdev->block_cnt > 0 &&
-			(chan = hci_chan_sent(hdev, ACL_LINK, &quote))) {
-		u32 priority = (skb_peek(&chan->data_q))->priority;
-		while (quote > 0 && (skb = skb_peek(&chan->data_q))) {
-			int blocks;
-
-			BT_DBG("chan %p skb %p len %d priority %u", chan, skb,
-						skb->len, skb->priority);
-
-			/* Stop if priority has changed */
-			if (skb->priority < priority)
-				break;
-
-			skb = skb_dequeue(&chan->data_q);
-
-			blocks = __get_blocks(hdev, skb);
-			if (blocks > hdev->block_cnt)
-				return;
-
-			hci_conn_enter_active_mode(chan->conn,
-						bt_cb(skb)->force_active);
->>>>>>> remotes/linux2/linux-3.4.y
-
-			hci_send_frame(skb);
-			hdev->acl_last_tx = jiffies;
-
-<<<<<<< HEAD
 			hdev->acl_cnt -= count;
 			quote -= count;
 
 			conn->sent += count;
 		}
 	}
-=======
-			hdev->block_cnt -= blocks;
-			quote -= blocks;
-
-			chan->sent += blocks;
-			chan->conn->sent += blocks;
-		}
-	}
-
-	if (cnt != hdev->block_cnt)
-		hci_prio_recalculate(hdev, ACL_LINK);
-}
-
-static inline void hci_sched_acl(struct hci_dev *hdev)
-{
-	BT_DBG("%s", hdev->name);
-
-	if (!hci_conn_num(hdev, ACL_LINK))
-		return;
-
-	switch (hdev->flow_ctl_mode) {
-	case HCI_FLOW_CTL_MODE_PACKET_BASED:
-		hci_sched_acl_pkt(hdev);
-		break;
-
-	case HCI_FLOW_CTL_MODE_BLOCK_BASED:
-		hci_sched_acl_blk(hdev);
-		break;
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /* Schedule SCO */
@@ -3873,12 +2313,6 @@ static inline void hci_sched_sco(struct hci_dev *hdev)
 
 	BT_DBG("%s", hdev->name);
 
-<<<<<<< HEAD
-=======
-	if (!hci_conn_num(hdev, SCO_LINK))
-		return;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	while (hdev->sco_cnt && (conn = hci_low_sent(hdev, SCO_LINK, &quote))) {
 		while (quote-- && (skb = skb_dequeue(&conn->data_q))) {
 			BT_DBG("skb %p len %d", skb, skb->len);
@@ -3899,12 +2333,6 @@ static inline void hci_sched_esco(struct hci_dev *hdev)
 
 	BT_DBG("%s", hdev->name);
 
-<<<<<<< HEAD
-=======
-	if (!hci_conn_num(hdev, ESCO_LINK))
-		return;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	while (hdev->sco_cnt && (conn = hci_low_sent(hdev, ESCO_LINK, &quote))) {
 		while (quote-- && (skb = skb_dequeue(&conn->data_q))) {
 			BT_DBG("skb %p len %d", skb, skb->len);
@@ -3919,24 +2347,12 @@ static inline void hci_sched_esco(struct hci_dev *hdev)
 
 static inline void hci_sched_le(struct hci_dev *hdev)
 {
-<<<<<<< HEAD
 	struct hci_conn *conn;
 	struct sk_buff *skb;
 	int quote, cnt;
 
 	BT_DBG("%s", hdev->name);
 
-=======
-	struct hci_chan *chan;
-	struct sk_buff *skb;
-	int quote, cnt, tmp;
-
-	BT_DBG("%s", hdev->name);
-
-	if (!hci_conn_num(hdev, LE_LINK))
-		return;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!test_bit(HCI_RAW, &hdev->flags)) {
 		/* LE tx timeout must be longer than maximum
 		 * link supervision timeout (40.9 seconds) */
@@ -3946,45 +2362,21 @@ static inline void hci_sched_le(struct hci_dev *hdev)
 	}
 
 	cnt = hdev->le_pkts ? hdev->le_cnt : hdev->acl_cnt;
-<<<<<<< HEAD
 	while (cnt && (conn = hci_low_sent(hdev, LE_LINK, &quote))) {
 		while (quote-- && (skb = skb_dequeue(&conn->data_q))) {
 			BT_DBG("skb %p len %d", skb, skb->len);
-=======
-	tmp = cnt;
-	while (cnt && (chan = hci_chan_sent(hdev, LE_LINK, &quote))) {
-		u32 priority = (skb_peek(&chan->data_q))->priority;
-		while (quote-- && (skb = skb_peek(&chan->data_q))) {
-			BT_DBG("chan %p skb %p len %d priority %u", chan, skb,
-					skb->len, skb->priority);
-
-			/* Stop if priority has changed */
-			if (skb->priority < priority)
-				break;
-
-			skb = skb_dequeue(&chan->data_q);
->>>>>>> remotes/linux2/linux-3.4.y
 
 			hci_send_frame(skb);
 			hdev->le_last_tx = jiffies;
 
 			cnt--;
-<<<<<<< HEAD
 			conn->sent++;
 		}
 	}
-=======
-			chan->sent++;
-			chan->conn->sent++;
-		}
-	}
-
->>>>>>> remotes/linux2/linux-3.4.y
 	if (hdev->le_pkts)
 		hdev->le_cnt = cnt;
 	else
 		hdev->acl_cnt = cnt;
-<<<<<<< HEAD
 }
 
 static void hci_tx_task(unsigned long arg)
@@ -3994,18 +2386,6 @@ static void hci_tx_task(unsigned long arg)
 
 	read_lock(&hci_task_lock);
 
-=======
-
-	if (cnt != tmp)
-		hci_prio_recalculate(hdev, LE_LINK);
-}
-
-static void hci_tx_work(struct work_struct *work)
-{
-	struct hci_dev *hdev = container_of(work, struct hci_dev, tx_work);
-	struct sk_buff *skb;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	BT_DBG("%s acl %d sco %d le %d", hdev->name, hdev->acl_cnt,
 		hdev->sco_cnt, hdev->le_cnt);
 
@@ -4022,17 +2402,11 @@ static void hci_tx_work(struct work_struct *work)
 	/* Send next queued raw (unknown type) packet */
 	while ((skb = skb_dequeue(&hdev->raw_q)))
 		hci_send_frame(skb);
-<<<<<<< HEAD
 
 	read_unlock(&hci_task_lock);
 }
 
 /* ----- HCI RX task (incoming data proccessing) ----- */
-=======
-}
-
-/* ----- HCI RX task (incoming data processing) ----- */
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* ACL data packet */
 static inline void hci_acldata_packet(struct hci_dev *hdev, struct sk_buff *skb)
@@ -4056,7 +2430,6 @@ static inline void hci_acldata_packet(struct hci_dev *hdev, struct sk_buff *skb)
 	hci_dev_unlock(hdev);
 
 	if (conn) {
-<<<<<<< HEAD
 		register struct hci_proto *hp;
 
 		hci_conn_enter_active_mode(conn, bt_cb(skb)->force_active);
@@ -4067,21 +2440,6 @@ static inline void hci_acldata_packet(struct hci_dev *hdev, struct sk_buff *skb)
 			hp->recv_acldata(conn, skb, flags);
 			return;
 		}
-=======
-		hci_conn_enter_active_mode(conn, BT_POWER_FORCE_ACTIVE_OFF);
-
-		hci_dev_lock(hdev);
-		if (test_bit(HCI_MGMT, &hdev->dev_flags) &&
-		    !test_and_set_bit(HCI_CONN_MGMT_CONNECTED, &conn->flags))
-			mgmt_device_connected(hdev, &conn->dst, conn->type,
-					      conn->dst_type, 0, NULL, 0,
-					      conn->dev_class);
-		hci_dev_unlock(hdev);
-
-		/* Send to upper protocol */
-		l2cap_recv_acldata(conn, skb, flags);
-		return;
->>>>>>> remotes/linux2/linux-3.4.y
 	} else {
 		BT_ERR("%s ACL packet for unknown connection handle %d",
 			hdev->name, handle);
@@ -4110,7 +2468,6 @@ static inline void hci_scodata_packet(struct hci_dev *hdev, struct sk_buff *skb)
 	hci_dev_unlock(hdev);
 
 	if (conn) {
-<<<<<<< HEAD
 		register struct hci_proto *hp;
 
 		/* Send to upper protocol */
@@ -4119,11 +2476,6 @@ static inline void hci_scodata_packet(struct hci_dev *hdev, struct sk_buff *skb)
 			hp->recv_scodata(conn, skb);
 			return;
 		}
-=======
-		/* Send to upper protocol */
-		sco_recv_scodata(conn, skb);
-		return;
->>>>>>> remotes/linux2/linux-3.4.y
 	} else {
 		BT_ERR("%s SCO packet for unknown connection handle %d",
 			hdev->name, handle);
@@ -4132,35 +2484,19 @@ static inline void hci_scodata_packet(struct hci_dev *hdev, struct sk_buff *skb)
 	kfree_skb(skb);
 }
 
-<<<<<<< HEAD
 static void hci_rx_task(unsigned long arg)
 {
 	struct hci_dev *hdev = (struct hci_dev *) arg;
-=======
-static void hci_rx_work(struct work_struct *work)
-{
-	struct hci_dev *hdev = container_of(work, struct hci_dev, rx_work);
->>>>>>> remotes/linux2/linux-3.4.y
 	struct sk_buff *skb;
 
 	BT_DBG("%s", hdev->name);
 
-<<<<<<< HEAD
 	read_lock(&hci_task_lock);
 
 	while ((skb = skb_dequeue(&hdev->rx_q))) {
 		if (atomic_read(&hdev->promisc)) {
 			/* Send copy to the sockets */
 			hci_send_to_sock(hdev, skb, NULL);
-=======
-	while ((skb = skb_dequeue(&hdev->rx_q))) {
-		/* Send copy to monitor */
-		hci_send_to_monitor(hdev, skb);
-
-		if (atomic_read(&hdev->promisc)) {
-			/* Send copy to the sockets */
-			hci_send_to_sock(hdev, skb);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 
 		if (test_bit(HCI_RAW, &hdev->flags)) {
@@ -4181,10 +2517,6 @@ static void hci_rx_work(struct work_struct *work)
 		/* Process frame */
 		switch (bt_cb(skb)->pkt_type) {
 		case HCI_EVENT_PKT:
-<<<<<<< HEAD
-=======
-			BT_DBG("%s Event packet", hdev->name);
->>>>>>> remotes/linux2/linux-3.4.y
 			hci_event_packet(hdev, skb);
 			break;
 
@@ -4203,7 +2535,6 @@ static void hci_rx_work(struct work_struct *work)
 			break;
 		}
 	}
-<<<<<<< HEAD
 
 	read_unlock(&hci_task_lock);
 }
@@ -4211,13 +2542,6 @@ static void hci_rx_work(struct work_struct *work)
 static void hci_cmd_task(unsigned long arg)
 {
 	struct hci_dev *hdev = (struct hci_dev *) arg;
-=======
-}
-
-static void hci_cmd_work(struct work_struct *work)
-{
-	struct hci_dev *hdev = container_of(work, struct hci_dev, cmd_work);
->>>>>>> remotes/linux2/linux-3.4.y
 	struct sk_buff *skb;
 
 	BT_DBG("%s cmd %d", hdev->name, atomic_read(&hdev->cmd_cnt));
@@ -4234,57 +2558,14 @@ static void hci_cmd_work(struct work_struct *work)
 		if (hdev->sent_cmd) {
 			atomic_dec(&hdev->cmd_cnt);
 			hci_send_frame(skb);
-<<<<<<< HEAD
 			mod_timer(&hdev->cmd_timer,
 				  jiffies + msecs_to_jiffies(HCI_CMD_TIMEOUT));
 		} else {
 			skb_queue_head(&hdev->cmd_q, skb);
 			tasklet_schedule(&hdev->cmd_task);
-=======
-			if (test_bit(HCI_RESET, &hdev->flags))
-				del_timer(&hdev->cmd_timer);
-			else
-				mod_timer(&hdev->cmd_timer,
-				  jiffies + msecs_to_jiffies(HCI_CMD_TIMEOUT));
-		} else {
-			skb_queue_head(&hdev->cmd_q, skb);
-			queue_work(hdev->workqueue, &hdev->cmd_work);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 }
 
-<<<<<<< HEAD
 module_param(enable_smp, bool, 0644);
 MODULE_PARM_DESC(enable_smp, "Enable SMP support (LE only)");
-=======
-int hci_do_inquiry(struct hci_dev *hdev, u8 length)
-{
-	/* General inquiry access code (GIAC) */
-	u8 lap[3] = { 0x33, 0x8b, 0x9e };
-	struct hci_cp_inquiry cp;
-
-	BT_DBG("%s", hdev->name);
-
-	if (test_bit(HCI_INQUIRY, &hdev->flags))
-		return -EINPROGRESS;
-
-	inquiry_cache_flush(hdev);
-
-	memset(&cp, 0, sizeof(cp));
-	memcpy(&cp.lap, lap, sizeof(cp.lap));
-	cp.length  = length;
-
-	return hci_send_cmd(hdev, HCI_OP_INQUIRY, sizeof(cp), &cp);
-}
-
-int hci_cancel_inquiry(struct hci_dev *hdev)
-{
-	BT_DBG("%s", hdev->name);
-
-	if (!test_bit(HCI_INQUIRY, &hdev->flags))
-		return -EPERM;
-
-	return hci_send_cmd(hdev, HCI_OP_INQUIRY_CANCEL, 0, NULL);
-}
->>>>>>> remotes/linux2/linux-3.4.y

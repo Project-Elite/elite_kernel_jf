@@ -9,12 +9,6 @@ unsigned long gcd(unsigned long a, unsigned long b)
 
 	if (a < b)
 		swap(a, b);
-<<<<<<< HEAD
-=======
-
-	if (!b)
-		return a;
->>>>>>> remotes/linux2/linux-3.4.y
 	while ((r = a % b) != 0) {
 		a = b;
 		b = r;

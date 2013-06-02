@@ -235,20 +235,6 @@ static void sas_set_ex_phy(struct domain_device *dev, int phy_id, void *rsp)
 	linkrate  = phy->linkrate;
 	memcpy(sas_addr, phy->attached_sas_addr, SAS_ADDR_SIZE);
 
-<<<<<<< HEAD
-=======
-	/* Handle vacant phy - rest of dr data is not valid so skip it */
-	if (phy->phy_state == PHY_VACANT) {
-		memset(phy->attached_sas_addr, 0, SAS_ADDR_SIZE);
-		phy->attached_dev_type = NO_DEVICE;
-		if (!test_bit(SAS_HA_ATA_EH_ACTIVE, &ha->state)) {
-			phy->phy_id = phy_id;
-			goto skip;
-		} else
-			goto out;
-	}
-
->>>>>>> remotes/linux2/linux-3.4.y
 	phy->attached_dev_type = to_dev_type(dr);
 	if (test_bit(SAS_HA_ATA_EH_ACTIVE, &ha->state))
 		goto out;
@@ -286,10 +272,6 @@ static void sas_set_ex_phy(struct domain_device *dev, int phy_id, void *rsp)
 	phy->phy->maximum_linkrate = dr->pmax_linkrate;
 	phy->phy->negotiated_linkrate = phy->linkrate;
 
-<<<<<<< HEAD
-=======
- skip:
->>>>>>> remotes/linux2/linux-3.4.y
 	if (new_phy)
 		if (sas_phy_add(phy->phy)) {
 			sas_phy_free(phy->phy);
@@ -886,11 +868,7 @@ static struct domain_device *sas_ex_discover_end_dev(
 }
 
 /* See if this phy is part of a wide port */
-<<<<<<< HEAD
 static int sas_ex_join_wide_port(struct domain_device *parent, int phy_id)
-=======
-static bool sas_ex_join_wide_port(struct domain_device *parent, int phy_id)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct ex_phy *phy = &parent->ex_dev.ex_phy[phy_id];
 	int i;
@@ -906,19 +884,11 @@ static bool sas_ex_join_wide_port(struct domain_device *parent, int phy_id)
 			sas_port_add_phy(ephy->port, phy->phy);
 			phy->port = ephy->port;
 			phy->phy_state = PHY_DEVICE_DISCOVERED;
-<<<<<<< HEAD
 			return 0;
 		}
 	}
 
 	return -ENODEV;
-=======
-			return true;
-		}
-	}
-
-	return false;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static struct domain_device *sas_ex_discover_expander(
@@ -1060,12 +1030,8 @@ static int sas_ex_discover_dev(struct domain_device *dev, int phy_id)
 		return res;
 	}
 
-<<<<<<< HEAD
 	res = sas_ex_join_wide_port(dev, phy_id);
 	if (!res) {
-=======
-	if (sas_ex_join_wide_port(dev, phy_id)) {
->>>>>>> remotes/linux2/linux-3.4.y
 		SAS_DPRINTK("Attaching ex phy%d to wide port %016llx\n",
 			    phy_id, SAS_ADDR(ex_phy->attached_sas_addr));
 		return res;
@@ -1111,12 +1077,8 @@ static int sas_ex_discover_dev(struct domain_device *dev, int phy_id)
 			if (SAS_ADDR(ex->ex_phy[i].attached_sas_addr) ==
 			    SAS_ADDR(child->sas_addr)) {
 				ex->ex_phy[i].phy_state= PHY_DEVICE_DISCOVERED;
-<<<<<<< HEAD
 				res = sas_ex_join_wide_port(dev, i);
 				if (!res)
-=======
-				if (sas_ex_join_wide_port(dev, i))
->>>>>>> remotes/linux2/linux-3.4.y
 					SAS_DPRINTK("Attaching ex phy%d to wide port %016llx\n",
 						    i, SAS_ADDR(ex->ex_phy[i].attached_sas_addr));
 
@@ -1981,18 +1943,13 @@ static int sas_discover_new(struct domain_device *dev, int phy_id)
 {
 	struct ex_phy *ex_phy = &dev->ex_dev.ex_phy[phy_id];
 	struct domain_device *child;
-<<<<<<< HEAD
 	bool found = false;
 	int res, i;
-=======
-	int res;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	SAS_DPRINTK("ex %016llx phy%d new device attached\n",
 		    SAS_ADDR(dev->sas_addr), phy_id);
 	res = sas_ex_phy_discover(dev, phy_id);
 	if (res)
-<<<<<<< HEAD
 		goto out;
 	/* to support the wide port inserted */
 	for (i = 0; i < dev->ex_dev.num_phys; i++) {
@@ -2012,16 +1969,6 @@ static int sas_discover_new(struct domain_device *dev, int phy_id)
 	res = sas_ex_discover_devices(dev, phy_id);
 	if (!res)
 		goto out;
-=======
-		return res;
-
-	if (sas_ex_join_wide_port(dev, phy_id))
-		return 0;
-
-	res = sas_ex_discover_devices(dev, phy_id);
-	if (res)
-		return res;
->>>>>>> remotes/linux2/linux-3.4.y
 	list_for_each_entry(child, &dev->ex_dev.children, siblings) {
 		if (SAS_ADDR(child->sas_addr) ==
 		    SAS_ADDR(ex_phy->attached_sas_addr)) {
@@ -2031,10 +1978,7 @@ static int sas_discover_new(struct domain_device *dev, int phy_id)
 			break;
 		}
 	}
-<<<<<<< HEAD
 out:
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return res;
 }
 
@@ -2165,13 +2109,9 @@ int sas_ex_revalidate_domain(struct domain_device *port_dev)
 	struct domain_device *dev = NULL;
 
 	res = sas_find_bcast_dev(port_dev, &dev);
-<<<<<<< HEAD
 	if (res)
 		goto out;
 	if (dev) {
-=======
-	while (res == 0 && dev) {
->>>>>>> remotes/linux2/linux-3.4.y
 		struct expander_device *ex = &dev->ex_dev;
 		int i = 0, phy_id;
 
@@ -2183,15 +2123,8 @@ int sas_ex_revalidate_domain(struct domain_device *port_dev)
 			res = sas_rediscover(dev, phy_id);
 			i = phy_id + 1;
 		} while (i < ex->num_phys);
-<<<<<<< HEAD
 	}
 out:
-=======
-
-		dev = NULL;
-		res = sas_find_bcast_dev(port_dev, &dev);
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 	return res;
 }
 

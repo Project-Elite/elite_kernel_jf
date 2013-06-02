@@ -570,11 +570,7 @@ void __init orion_spi_1_init(unsigned long mapbase,
 static struct orion_wdt_platform_data orion_wdt_data;
 
 static struct resource orion_wdt_resource =
-<<<<<<< HEAD
 		DEFINE_RES_MEM(TIMER_VIRT_BASE, 0x28);
-=======
-		DEFINE_RES_MEM(TIMER_PHYS_BASE, 0x28);
->>>>>>> remotes/linux2/linux-3.4.y
 
 static struct platform_device orion_wdt_device = {
 	.name		= "orion_wdt",

@@ -529,13 +529,8 @@ more:
 				    do_sync,
 				    ci->i_truncate_seq, ci->i_truncate_size,
 				    &mtime, false, 2, page_align);
-<<<<<<< HEAD
 	if (!req)
 		return -ENOMEM;
-=======
-	if (IS_ERR(req))
-		return PTR_ERR(req);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (file->f_flags & O_DIRECT) {
 		pages = ceph_get_direct_page_vector(data, num_pages, false);

@@ -38,11 +38,7 @@
 int copy_siginfo_to_user32(compat_siginfo_t __user *to, siginfo_t *from)
 {
 	int err = 0;
-<<<<<<< HEAD
 	bool ia32 = is_ia32_task();
-=======
-	bool ia32 = test_thread_flag(TIF_IA32);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!access_ok(VERIFY_WRITE, to, sizeof(compat_siginfo_t)))
 		return -EFAULT;

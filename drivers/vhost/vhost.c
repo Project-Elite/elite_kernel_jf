@@ -1074,11 +1074,7 @@ static int translate_desc(struct vhost_dev *dev, u64 addr, u32 len,
 		}
 		_iov = iov + ret;
 		size = reg->memory_size - addr + reg->guest_phys_addr;
-<<<<<<< HEAD
 		_iov->iov_len = min((u64)len, size);
-=======
-		_iov->iov_len = min((u64)len - s, size);
->>>>>>> remotes/linux2/linux-3.4.y
 		_iov->iov_base = (void __user *)(unsigned long)
 			(reg->userspace_addr + addr - reg->guest_phys_addr);
 		s += size;

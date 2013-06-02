@@ -103,10 +103,6 @@ struct acpi_power_resource {
 
 	/* List of devices relying on this power resource */
 	struct acpi_power_resource_device *devices;
-<<<<<<< HEAD
-=======
-	struct mutex devices_lock;
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static struct list_head acpi_power_resource_list;
@@ -225,10 +221,7 @@ static void acpi_power_on_device(struct acpi_power_managed_device *device)
 
 static int __acpi_power_on(struct acpi_power_resource *resource)
 {
-<<<<<<< HEAD
 	struct acpi_power_resource_device *device_list = resource->devices;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	acpi_status status = AE_OK;
 
 	status = acpi_evaluate_object(resource->device->handle, "_ON", NULL, NULL);
@@ -241,28 +234,19 @@ static int __acpi_power_on(struct acpi_power_resource *resource)
 	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Power resource [%s] turned on\n",
 			  resource->name));
 
-<<<<<<< HEAD
 	while (device_list) {
 		acpi_power_on_device(device_list->device);
 
 		device_list = device_list->next;
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
 static int acpi_power_on(acpi_handle handle)
 {
 	int result = 0;
-<<<<<<< HEAD
 	struct acpi_power_resource *resource = NULL;
-=======
-	bool resume_device = false;
-	struct acpi_power_resource *resource = NULL;
-	struct acpi_power_resource_device *device_list;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	result = acpi_power_get_context(handle, &resource);
 	if (result)
@@ -278,31 +262,10 @@ static int acpi_power_on(acpi_handle handle)
 		result = __acpi_power_on(resource);
 		if (result)
 			resource->ref_count--;
-<<<<<<< HEAD
-=======
-		else
-			resume_device = true;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	mutex_unlock(&resource->resource_lock);
 
-<<<<<<< HEAD
-=======
-	if (!resume_device)
-		return result;
-
-	mutex_lock(&resource->devices_lock);
-
-	device_list = resource->devices;
-	while (device_list) {
-		acpi_power_on_device(device_list->device);
-		device_list = device_list->next;
-	}
-
-	mutex_unlock(&resource->devices_lock);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	return result;
 }
 
@@ -388,11 +351,7 @@ static void __acpi_power_resource_unregister_device(struct device *dev,
 	if (acpi_power_get_context(res_handle, &resource))
 		return;
 
-<<<<<<< HEAD
 	mutex_lock(&resource->resource_lock);
-=======
-	mutex_lock(&resource->devices_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	prev = NULL;
 	curr = resource->devices;
 	while (curr) {
@@ -409,11 +368,7 @@ static void __acpi_power_resource_unregister_device(struct device *dev,
 		prev = curr;
 		curr = curr->next;
 	}
-<<<<<<< HEAD
 	mutex_unlock(&resource->resource_lock);
-=======
-	mutex_unlock(&resource->devices_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /* Unlink dev from all power resources in _PR0 */
@@ -454,17 +409,10 @@ static int __acpi_power_resource_register_device(
 
 	power_resource_device->device = powered_device;
 
-<<<<<<< HEAD
 	mutex_lock(&resource->resource_lock);
 	power_resource_device->next = resource->devices;
 	resource->devices = power_resource_device;
 	mutex_unlock(&resource->resource_lock);
-=======
-	mutex_lock(&resource->devices_lock);
-	power_resource_device->next = resource->devices;
-	resource->devices = power_resource_device;
-	mutex_unlock(&resource->devices_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -509,11 +457,7 @@ int acpi_power_resource_register_device(struct device *dev, acpi_handle handle)
 	return ret;
 
 no_power_resource:
-<<<<<<< HEAD
 	printk(KERN_WARNING PREFIX "Invalid Power Resource to register!");
-=======
-	printk(KERN_DEBUG PREFIX "Invalid Power Resource to register!");
->>>>>>> remotes/linux2/linux-3.4.y
 	return -ENODEV;
 }
 
@@ -771,10 +715,6 @@ static int acpi_power_add(struct acpi_device *device)
 
 	resource->device = device;
 	mutex_init(&resource->resource_lock);
-<<<<<<< HEAD
-=======
-	mutex_init(&resource->devices_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	strcpy(resource->name, device->pnp.bus_id);
 	strcpy(acpi_device_name(device), ACPI_POWER_DEVICE_NAME);
 	strcpy(acpi_device_class(device), ACPI_POWER_CLASS);

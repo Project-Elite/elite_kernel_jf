@@ -569,11 +569,7 @@ SendReceive2(const unsigned int xid, struct cifs_ses *ses,
 {
 	int rc = 0;
 	int long_op;
-<<<<<<< HEAD
 	struct mid_q_entry *midQ = NULL;
-=======
-	struct mid_q_entry *midQ;
->>>>>>> remotes/linux2/linux-3.4.y
 	char *buf = iov[0].iov_base;
 
 	long_op = flags & CIFS_TIMEOUT_MASK;
@@ -654,12 +650,8 @@ SendReceive2(const unsigned int xid, struct cifs_ses *ses,
 
 	cifs_small_buf_release(buf);
 
-<<<<<<< HEAD
 	if (midQ != NULL)
 		rc = cifs_sync_mid_result(midQ, ses->server);
-=======
-	rc = cifs_sync_mid_result(midQ, ses->server);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (rc != 0) {
 		cifs_add_credits(ses->server, 1);
 		return rc;

@@ -23,36 +23,26 @@
 #include <linux/init.h>
 #include <linux/nmi.h>
 #include <linux/dmi.h>
-<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG
 #include <mach/sec_debug.h>
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 #define PANIC_TIMER_STEP 100
 #define PANIC_BLINK_SPD 18
 
-<<<<<<< HEAD
 /* Machine specific panic information string */
 char *mach_panic_string;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 int panic_on_oops;
 static unsigned long tainted_mask;
 static int pause_on_oops;
 static int pause_on_oops_flag;
 static DEFINE_SPINLOCK(pause_on_oops_lock);
 
-<<<<<<< HEAD
 #ifndef CONFIG_PANIC_TIMEOUT
 #define CONFIG_PANIC_TIMEOUT 0
 #endif
 int panic_timeout = CONFIG_PANIC_TIMEOUT;
-=======
-int panic_timeout;
->>>>>>> remotes/linux2/linux-3.4.y
 EXPORT_SYMBOL_GPL(panic_timeout);
 
 ATOMIC_NOTIFIER_HEAD(panic_notifier_list);
@@ -114,18 +104,14 @@ void panic(const char *fmt, ...)
 	if (!spin_trylock(&panic_lock))
 		panic_smp_self_stop();
 
-<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG
 	secdbg_sched_msg("!!panic!!");
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	console_verbose();
 	bust_spinlocks(1);
 	va_start(args, fmt);
 	vsnprintf(buf, sizeof(buf), fmt, args);
 	va_end(args);
-<<<<<<< HEAD
 #ifdef CONFIG_LGE_CRASH_HANDLER
 	set_kernel_crash_magic_number();
 	set_crash_store_enable();
@@ -134,9 +120,6 @@ void panic(const char *fmt, ...)
 #ifdef CONFIG_LGE_CRASH_HANDLER
 	set_crash_store_disable();
 #endif
-=======
-	printk(KERN_EMERG "Kernel panic - not syncing: %s\n",buf);
->>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_DEBUG_BUGVERBOSE
 	/*
 	 * Avoid nested stack-dumping if a panic occurs during oops processing
@@ -144,13 +127,10 @@ void panic(const char *fmt, ...)
 	if (!test_taint(TAINT_DIE) && oops_in_progress <= 1)
 		dump_stack();
 #endif
-<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG_SUBSYS
 	sec_debug_save_panic_info(buf,
 		(unsigned int)__builtin_return_address(0));
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * If we have crashed and we have a crash kernel loaded let it handle
@@ -426,14 +406,11 @@ late_initcall(init_oops_id);
 void print_oops_end_marker(void)
 {
 	init_oops_id();
-<<<<<<< HEAD
 
 	if (mach_panic_string)
 		printk(KERN_WARNING "Board Information: %s\n",
 		       mach_panic_string);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	printk(KERN_WARNING "---[ end trace %016llx ]---\n",
 		(unsigned long long)oops_id);
 }

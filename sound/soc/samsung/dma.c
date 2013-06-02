@@ -34,13 +34,9 @@ static const struct snd_pcm_hardware dma_hardware = {
 	.info			= SNDRV_PCM_INFO_INTERLEAVED |
 				    SNDRV_PCM_INFO_BLOCK_TRANSFER |
 				    SNDRV_PCM_INFO_MMAP |
-<<<<<<< HEAD
 				    SNDRV_PCM_INFO_MMAP_VALID |
 				    SNDRV_PCM_INFO_PAUSE |
 				    SNDRV_PCM_INFO_RESUME,
-=======
-				    SNDRV_PCM_INFO_MMAP_VALID,
->>>>>>> remotes/linux2/linux-3.4.y
 	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
 				    SNDRV_PCM_FMTBIT_U16_LE |
 				    SNDRV_PCM_FMTBIT_U8 |
@@ -250,21 +246,15 @@ static int dma_trigger(struct snd_pcm_substream *substream, int cmd)
 
 	switch (cmd) {
 	case SNDRV_PCM_TRIGGER_START:
-<<<<<<< HEAD
 	case SNDRV_PCM_TRIGGER_RESUME:
 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		prtd->state |= ST_RUNNING;
 		prtd->params->ops->trigger(prtd->params->ch);
 		break;
 
 	case SNDRV_PCM_TRIGGER_STOP:
-<<<<<<< HEAD
 	case SNDRV_PCM_TRIGGER_SUSPEND:
 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		prtd->state &= ~ST_RUNNING;
 		prtd->params->ops->stop(prtd->params->ch);
 		break;

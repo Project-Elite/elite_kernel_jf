@@ -409,13 +409,7 @@ int second_overflow(unsigned long secs)
 			time_state = TIME_DEL;
 		break;
 	case TIME_INS:
-<<<<<<< HEAD
 		if (secs % 86400 == 0) {
-=======
-		if (!(time_status & STA_INS))
-			time_state = TIME_OK;
-		else if (secs % 86400 == 0) {
->>>>>>> remotes/linux2/linux-3.4.y
 			leap = -1;
 			time_state = TIME_OOP;
 			time_tai++;
@@ -424,13 +418,7 @@ int second_overflow(unsigned long secs)
 		}
 		break;
 	case TIME_DEL:
-<<<<<<< HEAD
 		if ((secs + 1) % 86400 == 0) {
-=======
-		if (!(time_status & STA_DEL))
-			time_state = TIME_OK;
-		else if ((secs + 1) % 86400 == 0) {
->>>>>>> remotes/linux2/linux-3.4.y
 			leap = 1;
 			time_tai--;
 			time_state = TIME_WAIT;

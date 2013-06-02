@@ -5,10 +5,7 @@
  *  power management protocol extension to H4 to support AR300x Bluetooth Chip.
  *
  *  Copyright (c) 2009-2010 Atheros Communications Inc.
-<<<<<<< HEAD
  *  Copyright (c) 2012, The Linux Foundation. All rights reserved.
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  *
  *  Acknowledgements:
  *  This file is based on hci_h4.c, which was written
@@ -39,18 +36,14 @@
 #include <linux/errno.h>
 #include <linux/ioctl.h>
 #include <linux/skbuff.h>
-<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/gpio.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
 
 #include "hci_uart.h"
 
-<<<<<<< HEAD
 unsigned int enableuartsleep = 1;
 module_param(enableuartsleep, uint, 0644);
 /*
@@ -90,8 +83,6 @@ struct bluesleep_info {
 /* global pointer to a single hci device. */
 static struct bluesleep_info *bsi;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 struct ath_struct {
 	struct hci_uart *hu;
 	unsigned int cur_sleep;
@@ -100,7 +91,6 @@ struct ath_struct {
 	struct work_struct ctxtsw;
 };
 
-<<<<<<< HEAD
 static void hostwake_interrupt(unsigned long data)
 {
 	BT_INFO(" wakeup host\n");
@@ -125,37 +115,6 @@ static int ath_wakeup_ar3k(struct tty_struct *tty)
 		gpio_set_value(bsi->ext_wake, 1);
 	}
 	modify_timer_task();
-=======
-static int ath_wakeup_ar3k(struct tty_struct *tty)
-{
-	struct ktermios ktermios;
-	int status = tty->driver->ops->tiocmget(tty);
-
-	if (status & TIOCM_CTS)
-		return status;
-
-	/* Disable Automatic RTSCTS */
-	memcpy(&ktermios, tty->termios, sizeof(ktermios));
-	ktermios.c_cflag &= ~CRTSCTS;
-	tty_set_termios(tty, &ktermios);
-
-	/* Clear RTS first */
-	status = tty->driver->ops->tiocmget(tty);
-	tty->driver->ops->tiocmset(tty, 0x00, TIOCM_RTS);
-	mdelay(20);
-
-	/* Set RTS, wake up board */
-	status = tty->driver->ops->tiocmget(tty);
-	tty->driver->ops->tiocmset(tty, TIOCM_RTS, 0x00);
-	mdelay(20);
-
-	status = tty->driver->ops->tiocmget(tty);
-
-	/* Disable Automatic RTSCTS */
-	ktermios.c_cflag |= CRTSCTS;
-	status = tty_set_termios(tty, &ktermios);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	return status;
 }
 
@@ -172,23 +131,13 @@ static void ath_hci_uart_work(struct work_struct *work)
 	tty = hu->tty;
 
 	/* verify and wake up controller */
-<<<<<<< HEAD
 	if (test_bit(BT_SLEEPENABLE, &flags))
 		status = ath_wakeup_ar3k(tty);
-=======
-	if (ath->cur_sleep) {
-		status = ath_wakeup_ar3k(tty);
-		if (!(status & TIOCM_CTS))
-			return;
-	}
-
->>>>>>> remotes/linux2/linux-3.4.y
 	/* Ready to send Data */
 	clear_bit(HCI_UART_SENDING, &hu->tx_state);
 	hci_uart_tx_wakeup(hu);
 }
 
-<<<<<<< HEAD
 static irqreturn_t bluesleep_hostwake_isr(int irq, void *dev_id)
 {
 	/* schedule a tasklet to handle the change in the host wake line */
@@ -283,14 +232,11 @@ gpio_config_failed:
 	return ret;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /* Initialize protocol */
 static int ath_open(struct hci_uart *hu)
 {
 	struct ath_struct *ath;
 
-<<<<<<< HEAD
 	BT_DBG("hu %p, bsi %p", hu, bsi);
 
 	if (!bsi)
@@ -302,11 +248,6 @@ static int ath_open(struct hci_uart *hu)
 	}
 
 	ath = kzalloc(sizeof(*ath), GFP_ATOMIC);
-=======
-	BT_DBG("hu %p", hu);
-
-	ath = kzalloc(sizeof(*ath), GFP_KERNEL);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!ath)
 		return -ENOMEM;
 
@@ -315,14 +256,11 @@ static int ath_open(struct hci_uart *hu)
 	hu->priv = ath;
 	ath->hu = hu;
 
-<<<<<<< HEAD
 	ath->cur_sleep = enableuartsleep;
 	if (ath->cur_sleep == 1) {
 		set_bit(BT_SLEEPENABLE, &flags);
 		modify_timer_task();
 	}
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	INIT_WORK(&ath->ctxtsw, ath_hci_uart_work);
 
 	return 0;
@@ -354,12 +292,9 @@ static int ath_close(struct hci_uart *hu)
 	hu->priv = NULL;
 	kfree(ath);
 
-<<<<<<< HEAD
 	if (bsi)
 		ath_bluesleep_gpio_config(0);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -370,11 +305,8 @@ static int ath_enqueue(struct hci_uart *hu, struct sk_buff *skb)
 {
 	struct ath_struct *ath = hu->priv;
 
-<<<<<<< HEAD
 	BT_DBG("");
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (bt_cb(skb)->pkt_type == HCI_SCODATA_PKT) {
 		kfree_skb(skb);
 		return 0;
@@ -386,16 +318,10 @@ static int ath_enqueue(struct hci_uart *hu, struct sk_buff *skb)
 	 */
 	if (bt_cb(skb)->pkt_type == HCI_COMMAND_PKT) {
 		struct hci_command_hdr *hdr = (void *)skb->data;
-<<<<<<< HEAD
 		if (__le16_to_cpu(hdr->opcode) == HCI_OP_ATH_SLEEP) {
 			set_bit(BT_SLEEPCMD, &flags);
 			ath->cur_sleep = skb->data[HCI_COMMAND_HDR_SIZE];
 		}
-=======
-
-		if (__le16_to_cpu(hdr->opcode) == HCI_OP_ATH_SLEEP)
-			ath->cur_sleep = skb->data[HCI_COMMAND_HDR_SIZE];
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	BT_DBG("hu %p skb %p", hu, skb);
@@ -421,7 +347,6 @@ static struct sk_buff *ath_dequeue(struct hci_uart *hu)
 /* Recv data */
 static int ath_recv(struct hci_uart *hu, void *data, int count)
 {
-<<<<<<< HEAD
 	struct ath_struct *ath = hu->priv;
 	unsigned int type;
 
@@ -463,17 +388,6 @@ static void bluesleep_tx_timer_expire(unsigned long data)
 	BT_INFO("Tx timer expired\n");
 
 	set_bit(BT_TXEXPIRED, &flags);
-=======
-	int ret;
-
-	ret = hci_recv_stream_fragment(hu->hdev, data, count);
-	if (ret < 0) {
-		BT_ERR("Frame Reassembly Failed");
-		return ret;
-	}
-
-	return count;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static struct hci_uart_proto athp = {
@@ -486,7 +400,6 @@ static struct hci_uart_proto athp = {
 	.flush = ath_flush,
 };
 
-<<<<<<< HEAD
 static int __init bluesleep_probe(struct platform_device *pdev)
 {
 	int ret;
@@ -566,25 +479,10 @@ int __init ath_init(void)
 	if (ret)
 		return ret;
 	return 0;
-=======
-int __init ath_init(void)
-{
-	int err = hci_uart_register_proto(&athp);
-
-	if (!err)
-		BT_INFO("HCIATH3K protocol initialized");
-	else
-		BT_ERR("HCIATH3K protocol registration failed");
-
-	return err;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 int __exit ath_deinit(void)
 {
-<<<<<<< HEAD
 	platform_driver_unregister(&bluesleep_driver);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return hci_uart_unregister_proto(&athp);
 }

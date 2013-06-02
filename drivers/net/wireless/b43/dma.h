@@ -9,11 +9,7 @@
 /* DMA-Interrupt reasons. */
 #define B43_DMAIRQ_FATALMASK	((1 << 10) | (1 << 11) | (1 << 12) \
 					 | (1 << 14) | (1 << 15))
-<<<<<<< HEAD
 #define B43_DMAIRQ_NONFATALMASK	(1 << 13)
-=======
-#define B43_DMAIRQ_RDESC_UFLOW		(1 << 13)
->>>>>>> remotes/linux2/linux-3.4.y
 #define B43_DMAIRQ_RX_DONE		(1 << 16)
 
 /*** 32-bit DMA Engine. ***/
@@ -173,11 +169,7 @@ struct b43_dmadesc_generic {
 
 /* DMA engine tuning knobs */
 #define B43_TXRING_SLOTS		256
-<<<<<<< HEAD
 #define B43_RXRING_SLOTS		64
-=======
-#define B43_RXRING_SLOTS		256
->>>>>>> remotes/linux2/linux-3.4.y
 #define B43_DMA0_RX_FW598_BUFSIZE	(B43_DMA0_RX_FW598_FO + IEEE80211_MAX_FRAME_LEN)
 #define B43_DMA0_RX_FW351_BUFSIZE	(B43_DMA0_RX_FW351_FO + IEEE80211_MAX_FRAME_LEN)
 
@@ -303,11 +295,6 @@ int b43_dma_tx(struct b43_wldev *dev,
 void b43_dma_handle_txstatus(struct b43_wldev *dev,
 			     const struct b43_txstatus *status);
 
-<<<<<<< HEAD
-=======
-void b43_dma_handle_rx_overflow(struct b43_dmaring *ring);
-
->>>>>>> remotes/linux2/linux-3.4.y
 void b43_dma_rx(struct b43_dmaring *ring);
 
 void b43_dma_direct_fifo_rx(struct b43_wldev *dev,

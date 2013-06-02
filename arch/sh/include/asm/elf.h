@@ -202,15 +202,9 @@ extern void __kernel_vsyscall;
 	if (vdso_enabled)					\
 		NEW_AUX_ENT(AT_SYSINFO_EHDR, VDSO_BASE);	\
 	else							\
-<<<<<<< HEAD
 		NEW_AUX_ENT(AT_IGNORE, 0);
 #else
 #define VSYSCALL_AUX_ENT
-=======
-		NEW_AUX_ENT(AT_IGNORE, 0)
-#else
-#define VSYSCALL_AUX_ENT	NEW_AUX_ENT(AT_IGNORE, 0)
->>>>>>> remotes/linux2/linux-3.4.y
 #endif /* CONFIG_VSYSCALL */
 
 #ifdef CONFIG_SH_FPU

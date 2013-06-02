@@ -695,15 +695,9 @@ static bool ath_edma_get_buffers(struct ath_softc *sc,
 			__skb_unlink(skb, &rx_edma->rx_fifo);
 			list_add_tail(&bf->list, &sc->rx.rxbuf);
 			ath_rx_edma_buf_link(sc, qtype);
-<<<<<<< HEAD
 		} else {
 			bf = NULL;
 		}
-=======
-		}
-
-		bf = NULL;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	*dest = bf;
@@ -784,10 +778,6 @@ static struct ath_buf *ath_get_next_rx_buf(struct ath_softc *sc,
 			return NULL;
 	}
 
-<<<<<<< HEAD
-=======
-	list_del(&bf->list);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!bf->bf_mpdu)
 		return bf;
 
@@ -831,12 +821,7 @@ static bool ath9k_rx_accept(struct ath_common *common,
 	 * descriptor does contain a valid key index. This has been observed
 	 * mostly with CCMP encryption.
 	 */
-<<<<<<< HEAD
 	if (rx_stats->rs_keyix == ATH9K_RXKEYIX_INVALID)
-=======
-	if (rx_stats->rs_keyix == ATH9K_RXKEYIX_INVALID ||
-	    !test_bit(rx_stats->rs_keyix, common->ccmp_keymap))
->>>>>>> remotes/linux2/linux-3.4.y
 		rx_stats->rs_status &= ~ATH9K_RXERR_KEYMISS;
 
 	if (!rx_stats->rs_datalen)
@@ -1788,10 +1773,7 @@ int ath_rx_tasklet(struct ath_softc *sc, int flush, bool hp)
 	struct ieee80211_hw *hw = sc->hw;
 	struct ieee80211_hdr *hdr;
 	int retval;
-<<<<<<< HEAD
 	bool decrypt_error = false;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	struct ath_rx_status rs;
 	enum ath9k_rx_qtype qtype;
 	bool edma = !!(ah->caps.hw_caps & ATH9K_HW_CAP_EDMA);
@@ -1813,10 +1795,6 @@ int ath_rx_tasklet(struct ath_softc *sc, int flush, bool hp)
 	tsf_lower = tsf & 0xffffffff;
 
 	do {
-<<<<<<< HEAD
-=======
-		bool decrypt_error = false;
->>>>>>> remotes/linux2/linux-3.4.y
 		/* If handling rx interrupt and flush is in progress => exit */
 		if ((sc->sc_flags & SC_OP_RXFLUSH) && (flush == 0))
 			break;
@@ -1987,7 +1965,6 @@ requeue_drop_frag:
 			sc->rx.frag = NULL;
 		}
 requeue:
-<<<<<<< HEAD
 		if (edma) {
 			list_add_tail(&bf->list, &sc->rx.rxbuf);
 			ath_rx_edma_buf_link(sc, qtype);
@@ -1996,17 +1973,6 @@ requeue:
 			ath_rx_buf_link(sc, bf);
 			if (!flush)
 				ath9k_hw_rxena(ah);
-=======
-		list_add_tail(&bf->list, &sc->rx.rxbuf);
-		if (flush)
-			continue;
-
-		if (edma) {
-			ath_rx_edma_buf_link(sc, qtype);
-		} else {
-			ath_rx_buf_link(sc, bf);
-			ath9k_hw_rxena(ah);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 	} while (1);
 

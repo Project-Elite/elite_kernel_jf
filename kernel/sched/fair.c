@@ -77,7 +77,6 @@ static unsigned int sched_nr_latency = 8;
 unsigned int sysctl_sched_child_runs_first __read_mostly;
 
 /*
-<<<<<<< HEAD
  * Controls whether, when SD_SHARE_PKG_RESOURCES is on, if all
  * tasks go to idle CPUs when woken. If this is off, note that the
  * per-task flag PF_WAKE_ON_IDLE can still cause a task to go to an
@@ -86,8 +85,6 @@ unsigned int sysctl_sched_child_runs_first __read_mostly;
 unsigned int __read_mostly sysctl_sched_wake_to_idle;
 
 /*
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  * SCHED_OTHER wake-up granularity.
  * (default: 1 msec * (1 + ilog(ncpus)), units: nanoseconds)
  *
@@ -2133,11 +2130,7 @@ static void hrtick_start_fair(struct rq *rq, struct task_struct *p)
 
 	WARN_ON(task_rq(p) != rq);
 
-<<<<<<< HEAD
 	if (rq->cfs.h_nr_running > 1) {
-=======
-	if (cfs_rq->nr_running > 1) {
->>>>>>> remotes/linux2/linux-3.4.y
 		u64 slice = sched_slice(cfs_rq, se);
 		u64 ran = se->sum_exec_runtime - se->prev_sum_exec_runtime;
 		s64 delta = slice - ran;
@@ -2161,12 +2154,7 @@ static void hrtick_start_fair(struct rq *rq, struct task_struct *p)
 
 /*
  * called from enqueue/dequeue and updates the hrtick when the
-<<<<<<< HEAD
  * current task is from our class.
-=======
- * current task is from our class and nr_running is low enough
- * to matter.
->>>>>>> remotes/linux2/linux-3.4.y
  */
 static void hrtick_update(struct rq *rq)
 {
@@ -2175,12 +2163,7 @@ static void hrtick_update(struct rq *rq)
 	if (!hrtick_enabled(rq) || curr->sched_class != &fair_sched_class)
 		return;
 
-<<<<<<< HEAD
 	hrtick_start_fair(rq, curr);
-=======
-	if (cfs_rq_of(&curr->se)->nr_running < sched_nr_latency)
-		hrtick_start_fair(rq, curr);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 #else /* !CONFIG_SCHED_HRTICK */
 static inline void
@@ -2677,14 +2660,11 @@ static int select_idle_sibling(struct task_struct *p, int target)
 	if (target == prev_cpu && idle_cpu(prev_cpu))
 		return prev_cpu;
 
-<<<<<<< HEAD
 	if (!sysctl_sched_wake_to_idle &&
 	    !(current->flags & PF_WAKE_UP_IDLE) &&
 	    !(p->flags & PF_WAKE_UP_IDLE))
 		return target;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Otherwise, iterate the domains and find an elegible idle cpu.
 	 */
@@ -4644,11 +4624,7 @@ void idle_balance(int this_cpu, struct rq *this_rq)
 
 	raw_spin_lock(&this_rq->lock);
 
-<<<<<<< HEAD
 	if (!pulled_task || time_after(jiffies, this_rq->next_balance)) {
-=======
-	if (pulled_task || time_after(jiffies, this_rq->next_balance)) {
->>>>>>> remotes/linux2/linux-3.4.y
 		/*
 		 * We are going idle. next_balance may be set based on
 		 * a busy processor. So reset next_balance.

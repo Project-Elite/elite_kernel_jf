@@ -126,7 +126,6 @@ source "drivers/media/radio/Kconfig"
 
 source "drivers/media/dvb/Kconfig"
 
-<<<<<<< HEAD
 #
 # TDMB drivers
 #
@@ -138,6 +137,4 @@ source "drivers/media/tdmb/Kconfig"
 #
 source "drivers/media/isdbtmm/Kconfig"
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 endif # MEDIA_SUPPORT

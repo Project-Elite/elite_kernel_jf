@@ -7189,11 +7189,7 @@ int ocfs2_init_security_and_acl(struct inode *dir,
 	struct buffer_head *dir_bh = NULL;
 
 	ret = ocfs2_init_security_get(inode, dir, qstr, NULL);
-<<<<<<< HEAD
 	if (!ret) {
-=======
-	if (ret) {
->>>>>>> remotes/linux2/linux-3.4.y
 		mlog_errno(ret);
 		goto leave;
 	}

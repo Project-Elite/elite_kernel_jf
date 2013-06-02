@@ -1257,10 +1257,6 @@ static int rose_recvmsg(struct kiocb *iocb, struct socket *sock,
 	skb_copy_datagram_iovec(skb, 0, msg->msg_iov, copied);
 
 	if (srose != NULL) {
-<<<<<<< HEAD
-=======
-		memset(srose, 0, msg->msg_namelen);
->>>>>>> remotes/linux2/linux-3.4.y
 		srose->srose_family = AF_ROSE;
 		srose->srose_addr   = rose->dest_addr;
 		srose->srose_call   = rose->dest_call;

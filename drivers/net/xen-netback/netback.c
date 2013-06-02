@@ -146,12 +146,7 @@ void xen_netbk_remove_xenvif(struct xenvif *vif)
 	atomic_dec(&netbk->netfront_count);
 }
 
-<<<<<<< HEAD
 static void xen_netbk_idx_release(struct xen_netbk *netbk, u16 pending_idx);
-=======
-static void xen_netbk_idx_release(struct xen_netbk *netbk, u16 pending_idx,
-				  u8 status);
->>>>>>> remotes/linux2/linux-3.4.y
 static void make_tx_response(struct xenvif *vif,
 			     struct xen_netif_tx_request *txp,
 			     s8       st);
@@ -856,11 +851,7 @@ static void netbk_tx_err(struct xenvif *vif,
 
 	do {
 		make_tx_response(vif, txp, XEN_NETIF_RSP_ERROR);
-<<<<<<< HEAD
 		if (cons >= end)
-=======
-		if (cons == end)
->>>>>>> remotes/linux2/linux-3.4.y
 			break;
 		txp = RING_GET_REQUEST(&vif->tx, cons++);
 	} while (1);
@@ -869,16 +860,6 @@ static void netbk_tx_err(struct xenvif *vif,
 	xenvif_put(vif);
 }
 
-<<<<<<< HEAD
-=======
-static void netbk_fatal_tx_err(struct xenvif *vif)
-{
-	netdev_err(vif->dev, "fatal error; disabling device\n");
-	xenvif_carrier_off(vif);
-	xenvif_put(vif);
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 static int netbk_count_requests(struct xenvif *vif,
 				struct xen_netif_tx_request *first,
 				struct xen_netif_tx_request *txp,
@@ -892,7 +873,6 @@ static int netbk_count_requests(struct xenvif *vif,
 
 	do {
 		if (frags >= work_to_do) {
-<<<<<<< HEAD
 			netdev_dbg(vif->dev, "Need more frags\n");
 			return -frags;
 		}
@@ -900,46 +880,22 @@ static int netbk_count_requests(struct xenvif *vif,
 		if (unlikely(frags >= MAX_SKB_FRAGS)) {
 			netdev_dbg(vif->dev, "Too many frags\n");
 			return -frags;
-=======
-			netdev_err(vif->dev, "Need more frags\n");
-			netbk_fatal_tx_err(vif);
-			return -ENODATA;
-		}
-
-		if (unlikely(frags >= MAX_SKB_FRAGS)) {
-			netdev_err(vif->dev, "Too many frags\n");
-			netbk_fatal_tx_err(vif);
-			return -E2BIG;
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 
 		memcpy(txp, RING_GET_REQUEST(&vif->tx, cons + frags),
 		       sizeof(*txp));
 		if (txp->size > first->size) {
-<<<<<<< HEAD
 			netdev_dbg(vif->dev, "Frags galore\n");
 			return -frags;
-=======
-			netdev_err(vif->dev, "Frag is bigger than frame.\n");
-			netbk_fatal_tx_err(vif);
-			return -EIO;
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 
 		first->size -= txp->size;
 		frags++;
 
 		if (unlikely((txp->offset + txp->size) > PAGE_SIZE)) {
-<<<<<<< HEAD
 			netdev_dbg(vif->dev, "txp->offset: %x, size: %u\n",
 				 txp->offset, txp->size);
 			return -frags;
-=======
-			netdev_err(vif->dev, "txp->offset: %x, size: %u\n",
-				 txp->offset, txp->size);
-			netbk_fatal_tx_err(vif);
-			return -EINVAL;
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 	} while ((txp++)->flags & XEN_NETTXF_more_data);
 	return frags;
@@ -982,11 +938,7 @@ static struct gnttab_copy *xen_netbk_get_requests(struct xen_netbk *netbk,
 		pending_idx = netbk->pending_ring[index];
 		page = xen_netbk_alloc_page(netbk, skb, pending_idx);
 		if (!page)
-<<<<<<< HEAD
 			return NULL;
-=======
-			goto err;
->>>>>>> remotes/linux2/linux-3.4.y
 
 		gop->source.u.ref = txp->gref;
 		gop->source.domid = vif->domid;
@@ -1008,20 +960,6 @@ static struct gnttab_copy *xen_netbk_get_requests(struct xen_netbk *netbk,
 	}
 
 	return gop;
-<<<<<<< HEAD
-=======
-err:
-	/* Unwind, freeing all pages and sending error responses. */
-	while (i-- > start) {
-		xen_netbk_idx_release(netbk, frag_get_pending_idx(&frags[i]),
-				      XEN_NETIF_RSP_ERROR);
-	}
-	/* The head too, if necessary. */
-	if (start)
-		xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_ERROR);
-
-	return NULL;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int xen_netbk_tx_check_gop(struct xen_netbk *netbk,
@@ -1030,19 +968,15 @@ static int xen_netbk_tx_check_gop(struct xen_netbk *netbk,
 {
 	struct gnttab_copy *gop = *gopp;
 	u16 pending_idx = *((u16 *)skb->data);
-<<<<<<< HEAD
 	struct pending_tx_info *pending_tx_info = netbk->pending_tx_info;
 	struct xenvif *vif = pending_tx_info[pending_idx].vif;
 	struct xen_netif_tx_request *txp;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	struct skb_shared_info *shinfo = skb_shinfo(skb);
 	int nr_frags = shinfo->nr_frags;
 	int i, err, start;
 
 	/* Check status of header. */
 	err = gop->status;
-<<<<<<< HEAD
 	if (unlikely(err)) {
 		pending_ring_idx_t index;
 		index = pending_index(netbk->pending_prod++);
@@ -1051,20 +985,13 @@ static int xen_netbk_tx_check_gop(struct xen_netbk *netbk,
 		netbk->pending_ring[index] = pending_idx;
 		xenvif_put(vif);
 	}
-=======
-	if (unlikely(err))
-		xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_ERROR);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Skip first skb fragment if it is on same page as header fragment. */
 	start = (frag_get_pending_idx(&shinfo->frags[0]) == pending_idx);
 
 	for (i = start; i < nr_frags; i++) {
 		int j, newerr;
-<<<<<<< HEAD
 		pending_ring_idx_t index;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 		pending_idx = frag_get_pending_idx(&shinfo->frags[i]);
 
@@ -1073,24 +1000,16 @@ static int xen_netbk_tx_check_gop(struct xen_netbk *netbk,
 		if (likely(!newerr)) {
 			/* Had a previous error? Invalidate this fragment. */
 			if (unlikely(err))
-<<<<<<< HEAD
 				xen_netbk_idx_release(netbk, pending_idx);
-=======
-				xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_OKAY);
->>>>>>> remotes/linux2/linux-3.4.y
 			continue;
 		}
 
 		/* Error on this fragment: respond to client with an error. */
-<<<<<<< HEAD
 		txp = &netbk->pending_tx_info[pending_idx].req;
 		make_tx_response(vif, txp, XEN_NETIF_RSP_ERROR);
 		index = pending_index(netbk->pending_prod++);
 		netbk->pending_ring[index] = pending_idx;
 		xenvif_put(vif);
-=======
-		xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_ERROR);
->>>>>>> remotes/linux2/linux-3.4.y
 
 		/* Not the first error? Preceding frags already invalidated. */
 		if (err)
@@ -1098,17 +1017,10 @@ static int xen_netbk_tx_check_gop(struct xen_netbk *netbk,
 
 		/* First error: invalidate header and preceding fragments. */
 		pending_idx = *((u16 *)skb->data);
-<<<<<<< HEAD
 		xen_netbk_idx_release(netbk, pending_idx);
 		for (j = start; j < i; j++) {
 			pending_idx = frag_get_pending_idx(&shinfo->frags[j]);
 			xen_netbk_idx_release(netbk, pending_idx);
-=======
-		xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_OKAY);
-		for (j = start; j < i; j++) {
-			pending_idx = frag_get_pending_idx(&shinfo->frags[j]);
-			xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_OKAY);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 
 		/* Remember the error: invalidate all subsequent fragments. */
@@ -1142,11 +1054,7 @@ static void xen_netbk_fill_frags(struct xen_netbk *netbk, struct sk_buff *skb)
 
 		/* Take an extra reference to offset xen_netbk_idx_release */
 		get_page(netbk->mmap_pages[pending_idx]);
-<<<<<<< HEAD
 		xen_netbk_idx_release(netbk, pending_idx);
-=======
-		xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_OKAY);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 
@@ -1159,12 +1067,7 @@ static int xen_netbk_get_extras(struct xenvif *vif,
 
 	do {
 		if (unlikely(work_to_do-- <= 0)) {
-<<<<<<< HEAD
 			netdev_dbg(vif->dev, "Missing extra info\n");
-=======
-			netdev_err(vif->dev, "Missing extra info\n");
-			netbk_fatal_tx_err(vif);
->>>>>>> remotes/linux2/linux-3.4.y
 			return -EBADR;
 		}
 
@@ -1173,14 +1076,8 @@ static int xen_netbk_get_extras(struct xenvif *vif,
 		if (unlikely(!extra.type ||
 			     extra.type >= XEN_NETIF_EXTRA_TYPE_MAX)) {
 			vif->tx.req_cons = ++cons;
-<<<<<<< HEAD
 			netdev_dbg(vif->dev,
 				   "Invalid extra type: %d\n", extra.type);
-=======
-			netdev_err(vif->dev,
-				   "Invalid extra type: %d\n", extra.type);
-			netbk_fatal_tx_err(vif);
->>>>>>> remotes/linux2/linux-3.4.y
 			return -EINVAL;
 		}
 
@@ -1196,23 +1093,13 @@ static int netbk_set_skb_gso(struct xenvif *vif,
 			     struct xen_netif_extra_info *gso)
 {
 	if (!gso->u.gso.size) {
-<<<<<<< HEAD
 		netdev_dbg(vif->dev, "GSO size must not be zero.\n");
-=======
-		netdev_err(vif->dev, "GSO size must not be zero.\n");
-		netbk_fatal_tx_err(vif);
->>>>>>> remotes/linux2/linux-3.4.y
 		return -EINVAL;
 	}
 
 	/* Currently only TCPv4 S.O. is supported. */
 	if (gso->u.gso.type != XEN_NETIF_GSO_TYPE_TCPV4) {
-<<<<<<< HEAD
 		netdev_dbg(vif->dev, "Bad GSO type %d.\n", gso->u.gso.type);
-=======
-		netdev_err(vif->dev, "Bad GSO type %d.\n", gso->u.gso.type);
-		netbk_fatal_tx_err(vif);
->>>>>>> remotes/linux2/linux-3.4.y
 		return -EINVAL;
 	}
 
@@ -1349,31 +1236,9 @@ static unsigned xen_netbk_tx_build_gops(struct xen_netbk *netbk)
 
 		/* Get a netif from the list with work to do. */
 		vif = poll_net_schedule_list(netbk);
-<<<<<<< HEAD
 		if (!vif)
 			continue;
 
-=======
-		/* This can sometimes happen because the test of
-		 * list_empty(net_schedule_list) at the top of the
-		 * loop is unlocked.  Just go back and have another
-		 * look.
-		 */
-		if (!vif)
-			continue;
-
-		if (vif->tx.sring->req_prod - vif->tx.req_cons >
-		    XEN_NETIF_TX_RING_SIZE) {
-			netdev_err(vif->dev,
-				   "Impossible number of requests. "
-				   "req_prod %d, req_cons %d, size %ld\n",
-				   vif->tx.sring->req_prod, vif->tx.req_cons,
-				   XEN_NETIF_TX_RING_SIZE);
-			netbk_fatal_tx_err(vif);
-			continue;
-		}
-
->>>>>>> remotes/linux2/linux-3.4.y
 		RING_FINAL_CHECK_FOR_REQUESTS(&vif->tx, work_to_do);
 		if (!work_to_do) {
 			xenvif_put(vif);
@@ -1401,7 +1266,6 @@ static unsigned xen_netbk_tx_build_gops(struct xen_netbk *netbk)
 			work_to_do = xen_netbk_get_extras(vif, extras,
 							  work_to_do);
 			idx = vif->tx.req_cons;
-<<<<<<< HEAD
 			if (unlikely(work_to_do < 0)) {
 				netbk_tx_err(vif, &txreq, idx);
 				continue;
@@ -1413,16 +1277,6 @@ static unsigned xen_netbk_tx_build_gops(struct xen_netbk *netbk)
 			netbk_tx_err(vif, &txreq, idx - ret);
 			continue;
 		}
-=======
-			if (unlikely(work_to_do < 0))
-				continue;
-		}
-
-		ret = netbk_count_requests(vif, &txreq, txfrags, work_to_do);
-		if (unlikely(ret < 0))
-			continue;
-
->>>>>>> remotes/linux2/linux-3.4.y
 		idx += ret;
 
 		if (unlikely(txreq.size < ETH_HLEN)) {
@@ -1434,19 +1288,11 @@ static unsigned xen_netbk_tx_build_gops(struct xen_netbk *netbk)
 
 		/* No crossing a page as the payload mustn't fragment. */
 		if (unlikely((txreq.offset + txreq.size) > PAGE_SIZE)) {
-<<<<<<< HEAD
 			netdev_dbg(vif->dev,
 				   "txreq.offset: %x, size: %u, end: %lu\n",
 				   txreq.offset, txreq.size,
 				   (txreq.offset&~PAGE_MASK) + txreq.size);
 			netbk_tx_err(vif, &txreq, idx);
-=======
-			netdev_err(vif->dev,
-				   "txreq.offset: %x, size: %u, end: %lu\n",
-				   txreq.offset, txreq.size,
-				   (txreq.offset&~PAGE_MASK) + txreq.size);
-			netbk_fatal_tx_err(vif);
->>>>>>> remotes/linux2/linux-3.4.y
 			continue;
 		}
 
@@ -1474,13 +1320,8 @@ static unsigned xen_netbk_tx_build_gops(struct xen_netbk *netbk)
 			gso = &extras[XEN_NETIF_EXTRA_TYPE_GSO - 1];
 
 			if (netbk_set_skb_gso(vif, skb, gso)) {
-<<<<<<< HEAD
 				kfree_skb(skb);
 				netbk_tx_err(vif, &txreq, idx);
-=======
-				/* Failure in netbk_set_skb_gso is fatal. */
-				kfree_skb(skb);
->>>>>>> remotes/linux2/linux-3.4.y
 				continue;
 			}
 		}
@@ -1579,11 +1420,7 @@ static void xen_netbk_tx_submit(struct xen_netbk *netbk)
 			txp->size -= data_len;
 		} else {
 			/* Schedule a response immediately. */
-<<<<<<< HEAD
 			xen_netbk_idx_release(netbk, pending_idx);
-=======
-			xen_netbk_idx_release(netbk, pending_idx, XEN_NETIF_RSP_OKAY);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 
 		if (txp->flags & XEN_NETTXF_csum_blank)
@@ -1638,12 +1475,7 @@ static void xen_netbk_tx_action(struct xen_netbk *netbk)
 
 }
 
-<<<<<<< HEAD
 static void xen_netbk_idx_release(struct xen_netbk *netbk, u16 pending_idx)
-=======
-static void xen_netbk_idx_release(struct xen_netbk *netbk, u16 pending_idx,
-				  u8 status)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct xenvif *vif;
 	struct pending_tx_info *pending_tx_info;
@@ -1657,11 +1489,7 @@ static void xen_netbk_idx_release(struct xen_netbk *netbk, u16 pending_idx,
 
 	vif = pending_tx_info->vif;
 
-<<<<<<< HEAD
 	make_tx_response(vif, &pending_tx_info->req, XEN_NETIF_RSP_OKAY);
-=======
-	make_tx_response(vif, &pending_tx_info->req, status);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	index = pending_index(netbk->pending_prod++);
 	netbk->pending_ring[index] = pending_idx;

@@ -29,16 +29,6 @@ The buffer-user
    in memory, mapped into its own address space, so it can access the same area
    of memory.
 
-<<<<<<< HEAD
-=======
-*IMPORTANT*: [see https://lkml.org/lkml/2011/12/20/211 for more details]
-For this first version, A buffer shared using the dma_buf sharing API:
-- *may* be exported to user space using "mmap" *ONLY* by exporter, outside of
-  this framework.
-- with this new iteration of the dma-buf api cpu access from the kernel has been
-  enable, see below for the details.
-
->>>>>>> remotes/linux2/linux-3.4.y
 dma-buf operations for device dma only
 --------------------------------------
 
@@ -316,7 +306,6 @@ Access to a dma_buf from the kernel context involves three steps:
 				  enum dma_data_direction dir);
 
 
-<<<<<<< HEAD
 Direct Userspace Access/mmap Support
 ------------------------------------
 
@@ -394,8 +383,6 @@ Being able to mmap an export dma-buf buffer object has 2 main use-cases:
    interesting ways depending upong the exporter (if userspace starts depending
    upon this implicit synchronization).
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 Miscellaneous notes
 -------------------
 
@@ -419,7 +406,6 @@ Miscellaneous notes
   the exporting driver to create a dmabuf fd must provide a way to let
   userspace control setting of O_CLOEXEC flag passed in to dma_buf_fd().
 
-<<<<<<< HEAD
 - If an exporter needs to manually flush caches and hence needs to fake
   coherency for mmap support, it needs to be able to zap all the ptes pointing
   at the backing storage. Now linux mm needs a struct address_space associated
@@ -434,8 +420,6 @@ Miscellaneous notes
   zap ptes by unmapping the corresponding range of the struct address_space
   associated with their own file.
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 References:
 [1] struct dma_buf_ops in include/linux/dma-buf.h
 [2] All interfaces mentioned above defined in include/linux/dma-buf.h

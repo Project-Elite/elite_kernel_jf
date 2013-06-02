@@ -256,11 +256,7 @@ u64 guest_vhpt_lookup(u64 iha, u64 *pte)
 			"srlz.d;;"
 			"ssm psr.i;;"
 			"srlz.d;;"
-<<<<<<< HEAD
 			: "=r"(ret) : "r"(iha), "r"(pte):"memory");
-=======
-			: "=&r"(ret) : "r"(iha), "r"(pte) : "memory");
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return ret;
 }

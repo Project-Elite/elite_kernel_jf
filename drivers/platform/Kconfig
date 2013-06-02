@@ -1,9 +1,6 @@
 if X86
 source "drivers/platform/x86/Kconfig"
 endif
-<<<<<<< HEAD
 if ARCH_MSM
 source "drivers/platform/msm/Kconfig"
 endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y

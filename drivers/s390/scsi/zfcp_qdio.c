@@ -102,7 +102,6 @@ static void zfcp_qdio_int_resp(struct ccw_device *cdev, unsigned int qdio_err,
 {
 	struct zfcp_qdio *qdio = (struct zfcp_qdio *) parm;
 	struct zfcp_adapter *adapter = qdio->adapter;
-<<<<<<< HEAD
 	struct qdio_buffer_element *sbale;
 	int sbal_no, sbal_idx;
 	void *pl[ZFCP_QDIO_MAX_SBALS_PER_REQ + 1];
@@ -115,24 +114,6 @@ static void zfcp_qdio_int_resp(struct ccw_device *cdev, unsigned int qdio_err,
 			sbale = qdio->res_q[idx]->element;
 			req_id = (u64) sbale->addr;
 			scount = sbale->scount + 1; /* incl. signaling SBAL */
-=======
-	int sbal_no, sbal_idx;
-
-	if (unlikely(qdio_err)) {
-		if (zfcp_adapter_multi_buffer_active(adapter)) {
-			void *pl[ZFCP_QDIO_MAX_SBALS_PER_REQ + 1];
-			struct qdio_buffer_element *sbale;
-			u64 req_id;
-			u8 scount;
-
-			memset(pl, 0,
-			       ZFCP_QDIO_MAX_SBALS_PER_REQ * sizeof(void *));
-			sbale = qdio->res_q[idx]->element;
-			req_id = (u64) sbale->addr;
-			scount = min(sbale->scount + 1,
-				     ZFCP_QDIO_MAX_SBALS_PER_REQ + 1);
-				     /* incl. signaling SBAL */
->>>>>>> remotes/linux2/linux-3.4.y
 
 			for (sbal_no = 0; sbal_no < scount; sbal_no++) {
 				sbal_idx = (idx + sbal_no) %

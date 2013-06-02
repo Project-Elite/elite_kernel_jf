@@ -30,7 +30,6 @@ static struct radeon_atpx_priv {
 	/* handle for device - and atpx */
 	acpi_handle dhandle;
 	acpi_handle atpx_handle;
-<<<<<<< HEAD
 	acpi_handle atrm_handle;
 } radeon_atpx_priv;
 
@@ -82,10 +81,6 @@ int radeon_atrm_get_bios_chunk(uint8_t *bios, int offset, int len)
 	return radeon_atrm_call(radeon_atpx_priv.atrm_handle, bios, offset, len);
 }
 
-=======
-} radeon_atpx_priv;
-
->>>>>>> remotes/linux2/linux-3.4.y
 static int radeon_atpx_get_version(acpi_handle handle)
 {
 	acpi_status status;
@@ -203,11 +198,7 @@ static int radeon_atpx_power_state(enum vga_switcheroo_client_id id,
 
 static bool radeon_atpx_pci_probe_handle(struct pci_dev *pdev)
 {
-<<<<<<< HEAD
 	acpi_handle dhandle, atpx_handle, atrm_handle;
-=======
-	acpi_handle dhandle, atpx_handle;
->>>>>>> remotes/linux2/linux-3.4.y
 	acpi_status status;
 
 	dhandle = DEVICE_ACPI_HANDLE(&pdev->dev);
@@ -218,7 +209,6 @@ static bool radeon_atpx_pci_probe_handle(struct pci_dev *pdev)
 	if (ACPI_FAILURE(status))
 		return false;
 
-<<<<<<< HEAD
 	status = acpi_get_handle(dhandle, "ATRM", &atrm_handle);
 	if (ACPI_FAILURE(status))
 		return false;
@@ -226,10 +216,6 @@ static bool radeon_atpx_pci_probe_handle(struct pci_dev *pdev)
 	radeon_atpx_priv.dhandle = dhandle;
 	radeon_atpx_priv.atpx_handle = atpx_handle;
 	radeon_atpx_priv.atrm_handle = atrm_handle;
-=======
-	radeon_atpx_priv.dhandle = dhandle;
-	radeon_atpx_priv.atpx_handle = atpx_handle;
->>>>>>> remotes/linux2/linux-3.4.y
 	return true;
 }
 

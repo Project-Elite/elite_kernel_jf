@@ -24,12 +24,6 @@
 #include <linux/ethtool.h>
 #include <linux/skbuff.h>
 
-<<<<<<< HEAD
-=======
-#include <net/dst.h>
-#include <net/xfrm.h>
-
->>>>>>> remotes/linux2/linux-3.4.y
 #include "datapath.h"
 #include "vport-internal_dev.h"
 #include "vport-netdev.h"
@@ -215,14 +209,6 @@ static int internal_dev_recv(struct vport *vport, struct sk_buff *skb)
 	int len;
 
 	len = skb->len;
-<<<<<<< HEAD
-=======
-
-	skb_dst_drop(skb);
-	nf_reset(skb);
-	secpath_reset(skb);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	skb->dev = netdev;
 	skb->pkt_type = PACKET_HOST;
 	skb->protocol = eth_type_trans(skb, netdev);

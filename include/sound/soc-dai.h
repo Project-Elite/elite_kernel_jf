@@ -2,10 +2,7 @@
  * linux/sound/soc-dai.h -- ALSA SoC Layer
  *
  * Copyright:	2005-2008 Wolfson Microelectronics. PLC.
-<<<<<<< HEAD
  * Copyright (c) 2012, The Linux Foundation. All rights reserved.
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -126,13 +123,10 @@ int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
 	unsigned int tx_num, unsigned int *tx_slot,
 	unsigned int rx_num, unsigned int *rx_slot);
 
-<<<<<<< HEAD
 int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
 	unsigned int *tx_num, unsigned int *tx_slot,
 	unsigned int *rx_num, unsigned int *rx_slot);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
 
 /* Digital Audio Interface mute */
@@ -162,12 +156,9 @@ struct snd_soc_dai_ops {
 		unsigned int rx_num, unsigned int *rx_slot);
 	int (*set_tristate)(struct snd_soc_dai *dai, int tristate);
 
-<<<<<<< HEAD
 	int (*get_channel_map)(struct snd_soc_dai *dai,
 		unsigned int *tx_num, unsigned int *tx_slot,
 		unsigned int *rx_num, unsigned int *rx_slot);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * DAI digital mute - optional.
 	 * Called by soc-core to minimise any pops.
@@ -190,11 +181,8 @@ struct snd_soc_dai_ops {
 		struct snd_soc_dai *);
 	int (*trigger)(struct snd_pcm_substream *, int,
 		struct snd_soc_dai *);
-<<<<<<< HEAD
 	int (*bespoke_trigger)(struct snd_pcm_substream *, int,
 		struct snd_soc_dai *);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * For hardware based FIFO caused delay reporting.
 	 * Optional.
@@ -253,11 +241,7 @@ struct snd_soc_dai {
 	struct snd_soc_dai_driver *driver;
 
 	/* DAI runtime info */
-<<<<<<< HEAD
 	unsigned int capture_active;		/* stream is in use */
-=======
-	unsigned int capture_active:1;		/* stream is in use */
->>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int playback_active:1;		/* stream is in use */
 	unsigned int symmetric_rates:1;
 	struct snd_pcm_runtime *runtime;
@@ -283,7 +267,6 @@ struct snd_soc_dai {
 
 	struct list_head list;
 	struct list_head card_list;
-<<<<<<< HEAD
 
 	/* runtime AIF widget and channel mmap updates */
 	u64 playback_channel_map;
@@ -291,8 +274,6 @@ struct snd_soc_dai {
 	struct snd_soc_dapm_widget *playback_aif;
 	struct snd_soc_dapm_widget *capture_aif;
 	bool channel_map_instanciated;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static inline void *snd_soc_dai_get_dma_data(const struct snd_soc_dai *dai,
@@ -323,7 +304,6 @@ static inline void *snd_soc_dai_get_drvdata(struct snd_soc_dai *dai)
 	return dev_get_drvdata(dai->dev);
 }
 
-<<<<<<< HEAD
 /* Backend DAI PCM ops */
 static inline int snd_soc_dai_startup(struct snd_pcm_substream *substream,
 	struct snd_soc_dai *dai)
@@ -418,6 +398,4 @@ static inline int snd_soc_dai_trigger(struct snd_pcm_substream *substream,
 		return dai->driver->ops->trigger(substream, cmd, dai);
 	return 0;
 }
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #endif

@@ -827,17 +827,10 @@ EXPORT_SYMBOL_GPL(tpm_pcr_extend);
 int tpm_do_selftest(struct tpm_chip *chip)
 {
 	int rc;
-<<<<<<< HEAD
 	u8 digest[TPM_DIGEST_SIZE];
 	unsigned int loops;
 	unsigned int delay_msec = 1000;
 	unsigned long duration;
-=======
-	unsigned int loops;
-	unsigned int delay_msec = 1000;
-	unsigned long duration;
-	struct tpm_cmd_t cmd;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	duration = tpm_calc_ordinal_duration(chip,
 	                                     TPM_ORD_CONTINUE_SELFTEST);
@@ -852,19 +845,7 @@ int tpm_do_selftest(struct tpm_chip *chip)
 		return rc;
 
 	do {
-<<<<<<< HEAD
 		rc = __tpm_pcr_read(chip, 0, digest);
-=======
-		/* Attempt to read a PCR value */
-		cmd.header.in = pcrread_header;
-		cmd.params.pcrread_in.pcr_idx = cpu_to_be32(0);
-		rc = tpm_transmit(chip, (u8 *) &cmd, READ_PCR_RESULT_SIZE);
-
-		if (rc < TPM_HEADER_SIZE)
-			return -EFAULT;
-
-		rc = be32_to_cpu(cmd.header.out.return_code);
->>>>>>> remotes/linux2/linux-3.4.y
 		if (rc == TPM_ERR_DISABLED || rc == TPM_ERR_DEACTIVATED) {
 			dev_info(chip->dev,
 				 "TPM is disabled/deactivated (0x%X)\n", rc);
@@ -1197,7 +1178,6 @@ ssize_t tpm_write(struct file *file, const char __user *buf,
 		  size_t size, loff_t *off)
 {
 	struct tpm_chip *chip = file->private_data;
-<<<<<<< HEAD
 	size_t in_size = size, out_size;
 
 	/* cannot perform a write until the read has cleared
@@ -1209,22 +1189,6 @@ ssize_t tpm_write(struct file *file, const char __user *buf,
 
 	if (in_size > TPM_BUFSIZE)
 		in_size = TPM_BUFSIZE;
-=======
-	size_t in_size = size;
-	ssize_t out_size;
-
-	/* cannot perform a write until the read has cleared
-	   either via tpm_read or a user_read_timer timeout.
-	   This also prevents splitted buffered writes from blocking here.
-	*/
-	if (atomic_read(&chip->data_pending) != 0)
-		return -EBUSY;
-
-	if (in_size > TPM_BUFSIZE)
-		return -E2BIG;
-
-	mutex_lock(&chip->buffer_mutex);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (copy_from_user
 	    (chip->data_buffer, (void __user *) buf, in_size)) {
@@ -1234,13 +1198,6 @@ ssize_t tpm_write(struct file *file, const char __user *buf,
 
 	/* atomic tpm command send and result receive */
 	out_size = tpm_transmit(chip, chip->data_buffer, TPM_BUFSIZE);
-<<<<<<< HEAD
-=======
-	if (out_size < 0) {
-		mutex_unlock(&chip->buffer_mutex);
-		return out_size;
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 
 	atomic_set(&chip->data_pending, out_size);
 	mutex_unlock(&chip->buffer_mutex);

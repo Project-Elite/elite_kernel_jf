@@ -58,11 +58,7 @@
 typedef struct tagSKeyItem
 {
     BOOL        bKeyValid;
-<<<<<<< HEAD
     unsigned long       uKeyLength;
-=======
-	u32 uKeyLength;
->>>>>>> remotes/linux2/linux-3.4.y
     BYTE        abyKey[MAX_KEY_LEN];
     QWORD       KeyRSC;
     DWORD       dwTSC47_16;
@@ -111,11 +107,7 @@ BOOL KeybSetKey(
     PSKeyManagement pTable,
     PBYTE           pbyBSSID,
     DWORD           dwKeyIndex,
-<<<<<<< HEAD
     unsigned long           uKeyLength,
-=======
-	u32 uKeyLength,
->>>>>>> remotes/linux2/linux-3.4.y
     PQWORD          pKeyRSC,
     PBYTE           pbyKey,
     BYTE            byKeyDecMode
@@ -154,11 +146,7 @@ BOOL KeybSetDefaultKey(
     void *pDeviceHandler,
     PSKeyManagement pTable,
     DWORD           dwKeyIndex,
-<<<<<<< HEAD
     unsigned long           uKeyLength,
-=======
-	u32 uKeyLength,
->>>>>>> remotes/linux2/linux-3.4.y
     PQWORD          pKeyRSC,
     PBYTE           pbyKey,
     BYTE            byKeyDecMode
@@ -168,11 +156,7 @@ BOOL KeybSetAllGroupKey(
     void *pDeviceHandler,
     PSKeyManagement pTable,
     DWORD           dwKeyIndex,
-<<<<<<< HEAD
     unsigned long           uKeyLength,
-=======
-	u32 uKeyLength,
->>>>>>> remotes/linux2/linux-3.4.y
     PQWORD          pKeyRSC,
     PBYTE           pbyKey,
     BYTE            byKeyDecMode

@@ -55,7 +55,6 @@ config HIDRAW
 
 	If unsure, say Y.
 
-<<<<<<< HEAD
 config UHID
 	tristate "User-space I/O driver support for HID subsystem"
 	depends on HID
@@ -77,8 +76,6 @@ config UHID
 	To compile this driver as a module, choose M here: the
 	module will be called uhid.
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 source "drivers/hid/usbhid/Kconfig"
 
 menu "Special HID drivers"
@@ -280,11 +277,7 @@ config HID_LOGITECH
 config HID_LOGITECH_DJ
 	tristate "Logitech Unifying receivers full support"
 	depends on HID_LOGITECH
-<<<<<<< HEAD
 	default y
-=======
-	default m
->>>>>>> remotes/linux2/linux-3.4.y
 	---help---
 	Say Y if you want support for Logitech Unifying receivers and devices.
 	Unifying receivers are capable of pairing up to 6 Logitech compliant
@@ -529,11 +522,7 @@ config HID_SAITEK
 
 config HID_SAMSUNG
 	tristate "Samsung InfraRed remote control or keyboards"
-<<<<<<< HEAD
 	depends on (USB_HID || BT_HIDP)
-=======
-	depends on USB_HID
->>>>>>> remotes/linux2/linux-3.4.y
 	---help---
 	Support for Samsung InfraRed remote control or keyboards.
 

@@ -2695,11 +2695,7 @@ static int wm8994_hw_params(struct snd_pcm_substream *substream,
 		return -EINVAL;
 	}
 
-<<<<<<< HEAD
 	bclk_rate = params_rate(params) * 2;
-=======
-	bclk_rate = params_rate(params) * 4;
->>>>>>> remotes/linux2/linux-3.4.y
 	switch (params_format(params)) {
 	case SNDRV_PCM_FORMAT_S16_LE:
 		bclk_rate *= 16;
@@ -2828,10 +2824,6 @@ static int wm8994_aif3_hw_params(struct snd_pcm_substream *substream,
 		default:
 			return 0;
 		}
-<<<<<<< HEAD
-=======
-		break;
->>>>>>> remotes/linux2/linux-3.4.y
 	default:
 		return 0;
 	}

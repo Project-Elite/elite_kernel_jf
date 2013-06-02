@@ -57,12 +57,7 @@ static const char *board[] __initdata = {
 	"amcc,makalu",
 	"apm,klondike",
 	"est,hotfoot",
-<<<<<<< HEAD
 	"plathome,obs600"
-=======
-	"plathome,obs600",
-	NULL
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static int __init ppc40x_probe(void)

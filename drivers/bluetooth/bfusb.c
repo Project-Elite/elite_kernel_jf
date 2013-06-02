@@ -411,11 +411,7 @@ unlock:
 
 static int bfusb_open(struct hci_dev *hdev)
 {
-<<<<<<< HEAD
 	struct bfusb_data *data = hdev->driver_data;
-=======
-	struct bfusb_data *data = hci_get_drvdata(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 	unsigned long flags;
 	int i, err;
 
@@ -441,11 +437,7 @@ static int bfusb_open(struct hci_dev *hdev)
 
 static int bfusb_flush(struct hci_dev *hdev)
 {
-<<<<<<< HEAD
 	struct bfusb_data *data = hdev->driver_data;
-=======
-	struct bfusb_data *data = hci_get_drvdata(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	BT_DBG("hdev %p bfusb %p", hdev, data);
 
@@ -456,11 +448,7 @@ static int bfusb_flush(struct hci_dev *hdev)
 
 static int bfusb_close(struct hci_dev *hdev)
 {
-<<<<<<< HEAD
 	struct bfusb_data *data = hdev->driver_data;
-=======
-	struct bfusb_data *data = hci_get_drvdata(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 	unsigned long flags;
 
 	BT_DBG("hdev %p bfusb %p", hdev, data);
@@ -495,11 +483,7 @@ static int bfusb_send_frame(struct sk_buff *skb)
 	if (!test_bit(HCI_RUNNING, &hdev->flags))
 		return -EBUSY;
 
-<<<<<<< HEAD
 	data = hdev->driver_data;
-=======
-	data = hci_get_drvdata(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	switch (bt_cb(skb)->pkt_type) {
 	case HCI_COMMAND_PKT:
@@ -560,7 +544,6 @@ static int bfusb_send_frame(struct sk_buff *skb)
 	return 0;
 }
 
-<<<<<<< HEAD
 static void bfusb_destruct(struct hci_dev *hdev)
 {
 	struct bfusb_data *data = hdev->driver_data;
@@ -570,8 +553,6 @@ static void bfusb_destruct(struct hci_dev *hdev)
 	kfree(data);
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static int bfusb_ioctl(struct hci_dev *hdev, unsigned int cmd, unsigned long arg)
 {
 	return -ENOIOCTLCMD;
@@ -587,38 +568,22 @@ static int bfusb_load_firmware(struct bfusb_data *data,
 
 	BT_INFO("BlueFRITZ! USB loading firmware");
 
-<<<<<<< HEAD
-=======
-	buf = kmalloc(BFUSB_MAX_BLOCK_SIZE + 3, GFP_KERNEL);
-	if (!buf) {
-		BT_ERR("Can't allocate memory chunk for firmware");
-		return -ENOMEM;
-	}
-
->>>>>>> remotes/linux2/linux-3.4.y
 	pipe = usb_sndctrlpipe(data->udev, 0);
 
 	if (usb_control_msg(data->udev, pipe, USB_REQ_SET_CONFIGURATION,
 				0, 1, 0, NULL, 0, USB_CTRL_SET_TIMEOUT) < 0) {
 		BT_ERR("Can't change to loading configuration");
-<<<<<<< HEAD
-=======
-		kfree(buf);
->>>>>>> remotes/linux2/linux-3.4.y
 		return -EBUSY;
 	}
 
 	data->udev->toggle[0] = data->udev->toggle[1] = 0;
 
-<<<<<<< HEAD
 	buf = kmalloc(BFUSB_MAX_BLOCK_SIZE + 3, GFP_ATOMIC);
 	if (!buf) {
 		BT_ERR("Can't allocate memory chunk for firmware");
 		return -ENOMEM;
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	pipe = usb_sndbulkpipe(data->udev, data->bulk_out_ep);
 
 	while (count) {
@@ -739,27 +704,18 @@ static int bfusb_probe(struct usb_interface *intf, const struct usb_device_id *i
 	data->hdev = hdev;
 
 	hdev->bus = HCI_USB;
-<<<<<<< HEAD
 	hdev->driver_data = data;
-=======
-	hci_set_drvdata(hdev, data);
->>>>>>> remotes/linux2/linux-3.4.y
 	SET_HCIDEV_DEV(hdev, &intf->dev);
 
 	hdev->open     = bfusb_open;
 	hdev->close    = bfusb_close;
 	hdev->flush    = bfusb_flush;
 	hdev->send     = bfusb_send_frame;
-<<<<<<< HEAD
 	hdev->destruct = bfusb_destruct;
 	hdev->ioctl    = bfusb_ioctl;
 
 	hdev->owner = THIS_MODULE;
 
-=======
-	hdev->ioctl    = bfusb_ioctl;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	if (hci_register_dev(hdev) < 0) {
 		BT_ERR("Can't register HCI device");
 		hci_free_dev(hdev);
@@ -794,16 +750,10 @@ static void bfusb_disconnect(struct usb_interface *intf)
 
 	bfusb_close(hdev);
 
-<<<<<<< HEAD
 	if (hci_unregister_dev(hdev) < 0)
 		BT_ERR("Can't unregister HCI device %s", hdev->name);
 
 	hci_free_dev(hdev);
-=======
-	hci_unregister_dev(hdev);
-	hci_free_dev(hdev);
-	kfree(data);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static struct usb_driver bfusb_driver = {
@@ -813,7 +763,6 @@ static struct usb_driver bfusb_driver = {
 	.id_table	= bfusb_table,
 };
 
-<<<<<<< HEAD
 static int __init bfusb_init(void)
 {
 	int err;
@@ -834,9 +783,6 @@ static void __exit bfusb_exit(void)
 
 module_init(bfusb_init);
 module_exit(bfusb_exit);
-=======
-module_usb_driver(bfusb_driver);
->>>>>>> remotes/linux2/linux-3.4.y
 
 MODULE_AUTHOR("Marcel Holtmann <marcel@holtmann.org>");
 MODULE_DESCRIPTION("BlueFRITZ! USB driver ver " VERSION);

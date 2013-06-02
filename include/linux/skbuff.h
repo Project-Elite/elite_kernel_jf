@@ -225,7 +225,6 @@ enum {
 	/* device driver is going to provide hardware time stamp */
 	SKBTX_IN_PROGRESS = 1 << 2,
 
-<<<<<<< HEAD
 	/* ensure the originating sk reference is available on driver level */
 	SKBTX_DRV_NEEDS_SK_REF = 1 << 3,
 
@@ -234,13 +233,6 @@ enum {
 
 	/* generate wifi status information (where possible) */
 	SKBTX_WIFI_STATUS = 1 << 5,
-=======
-	/* device driver supports TX zero-copy buffers */
-	SKBTX_DEV_ZEROCOPY = 1 << 3,
-
-	/* generate wifi status information (where possible) */
-	SKBTX_WIFI_STATUS = 1 << 4,
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /*
@@ -490,11 +482,7 @@ struct sk_buff {
 	union {
 		__u32		mark;
 		__u32		dropcount;
-<<<<<<< HEAD
 		__u32		avail_size;
-=======
-		__u32		reserved_tailroom;
->>>>>>> remotes/linux2/linux-3.4.y
 	};
 
 	sk_buff_data_t		transport_header;
@@ -1388,14 +1376,7 @@ static inline int skb_tailroom(const struct sk_buff *skb)
  */
 static inline int skb_availroom(const struct sk_buff *skb)
 {
-<<<<<<< HEAD
 	return skb_is_nonlinear(skb) ? 0 : skb->avail_size - skb->len;
-=======
-	if (skb_is_nonlinear(skb))
-		return 0;
-
-	return skb->end - skb->tail - skb->reserved_tailroom;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /**
@@ -2411,16 +2392,6 @@ static inline void nf_reset(struct sk_buff *skb)
 #endif
 }
 
-<<<<<<< HEAD
-=======
-static inline void nf_reset_trace(struct sk_buff *skb)
-{
-#if IS_ENABLED(CONFIG_NETFILTER_XT_TARGET_TRACE)
-	skb->nf_trace = 0;
-#endif
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 /* Note: This doesn't put any conntrack and bridge info in dst. */
 static inline void __nf_copy(struct sk_buff *dst, const struct sk_buff *src)
 {

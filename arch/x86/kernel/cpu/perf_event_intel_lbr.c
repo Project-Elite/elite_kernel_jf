@@ -310,11 +310,7 @@ void intel_pmu_lbr_read(void)
  * - in case there is no HW filter
  * - in case the HW filter has errata or limitations
  */
-<<<<<<< HEAD
 static void intel_pmu_setup_sw_lbr_filter(struct perf_event *event)
-=======
-static int intel_pmu_setup_sw_lbr_filter(struct perf_event *event)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	u64 br_type = event->attr.branch_sample_type;
 	int mask = 0;
@@ -322,16 +318,8 @@ static int intel_pmu_setup_sw_lbr_filter(struct perf_event *event)
 	if (br_type & PERF_SAMPLE_BRANCH_USER)
 		mask |= X86_BR_USER;
 
-<<<<<<< HEAD
 	if (br_type & PERF_SAMPLE_BRANCH_KERNEL)
 		mask |= X86_BR_KERNEL;
-=======
-	if (br_type & PERF_SAMPLE_BRANCH_KERNEL) {
-		if (perf_paranoid_kernel() && !capable(CAP_SYS_ADMIN))
-			return -EACCES;
-		mask |= X86_BR_KERNEL;
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* we ignore BRANCH_HV here */
 
@@ -351,11 +339,6 @@ static int intel_pmu_setup_sw_lbr_filter(struct perf_event *event)
 	 * be used by fixup code for some CPU
 	 */
 	event->hw.branch_reg.reg = mask;
-<<<<<<< HEAD
-=======
-
-	return 0;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -403,13 +386,7 @@ int intel_pmu_setup_lbr_filter(struct perf_event *event)
 	/*
 	 * setup SW LBR filter
 	 */
-<<<<<<< HEAD
 	intel_pmu_setup_sw_lbr_filter(event);
-=======
-	ret = intel_pmu_setup_sw_lbr_filter(event);
-	if (ret)
-		return ret;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * setup HW LBR filter, if any
@@ -465,23 +442,8 @@ static int branch_type(unsigned long from, unsigned long to)
 			return X86_BR_NONE;
 
 		addr = buf;
-<<<<<<< HEAD
 	} else
 		addr = (void *)from;
-=======
-	} else {
-		/*
-		 * The LBR logs any address in the IP, even if the IP just
-		 * faulted. This means userspace can control the from address.
-		 * Ensure we don't blindy read any address by validating it is
-		 * a known text address.
-		 */
-		if (kernel_text_address(from))
-			addr = (void *)from;
-		else
-			return X86_BR_NONE;
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * decoder needs to know the ABI especially

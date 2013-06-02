@@ -457,19 +457,12 @@ static int __devexit spear_rtc_remove(struct platform_device *pdev)
 	clk_disable(config->clk);
 	clk_put(config->clk);
 	iounmap(config->ioaddr);
-<<<<<<< HEAD
 	kfree(config);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (res)
 		release_mem_region(res->start, resource_size(res));
 	platform_set_drvdata(pdev, NULL);
 	rtc_device_unregister(config->rtc);
-<<<<<<< HEAD
-=======
-	kfree(config);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }

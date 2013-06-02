@@ -1935,7 +1935,6 @@ static int __devexit xennet_remove(struct xenbus_device *dev)
 
 	dev_dbg(&dev->dev, "%s\n", dev->nodename);
 
-<<<<<<< HEAD
 	unregister_netdev(info->netdev);
 
 	xennet_disconnect_backend(info);
@@ -1944,16 +1943,6 @@ static int __devexit xennet_remove(struct xenbus_device *dev)
 
 	xennet_sysfs_delif(info->netdev);
 
-=======
-	xennet_disconnect_backend(info);
-
-	xennet_sysfs_delif(info->netdev);
-
-	unregister_netdev(info->netdev);
-
-	del_timer_sync(&info->rx_refill_timer);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	free_percpu(info->stats);
 
 	free_netdev(info->netdev);

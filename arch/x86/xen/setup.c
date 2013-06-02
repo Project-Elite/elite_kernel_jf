@@ -17,10 +17,6 @@
 #include <asm/e820.h>
 #include <asm/setup.h>
 #include <asm/acpi.h>
-<<<<<<< HEAD
-=======
-#include <asm/numa.h>
->>>>>>> remotes/linux2/linux-3.4.y
 #include <asm/xen/hypervisor.h>
 #include <asm/xen/hypercall.h>
 
@@ -83,22 +79,9 @@ static void __init xen_add_extra_mem(u64 start, u64 size)
 	memblock_reserve(start, size);
 
 	xen_max_p2m_pfn = PFN_DOWN(start + size);
-<<<<<<< HEAD
 
 	for (pfn = PFN_DOWN(start); pfn <= xen_max_p2m_pfn; pfn++)
 		__set_phys_to_machine(pfn, INVALID_P2M_ENTRY);
-=======
-	for (pfn = PFN_DOWN(start); pfn < xen_max_p2m_pfn; pfn++) {
-		unsigned long mfn = pfn_to_mfn(pfn);
-
-		if (WARN(mfn == pfn, "Trying to over-write 1-1 mapping (pfn: %lx)\n", pfn))
-			continue;
-		WARN(mfn != INVALID_P2M_ENTRY, "Trying to remove %lx which has %lx mfn!\n",
-			pfn, mfn);
-
-		__set_phys_to_machine(pfn, INVALID_P2M_ENTRY);
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static unsigned long __init xen_release_chunk(unsigned long start,
@@ -441,10 +424,4 @@ void __init xen_arch_setup(void)
 	disable_cpufreq();
 	WARN_ON(set_pm_idle_to_default());
 	fiddle_vdso();
-<<<<<<< HEAD
-=======
-#ifdef CONFIG_NUMA
-	numa_off = 1;
-#endif
->>>>>>> remotes/linux2/linux-3.4.y
 }

@@ -686,10 +686,6 @@ int m2p_add_override(unsigned long mfn, struct page *page,
 	unsigned long uninitialized_var(address);
 	unsigned level;
 	pte_t *ptep = NULL;
-<<<<<<< HEAD
-=======
-	int ret = 0;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	pfn = page_to_pfn(page);
 	if (!PageHighMem(page)) {
@@ -717,47 +713,18 @@ int m2p_add_override(unsigned long mfn, struct page *page,
 
 			xen_mc_issue(PARAVIRT_LAZY_MMU);
 		}
-<<<<<<< HEAD
 		/* let's use dev_bus_addr to record the old mfn instead */
 		kmap_op->dev_bus_addr = page->index;
 		page->index = (unsigned long) kmap_op;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	spin_lock_irqsave(&m2p_override_lock, flags);
 	list_add(&page->lru,  &m2p_overrides[mfn_hash(mfn)]);
 	spin_unlock_irqrestore(&m2p_override_lock, flags);
 
-<<<<<<< HEAD
 	return 0;
 }
 EXPORT_SYMBOL_GPL(m2p_add_override);
 int m2p_remove_override(struct page *page, bool clear_pte)
-=======
-	/* p2m(m2p(mfn)) == mfn: the mfn is already present somewhere in
-	 * this domain. Set the FOREIGN_FRAME_BIT in the p2m for the other
-	 * pfn so that the following mfn_to_pfn(mfn) calls will return the
-	 * pfn from the m2p_override (the backend pfn) instead.
-	 * We need to do this because the pages shared by the frontend
-	 * (xen-blkfront) can be already locked (lock_page, called by
-	 * do_read_cache_page); when the userspace backend tries to use them
-	 * with direct_IO, mfn_to_pfn returns the pfn of the frontend, so
-	 * do_blockdev_direct_IO is going to try to lock the same pages
-	 * again resulting in a deadlock.
-	 * As a side effect get_user_pages_fast might not be safe on the
-	 * frontend pages while they are being shared with the backend,
-	 * because mfn_to_pfn (that ends up being called by GUPF) will
-	 * return the backend pfn rather than the frontend pfn. */
-	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
-	if (ret == 0 && get_phys_to_machine(pfn) == mfn)
-		set_phys_to_machine(pfn, FOREIGN_FRAME(mfn));
-
-	return 0;
-}
-EXPORT_SYMBOL_GPL(m2p_add_override);
-int m2p_remove_override(struct page *page,
-		struct gnttab_map_grant_ref *kmap_op)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	unsigned long flags;
 	unsigned long mfn;
@@ -765,10 +732,6 @@ int m2p_remove_override(struct page *page,
 	unsigned long uninitialized_var(address);
 	unsigned level;
 	pte_t *ptep = NULL;
-<<<<<<< HEAD
-=======
-	int ret = 0;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	pfn = page_to_pfn(page);
 	mfn = get_phys_to_machine(pfn);
@@ -790,15 +753,10 @@ int m2p_remove_override(struct page *page,
 	WARN_ON(!PagePrivate(page));
 	ClearPagePrivate(page);
 
-<<<<<<< HEAD
 	if (clear_pte) {
 		struct gnttab_map_grant_ref *map_op =
 			(struct gnttab_map_grant_ref *) page->index;
 		set_phys_to_machine(pfn, map_op->dev_bus_addr);
-=======
-	set_phys_to_machine(pfn, page->index);
-	if (kmap_op != NULL) {
->>>>>>> remotes/linux2/linux-3.4.y
 		if (!PageHighMem(page)) {
 			struct multicall_space mcs;
 			struct gnttab_unmap_grant_ref *unmap_op;
@@ -810,7 +768,6 @@ int m2p_remove_override(struct page *page,
 			 * issued. In this case handle is going to -1 because
 			 * it hasn't been modified yet.
 			 */
-<<<<<<< HEAD
 			if (map_op->handle == -1)
 				xen_mc_flush();
 			/*
@@ -818,15 +775,6 @@ int m2p_remove_override(struct page *page,
 			 * hypercall actually returned an error.
 			 */
 			if (map_op->handle == GNTST_general_error) {
-=======
-			if (kmap_op->handle == -1)
-				xen_mc_flush();
-			/*
-			 * Now if kmap_op->handle is negative it means that the
-			 * hypercall actually returned an error.
-			 */
-			if (kmap_op->handle == GNTST_general_error) {
->>>>>>> remotes/linux2/linux-3.4.y
 				printk(KERN_WARNING "m2p_remove_override: "
 						"pfn %lx mfn %lx, failed to modify kernel mappings",
 						pfn, mfn);
@@ -836,13 +784,8 @@ int m2p_remove_override(struct page *page,
 			mcs = xen_mc_entry(
 					sizeof(struct gnttab_unmap_grant_ref));
 			unmap_op = mcs.args;
-<<<<<<< HEAD
 			unmap_op->host_addr = map_op->host_addr;
 			unmap_op->handle = map_op->handle;
-=======
-			unmap_op->host_addr = kmap_op->host_addr;
-			unmap_op->handle = kmap_op->handle;
->>>>>>> remotes/linux2/linux-3.4.y
 			unmap_op->dev_bus_addr = 0;
 
 			MULTI_grant_table_op(mcs.mc,
@@ -853,32 +796,10 @@ int m2p_remove_override(struct page *page,
 			set_pte_at(&init_mm, address, ptep,
 					pfn_pte(pfn, PAGE_KERNEL));
 			__flush_tlb_single(address);
-<<<<<<< HEAD
 			map_op->host_addr = 0;
 		}
 	} else
 		set_phys_to_machine(pfn, page->index);
-=======
-			kmap_op->host_addr = 0;
-		}
-	}
-
-	/* p2m(m2p(mfn)) == FOREIGN_FRAME(mfn): the mfn is already present
-	 * somewhere in this domain, even before being added to the
-	 * m2p_override (see comment above in m2p_add_override).
-	 * If there are no other entries in the m2p_override corresponding
-	 * to this mfn, then remove the FOREIGN_FRAME_BIT from the p2m for
-	 * the original pfn (the one shared by the frontend): the backend
-	 * cannot do any IO on this page anymore because it has been
-	 * unshared. Removing the FOREIGN_FRAME_BIT from the p2m entry of
-	 * the original pfn causes mfn_to_pfn(mfn) to return the frontend
-	 * pfn again. */
-	mfn &= ~FOREIGN_FRAME_BIT;
-	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
-	if (ret == 0 && get_phys_to_machine(pfn) == FOREIGN_FRAME(mfn) &&
-			m2p_find_override(mfn) == NULL)
-		set_phys_to_machine(pfn, mfn);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }

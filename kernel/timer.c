@@ -88,10 +88,7 @@ struct tvec_base {
 struct tvec_base boot_tvec_bases;
 EXPORT_SYMBOL(boot_tvec_bases);
 static DEFINE_PER_CPU(struct tvec_base *, tvec_bases) = &boot_tvec_bases;
-<<<<<<< HEAD
 static DEFINE_PER_CPU(int, tvec_base_lock_init) = {-1};
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* Functions below help us manage 'deferrable' flag */
 static inline unsigned int tbase_get_deferrable(struct tvec_base *base)
@@ -590,12 +587,8 @@ static inline void
 debug_activate(struct timer_list *timer, unsigned long expires)
 {
 	debug_timer_activate(timer);
-<<<<<<< HEAD
 	trace_timer_start(timer, expires,
 			 tbase_get_deferrable(timer->base) > 0 ? 'y' : 'n');
-=======
-	trace_timer_start(timer, expires);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static inline void debug_deactivate(struct timer_list *timer)
@@ -1658,10 +1651,7 @@ static int __cpuinit init_timers_cpu(int cpu)
 	int j;
 	struct tvec_base *base;
 	static char __cpuinitdata tvec_base_done[NR_CPUS];
-<<<<<<< HEAD
 	int *lock_init = &per_cpu(tvec_base_lock_init, cpu);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!tvec_base_done[cpu]) {
 		static char boot_done;
@@ -1693,23 +1683,16 @@ static int __cpuinit init_timers_cpu(int cpu)
 			boot_done = 1;
 			base = &boot_tvec_bases;
 		}
-<<<<<<< HEAD
-=======
-		spin_lock_init(&base->lock);
->>>>>>> remotes/linux2/linux-3.4.y
 		tvec_base_done[cpu] = 1;
 	} else {
 		base = per_cpu(tvec_bases, cpu);
 	}
 
-<<<<<<< HEAD
 	if ((*lock_init) != cpu) {
 		*lock_init = cpu;
 		spin_lock_init(&base->lock);
 		printk(KERN_INFO "tvec base lock initialized for cpu%d\n", cpu);
 	}
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	for (j = 0; j < TVN_SIZE; j++) {
 		INIT_LIST_HEAD(base->tv5.vec + j);

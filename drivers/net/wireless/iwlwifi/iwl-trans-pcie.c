@@ -2000,10 +2000,6 @@ static ssize_t iwl_dbgfs_rx_queue_read(struct file *file,
 	return simple_read_from_buffer(user_buf, count, ppos, buf, pos);
 }
 
-<<<<<<< HEAD
-=======
-#ifdef CONFIG_IWLWIFI_DEBUG
->>>>>>> remotes/linux2/linux-3.4.y
 static ssize_t iwl_dbgfs_log_event_read(struct file *file,
 					 char __user *user_buf,
 					 size_t count, loff_t *ppos)
@@ -2041,10 +2037,6 @@ static ssize_t iwl_dbgfs_log_event_write(struct file *file,
 
 	return count;
 }
-<<<<<<< HEAD
-=======
-#endif
->>>>>>> remotes/linux2/linux-3.4.y
 
 static ssize_t iwl_dbgfs_interrupt_read(struct file *file,
 					char __user *user_buf,
@@ -2172,13 +2164,7 @@ static ssize_t iwl_dbgfs_fh_reg_read(struct file *file,
 	return ret;
 }
 
-<<<<<<< HEAD
 DEBUGFS_READ_WRITE_FILE_OPS(log_event);
-=======
-#ifdef CONFIG_IWLWIFI_DEBUG
-DEBUGFS_READ_WRITE_FILE_OPS(log_event);
-#endif
->>>>>>> remotes/linux2/linux-3.4.y
 DEBUGFS_READ_WRITE_FILE_OPS(interrupt);
 DEBUGFS_READ_FILE_OPS(fh_reg);
 DEBUGFS_READ_FILE_OPS(rx_queue);
@@ -2194,13 +2180,7 @@ static int iwl_trans_pcie_dbgfs_register(struct iwl_trans *trans,
 {
 	DEBUGFS_ADD_FILE(rx_queue, dir, S_IRUSR);
 	DEBUGFS_ADD_FILE(tx_queue, dir, S_IRUSR);
-<<<<<<< HEAD
 	DEBUGFS_ADD_FILE(log_event, dir, S_IWUSR | S_IRUSR);
-=======
-#ifdef CONFIG_IWLWIFI_DEBUG
-	DEBUGFS_ADD_FILE(log_event, dir, S_IWUSR | S_IRUSR);
-#endif
->>>>>>> remotes/linux2/linux-3.4.y
 	DEBUGFS_ADD_FILE(interrupt, dir, S_IWUSR | S_IRUSR);
 	DEBUGFS_ADD_FILE(csr, dir, S_IWUSR);
 	DEBUGFS_ADD_FILE(fh_reg, dir, S_IRUSR);

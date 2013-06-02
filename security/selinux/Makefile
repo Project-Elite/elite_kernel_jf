@@ -9,7 +9,6 @@ selinux-y := avc.o hooks.o selinuxfs.o netlink.o nlmsgtab.o netif.o \
 	     ss/ebitmap.o ss/hashtab.o ss/symtab.o ss/sidtab.o ss/avtab.o \
 	     ss/policydb.o ss/services.o ss/conditional.o ss/mls.o ss/status.o
 
-<<<<<<< HEAD
 #TmmSecure start
 ifeq ($(SEC_BUILD_OPTION_SELINUX_ENFORCE),false)
 ifdef CONFIG_SECURITY_SEC
@@ -28,8 +27,6 @@ endif
 #TmmSecure end
 
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 selinux-$(CONFIG_SECURITY_NETWORK_XFRM) += xfrm.o
 
 selinux-$(CONFIG_NETLABEL) += netlabel.o

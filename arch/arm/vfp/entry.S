@@ -7,7 +7,6 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
-<<<<<<< HEAD
  *
  * Basic entry code, called from the kernel's undefined instruction trap.
  *  r0  = faulted instruction
@@ -15,38 +14,19 @@
  *  r9  = successful return
  *  r10 = thread_info structure
  *  lr  = failure return
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  */
 #include <asm/thread_info.h>
 #include <asm/vfpmacros.h>
 #include "../kernel/entry-header.S"
 
-<<<<<<< HEAD
 ENTRY(do_vfp)
 #ifdef CONFIG_PREEMPT
-=======
-@ VFP entry point.
-@
-@  r0  = instruction opcode (32-bit ARM or two 16-bit Thumb)
-@  r2  = PC value to resume execution after successful emulation
-@  r9  = normal "successful" return address
-@  r10 = this threads thread_info structure
-@  lr  = unrecognised instruction return address
-@  IRQs disabled.
-@
-ENTRY(do_vfp)
-#ifdef CONFIG_PREEMPT_COUNT
->>>>>>> remotes/linux2/linux-3.4.y
 	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
 	add	r11, r4, #1		@ increment it
 	str	r11, [r10, #TI_PREEMPT]
 #endif
 	enable_irq
-<<<<<<< HEAD
 	str	r2, [sp, #S_PC]		@ update regs->ARM_pc for Thumb 2 case
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  	ldr	r4, .LCvfp
 	ldr	r11, [r10, #TI_CPU]	@ CPU number
 	add	r10, r10, #TI_VFPSTATE	@ r10 = workspace
@@ -54,11 +34,7 @@ ENTRY(do_vfp)
 ENDPROC(do_vfp)
 
 ENTRY(vfp_null_entry)
-<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
-=======
-#ifdef CONFIG_PREEMPT_COUNT
->>>>>>> remotes/linux2/linux-3.4.y
 	get_thread_info	r10
 	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
 	sub	r11, r4, #1		@ decrement it
@@ -76,11 +52,7 @@ ENDPROC(vfp_null_entry)
 
 	__INIT
 ENTRY(vfp_testing_entry)
-<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
-=======
-#ifdef CONFIG_PREEMPT_COUNT
->>>>>>> remotes/linux2/linux-3.4.y
 	get_thread_info	r10
 	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
 	sub	r11, r4, #1		@ decrement it

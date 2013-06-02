@@ -313,7 +313,6 @@ static inline void free_partition(struct mtd_part *p)
 	kfree(p);
 }
 
-<<<<<<< HEAD
 void part_fill_badblockstats(struct mtd_info *mtd)
 {
 	struct mtd_part *part = PART(mtd);
@@ -329,8 +328,6 @@ void part_fill_badblockstats(struct mtd_info *mtd)
 	}
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * This function unregisters and destroy all slave MTD objects which are
  * attached to the given master MTD object.
@@ -535,13 +532,10 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
 
 	slave->mtd.ecclayout = master->ecclayout;
 	slave->mtd.ecc_strength = master->ecc_strength;
-<<<<<<< HEAD
 
 #ifndef CONFIG_MTD_LAZYECCSTATS
 	part_fill_badblockstats(&(slave->mtd));
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (master->_block_isbad) {
 		uint64_t offs = 0;
 
@@ -734,11 +728,6 @@ static const char *default_mtd_part_types[] = {
  * partition parsers, specified in @types. However, if @types is %NULL, then
  * the default list of parsers is used. The default list contains only the
  * "cmdlinepart" and "ofpart" parsers ATM.
-<<<<<<< HEAD
-=======
- * Note: If there are more then one parser in @types, the kernel only takes the
- * partitions parsed out by the first parser.
->>>>>>> remotes/linux2/linux-3.4.y
  *
  * This function may return:
  * o a negative error code in case of failure
@@ -763,20 +752,11 @@ int parse_mtd_partitions(struct mtd_info *master, const char **types,
 		if (!parser)
 			continue;
 		ret = (*parser->parse_fn)(master, pparts, data);
-<<<<<<< HEAD
 		if (ret > 0) {
 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
 			       ret, parser->name, master->name);
 		}
 		put_partition_parser(parser);
-=======
-		put_partition_parser(parser);
-		if (ret > 0) {
-			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
-			       ret, parser->name, master->name);
-			break;
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	return ret;
 }

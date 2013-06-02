@@ -374,11 +374,7 @@ static void unix_sock_destructor(struct sock *sk)
 #endif
 }
 
-<<<<<<< HEAD
 static int unix_release_sock(struct sock *sk, int embrion)
-=======
-static void unix_release_sock(struct sock *sk, int embrion)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct unix_sock *u = unix_sk(sk);
 	struct path path;
@@ -447,11 +443,8 @@ static void unix_release_sock(struct sock *sk, int embrion)
 
 	if (unix_tot_inflight)
 		unix_gc();		/* Garbage collect fds */
-<<<<<<< HEAD
 
 	return 0;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void init_peercred(struct sock *sk)
@@ -701,16 +694,9 @@ static int unix_release(struct socket *sock)
 	if (!sk)
 		return 0;
 
-<<<<<<< HEAD
 	sock->sk = NULL;
 
 	return unix_release_sock(sk, 0);
-=======
-	unix_release_sock(sk, 0);
-	sock->sk = NULL;
-
-	return 0;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int unix_autobind(struct socket *sock)
@@ -2001,11 +1987,7 @@ again:
 			if ((UNIXCB(skb).pid  != siocb->scm->pid) ||
 			    (UNIXCB(skb).cred != siocb->scm->cred))
 				break;
-<<<<<<< HEAD
 		} else {
-=======
-		} else if (test_bit(SOCK_PASSCRED, &sock->flags)) {
->>>>>>> remotes/linux2/linux-3.4.y
 			/* Copy credentials */
 			scm_set_cred(siocb->scm, UNIXCB(skb).pid, UNIXCB(skb).cred);
 			check_creds = 1;

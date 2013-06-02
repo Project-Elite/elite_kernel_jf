@@ -29,7 +29,6 @@ int direct_gbpages
 #endif
 ;
 
-<<<<<<< HEAD
 static void __init find_early_table_space(unsigned long end, int use_pse,
 					  int use_gbpages)
 {
@@ -61,58 +60,6 @@ static void __init find_early_table_space(unsigned long end, int use_pse,
 		ptes = (end + PAGE_SIZE - 1) >> PAGE_SHIFT;
 
 	tables += roundup(ptes * sizeof(pte_t), PAGE_SIZE);
-=======
-struct map_range {
-	unsigned long start;
-	unsigned long end;
-	unsigned page_size_mask;
-};
-
-/*
- * First calculate space needed for kernel direct mapping page tables to cover
- * mr[0].start to mr[nr_range - 1].end, while accounting for possible 2M and 1GB
- * pages. Then find enough contiguous space for those page tables.
- */
-static void __init find_early_table_space(struct map_range *mr, int nr_range)
-{
-	int i;
-	unsigned long puds = 0, pmds = 0, ptes = 0, tables;
-	unsigned long start = 0, good_end;
-	unsigned long pgd_extra = 0;
-	phys_addr_t base;
-
-	for (i = 0; i < nr_range; i++) {
-		unsigned long range, extra;
-
-		if ((mr[i].end >> PGDIR_SHIFT) - (mr[i].start >> PGDIR_SHIFT))
-			pgd_extra++;
-
-		range = mr[i].end - mr[i].start;
-		puds += (range + PUD_SIZE - 1) >> PUD_SHIFT;
-
-		if (mr[i].page_size_mask & (1 << PG_LEVEL_1G)) {
-			extra = range - ((range >> PUD_SHIFT) << PUD_SHIFT);
-			pmds += (extra + PMD_SIZE - 1) >> PMD_SHIFT;
-		} else {
-			pmds += (range + PMD_SIZE - 1) >> PMD_SHIFT;
-		}
-
-		if (mr[i].page_size_mask & (1 << PG_LEVEL_2M)) {
-			extra = range - ((range >> PMD_SHIFT) << PMD_SHIFT);
-#ifdef CONFIG_X86_32
-			extra += PMD_SIZE;
-#endif
-			ptes += (extra + PAGE_SIZE - 1) >> PAGE_SHIFT;
-		} else {
-			ptes += (range + PAGE_SIZE - 1) >> PAGE_SHIFT;
-		}
-	}
-
-	tables = roundup(puds * sizeof(pud_t), PAGE_SIZE);
-	tables += roundup(pmds * sizeof(pmd_t), PAGE_SIZE);
-	tables += roundup(ptes * sizeof(pte_t), PAGE_SIZE);
-	tables += (pgd_extra * PAGE_SIZE);
->>>>>>> remotes/linux2/linux-3.4.y
 
 #ifdef CONFIG_X86_32
 	/* for fixmap */
@@ -128,14 +75,8 @@ static void __init find_early_table_space(struct map_range *mr, int nr_range)
 	pgt_buf_end = pgt_buf_start;
 	pgt_buf_top = pgt_buf_start + (tables >> PAGE_SHIFT);
 
-<<<<<<< HEAD
 	printk(KERN_DEBUG "kernel direct mapping tables up to %lx @ %lx-%lx\n",
 		end, pgt_buf_start << PAGE_SHIFT, pgt_buf_top << PAGE_SHIFT);
-=======
- 	printk(KERN_DEBUG "kernel direct mapping tables up to %#lx @ [mem %#010lx-%#010lx]\n",
-		mr[nr_range - 1].end - 1, pgt_buf_start << PAGE_SHIFT,
- 		(pgt_buf_top << PAGE_SHIFT) - 1);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 void __init native_pagetable_reserve(u64 start, u64 end)
@@ -143,15 +84,12 @@ void __init native_pagetable_reserve(u64 start, u64 end)
 	memblock_reserve(start, end - start);
 }
 
-<<<<<<< HEAD
 struct map_range {
 	unsigned long start;
 	unsigned long end;
 	unsigned page_size_mask;
 };
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_X86_32
 #define NR_RANGE_MR 3
 #else /* CONFIG_X86_64 */
@@ -323,11 +261,7 @@ unsigned long __init_refok init_memory_mapping(unsigned long start,
 	 * nodes are discovered.
 	 */
 	if (!after_bootmem)
-<<<<<<< HEAD
 		find_early_table_space(end, use_pse, use_gbpages);
-=======
-		find_early_table_space(mr, nr_range);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	for (i = 0; i < nr_range; i++)
 		ret = kernel_physical_mapping_init(mr[i].start, mr[i].end,

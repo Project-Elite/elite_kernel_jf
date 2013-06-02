@@ -188,10 +188,7 @@ int regulator_suspend_finish(void);
 #ifdef CONFIG_REGULATOR
 void regulator_has_full_constraints(void);
 void regulator_use_dummy_regulator(void);
-<<<<<<< HEAD
 void regulator_suppress_info_printing(void);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #else
 static inline void regulator_has_full_constraints(void)
 {
@@ -200,13 +197,10 @@ static inline void regulator_has_full_constraints(void)
 static inline void regulator_use_dummy_regulator(void)
 {
 }
-<<<<<<< HEAD
 
 static inline void regulator_suppress_info_printing(void)
 {
 }
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #endif
 
 #endif

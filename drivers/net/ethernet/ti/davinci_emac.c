@@ -1052,11 +1052,7 @@ static void emac_tx_handler(void *token, int len, int status)
 	atomic_dec(&priv->cur_tx);
 
 	if (unlikely(netif_queue_stopped(ndev)))
-<<<<<<< HEAD
 		netif_start_queue(ndev);
-=======
-		netif_wake_queue(ndev);
->>>>>>> remotes/linux2/linux-3.4.y
 	ndev->stats.tx_packets++;
 	ndev->stats.tx_bytes += len;
 	dev_kfree_skb_any(skb);

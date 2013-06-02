@@ -444,7 +444,6 @@ static void sched_rt_rq_dequeue(struct rt_rq *rt_rq)
 		dequeue_rt_entity(rt_se);
 }
 
-<<<<<<< HEAD
 int unthrottle_rt_rq(struct rq *rq)
 {
 	/* if requested from the migration task we will 
@@ -460,8 +459,6 @@ int unthrottle_rt_rq(struct rq *rq)
 	return 0;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static inline int rt_rq_throttled(struct rt_rq *rt_rq)
 {
 	return rt_rq->rt_throttled && !rt_rq->rt_nr_boosted;
@@ -578,11 +575,7 @@ static inline struct rt_bandwidth *sched_rt_bandwidth(struct rt_rq *rt_rq)
 static int do_balance_runtime(struct rt_rq *rt_rq)
 {
 	struct rt_bandwidth *rt_b = sched_rt_bandwidth(rt_rq);
-<<<<<<< HEAD
 	struct root_domain *rd = cpu_rq(smp_processor_id())->rd;
-=======
-	struct root_domain *rd = rq_of_rt_rq(rt_rq)->rd;
->>>>>>> remotes/linux2/linux-3.4.y
 	int i, weight, more = 0;
 	u64 rt_period;
 
@@ -2005,11 +1998,8 @@ static void watchdog(struct rq *rq, struct task_struct *p)
 
 static void task_tick_rt(struct rq *rq, struct task_struct *p, int queued)
 {
-<<<<<<< HEAD
 	struct sched_rt_entity *rt_se = &p->rt;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	update_curr_rt(rq);
 
 	watchdog(rq, p);
@@ -2027,7 +2017,6 @@ static void task_tick_rt(struct rq *rq, struct task_struct *p, int queued)
 	p->rt.time_slice = RR_TIMESLICE;
 
 	/*
-<<<<<<< HEAD
 	 * Requeue to the end of queue if we (and all of our ancestors) are the
 	 * only element on the queue
 	 */
@@ -2037,14 +2026,6 @@ static void task_tick_rt(struct rq *rq, struct task_struct *p, int queued)
 			set_tsk_need_resched(p);
 			return;
 		}
-=======
-	 * Requeue to the end of queue if we are not the only element
-	 * on the queue:
-	 */
-	if (p->rt.run_list.prev != p->rt.run_list.next) {
-		requeue_task_rt(rq, p, 0);
-		set_tsk_need_resched(p);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 

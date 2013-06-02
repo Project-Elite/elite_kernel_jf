@@ -64,13 +64,10 @@
 
 #include "audit.h"
 
-<<<<<<< HEAD
 #ifdef CONFIG_PROC_AVC
 #include <linux/proc_avc.h>
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /* No auditing will take place until audit_initialized == AUDIT_INITIALIZED.
  * (Initialization happens after skb_init is called.) */
 #define AUDIT_DISABLED		-1
@@ -87,11 +84,7 @@ int		audit_ever_enabled;
 EXPORT_SYMBOL_GPL(audit_enabled);
 
 /* Default state when kernel boots without any parameters. */
-<<<<<<< HEAD
 static int	audit_default = 1;
-=======
-static int	audit_default;
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* If auditing cannot proceed, audit_failure selects what happens. */
 static int	audit_failure = AUDIT_FAIL_PRINTK;
@@ -192,12 +185,7 @@ void audit_panic(const char *message)
 	case AUDIT_FAIL_SILENT:
 		break;
 	case AUDIT_FAIL_PRINTK:
-<<<<<<< HEAD
 		printk(KERN_ERR "audit: %s\n", message);
-=======
-		if (printk_ratelimit())
-			printk(KERN_ERR "audit: %s\n", message);
->>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	case AUDIT_FAIL_PANIC:
 		/* test audit_pid since printk is always losey, why bother? */
@@ -267,22 +255,12 @@ void audit_log_lost(const char *message)
 	}
 
 	if (print) {
-<<<<<<< HEAD
 		printk(KERN_WARNING
 			"audit: audit_lost=%d audit_rate_limit=%d "
 			"audit_backlog_limit=%d\n",
 			atomic_read(&audit_lost),
 			audit_rate_limit,
 			audit_backlog_limit);
-=======
-		if (printk_ratelimit())
-			printk(KERN_WARNING
-				"audit: audit_lost=%d audit_rate_limit=%d "
-				"audit_backlog_limit=%d\n",
-				atomic_read(&audit_lost),
-				audit_rate_limit,
-				audit_backlog_limit);
->>>>>>> remotes/linux2/linux-3.4.y
 		audit_panic(message);
 	}
 }
@@ -408,7 +386,6 @@ static void audit_hold_skb(struct sk_buff *skb)
 static void audit_printk_skb(struct sk_buff *skb)
 {
 	struct nlmsghdr *nlh = nlmsg_hdr(skb);
-<<<<<<< HEAD
 #ifdef CONFIG_PROC_AVC
 	char *data = NLMSG_DATA(nlh);
 #endif
@@ -417,15 +394,6 @@ static void audit_printk_skb(struct sk_buff *skb)
 #ifdef CONFIG_PROC_AVC
 		sec_avc_log("%s\n", data);
 #endif
-=======
-	char *data = NLMSG_DATA(nlh);
-
-	if (nlh->nlmsg_type != AUDIT_EOE) {
-		if (printk_ratelimit())
-			printk(KERN_NOTICE "type=%d %s\n", nlh->nlmsg_type, data);
-		else
-			audit_log_lost("printk limit exceeded\n");
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	audit_hold_skb(skb);
@@ -444,7 +412,6 @@ static void kauditd_send_skb(struct sk_buff *skb)
 		audit_pid = 0;
 		/* we might get lucky and get this in the next auditd */
 		audit_hold_skb(skb);
-<<<<<<< HEAD
 	} else {
 #ifdef CONFIG_PROC_AVC
 		struct nlmsghdr *nlh = nlmsg_hdr(skb);
@@ -457,11 +424,6 @@ static void kauditd_send_skb(struct sk_buff *skb)
 		/* drop the extra reference if sent ok */
 		consume_skb(skb);
 	}
-=======
-	} else
-		/* drop the extra reference if sent ok */
-		consume_skb(skb);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int kauditd_thread(void *dummy)
@@ -1228,11 +1190,7 @@ struct audit_buffer *audit_log_start(struct audit_context *ctx, gfp_t gfp_mask,
 			remove_wait_queue(&audit_backlog_wait, &wait);
 			continue;
 		}
-<<<<<<< HEAD
 		if (audit_rate_check())
-=======
-		if (audit_rate_check() && printk_ratelimit())
->>>>>>> remotes/linux2/linux-3.4.y
 			printk(KERN_WARNING
 			       "audit: audit_backlog=%d > "
 			       "audit_backlog_limit=%d\n",

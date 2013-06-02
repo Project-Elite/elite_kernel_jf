@@ -5,11 +5,8 @@
  *                  & Ralph  Metzler <ralph@convergence.de>
  *                    for convergence integrated media GmbH
  *
-<<<<<<< HEAD
  * Copyright (c) 2012, The Linux Foundation. All rights reserved.
  *
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1
@@ -39,15 +36,12 @@
 
 #define DMX_FILTER_SIZE 16
 
-<<<<<<< HEAD
 /* Min recording chunk upon which event is generated */
 #define DMX_REC_BUFF_CHUNK_MIN_SIZE		(100*188)
 
 /* Decoder buffers are usually large ~1MB, 10 should suffice */
 #define DMX_MAX_DECODER_BUFFER_NUM		(10)
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 typedef enum
 {
 	DMX_OUT_DECODER, /* Streaming directly to decoder. */
@@ -111,7 +105,6 @@ typedef struct dmx_filter
 } dmx_filter_t;
 
 
-<<<<<<< HEAD
 /* Filter flags */
 #define DMX_CHECK_CRC		0x01
 #define DMX_ONESHOT		0x02
@@ -119,15 +112,12 @@ typedef struct dmx_filter
 #define DMX_ENABLE_INDEXING	0x08
 #define DMX_KERNEL_CLIENT	0x8000
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 struct dmx_sct_filter_params
 {
 	__u16          pid;
 	dmx_filter_t   filter;
 	__u32          timeout;
 	__u32          flags;
-<<<<<<< HEAD
 };
 
 
@@ -151,15 +141,6 @@ struct dmx_indexing_video_params {
 	enum dmx_indexing_video_profile profile;
 };
 
-=======
-#define DMX_CHECK_CRC       1
-#define DMX_ONESHOT         2
-#define DMX_IMMEDIATE_START 4
-#define DMX_KERNEL_CLIENT   0x8000
-};
-
-
->>>>>>> remotes/linux2/linux-3.4.y
 struct dmx_pes_filter_params
 {
 	__u16          pid;
@@ -167,7 +148,6 @@ struct dmx_pes_filter_params
 	dmx_output_t   output;
 	dmx_pes_type_t pes_type;
 	__u32          flags;
-<<<<<<< HEAD
 
 	/*
 	 * The following configures when the event
@@ -413,13 +393,10 @@ struct dmx_buffer_requirement {
 
 /* Filter output can be output to a linear buffer group */
 #define DMX_BUFFER_LINEAR_GROUP_SUPPORT		0x10
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 typedef struct dmx_caps {
 	__u32 caps;
-<<<<<<< HEAD
 
 /* Indicates whether demux support playback from memory in pull mode */
 #define DMX_CAP_PULL_MODE				0x01
@@ -494,9 +471,6 @@ typedef struct dmx_caps {
 
 	/* DVR input buffer for playback of 192 bytes packets */
 	struct dmx_buffer_requirement playback_192_tsp;
-=======
-	int num_decoders;
->>>>>>> remotes/linux2/linux-3.4.y
 } dmx_caps_t;
 
 typedef enum {
@@ -510,7 +484,6 @@ typedef enum {
 	DMX_SOURCE_DVR3
 } dmx_source_t;
 
-<<<<<<< HEAD
 enum dmx_tsp_format_t {
 	DMX_TSP_FORMAT_188 = 0,
 	DMX_TSP_FORMAT_192_TAIL,
@@ -588,14 +561,6 @@ struct dmx_decoder_buffers {
 	/* Array of externally allocated buffer handles */
 	int handles[DMX_MAX_DECODER_BUFFER_NUM];
 };
-=======
-struct dmx_stc {
-	unsigned int num;	/* input : which STC? 0..N */
-	unsigned int base;	/* output: divisor for stc to get 90 kHz clock */
-	__u64 stc;		/* output: stc in 'base'*90 kHz units */
-};
-
->>>>>>> remotes/linux2/linux-3.4.y
 
 #define DMX_START                _IO('o', 41)
 #define DMX_STOP                 _IO('o', 42)
@@ -608,7 +573,6 @@ struct dmx_stc {
 #define DMX_GET_STC              _IOWR('o', 50, struct dmx_stc)
 #define DMX_ADD_PID              _IOW('o', 51, __u16)
 #define DMX_REMOVE_PID           _IOW('o', 52, __u16)
-<<<<<<< HEAD
 #define DMX_SET_TS_PACKET_FORMAT _IOW('o', 53, enum dmx_tsp_format_t)
 #define DMX_SET_TS_OUT_FORMAT	 _IOW('o', 54, enum dmx_tsp_format_t)
 #define DMX_SET_DECODER_BUFFER_SIZE	_IO('o', 55)
@@ -621,7 +585,5 @@ struct dmx_stc {
 #define DMX_SET_BUFFER		 _IOW('o', 62, struct dmx_buffer)
 #define DMX_SET_DECODER_BUFFER	 _IOW('o', 63, struct dmx_decoder_buffers)
 #define DMX_REUSE_DECODER_BUFFER _IO('o', 64)
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 #endif /*_DVBDMX_H_*/

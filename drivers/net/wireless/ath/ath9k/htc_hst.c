@@ -342,11 +342,6 @@ void ath9k_htc_txcompletion_cb(struct htc_target *htc_handle,
 			endpoint->ep_callbacks.tx(endpoint->ep_callbacks.priv,
 						  skb, htc_hdr->endpoint_id,
 						  txok);
-<<<<<<< HEAD
-=======
-		} else {
-			kfree_skb(skb);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 

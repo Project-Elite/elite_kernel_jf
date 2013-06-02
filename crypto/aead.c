@@ -117,14 +117,9 @@ static int crypto_aead_report(struct sk_buff *skb, struct crypto_alg *alg)
 	struct crypto_report_aead raead;
 	struct aead_alg *aead = &alg->cra_aead;
 
-<<<<<<< HEAD
 	snprintf(raead.type, CRYPTO_MAX_ALG_NAME, "%s", "aead");
 	snprintf(raead.geniv, CRYPTO_MAX_ALG_NAME, "%s",
 		 aead->geniv ?: "<built-in>");
-=======
-	strncpy(raead.type, "aead", sizeof(raead.type));
-	strncpy(raead.geniv, aead->geniv ?: "<built-in>", sizeof(raead.geniv));
->>>>>>> remotes/linux2/linux-3.4.y
 
 	raead.blocksize = alg->cra_blocksize;
 	raead.maxauthsize = aead->maxauthsize;
@@ -208,13 +203,8 @@ static int crypto_nivaead_report(struct sk_buff *skb, struct crypto_alg *alg)
 	struct crypto_report_aead raead;
 	struct aead_alg *aead = &alg->cra_aead;
 
-<<<<<<< HEAD
 	snprintf(raead.type, CRYPTO_MAX_ALG_NAME, "%s", "nivaead");
 	snprintf(raead.geniv, CRYPTO_MAX_ALG_NAME, "%s", aead->geniv);
-=======
-	strncpy(raead.type, "nivaead", sizeof(raead.type));
-	strncpy(raead.geniv, aead->geniv, sizeof(raead.geniv));
->>>>>>> remotes/linux2/linux-3.4.y
 
 	raead.blocksize = alg->cra_blocksize;
 	raead.maxauthsize = aead->maxauthsize;

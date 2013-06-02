@@ -173,10 +173,6 @@ out_unlock:
  * @directory_inode: inode of the new file's dentry's parent in ecryptfs
  * @ecryptfs_dentry: New file's dentry in ecryptfs
  * @mode: The mode of the new file
-<<<<<<< HEAD
-=======
- * @nd: nameidata of ecryptfs' parent's dentry & vfsmount
->>>>>>> remotes/linux2/linux-3.4.y
  *
  * Creates the underlying file and the eCryptfs inode which will link to
  * it. It will also update the eCryptfs directory inode to mimic the
@@ -186,11 +182,7 @@ out_unlock:
  */
 static struct inode *
 ecryptfs_do_create(struct inode *directory_inode,
-<<<<<<< HEAD
 		struct dentry *ecryptfs_dentry, umode_t mode)
-=======
-		   struct dentry *ecryptfs_dentry, umode_t mode)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	int rc;
 	struct dentry *lower_dentry;
@@ -208,7 +200,6 @@ ecryptfs_do_create(struct inode *directory_inode,
 	rc = vfs_create(lower_dir_dentry->d_inode, lower_dentry, mode, NULL);
 	if (rc) {
 		printk(KERN_ERR "%s: Failure to create dentry in lower fs; "
-<<<<<<< HEAD
 				"rc = [%d]\n", __func__, rc);
 		inode = ERR_PTR(rc);
 		goto out_lock;
@@ -278,8 +269,6 @@ ecryptfs_do_create2(struct inode *directory_inode,
 	}
 	if (rc) {
 		printk(KERN_ERR "%s: Failure to create dentry in lower fs; "
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		       "rc = [%d]\n", __func__, rc);
 		inode = ERR_PTR(rc);
 		goto out_lock;
@@ -307,11 +296,7 @@ out:
  * Returns zero on success
  */
 int ecryptfs_initialize_file(struct dentry *ecryptfs_dentry,
-<<<<<<< HEAD
 				    struct inode *ecryptfs_inode)
-=======
-			     struct inode *ecryptfs_inode)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct ecryptfs_crypt_stat *crypt_stat =
 		&ecryptfs_inode_to_private(ecryptfs_inode)->crypt_stat;
@@ -337,7 +322,6 @@ int ecryptfs_initialize_file(struct dentry *ecryptfs_dentry,
 			ecryptfs_dentry->d_name.name, rc);
 		goto out;
 	}
-<<<<<<< HEAD
 #ifdef CONFIG_WTL_ENCRYPTION_FILTER
 	mutex_lock(&crypt_stat->cs_mutex);
 	if (crypt_stat->flags & ECRYPTFS_ENCRYPTED) {
@@ -371,21 +355,15 @@ int ecryptfs_initialize_file(struct dentry *ecryptfs_dentry,
 	}
 	mutex_unlock(&crypt_stat->cs_mutex);
 #else
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	rc = ecryptfs_write_metadata(ecryptfs_dentry, ecryptfs_inode);
 	if (rc)
 		printk(KERN_ERR "Error writing headers; rc = [%d]\n", rc);
 	ecryptfs_put_lower_file(ecryptfs_inode);
-<<<<<<< HEAD
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 out:
 	return rc;
 }
 
-<<<<<<< HEAD
 int ecryptfs_check_subfs(struct dentry *de, struct nameidata *nd, char *fs)
 {
 	struct dentry *lower_dentry = NULL;
@@ -404,8 +382,6 @@ int ecryptfs_check_subfs(struct dentry *de, struct nameidata *nd, char *fs)
 	return 0;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /**
  * ecryptfs_create
  * @dir: The inode of the directory in which to create the file.
@@ -424,17 +400,12 @@ ecryptfs_create(struct inode *directory_inode, struct dentry *ecryptfs_dentry,
 	struct inode *ecryptfs_inode;
 	int rc;
 
-<<<<<<< HEAD
 	if(ecryptfs_check_subfs(ecryptfs_dentry, nd, "sdcardfs") == 1)
 		ecryptfs_inode = ecryptfs_do_create2(directory_inode, ecryptfs_dentry,
 				mode, nd);
 	else
 		ecryptfs_inode = ecryptfs_do_create(directory_inode, ecryptfs_dentry, mode);
 		
-=======
-	ecryptfs_inode = ecryptfs_do_create(directory_inode, ecryptfs_dentry,
-					    mode);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (unlikely(IS_ERR(ecryptfs_inode))) {
 		ecryptfs_printk(KERN_WARNING, "Failed to create file in"
 				"lower filesystem\n");

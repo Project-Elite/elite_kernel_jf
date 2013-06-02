@@ -1163,7 +1163,6 @@ submit_async (
 }
 
 /*-------------------------------------------------------------------------*/
-<<<<<<< HEAD
 /* This function creates the qtds and submits them for the
  * SINGLE_STEP_SET_FEATURE Test.
  * This is done in two parts: first SETUP req for GetDesc is sent then
@@ -1269,8 +1268,6 @@ cleanup:
 #endif
 
 /*-------------------------------------------------------------------------*/
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* the async qh for the qtds being reclaimed are now unlinked from the HC */
 

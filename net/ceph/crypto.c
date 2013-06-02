@@ -466,10 +466,6 @@ void ceph_key_destroy(struct key *key) {
 	struct ceph_crypto_key *ckey = key->payload.data;
 
 	ceph_crypto_key_destroy(ckey);
-<<<<<<< HEAD
-=======
-	kfree(ckey);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 struct key_type key_type_ceph = {

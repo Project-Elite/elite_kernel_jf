@@ -59,11 +59,7 @@ static DEFINE_SPINLOCK(rtcdev_lock);
  * If one has not already been chosen, it checks to see if a
  * functional rtc device is available.
  */
-<<<<<<< HEAD
 struct rtc_device *alarmtimer_get_rtcdev(void)
-=======
-static struct rtc_device *alarmtimer_get_rtcdev(void)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	unsigned long flags;
 	struct rtc_device *ret;
@@ -119,11 +115,7 @@ static void alarmtimer_rtc_interface_remove(void)
 	class_interface_unregister(&alarmtimer_rtc_interface);
 }
 #else
-<<<<<<< HEAD
 struct rtc_device *alarmtimer_get_rtcdev(void)
-=======
-static inline struct rtc_device *alarmtimer_get_rtcdev(void)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	return NULL;
 }

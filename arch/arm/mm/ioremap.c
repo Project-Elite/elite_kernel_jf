@@ -46,7 +46,6 @@ int ioremap_page(unsigned long virt, unsigned long phys,
 }
 EXPORT_SYMBOL(ioremap_page);
 
-<<<<<<< HEAD
 int ioremap_pages(unsigned long virt, unsigned long phys, unsigned long size,
 		 const struct mem_type *mtype)
 {
@@ -55,8 +54,6 @@ int ioremap_pages(unsigned long virt, unsigned long phys, unsigned long size,
 }
 EXPORT_SYMBOL(ioremap_pages);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 void __check_kvm_seq(struct mm_struct *mm)
 {
 	unsigned int seq;

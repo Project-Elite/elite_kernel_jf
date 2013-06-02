@@ -10,10 +10,7 @@
 struct dma_coherent_mem {
 	void		*virt_base;
 	dma_addr_t	device_base;
-<<<<<<< HEAD
 	phys_addr_t	pfn_base;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	int		size;
 	int		flags;
 	unsigned long	*bitmap;
@@ -48,10 +45,7 @@ int dma_declare_coherent_memory(struct device *dev, dma_addr_t bus_addr,
 
 	dev->dma_mem->virt_base = mem_base;
 	dev->dma_mem->device_base = device_addr;
-<<<<<<< HEAD
 	dev->dma_mem->pfn_base = PFN_DOWN(bus_addr);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	dev->dma_mem->size = pages;
 	dev->dma_mem->flags = flags;
 
@@ -184,7 +178,6 @@ int dma_release_from_coherent(struct device *dev, int order, void *vaddr)
 	return 0;
 }
 EXPORT_SYMBOL(dma_release_from_coherent);
-<<<<<<< HEAD
 
 /**
  * dma_mmap_from_coherent() - try to mmap the memory allocated from
@@ -225,5 +218,3 @@ int dma_mmap_from_coherent(struct device *dev, struct vm_area_struct *vma,
 	return 0;
 }
 EXPORT_SYMBOL(dma_mmap_from_coherent);
-=======
->>>>>>> remotes/linux2/linux-3.4.y

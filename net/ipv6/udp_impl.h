@@ -31,11 +31,6 @@ extern int	udpv6_recvmsg(struct kiocb *iocb, struct sock *sk,
 extern int	udpv6_queue_rcv_skb(struct sock * sk, struct sk_buff *skb);
 extern void	udpv6_destroy_sock(struct sock *sk);
 
-<<<<<<< HEAD
-=======
-extern void udp_v6_clear_sk(struct sock *sk, int size);
-
->>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_PROC_FS
 extern int	udp6_seq_show(struct seq_file *seq, void *v);
 #endif

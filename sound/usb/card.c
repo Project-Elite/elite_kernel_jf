@@ -48,10 +48,7 @@
 #include <linux/usb/audio.h>
 #include <linux/usb/audio-v2.h>
 #include <linux/module.h>
-<<<<<<< HEAD
 #include <linux/switch.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 #include <sound/control.h>
 #include <sound/core.h>
@@ -90,12 +87,9 @@ static int nrpacks = 8;		/* max. number of packets per urb */
 static bool async_unlink = 1;
 static int device_setup[SNDRV_CARDS]; /* device parameter for this card */
 static bool ignore_ctl_error;
-<<<<<<< HEAD
 #ifndef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 struct switch_dev *usbaudiosdev;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for the USB audio adapter.");
@@ -346,11 +340,7 @@ static int snd_usb_audio_create(struct usb_device *dev, int idx,
 		return -ENOMEM;
 	}
 
-<<<<<<< HEAD
 	mutex_init(&chip->shutdown_mutex);
-=======
-	init_rwsem(&chip->shutdown_rwsem);
->>>>>>> remotes/linux2/linux-3.4.y
 	chip->index = idx;
 	chip->dev = dev;
 	chip->card = card;
@@ -433,12 +423,9 @@ static int snd_usb_audio_create(struct usb_device *dev, int idx,
 	}
 
 	snd_usb_audio_create_proc(chip);
-<<<<<<< HEAD
 #ifndef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	switch_set_state(usbaudiosdev, 1);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	*rchip = chip;
 	return 0;
@@ -575,17 +562,9 @@ static void snd_usb_audio_disconnect(struct usb_device *dev,
 		return;
 
 	card = chip->card;
-<<<<<<< HEAD
 	mutex_lock(&register_mutex);
 	mutex_lock(&chip->shutdown_mutex);
 	chip->shutdown = 1;
-=======
-	down_write(&chip->shutdown_rwsem);
-	chip->shutdown = 1;
-	up_write(&chip->shutdown_rwsem);
-
-	mutex_lock(&register_mutex);
->>>>>>> remotes/linux2/linux-3.4.y
 	chip->num_interfaces--;
 	if (chip->num_interfaces <= 0) {
 		snd_card_disconnect(card);
@@ -602,7 +581,6 @@ static void snd_usb_audio_disconnect(struct usb_device *dev,
 			snd_usb_mixer_disconnect(p);
 		}
 		usb_chip[chip->index] = NULL;
-<<<<<<< HEAD
 		mutex_unlock(&chip->shutdown_mutex);
 		mutex_unlock(&register_mutex);
 		snd_card_free_when_closed(card);
@@ -613,13 +591,6 @@ static void snd_usb_audio_disconnect(struct usb_device *dev,
 #ifndef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	switch_set_state(usbaudiosdev, 0);
 #endif
-=======
-		mutex_unlock(&register_mutex);
-		snd_card_free_when_closed(card);
-	} else {
-		mutex_unlock(&register_mutex);
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -649,32 +620,16 @@ int snd_usb_autoresume(struct snd_usb_audio *chip)
 {
 	int err = -ENODEV;
 
-<<<<<<< HEAD
 	if (!chip->shutdown && !chip->probing)
 		err = usb_autopm_get_interface(chip->pm_intf);
-=======
-	down_read(&chip->shutdown_rwsem);
-	if (chip->probing)
-		err = 0;
-	else if (!chip->shutdown)
-		err = usb_autopm_get_interface(chip->pm_intf);
-	up_read(&chip->shutdown_rwsem);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return err;
 }
 
 void snd_usb_autosuspend(struct snd_usb_audio *chip)
 {
-<<<<<<< HEAD
 	if (!chip->shutdown && !chip->probing)
 		usb_autopm_put_interface(chip->pm_intf);
-=======
-	down_read(&chip->shutdown_rwsem);
-	if (!chip->shutdown && !chip->probing)
-		usb_autopm_put_interface(chip->pm_intf);
-	up_read(&chip->shutdown_rwsem);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
@@ -768,17 +723,13 @@ static struct usb_driver usb_audio_driver = {
 
 static int __init snd_usb_audio_init(void)
 {
-<<<<<<< HEAD
 #ifndef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	int err;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (nrpacks < 1 || nrpacks > MAX_PACKS) {
 		printk(KERN_WARNING "invalid nrpacks value.\n");
 		return -EINVAL;
 	}
-<<<<<<< HEAD
 #ifndef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	usbaudiosdev = kzalloc(sizeof(usbaudiosdev), GFP_KERNEL);
 	usbaudiosdev->name = "usb_audio";
@@ -789,20 +740,15 @@ static int __init snd_usb_audio_init(void)
 	else
 		pr_debug("usb hs_detected\n");
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return usb_register(&usb_audio_driver);
 }
 
 static void __exit snd_usb_audio_cleanup(void)
 {
 	usb_deregister(&usb_audio_driver);
-<<<<<<< HEAD
 #ifndef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	kfree(usbaudiosdev);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 module_init(snd_usb_audio_init);

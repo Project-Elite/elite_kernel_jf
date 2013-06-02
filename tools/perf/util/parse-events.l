@@ -30,7 +30,6 @@ static int raw(void)
 	return __value(parse_events_text + 1, 16, PE_RAW);
 }
 
-<<<<<<< HEAD
 static int sh_raw(void)
 {
 	return __value(parse_events_text + 2, 16, PE_SH_RAW);
@@ -42,8 +41,6 @@ static int fab_raw(void)
 }
 
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static int str(int token)
 {
 	parse_events_lval.str = strdup(parse_events_text);
@@ -67,11 +64,7 @@ static int term(int type)
 num_dec		[0-9]+
 num_hex		0x[a-fA-F0-9]+
 num_raw_hex	[a-fA-F0-9]+
-<<<<<<< HEAD
 name		[a-zA-Z_*?][a-zA-Z\-0-9_*?]*
-=======
-name		[a-zA-Z_*?][a-zA-Z0-9_*?]*
->>>>>>> remotes/linux2/linux-3.4.y
 modifier_event	[ukhpGH]{1,8}
 modifier_bp	[rwx]
 
@@ -125,11 +118,8 @@ branch_type		{ return term(PARSE_EVENTS__TERM_TYPE_BRANCH_SAMPLE_TYPE); }
 
 mem:			{ return PE_PREFIX_MEM; }
 r{num_raw_hex}		{ return raw(); }
-<<<<<<< HEAD
 rs{num_raw_hex}		{ return sh_raw(); }
 rm{num_raw_hex}		{ return fab_raw(); }
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 {num_dec}		{ return value(10); }
 {num_hex}		{ return value(16); }
 

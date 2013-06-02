@@ -148,11 +148,7 @@ static unsigned int ip_nat_sip(struct sk_buff *skb, unsigned int dataoff,
 	if (ct_sip_parse_header_uri(ct, *dptr, NULL, *datalen,
 				    hdr, NULL, &matchoff, &matchlen,
 				    &addr, &port) > 0) {
-<<<<<<< HEAD
 		unsigned int matchend, poff, plen, buflen, n;
-=======
-		unsigned int olen, matchend, poff, plen, buflen, n;
->>>>>>> remotes/linux2/linux-3.4.y
 		char buffer[sizeof("nnn.nnn.nnn.nnn:nnnnn")];
 
 		/* We're only interested in headers related to this
@@ -167,19 +163,11 @@ static unsigned int ip_nat_sip(struct sk_buff *skb, unsigned int dataoff,
 				goto next;
 		}
 
-<<<<<<< HEAD
-=======
-		olen = *datalen;
->>>>>>> remotes/linux2/linux-3.4.y
 		if (!map_addr(skb, dataoff, dptr, datalen, matchoff, matchlen,
 			      &addr, port))
 			return NF_DROP;
 
-<<<<<<< HEAD
 		matchend = matchoff + matchlen;
-=======
-		matchend = matchoff + matchlen + *datalen - olen;
->>>>>>> remotes/linux2/linux-3.4.y
 
 		/* The maddr= parameter (RFC 2361) specifies where to send
 		 * the reply. */
@@ -513,14 +501,7 @@ static unsigned int ip_nat_sdp_media(struct sk_buff *skb, unsigned int dataoff,
 		ret = nf_ct_expect_related(rtcp_exp);
 		if (ret == 0)
 			break;
-<<<<<<< HEAD
 		else if (ret != -EBUSY) {
-=======
-		else if (ret == -EBUSY) {
-			nf_ct_unexpect_related(rtp_exp);
-			continue;
-		} else if (ret < 0) {
->>>>>>> remotes/linux2/linux-3.4.y
 			nf_ct_unexpect_related(rtp_exp);
 			port = 0;
 			break;

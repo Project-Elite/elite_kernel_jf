@@ -12,11 +12,6 @@
 #include <asm/setup.h>
 #include <asm/desc.h>
 
-<<<<<<< HEAD
-=======
-#undef memcpy			/* Use memcpy from misc.c */
-
->>>>>>> remotes/linux2/linux-3.4.y
 #include "eboot.h"
 
 static efi_system_table_t *sys_table;

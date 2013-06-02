@@ -16,12 +16,9 @@
 #include <linux/bitmap.h>
 
 #include "internals.h"
-<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG
 #include <mach/sec_debug.h>
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * lockdep: we want to handle all irq_desc locks as a single lock-class:
@@ -317,7 +314,6 @@ int generic_handle_irq(unsigned int irq)
 
 	if (!desc)
 		return -EINVAL;
-<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG
 	if (desc->action)
 		sec_debug_irq_sched_log(irq, (void *)desc->action->handler,
@@ -326,8 +322,6 @@ int generic_handle_irq(unsigned int irq)
 		sec_debug_irq_sched_log(irq, (void *)desc->handle_irq,
 			irqs_disabled());
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	generic_handle_irq_desc(irq, desc);
 	return 0;
 }

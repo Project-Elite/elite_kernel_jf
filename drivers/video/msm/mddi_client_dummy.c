@@ -15,10 +15,6 @@
  * GNU General Public License for more details.
  */
 
-<<<<<<< HEAD
-=======
-#include <linux/slab.h>
->>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/platform_device.h>

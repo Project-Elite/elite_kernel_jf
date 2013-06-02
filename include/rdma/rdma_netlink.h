@@ -39,10 +39,6 @@ struct rdma_cm_id_stats {
 
 struct ibnl_client_cbs {
 	int (*dump)(struct sk_buff *skb, struct netlink_callback *nlcb);
-<<<<<<< HEAD
-=======
-	struct module *module;
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 int ibnl_init(void);

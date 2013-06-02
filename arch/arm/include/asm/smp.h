@@ -93,9 +93,6 @@ extern void platform_cpu_enable(unsigned int cpu);
 extern void arch_send_call_function_single_ipi(int cpu);
 extern void arch_send_call_function_ipi_mask(const struct cpumask *mask);
 
-<<<<<<< HEAD
 extern void smp_send_all_cpu_backtrace(void);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #endif /* ifndef __ASM_ARM_SMP_H */

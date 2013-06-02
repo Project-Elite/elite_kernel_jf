@@ -143,21 +143,15 @@ autogroup_move_group(struct task_struct *p, struct autogroup *ag)
 
 	p->signal->autogroup = autogroup_kref_get(ag);
 
-<<<<<<< HEAD
 	if (!ACCESS_ONCE(sysctl_sched_autogroup_enabled))
 		goto out;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	t = p;
 	do {
 		sched_move_task(t);
 	} while_each_thread(p, t);
 
-<<<<<<< HEAD
 out:
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	unlock_task_sighand(p, &flags);
 	autogroup_kref_put(prev);
 }

@@ -95,15 +95,11 @@ static unsigned int rx_refill_limit = 95;
 static inline unsigned int efx_rx_buf_offset(struct efx_nic *efx,
 					     struct efx_rx_buffer *buf)
 {
-<<<<<<< HEAD
 	/* Offset is always within one page, so we don't need to consider
 	 * the page order.
 	 */
 	return ((unsigned int) buf->dma_addr & (PAGE_SIZE - 1)) +
 		efx->type->rx_buffer_hash_size;
-=======
-	return buf->page_offset + efx->type->rx_buffer_hash_size;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 static inline unsigned int efx_rx_buf_size(struct efx_nic *efx)
 {
@@ -197,10 +193,6 @@ static int efx_init_rx_buffers_page(struct efx_rx_queue *rx_queue)
 	struct efx_rx_buffer *rx_buf;
 	struct page *page;
 	void *page_addr;
-<<<<<<< HEAD
-=======
-	unsigned int page_offset;
->>>>>>> remotes/linux2/linux-3.4.y
 	struct efx_rx_page_state *state;
 	dma_addr_t dma_addr;
 	unsigned index, count;
@@ -227,20 +219,12 @@ static int efx_init_rx_buffers_page(struct efx_rx_queue *rx_queue)
 
 		page_addr += sizeof(struct efx_rx_page_state);
 		dma_addr += sizeof(struct efx_rx_page_state);
-<<<<<<< HEAD
-=======
-		page_offset = sizeof(struct efx_rx_page_state);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	split:
 		index = rx_queue->added_count & rx_queue->ptr_mask;
 		rx_buf = efx_rx_buffer(rx_queue, index);
 		rx_buf->dma_addr = dma_addr + EFX_PAGE_IP_ALIGN;
 		rx_buf->u.page = page;
-<<<<<<< HEAD
-=======
-		rx_buf->page_offset = page_offset + EFX_PAGE_IP_ALIGN;
->>>>>>> remotes/linux2/linux-3.4.y
 		rx_buf->len = efx->rx_buffer_len - EFX_PAGE_IP_ALIGN;
 		rx_buf->flags = EFX_RX_BUF_PAGE;
 		++rx_queue->added_count;
@@ -252,10 +236,6 @@ static int efx_init_rx_buffers_page(struct efx_rx_queue *rx_queue)
 			get_page(page);
 			dma_addr += (PAGE_SIZE >> 1);
 			page_addr += (PAGE_SIZE >> 1);
-<<<<<<< HEAD
-=======
-			page_offset += (PAGE_SIZE >> 1);
->>>>>>> remotes/linux2/linux-3.4.y
 			++count;
 			goto split;
 		}
@@ -265,12 +245,7 @@ static int efx_init_rx_buffers_page(struct efx_rx_queue *rx_queue)
 }
 
 static void efx_unmap_rx_buffer(struct efx_nic *efx,
-<<<<<<< HEAD
 				struct efx_rx_buffer *rx_buf)
-=======
-				struct efx_rx_buffer *rx_buf,
-				unsigned int used_len)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	if ((rx_buf->flags & EFX_RX_BUF_PAGE) && rx_buf->u.page) {
 		struct efx_rx_page_state *state;
@@ -281,13 +256,6 @@ static void efx_unmap_rx_buffer(struct efx_nic *efx,
 				       state->dma_addr,
 				       efx_rx_buf_size(efx),
 				       PCI_DMA_FROMDEVICE);
-<<<<<<< HEAD
-=======
-		} else if (used_len) {
-			dma_sync_single_for_cpu(&efx->pci_dev->dev,
-						rx_buf->dma_addr, used_len,
-						DMA_FROM_DEVICE);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 	} else if (!(rx_buf->flags & EFX_RX_BUF_PAGE) && rx_buf->u.skb) {
 		pci_unmap_single(efx->pci_dev, rx_buf->dma_addr,
@@ -310,11 +278,7 @@ static void efx_free_rx_buffer(struct efx_nic *efx,
 static void efx_fini_rx_buffer(struct efx_rx_queue *rx_queue,
 			       struct efx_rx_buffer *rx_buf)
 {
-<<<<<<< HEAD
 	efx_unmap_rx_buffer(rx_queue->efx, rx_buf);
-=======
-	efx_unmap_rx_buffer(rx_queue->efx, rx_buf, 0);
->>>>>>> remotes/linux2/linux-3.4.y
 	efx_free_rx_buffer(rx_queue->efx, rx_buf);
 }
 
@@ -580,17 +544,10 @@ void efx_rx_packet(struct efx_rx_queue *rx_queue, unsigned int index,
 		goto out;
 	}
 
-<<<<<<< HEAD
 	/* Release card resources - assumes all RX buffers consumed in-order
 	 * per RX queue
 	 */
 	efx_unmap_rx_buffer(efx, rx_buf);
-=======
-	/* Release and/or sync DMA mapping - assumes all RX buffers
-	 * consumed in-order per RX queue
-	 */
-	efx_unmap_rx_buffer(efx, rx_buf, len);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Prefetch nice and early so data will (hopefully) be in cache by
 	 * the time we look at it.

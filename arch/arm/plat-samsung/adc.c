@@ -157,21 +157,11 @@ int s3c_adc_start(struct s3c_adc_client *client,
 		return -EINVAL;
 	}
 
-<<<<<<< HEAD
 	if (client->is_ts && adc->ts_pend)
 		return -EAGAIN;
 
 	spin_lock_irqsave(&adc->lock, flags);
 
-=======
-	spin_lock_irqsave(&adc->lock, flags);
-
-	if (client->is_ts && adc->ts_pend) {
-		spin_unlock_irqrestore(&adc->lock, flags);
-		return -EAGAIN;
-	}
-
->>>>>>> remotes/linux2/linux-3.4.y
 	client->channel = channel;
 	client->nr_samples = nr_samples;
 

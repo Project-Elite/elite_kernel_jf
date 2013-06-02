@@ -2177,10 +2177,6 @@ static int rt73usb_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 static int rt73usb_probe_hw(struct rt2x00_dev *rt2x00dev)
 {
 	int retval;
-<<<<<<< HEAD
-=======
-	u32 reg;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Allocate eeprom data.
@@ -2194,17 +2190,6 @@ static int rt73usb_probe_hw(struct rt2x00_dev *rt2x00dev)
 		return retval;
 
 	/*
-<<<<<<< HEAD
-=======
-	 * Enable rfkill polling by setting GPIO direction of the
-	 * rfkill switch GPIO pin correctly.
-	 */
-	rt2x00usb_register_read(rt2x00dev, MAC_CSR13, &reg);
-	rt2x00_set_field32(&reg, MAC_CSR13_BIT15, 0);
-	rt2x00usb_register_write(rt2x00dev, MAC_CSR13, reg);
-
-	/*
->>>>>>> remotes/linux2/linux-3.4.y
 	 * Initialize hw specifications.
 	 */
 	retval = rt73usb_probe_hw_mode(rt2x00dev);

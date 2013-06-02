@@ -49,11 +49,7 @@ static int queue_interrupt_event(struct slot *p_slot, u32 event_type)
 	info->p_slot = p_slot;
 	INIT_WORK(&info->work, interrupt_event_handler);
 
-<<<<<<< HEAD
 	queue_work(pciehp_wq, &info->work);
-=======
-	queue_work(p_slot->wq, &info->work);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -348,11 +344,7 @@ void pciehp_queue_pushbutton_work(struct work_struct *work)
 		kfree(info);
 		goto out;
 	}
-<<<<<<< HEAD
 	queue_work(pciehp_wq, &info->work);
-=======
-	queue_work(p_slot->wq, &info->work);
->>>>>>> remotes/linux2/linux-3.4.y
  out:
 	mutex_unlock(&p_slot->lock);
 }
@@ -385,11 +377,7 @@ static void handle_button_press_event(struct slot *p_slot)
 		if (ATTN_LED(ctrl))
 			pciehp_set_attention_status(p_slot, 0);
 
-<<<<<<< HEAD
 		queue_delayed_work(pciehp_wq, &p_slot->work, 5*HZ);
-=======
-		queue_delayed_work(p_slot->wq, &p_slot->work, 5*HZ);
->>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	case BLINKINGOFF_STATE:
 	case BLINKINGON_STATE:
@@ -451,11 +439,7 @@ static void handle_surprise_event(struct slot *p_slot)
 	else
 		p_slot->state = POWERON_STATE;
 
-<<<<<<< HEAD
 	queue_work(pciehp_wq, &info->work);
-=======
-	queue_work(p_slot->wq, &info->work);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void interrupt_event_handler(struct work_struct *work)

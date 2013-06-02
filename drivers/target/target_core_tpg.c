@@ -114,7 +114,6 @@ struct se_node_acl *core_tpg_get_initiator_node_acl(
 	struct se_node_acl *acl;
 
 	spin_lock_irq(&tpg->acl_node_lock);
-<<<<<<< HEAD
 	list_for_each_entry(acl, &tpg->acl_node_list, acl_list) {
 		if (!strcmp(acl->initiatorname, initiatorname) &&
 		    !acl->dynamic_node_acl) {
@@ -125,12 +124,6 @@ struct se_node_acl *core_tpg_get_initiator_node_acl(
 	spin_unlock_irq(&tpg->acl_node_lock);
 
 	return NULL;
-=======
-	acl = __core_tpg_get_initiator_node_acl(tpg, initiatorname);
-	spin_unlock_irq(&tpg->acl_node_lock);
-
-	return acl;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*	core_tpg_add_node_to_devs():
@@ -684,10 +677,6 @@ int core_tpg_register(
 	for (i = 0; i < TRANSPORT_MAX_LUNS_PER_TPG; i++) {
 		lun = se_tpg->tpg_lun_list[i];
 		lun->unpacked_lun = i;
-<<<<<<< HEAD
-=======
-		lun->lun_link_magic = SE_LUN_LINK_MAGIC;
->>>>>>> remotes/linux2/linux-3.4.y
 		lun->lun_status = TRANSPORT_LUN_STATUS_FREE;
 		atomic_set(&lun->lun_acl_count, 0);
 		init_completion(&lun->lun_shutdown_comp);

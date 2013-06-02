@@ -17,17 +17,10 @@
 /*
  * See Documentation/block/deadline-iosched.txt
  */
-<<<<<<< HEAD
 static const int read_expire = 350;  /* max time before a read is submitted. */
 static const int write_expire = 75; /* ditto for writes, these limits are SOFT! */
 static const int writes_starved = 1;    /* max times reads can starve a write */
 static const int fifo_batch = 1;       /* # of sequential requests treated as one
-=======
-static const int read_expire = HZ / 2;  /* max time before a read is submitted. */
-static const int write_expire = 5 * HZ; /* ditto for writes, these limits are SOFT! */
-static const int writes_starved = 2;    /* max times reads can starve a write */
-static const int fifo_batch = 16;       /* # of sequential requests treated as one
->>>>>>> remotes/linux2/linux-3.4.y
 				     by the above parameters. For throughput. */
 
 struct deadline_data {
@@ -237,11 +230,7 @@ static inline int deadline_check_fifo(struct deadline_data *dd, int ddir)
 	/*
 	 * rq is expired!
 	 */
-<<<<<<< HEAD
 	if (time_after_eq(jiffies, rq_fifo_time(rq)))
-=======
-	if (time_after(jiffies, rq_fifo_time(rq)))
->>>>>>> remotes/linux2/linux-3.4.y
 		return 1;
 
 	return 0;

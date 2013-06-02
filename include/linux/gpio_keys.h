@@ -1,6 +1,5 @@
 #ifndef _GPIO_KEYS_H
 #define _GPIO_KEYS_H
-<<<<<<< HEAD
 /* DVFS feature : HOME_KEY BOOSTER */
 #ifdef CONFIG_SEC_DVFS_BOOSTER
 #define KEY_BOOSTER
@@ -10,8 +9,6 @@
 #define KEY_BOOSTER_OFF_TIME	300
 #define KEY_BOOSTER_CHG_TIME	200
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 struct device;
 
@@ -38,12 +35,9 @@ struct gpio_keys_platform_data {
 	int (*enable)(struct device *dev);
 	void (*disable)(struct device *dev);
 	const char *name;		/* input device name */
-<<<<<<< HEAD
 #ifdef CONFIG_SENSORS_HALL
 	int gpio_flip_cover;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 #endif

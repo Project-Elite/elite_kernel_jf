@@ -210,24 +210,17 @@ static int expand_fdtable(struct files_struct *files, int nr)
 	new_fdt = alloc_fdtable(nr);
 	spin_lock(&files->file_lock);
 	if (!new_fdt)
-<<<<<<< HEAD
 	{
 		printk("[expand_fdtable] ENOMEM: !new_fdt\n");
 		return -ENOMEM;
 	}
-=======
-		return -ENOMEM;
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * extremely unlikely race - sysctl_nr_open decreased between the check in
 	 * caller and alloc_fdtable().  Cheaper to catch it here...
 	 */
 	if (unlikely(new_fdt->max_fds <= nr)) {
 		__free_fdtable(new_fdt);
-<<<<<<< HEAD
 		printk("[expand_fdtable] EMFILE : unlikely(new_fdt->max_fds <= nr\n)"); 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		return -EMFILE;
 	}
 	/*
@@ -266,7 +259,6 @@ int expand_files(struct files_struct *files, int nr)
 	 * N.B. For clone tasks sharing a files structure, this test
 	 * will limit the total number of files that can be opened.
 	 */
-<<<<<<< HEAD
 
 	if (nr >= rlimit(RLIMIT_NOFILE))
 	{
@@ -275,10 +267,6 @@ int expand_files(struct files_struct *files, int nr)
 
 		return -EMFILE;
 	}
-=======
-	if (nr >= rlimit(RLIMIT_NOFILE))
-		return -EMFILE;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Do we need to expand? */
 	if (nr < fdt->max_fds)
@@ -286,14 +274,10 @@ int expand_files(struct files_struct *files, int nr)
 
 	/* Can we expand? */
 	if (nr >= sysctl_nr_open)
-<<<<<<< HEAD
 	{
 		printk("[expand_files] EMFILE : nr >= sysctl_nr_open\n");
 		return -EMFILE;
 	}
-=======
-		return -EMFILE;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* All good, so we try */
 	return expand_fdtable(files, nr);
@@ -493,11 +477,8 @@ repeat:
 	else
 		__clear_close_on_exec(fd, fdt);
 	error = fd;
-<<<<<<< HEAD
 	if (error < 0)
 		printk("[alloc_fd] fd < 0\n");
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #if 1
 	/* Sanity check */
 	if (rcu_dereference_raw(fdt->fd[fd]) != NULL) {

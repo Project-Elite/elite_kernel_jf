@@ -76,17 +76,9 @@
 /* Instruct lower device to use last 4-bytes of skb data as FCS */
 #define SO_NOFCS		43
 
-<<<<<<< HEAD
-=======
-#ifdef __KERNEL__
->>>>>>> remotes/linux2/linux-3.4.y
 /* O_NONBLOCK clashes with the bits used for socket types.  Therefore we
  * have to define SOCK_NONBLOCK to a different value here.
  */
 #define SOCK_NONBLOCK	0x40000000
-<<<<<<< HEAD
-=======
-#endif /* __KERNEL__ */
->>>>>>> remotes/linux2/linux-3.4.y
 
 #endif /* _ASM_SOCKET_H */

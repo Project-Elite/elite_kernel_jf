@@ -42,10 +42,6 @@
 #define MV78XX0_CORE0_REGS_PHYS_BASE	0xf1020000
 #define MV78XX0_CORE1_REGS_PHYS_BASE	0xf1024000
 #define MV78XX0_CORE_REGS_VIRT_BASE	0xfe400000
-<<<<<<< HEAD
-=======
-#define MV78XX0_CORE_REGS_PHYS_BASE	0xfe400000
->>>>>>> remotes/linux2/linux-3.4.y
 #define MV78XX0_CORE_REGS_SIZE		SZ_16K
 
 #define MV78XX0_PCIE_IO_PHYS_BASE(i)	(0xf0800000 + ((i) << 20))
@@ -63,10 +59,6 @@
  * Core-specific peripheral registers.
  */
 #define BRIDGE_VIRT_BASE	(MV78XX0_CORE_REGS_VIRT_BASE)
-<<<<<<< HEAD
-=======
-#define BRIDGE_PHYS_BASE	(MV78XX0_CORE_REGS_PHYS_BASE)
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Register Map

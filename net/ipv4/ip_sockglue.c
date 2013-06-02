@@ -456,7 +456,6 @@ static int do_ip_setsockopt(struct sock *sk, int level,
 	struct inet_sock *inet = inet_sk(sk);
 	int val = 0, err;
 
-<<<<<<< HEAD
 	if (((1<<optname) & ((1<<IP_PKTINFO) | (1<<IP_RECVTTL) |
 			     (1<<IP_RECVOPTS) | (1<<IP_RECVTOS) |
 			     (1<<IP_RETOPTS) | (1<<IP_TOS) |
@@ -470,30 +469,6 @@ static int do_ip_setsockopt(struct sock *sk, int level,
 	    optname == IP_MULTICAST_ALL ||
 	    optname == IP_MULTICAST_LOOP ||
 	    optname == IP_RECVORIGDSTADDR) {
-=======
-	switch (optname) {
-	case IP_PKTINFO:
-	case IP_RECVTTL:
-	case IP_RECVOPTS:
-	case IP_RECVTOS:
-	case IP_RETOPTS:
-	case IP_TOS:
-	case IP_TTL:
-	case IP_HDRINCL:
-	case IP_MTU_DISCOVER:
-	case IP_RECVERR:
-	case IP_ROUTER_ALERT:
-	case IP_FREEBIND:
-	case IP_PASSSEC:
-	case IP_TRANSPARENT:
-	case IP_MINTTL:
-	case IP_NODEFRAG:
-	case IP_UNICAST_IF:
-	case IP_MULTICAST_TTL:
-	case IP_MULTICAST_ALL:
-	case IP_MULTICAST_LOOP:
-	case IP_RECVORIGDSTADDR:
->>>>>>> remotes/linux2/linux-3.4.y
 		if (optlen >= sizeof(int)) {
 			if (get_user(val, (int __user *) optval))
 				return -EFAULT;
@@ -605,11 +580,7 @@ static int do_ip_setsockopt(struct sock *sk, int level,
 	case IP_TTL:
 		if (optlen < 1)
 			goto e_inval;
-<<<<<<< HEAD
 		if (val != -1 && (val < 0 || val > 255))
-=======
-		if (val != -1 && (val < 1 || val > 255))
->>>>>>> remotes/linux2/linux-3.4.y
 			goto e_inval;
 		inet->uc_ttl = val;
 		break;

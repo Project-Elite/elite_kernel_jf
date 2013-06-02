@@ -139,16 +139,8 @@ int drm_open(struct inode *inode, struct file *filp)
 	retcode = drm_open_helper(inode, filp, dev);
 	if (!retcode) {
 		atomic_inc(&dev->counts[_DRM_STAT_OPENS]);
-<<<<<<< HEAD
 		if (!dev->open_count++)
 			retcode = drm_setup(dev);
-=======
-		if (!dev->open_count++) {
-			retcode = drm_setup(dev);
-			if (retcode)
-				dev->open_count--;
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	if (!retcode) {
 		mutex_lock(&dev->struct_mutex);

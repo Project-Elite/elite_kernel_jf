@@ -1,10 +1,6 @@
 /*
  * Copyright (C) 2007 Google, Inc.
-<<<<<<< HEAD
  * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
-=======
- * Copyright (c) 2008-2010, Code Aurora Forum. All rights reserved.
->>>>>>> remotes/linux2/linux-3.4.y
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -23,7 +19,6 @@
 
 #define MSM_IRQ_BIT(irq)     (1 << ((irq) & 31))
 
-<<<<<<< HEAD
 #include "irqs-8625.h"
 
 #if defined(CONFIG_ARCH_MSM8960) || defined(CONFIG_ARCH_APQ8064) || \
@@ -80,16 +75,12 @@
 #elif defined(CONFIG_ARCH_MSM8226)
 #include "irqs-8226.h"
 #elif defined(CONFIG_ARCH_MSM7X30)
-=======
-#if defined(CONFIG_ARCH_MSM7X30)
->>>>>>> remotes/linux2/linux-3.4.y
 #include "irqs-7x30.h"
 #elif defined(CONFIG_ARCH_QSD8X50)
 #include "irqs-8x50.h"
 #include "sirc.h"
 #elif defined(CONFIG_ARCH_MSM8X60)
 #include "irqs-8x60.h"
-<<<<<<< HEAD
 #elif defined(CONFIG_ARCH_MSM7X01A) || defined(CONFIG_ARCH_MSM7X25) \
 	|| defined(CONFIG_ARCH_MSM7X27)
 #include "irqs-7xxx.h"
@@ -101,18 +92,10 @@
 #elif defined(CONFIG_ARCH_FSM9XXX)
 #include "irqs-fsm9xxx.h"
 #include "sirc.h"
-=======
-#elif defined(CONFIG_ARCH_MSM8960)
-/* TODO: Make these not generic. */
-#include "irqs-8960.h"
-#elif defined(CONFIG_ARCH_MSM_ARM11)
-#include "irqs-7x00.h"
->>>>>>> remotes/linux2/linux-3.4.y
 #else
 #error "Unknown architecture specification"
 #endif
 
-<<<<<<< HEAD
 #endif
 
 #if !defined(CONFIG_SPARSE_IRQ)
@@ -126,10 +109,5 @@
 #define MSM_PCIE_MSI_INT(n) (NR_MSM_IRQS + NR_GPIO_IRQS + NR_PM8921_IRQS +  \
 		NR_PM8821_IRQS + NR_TABLA_IRQS + NR_GPIO_EXPANDER_IRQS + (n))
 #endif
-=======
-#define NR_IRQS (NR_MSM_IRQS + NR_GPIO_IRQS + NR_BOARD_IRQS)
-#define MSM_GPIO_TO_INT(n) (NR_MSM_IRQS + (n))
-#define MSM_INT_TO_REG(base, irq) (base + irq / 32)
->>>>>>> remotes/linux2/linux-3.4.y
 
 #endif

@@ -53,11 +53,8 @@ obj-$(CONFIG_ATA)		+= ata/
 obj-$(CONFIG_TARGET_CORE)	+= target/
 obj-$(CONFIG_MTD)		+= mtd/
 obj-$(CONFIG_SPI)		+= spi/
-<<<<<<< HEAD
 obj-$(CONFIG_SPMI)		+= spmi/
 obj-$(CONFIG_SLIMBUS)		+= slimbus/
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 obj-y				+= hsi/
 obj-y				+= net/
 obj-$(CONFIG_ATM)		+= atm/
@@ -105,10 +102,7 @@ obj-$(CONFIG_CPU_IDLE)		+= cpuidle/
 obj-y				+= mmc/
 obj-$(CONFIG_MEMSTICK)		+= memstick/
 obj-y				+= leds/
-<<<<<<< HEAD
 obj-$(CONFIG_SWITCH)		+= switch/
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 obj-$(CONFIG_INFINIBAND)	+= infiniband/
 obj-$(CONFIG_SGI_SN)		+= sn/
 obj-y				+= firmware/
@@ -143,7 +137,6 @@ obj-$(CONFIG_VIRT_DRIVERS)	+= virt/
 obj-$(CONFIG_HYPERV)		+= hv/
 
 obj-$(CONFIG_PM_DEVFREQ)	+= devfreq/
-<<<<<<< HEAD
 
 #MobiCore
 obj-$(CONFIG_MOBICORE_SUPPORT)  += gud/
@@ -165,5 +158,3 @@ endif
 ifeq ($(TIMA_ENABLED),1)
 obj-y                           += checkpower/
 endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y

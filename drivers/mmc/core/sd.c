@@ -689,12 +689,8 @@ MMC_DEV_ATTR(manfid, "0x%06x\n", card->cid.manfid);
 MMC_DEV_ATTR(name, "%s\n", card->cid.prod_name);
 MMC_DEV_ATTR(oemid, "0x%04x\n", card->cid.oemid);
 MMC_DEV_ATTR(serial, "0x%08x\n", card->cid.serial);
-<<<<<<< HEAD
 MMC_DEV_ATTR(caps, "0x%08x\n", (unsigned int)(card->host->caps));
 MMC_DEV_ATTR(caps2, "0x%08x\n", card->host->caps2);
-=======
-
->>>>>>> remotes/linux2/linux-3.4.y
 
 static struct attribute *sd_std_attrs[] = {
 	&dev_attr_cid.attr,
@@ -709,11 +705,8 @@ static struct attribute *sd_std_attrs[] = {
 	&dev_attr_name.attr,
 	&dev_attr_oemid.attr,
 	&dev_attr_serial.attr,
-<<<<<<< HEAD
 	&dev_attr_caps.attr,
 	&dev_attr_caps2.attr,
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	NULL,
 };
 
@@ -816,12 +809,9 @@ int mmc_sd_setup_card(struct mmc_host *host, struct mmc_card *card,
 	bool reinit)
 {
 	int err;
-<<<<<<< HEAD
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 	int retries;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!reinit) {
 		/*
@@ -848,7 +838,6 @@ int mmc_sd_setup_card(struct mmc_host *host, struct mmc_card *card,
 		/*
 		 * Fetch switch information from card.
 		 */
-<<<<<<< HEAD
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 		for (retries = 1; retries <= 3; retries++) {
 			err = mmc_read_switch(card);
@@ -869,9 +858,6 @@ int mmc_sd_setup_card(struct mmc_host *host, struct mmc_card *card,
 		err = mmc_read_switch(card);
 #endif
 
-=======
-		err = mmc_read_switch(card);
->>>>>>> remotes/linux2/linux-3.4.y
 		if (err)
 			return err;
 	}
@@ -895,15 +881,9 @@ int mmc_sd_setup_card(struct mmc_host *host, struct mmc_card *card,
 		int ro = -1;
 
 		if (host->ops->get_ro) {
-<<<<<<< HEAD
 			mmc_host_clk_hold(host);
 			ro = host->ops->get_ro(host);
 			mmc_host_clk_release(host);
-=======
-			mmc_host_clk_hold(card->host);
-			ro = host->ops->get_ro(host);
-			mmc_host_clk_release(card->host);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 
 		if (ro < 0) {
@@ -1024,15 +1004,9 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
 		 * value registers for UHS-I cards.
 		 */
 		if (host->ops->enable_preset_value) {
-<<<<<<< HEAD
 			mmc_host_clk_hold(host);
 			host->ops->enable_preset_value(host, true);
 			mmc_host_clk_release(host);
-=======
-			mmc_host_clk_hold(card->host);
-			host->ops->enable_preset_value(host, true);
-			mmc_host_clk_release(card->host);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 	} else {
 		/*
@@ -1081,14 +1055,10 @@ static void mmc_sd_remove(struct mmc_host *host)
 	BUG_ON(!host->card);
 
 	mmc_remove_card(host->card);
-<<<<<<< HEAD
 
 	mmc_claim_host(host);
 	host->card = NULL;
 	mmc_release_host(host);
-=======
-	host->card = NULL;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -1104,7 +1074,6 @@ static int mmc_sd_alive(struct mmc_host *host)
  */
 static void mmc_sd_detect(struct mmc_host *host)
 {
-<<<<<<< HEAD
 	int err = 0;
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
         int retries = 5;
@@ -1113,19 +1082,11 @@ static void mmc_sd_detect(struct mmc_host *host)
 	BUG_ON(!host);
 	BUG_ON(!host->card);
        
-=======
-	int err;
-
-	BUG_ON(!host);
-	BUG_ON(!host->card);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	mmc_claim_host(host);
 
 	/*
 	 * Just check if our card has been removed.
 	 */
-<<<<<<< HEAD
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 	while(retries) {
 		err = mmc_send_status(host->card, NULL);
@@ -1143,10 +1104,6 @@ static void mmc_sd_detect(struct mmc_host *host)
 #else
 	err = _mmc_detect_card_removed(host);
 #endif
-=======
-	err = _mmc_detect_card_removed(host);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	mmc_release_host(host);
 
 	if (err) {
@@ -1185,18 +1142,14 @@ static int mmc_sd_suspend(struct mmc_host *host)
 static int mmc_sd_resume(struct mmc_host *host)
 {
 	int err;
-<<<<<<< HEAD
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 	int retries;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	BUG_ON(!host);
 	BUG_ON(!host->card);
 
 	mmc_claim_host(host);
-<<<<<<< HEAD
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 	retries = 5;
 	while (retries) {
@@ -1217,9 +1170,6 @@ static int mmc_sd_resume(struct mmc_host *host)
 #else
 	err = mmc_sd_init_card(host, host->ocr, host->card);
 #endif
-=======
-	err = mmc_sd_init_card(host, host->ocr, host->card);
->>>>>>> remotes/linux2/linux-3.4.y
 	mmc_release_host(host);
 
 	return err;
@@ -1273,12 +1223,9 @@ int mmc_attach_sd(struct mmc_host *host)
 {
 	int err;
 	u32 ocr;
-<<<<<<< HEAD
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 	int retries;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	BUG_ON(!host);
 	WARN_ON(!host->claimed);
@@ -1341,7 +1288,6 @@ int mmc_attach_sd(struct mmc_host *host)
 	/*
 	 * Detect and init the card.
 	 */
-<<<<<<< HEAD
 #ifdef CONFIG_MMC_PARANOID_SD_INIT
 	retries = 5;
 	while (retries) {
@@ -1367,11 +1313,6 @@ int mmc_attach_sd(struct mmc_host *host)
 	if (err)
 		goto err;
 #endif
-=======
-	err = mmc_sd_init_card(host, host->ocr, NULL);
-	if (err)
-		goto err;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	mmc_release_host(host);
 	err = mmc_add_card(host->card);

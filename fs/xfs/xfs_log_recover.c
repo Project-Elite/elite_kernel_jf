@@ -3514,11 +3514,7 @@ xlog_do_recovery_pass(
 				 *   - order is important.
 				 */
 				error = xlog_bread_offset(log, 0,
-<<<<<<< HEAD
 						bblks - split_bblks, hbp,
-=======
-						bblks - split_bblks, dbp,
->>>>>>> remotes/linux2/linux-3.4.y
 						offset + BBTOB(split_bblks));
 				if (error)
 					goto bread_err2;

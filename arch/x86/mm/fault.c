@@ -377,19 +377,10 @@ static noinline __kprobes int vmalloc_fault(unsigned long address)
 	if (pgd_none(*pgd_ref))
 		return -1;
 
-<<<<<<< HEAD
 	if (pgd_none(*pgd))
 		set_pgd(pgd, *pgd_ref);
 	else
 		BUG_ON(pgd_page_vaddr(*pgd) != pgd_page_vaddr(*pgd_ref));
-=======
-	if (pgd_none(*pgd)) {
-		set_pgd(pgd, *pgd_ref);
-		arch_flush_lazy_mmu_mode();
-	} else {
-		BUG_ON(pgd_page_vaddr(*pgd) != pgd_page_vaddr(*pgd_ref));
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Below here mismatches are bugs because these lower tables
@@ -756,7 +747,6 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
 				return;
 		}
 #endif
-<<<<<<< HEAD
 
 		if (unlikely(show_unhandled_signals))
 			show_signal_msg(regs, error_code, address, tsk);
@@ -764,17 +754,6 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
 		/* Kernel addresses are always protection faults: */
 		tsk->thread.cr2		= address;
 		tsk->thread.error_code	= error_code | (address >= TASK_SIZE);
-=======
-		/* Kernel addresses are always protection faults: */
-		if (address >= TASK_SIZE)
-			error_code |= PF_PROT;
-
-		if (likely(show_unhandled_signals))
-			show_signal_msg(regs, error_code, address, tsk);
-
-		tsk->thread.cr2		= address;
-		tsk->thread.error_code	= error_code;
->>>>>>> remotes/linux2/linux-3.4.y
 		tsk->thread.trap_nr	= X86_TRAP_PF;
 
 		force_sig_info_fault(SIGSEGV, si_code, address, tsk, 0);

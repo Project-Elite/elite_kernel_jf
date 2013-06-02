@@ -777,15 +777,7 @@ static int filter_set_pred(struct event_filter *filter,
 
 static void __free_preds(struct event_filter *filter)
 {
-<<<<<<< HEAD
 	if (filter->preds) {
-=======
-	int i;
-
-	if (filter->preds) {
-		for (i = 0; i < filter->n_preds; i++)
-			kfree(filter->preds[i].ops);
->>>>>>> remotes/linux2/linux-3.4.y
 		kfree(filter->preds);
 		filter->preds = NULL;
 	}

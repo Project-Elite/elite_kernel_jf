@@ -1285,11 +1285,8 @@ int neigh_resolve_output(struct neighbour *neigh, struct sk_buff *skb)
 	if (!dst)
 		goto discard;
 
-<<<<<<< HEAD
 	__skb_pull(skb, skb_network_offset(skb));
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!neigh_event_send(neigh, skb)) {
 		int err;
 		struct net_device *dev = neigh->dev;
@@ -1299,10 +1296,6 @@ int neigh_resolve_output(struct neighbour *neigh, struct sk_buff *skb)
 			neigh_hh_init(neigh, dst);
 
 		do {
-<<<<<<< HEAD
-=======
-			__skb_pull(skb, skb_network_offset(skb));
->>>>>>> remotes/linux2/linux-3.4.y
 			seq = read_seqbegin(&neigh->ha_lock);
 			err = dev_hard_header(skb, dev, ntohs(skb->protocol),
 					      neigh->ha, NULL, skb->len);
@@ -1333,14 +1326,9 @@ int neigh_connected_output(struct neighbour *neigh, struct sk_buff *skb)
 	unsigned int seq;
 	int err;
 
-<<<<<<< HEAD
 	__skb_pull(skb, skb_network_offset(skb));
 
 	do {
-=======
-	do {
-		__skb_pull(skb, skb_network_offset(skb));
->>>>>>> remotes/linux2/linux-3.4.y
 		seq = read_seqbegin(&neigh->ha_lock);
 		err = dev_hard_header(skb, dev, ntohs(skb->protocol),
 				      neigh->ha, NULL, skb->len);
@@ -2226,13 +2214,9 @@ static int neigh_dump_table(struct neigh_table *tbl, struct sk_buff *skb,
 	rcu_read_lock_bh();
 	nht = rcu_dereference_bh(tbl->nht);
 
-<<<<<<< HEAD
 	for (h = 0; h < (1 << nht->hash_shift); h++) {
 		if (h < s_h)
 			continue;
-=======
-	for (h = s_h; h < (1 << nht->hash_shift); h++) {
->>>>>>> remotes/linux2/linux-3.4.y
 		if (h > s_h)
 			s_idx = 0;
 		for (n = rcu_dereference_bh(nht->hash_buckets[h]), idx = 0;
@@ -2271,13 +2255,9 @@ static int pneigh_dump_table(struct neigh_table *tbl, struct sk_buff *skb,
 
 	read_lock_bh(&tbl->lock);
 
-<<<<<<< HEAD
 	for (h = 0; h <= PNEIGH_HASHMASK; h++) {
 		if (h < s_h)
 			continue;
-=======
-	for (h = s_h; h <= PNEIGH_HASHMASK; h++) {
->>>>>>> remotes/linux2/linux-3.4.y
 		if (h > s_h)
 			s_idx = 0;
 		for (n = tbl->phash_buckets[h], idx = 0; n; n = n->next) {
@@ -2312,11 +2292,7 @@ static int neigh_dump_info(struct sk_buff *skb, struct netlink_callback *cb)
 	struct neigh_table *tbl;
 	int t, family, s_t;
 	int proxy = 0;
-<<<<<<< HEAD
 	int err = 0;
-=======
-	int err;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	read_lock(&neigh_tbl_lock);
 	family = ((struct rtgenmsg *) nlmsg_data(cb->nlh))->rtgen_family;
@@ -2330,11 +2306,7 @@ static int neigh_dump_info(struct sk_buff *skb, struct netlink_callback *cb)
 
 	s_t = cb->args[0];
 
-<<<<<<< HEAD
 	for (tbl = neigh_tables, t = 0; tbl && (err >= 0);
-=======
-	for (tbl = neigh_tables, t = 0; tbl;
->>>>>>> remotes/linux2/linux-3.4.y
 	     tbl = tbl->next, t++) {
 		if (t < s_t || (family && tbl->family != family))
 			continue;
@@ -2345,11 +2317,6 @@ static int neigh_dump_info(struct sk_buff *skb, struct netlink_callback *cb)
 			err = pneigh_dump_table(tbl, skb, cb);
 		else
 			err = neigh_dump_table(tbl, skb, cb);
-<<<<<<< HEAD
-=======
-		if (err < 0)
-			break;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	read_unlock(&neigh_tbl_lock);
 

@@ -756,10 +756,6 @@ static int imx_startup(struct uart_port *port)
 		}
 	}
 
-<<<<<<< HEAD
-=======
-	spin_lock_irqsave(&sport->port.lock, flags);
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Finally, clear and enable interrupts
 	 */
@@ -813,10 +809,7 @@ static int imx_startup(struct uart_port *port)
 	/*
 	 * Enable modem status interrupts
 	 */
-<<<<<<< HEAD
 	spin_lock_irqsave(&sport->port.lock,flags);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	imx_enable_ms(&sport->port);
 	spin_unlock_irqrestore(&sport->port.lock,flags);
 
@@ -846,20 +839,10 @@ static void imx_shutdown(struct uart_port *port)
 {
 	struct imx_port *sport = (struct imx_port *)port;
 	unsigned long temp;
-<<<<<<< HEAD
 
 	temp = readl(sport->port.membase + UCR2);
 	temp &= ~(UCR2_TXEN);
 	writel(temp, sport->port.membase + UCR2);
-=======
-	unsigned long flags;
-
-	spin_lock_irqsave(&sport->port.lock, flags);
-	temp = readl(sport->port.membase + UCR2);
-	temp &= ~(UCR2_TXEN);
-	writel(temp, sport->port.membase + UCR2);
-	spin_unlock_irqrestore(&sport->port.lock, flags);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (USE_IRDA(sport)) {
 		struct imxuart_platform_data *pdata;
@@ -888,20 +871,12 @@ static void imx_shutdown(struct uart_port *port)
 	 * Disable all interrupts, port and break condition.
 	 */
 
-<<<<<<< HEAD
-=======
-	spin_lock_irqsave(&sport->port.lock, flags);
->>>>>>> remotes/linux2/linux-3.4.y
 	temp = readl(sport->port.membase + UCR1);
 	temp &= ~(UCR1_TXMPTYEN | UCR1_RRDYEN | UCR1_RTSDEN | UCR1_UARTEN);
 	if (USE_IRDA(sport))
 		temp &= ~(UCR1_IREN);
 
 	writel(temp, sport->port.membase + UCR1);
-<<<<<<< HEAD
-=======
-	spin_unlock_irqrestore(&sport->port.lock, flags);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void
@@ -1244,12 +1219,6 @@ imx_console_write(struct console *co, const char *s, unsigned int count)
 	struct imx_port *sport = imx_ports[co->index];
 	struct imx_port_ucrs old_ucr;
 	unsigned int ucr1;
-<<<<<<< HEAD
-=======
-	unsigned long flags;
-
-	spin_lock_irqsave(&sport->port.lock, flags);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 *	First, save UCR1/2/3 and then disable interrupts
@@ -1275,11 +1244,6 @@ imx_console_write(struct console *co, const char *s, unsigned int count)
 	while (!(readl(sport->port.membase + USR2) & USR2_TXDC));
 
 	imx_port_ucrs_restore(&sport->port, &old_ucr);
-<<<<<<< HEAD
-=======
-
-	spin_unlock_irqrestore(&sport->port.lock, flags);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*

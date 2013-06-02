@@ -91,26 +91,20 @@ config OF_PCI_IRQ
 	help
 	  OpenFirmware PCI IRQ routing helpers
 
-<<<<<<< HEAD
 config OF_SPMI
 	def_tristate SPMI
 	depends on SPMI
 	help
 	  OpenFirmware SPMI bus accessors
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 config OF_MTD
 	depends on MTD
 	def_bool y
 
-<<<<<<< HEAD
 config OF_SLIMBUS
 	def_tristate SLIMBUS
 	depends on SLIMBUS
 	help
 	  OpenFirmware SLIMBUS accessors
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 endmenu # OF

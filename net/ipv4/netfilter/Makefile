@@ -68,7 +68,3 @@ obj-$(CONFIG_IP_NF_ARP_MANGLE) += arpt_mangle.o
 obj-$(CONFIG_IP_NF_ARPFILTER) += arptable_filter.o
 
 obj-$(CONFIG_IP_NF_QUEUE) += ip_queue.o
-<<<<<<< HEAD
-=======
-
->>>>>>> remotes/linux2/linux-3.4.y

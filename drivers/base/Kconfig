@@ -192,7 +192,6 @@ config DMA_SHARED_BUFFER
 	  APIs extension; the file's descriptor can then be passed on to other
 	  driver.
 
-<<<<<<< HEAD
 config GENLOCK
 	bool "Enable a generic cross-process locking mechanism"
 	depends on ANON_INODES
@@ -323,6 +322,4 @@ config CMA_AREAS
 
 endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 endmenu

@@ -252,10 +252,7 @@ struct uart_ops {
 	void		(*pm)(struct uart_port *, unsigned int state,
 			      unsigned int oldstate);
 	int		(*set_wake)(struct uart_port *, unsigned int state);
-<<<<<<< HEAD
 	void		(*wake_peer)(struct uart_port *);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Return a string describing the type of the port

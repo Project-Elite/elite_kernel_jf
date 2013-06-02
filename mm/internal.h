@@ -100,7 +100,6 @@ extern void prep_compound_page(struct page *page, unsigned long order);
 extern bool is_free_buddy_page(struct page *page);
 #endif
 
-<<<<<<< HEAD
 #if defined CONFIG_COMPACTION || defined CONFIG_CMA
 
 /*
@@ -134,8 +133,6 @@ isolate_migratepages_range(struct zone *zone, struct compact_control *cc,
 			   unsigned long low_pfn, unsigned long end_pfn);
 
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * function for dealing with page's order in buddy system.
@@ -345,7 +342,6 @@ extern u64 hwpoison_filter_flags_mask;
 extern u64 hwpoison_filter_flags_value;
 extern u64 hwpoison_filter_memcg;
 extern u32 hwpoison_filter_enable;
-<<<<<<< HEAD
 
 /* The ALLOC_WMARK bits are used as an index to zone->watermark */
 #define ALLOC_WMARK_MIN		WMARK_MIN
@@ -360,5 +356,3 @@ extern u32 hwpoison_filter_enable;
 #define ALLOC_HIGH		0x20 /* __GFP_HIGH set */
 #define ALLOC_CPUSET		0x40 /* check for correct cpuset */
 #define ALLOC_CMA		0x80 /* allow allocations from CMA areas */
-=======
->>>>>>> remotes/linux2/linux-3.4.y

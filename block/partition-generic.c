@@ -216,7 +216,6 @@ static void part_release(struct device *dev)
 	kfree(p);
 }
 
-<<<<<<< HEAD
 static int part_uevent(struct device *dev, struct kobj_uevent_env *env)
 {
 	struct hd_struct *part = dev_to_part(dev);
@@ -227,16 +226,11 @@ static int part_uevent(struct device *dev, struct kobj_uevent_env *env)
 	return 0;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 struct device_type part_type = {
 	.name		= "partition",
 	.groups		= part_attr_groups,
 	.release	= part_release,
-<<<<<<< HEAD
 	.uevent		= part_uevent,
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static void delete_partition_rcu_cb(struct rcu_head *head)
@@ -266,18 +260,11 @@ void delete_partition(struct gendisk *disk, int partno)
 	if (!part)
 		return;
 
-<<<<<<< HEAD
 	blk_free_devt(part_devt(part));
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	rcu_assign_pointer(ptbl->part[partno], NULL);
 	rcu_assign_pointer(ptbl->last_lookup, NULL);
 	kobject_put(part->holder_dir);
 	device_del(part_to_dev(part));
-<<<<<<< HEAD
-=======
-	blk_free_devt(part_devt(part));
->>>>>>> remotes/linux2/linux-3.4.y
 
 	hd_struct_put(part);
 }

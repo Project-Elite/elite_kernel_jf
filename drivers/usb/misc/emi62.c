@@ -256,11 +256,7 @@ wraperr:
 	return err;
 }
 
-<<<<<<< HEAD
 static const struct usb_device_id id_table[] __devinitconst = {
-=======
-static const struct usb_device_id id_table[] = {
->>>>>>> remotes/linux2/linux-3.4.y
 	{ USB_DEVICE(EMI62_VENDOR_ID, EMI62_PRODUCT_ID) },
 	{ }                                             /* Terminating entry */
 };

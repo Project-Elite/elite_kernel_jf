@@ -663,7 +663,6 @@ static int fuse_readpages_fill(void *_data, struct page *page)
 			return PTR_ERR(req);
 		}
 	}
-<<<<<<< HEAD
 
 #ifdef CONFIG_CMA
 	if (is_cma_pageblock(page)) {
@@ -700,8 +699,6 @@ static int fuse_readpages_fill(void *_data, struct page *page)
 	}
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	page_cache_get(page);
 	req->pages[req->num_pages] = page;
 	req->num_pages++;
@@ -1737,11 +1734,7 @@ static int fuse_verify_ioctl_iov(struct iovec *iov, size_t count)
 	size_t n;
 	u32 max = FUSE_MAX_PAGES_PER_REQ << PAGE_SHIFT;
 
-<<<<<<< HEAD
 	for (n = 0; n < count; n++) {
-=======
-	for (n = 0; n < count; n++, iov++) {
->>>>>>> remotes/linux2/linux-3.4.y
 		if (iov->iov_len > (size_t) max)
 			return -ENOMEM;
 		max -= iov->iov_len;

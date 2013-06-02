@@ -197,11 +197,7 @@ config SERIAL_SAMSUNG_UARTS_4
 config SERIAL_SAMSUNG_UARTS
 	int
 	depends on ARM && PLAT_SAMSUNG
-<<<<<<< HEAD
 	default 6 if ARCH_S5P6450
-=======
-	default 6 if CPU_S5P6450
->>>>>>> remotes/linux2/linux-3.4.y
 	default 4 if SERIAL_SAMSUNG_UARTS_4 || CPU_S3C2416
 	default 3
 	help
@@ -992,7 +988,6 @@ config SERIAL_MSM_HS
 	  Choose M here to compile it as a module. The module will be
 	  called msm_serial_hs.
 
-<<<<<<< HEAD
 config SERIAL_MSM_CLOCK_CONTROL
 	bool "Allow tty clients to make clock requests to msm uarts."
 	depends on SERIAL_MSM=y
@@ -1031,8 +1026,6 @@ config SERIAL_BCM_BT_LPM
 	help
 	  Select this module for Broadcom Bluetooth low power management.
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 config SERIAL_VT8500
 	bool "VIA VT8500 on-chip serial port support"
 	depends on ARM && ARCH_VT8500

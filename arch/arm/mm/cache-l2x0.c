@@ -2,10 +2,7 @@
  * arch/arm/mm/cache-l2x0.c - L210/L220 cache controller support
  *
  * Copyright (C) 2007 ARM Limited
-<<<<<<< HEAD
  * Copyright (c) 2009, 2011-2012, The Linux Foundation. All rights reserved.
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -36,7 +33,6 @@ static void __iomem *l2x0_base;
 static DEFINE_RAW_SPINLOCK(l2x0_lock);
 static u32 l2x0_way_mask;	/* Bitmask of active ways */
 static u32 l2x0_size;
-<<<<<<< HEAD
 static u32 l2x0_cache_id;
 static unsigned int l2x0_sets;
 static unsigned int l2x0_ways;
@@ -49,9 +45,6 @@ static inline bool is_pl310_rev(int rev)
 		(L2X0_CACHE_ID_PART_MASK | L2X0_CACHE_ID_REV_MASK)) ==
 			(L2X0_CACHE_ID_PART_L310 | rev);
 }
-=======
-static unsigned long sync_reg_offset = L2X0_CACHE_SYNC;
->>>>>>> remotes/linux2/linux-3.4.y
 
 struct l2x0_regs l2x0_saved_regs;
 
@@ -140,11 +133,7 @@ static inline void l2x0_flush_line(unsigned long addr)
 }
 #endif
 
-<<<<<<< HEAD
 void l2x0_cache_sync(void)
-=======
-static void l2x0_cache_sync(void)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	unsigned long flags;
 
@@ -153,7 +142,6 @@ static void l2x0_cache_sync(void)
 	raw_spin_unlock_irqrestore(&l2x0_lock, flags);
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_PL310_ERRATA_727915
 static void l2x0_for_each_set_way(void __iomem *reg)
 {
@@ -171,8 +159,6 @@ static void l2x0_for_each_set_way(void __iomem *reg)
 }
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static void __l2x0_flush_all(void)
 {
 	debug_writel(0x03);
@@ -186,7 +172,6 @@ static void l2x0_flush_all(void)
 {
 	unsigned long flags;
 
-<<<<<<< HEAD
 #ifdef CONFIG_PL310_ERRATA_727915
 	if (is_pl310_rev(REV_PL310_R2P0)) {
 		l2x0_for_each_set_way(l2x0_base + L2X0_CLEAN_INV_LINE_IDX);
@@ -194,8 +179,6 @@ static void l2x0_flush_all(void)
 	}
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/* clean all ways */
 	raw_spin_lock_irqsave(&l2x0_lock, flags);
 	__l2x0_flush_all();
@@ -206,7 +189,6 @@ static void l2x0_clean_all(void)
 {
 	unsigned long flags;
 
-<<<<<<< HEAD
 #ifdef CONFIG_PL310_ERRATA_727915
 	if (is_pl310_rev(REV_PL310_R2P0)) {
 		l2x0_for_each_set_way(l2x0_base + L2X0_CLEAN_LINE_IDX);
@@ -221,13 +203,6 @@ static void l2x0_clean_all(void)
 	cache_wait_way(l2x0_base + L2X0_CLEAN_WAY, l2x0_way_mask);
 	cache_sync();
 	debug_writel(0x00);
-=======
-	/* clean all ways */
-	raw_spin_lock_irqsave(&l2x0_lock, flags);
-	writel_relaxed(l2x0_way_mask, l2x0_base + L2X0_CLEAN_WAY);
-	cache_wait_way(l2x0_base + L2X0_CLEAN_WAY, l2x0_way_mask);
-	cache_sync();
->>>>>>> remotes/linux2/linux-3.4.y
 	raw_spin_unlock_irqrestore(&l2x0_lock, flags);
 }
 
@@ -379,43 +354,24 @@ static void l2x0_unlock(u32 cache_id)
 void __init l2x0_init(void __iomem *base, u32 aux_val, u32 aux_mask)
 {
 	u32 aux;
-<<<<<<< HEAD
 	u32 way_size = 0;
-=======
-	u32 cache_id;
-	u32 way_size = 0;
-	int ways;
->>>>>>> remotes/linux2/linux-3.4.y
 	const char *type;
 
 	l2x0_base = base;
 
-<<<<<<< HEAD
 	l2x0_cache_id = readl_relaxed(l2x0_base + L2X0_CACHE_ID);
-=======
-	cache_id = readl_relaxed(l2x0_base + L2X0_CACHE_ID);
->>>>>>> remotes/linux2/linux-3.4.y
 	aux = readl_relaxed(l2x0_base + L2X0_AUX_CTRL);
 
 	aux &= aux_mask;
 	aux |= aux_val;
 
 	/* Determine the number of ways */
-<<<<<<< HEAD
 	switch (l2x0_cache_id & L2X0_CACHE_ID_PART_MASK) {
 	case L2X0_CACHE_ID_PART_L310:
 		if (aux & (1 << 16))
 			l2x0_ways = 16;
 		else
 			l2x0_ways = 8;
-=======
-	switch (cache_id & L2X0_CACHE_ID_PART_MASK) {
-	case L2X0_CACHE_ID_PART_L310:
-		if (aux & (1 << 16))
-			ways = 16;
-		else
-			ways = 8;
->>>>>>> remotes/linux2/linux-3.4.y
 		type = "L310";
 #ifdef CONFIG_PL310_ERRATA_753970
 		/* Unmapped register. */
@@ -424,42 +380,25 @@ void __init l2x0_init(void __iomem *base, u32 aux_val, u32 aux_mask)
 		outer_cache.set_debug = pl310_set_debug;
 		break;
 	case L2X0_CACHE_ID_PART_L210:
-<<<<<<< HEAD
 		l2x0_ways = (aux >> 13) & 0xf;
-=======
-		ways = (aux >> 13) & 0xf;
->>>>>>> remotes/linux2/linux-3.4.y
 		type = "L210";
 		break;
 	default:
 		/* Assume unknown chips have 8 ways */
-<<<<<<< HEAD
 		l2x0_ways = 8;
-=======
-		ways = 8;
->>>>>>> remotes/linux2/linux-3.4.y
 		type = "L2x0 series";
 		break;
 	}
 
-<<<<<<< HEAD
 	l2x0_way_mask = (1 << l2x0_ways) - 1;
-=======
-	l2x0_way_mask = (1 << ways) - 1;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * L2 cache Size =  Way size * Number of ways
 	 */
 	way_size = (aux & L2X0_AUX_CTRL_WAY_SIZE_MASK) >> 17;
-<<<<<<< HEAD
 	way_size = SZ_1K << (way_size + 3);
 	l2x0_size = l2x0_ways * way_size;
 	l2x0_sets = way_size / CACHE_LINE_SIZE;
-=======
-	way_size = 1 << (way_size + 3);
-	l2x0_size = ways * way_size * SZ_1K;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Check if l2x0 controller is already enabled.
@@ -468,11 +407,7 @@ void __init l2x0_init(void __iomem *base, u32 aux_val, u32 aux_mask)
 	 */
 	if (!(readl_relaxed(l2x0_base + L2X0_CTRL) & 1)) {
 		/* Make sure that I&D is not locked down when starting */
-<<<<<<< HEAD
 		l2x0_unlock(l2x0_cache_id);
-=======
-		l2x0_unlock(cache_id);
->>>>>>> remotes/linux2/linux-3.4.y
 
 		/* l2x0 controller is disabled */
 		writel_relaxed(aux, l2x0_base + L2X0_AUX_CTRL);
@@ -485,15 +420,9 @@ void __init l2x0_init(void __iomem *base, u32 aux_val, u32 aux_mask)
 		writel_relaxed(1, l2x0_base + L2X0_CTRL);
 	}
 
-<<<<<<< HEAD
 		outer_cache.inv_range = l2x0_inv_range;
 		outer_cache.clean_range = l2x0_clean_range;
 		outer_cache.flush_range = l2x0_flush_range;
-=======
-	outer_cache.inv_range = l2x0_inv_range;
-	outer_cache.clean_range = l2x0_clean_range;
-	outer_cache.flush_range = l2x0_flush_range;
->>>>>>> remotes/linux2/linux-3.4.y
 	outer_cache.sync = l2x0_cache_sync;
 	outer_cache.flush_all = l2x0_flush_all;
 	outer_cache.inv_all = l2x0_inv_all;
@@ -501,14 +430,10 @@ void __init l2x0_init(void __iomem *base, u32 aux_val, u32 aux_mask)
 
 	printk(KERN_INFO "%s cache controller enabled\n", type);
 	printk(KERN_INFO "l2x0: %d ways, CACHE_ID 0x%08x, AUX_CTRL 0x%08x, Cache size: %d B\n",
-<<<<<<< HEAD
 			l2x0_ways, l2x0_cache_id, aux, l2x0_size);
 
 	/* Save the L2X0 contents, as they are not modified else where */
 	pl310_save();
-=======
-			ways, cache_id, aux, l2x0_size);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 #ifdef CONFIG_OF
@@ -579,14 +504,9 @@ static void __init pl310_of_setup(const struct device_node *np,
 			       l2x0_base + L2X0_ADDR_FILTER_START);
 	}
 }
-<<<<<<< HEAD
 #endif
 
 static void pl310_save(void)
-=======
-
-static void __init pl310_save(void)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	u32 l2x0_revision = readl_relaxed(l2x0_base + L2X0_CACHE_ID) &
 		L2X0_CACHE_ID_RTL_MASK;
@@ -660,10 +580,7 @@ static void pl310_resume(void)
 	l2x0_resume();
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_OF
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static const struct l2x0_of_data pl310_data = {
 	pl310_of_setup,
 	pl310_save,
@@ -719,7 +636,6 @@ int __init l2x0_of_init(u32 aux_val, u32 aux_mask)
 	return 0;
 }
 #endif
-<<<<<<< HEAD
 
 void l2cc_suspend(void)
 {
@@ -732,5 +648,3 @@ void l2cc_resume(void)
 	pl310_resume();
 	dmb();
 }
-=======
->>>>>>> remotes/linux2/linux-3.4.y

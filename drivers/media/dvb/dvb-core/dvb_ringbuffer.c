@@ -5,11 +5,8 @@
  * Copyright (C) 2003 Oliver Endriss
  * Copyright (C) 2004 Andrew de Quincey
  *
-<<<<<<< HEAD
  * Copyright (c) 2012, The Linux Foundation. All rights reserved.
  *
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  * based on code originally found in av7110.c & dvb_ci.c:
  * Copyright (C) 1999-2003 Ralph  Metzler
  *                       & Marcus Metzler for convergence integrated media GmbH
@@ -42,11 +39,8 @@
 
 #define PKT_READY 0
 #define PKT_DISPOSED 1
-<<<<<<< HEAD
 #define PKT_PENDING 2
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 
 void dvb_ringbuffer_init(struct dvb_ringbuffer *rbuf, void *data, size_t len)
@@ -176,7 +170,6 @@ ssize_t dvb_ringbuffer_write(struct dvb_ringbuffer *rbuf, const u8 *buf, size_t 
 	return len;
 }
 
-<<<<<<< HEAD
 ssize_t dvb_ringbuffer_write_user(struct dvb_ringbuffer *rbuf,
 					const u8 *buf, size_t len)
 {
@@ -206,8 +199,6 @@ ssize_t dvb_ringbuffer_write_user(struct dvb_ringbuffer *rbuf,
 	return len;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 ssize_t dvb_ringbuffer_pkt_write(struct dvb_ringbuffer *rbuf, u8* buf, size_t len)
 {
 	int status;
@@ -222,7 +213,6 @@ ssize_t dvb_ringbuffer_pkt_write(struct dvb_ringbuffer *rbuf, u8* buf, size_t le
 	return status;
 }
 
-<<<<<<< HEAD
 ssize_t dvb_ringbuffer_pkt_start(struct dvb_ringbuffer *rbuf, size_t len)
 {
 	ssize_t oldpwrite = rbuf->pwrite;
@@ -248,8 +238,6 @@ int dvb_ringbuffer_pkt_close(struct dvb_ringbuffer *rbuf, ssize_t idx)
 }
 EXPORT_SYMBOL(dvb_ringbuffer_pkt_close);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 ssize_t dvb_ringbuffer_pkt_read_user(struct dvb_ringbuffer *rbuf, size_t idx,
 				int offset, u8 __user *buf, size_t len)
 {
@@ -257,12 +245,9 @@ ssize_t dvb_ringbuffer_pkt_read_user(struct dvb_ringbuffer *rbuf, size_t idx,
 	size_t split;
 	size_t pktlen;
 
-<<<<<<< HEAD
 	if (DVB_RINGBUFFER_PEEK(rbuf, (idx+2)) != PKT_READY)
 		return -EINVAL;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	pktlen = rbuf->data[idx] << 8;
 	pktlen |= rbuf->data[(idx + 1) % rbuf->size];
 	if (offset > pktlen) return -EINVAL;
@@ -283,10 +268,7 @@ ssize_t dvb_ringbuffer_pkt_read_user(struct dvb_ringbuffer *rbuf, size_t idx,
 
 	return len;
 }
-<<<<<<< HEAD
 EXPORT_SYMBOL(dvb_ringbuffer_pkt_read_user);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 ssize_t dvb_ringbuffer_pkt_read(struct dvb_ringbuffer *rbuf, size_t idx,
 				int offset, u8* buf, size_t len)
@@ -295,7 +277,6 @@ ssize_t dvb_ringbuffer_pkt_read(struct dvb_ringbuffer *rbuf, size_t idx,
 	size_t split;
 	size_t pktlen;
 
-<<<<<<< HEAD
 	if (rbuf->data[(idx + 2) % rbuf->size] != PKT_READY)
 		return -EINVAL;
 
@@ -303,11 +284,6 @@ ssize_t dvb_ringbuffer_pkt_read(struct dvb_ringbuffer *rbuf, size_t idx,
 	pktlen |= rbuf->data[(idx + 1) % rbuf->size];
 	if (offset > pktlen) return -EINVAL;
 
-=======
-	pktlen = rbuf->data[idx] << 8;
-	pktlen |= rbuf->data[(idx + 1) % rbuf->size];
-	if (offset > pktlen) return -EINVAL;
->>>>>>> remotes/linux2/linux-3.4.y
 	if ((offset + len) > pktlen) len = pktlen - offset;
 
 	idx = (idx + DVB_RINGBUFFER_PKTHDRSIZE + offset) % rbuf->size;
@@ -322,10 +298,7 @@ ssize_t dvb_ringbuffer_pkt_read(struct dvb_ringbuffer *rbuf, size_t idx,
 	memcpy(buf, rbuf->data+idx, todo);
 	return len;
 }
-<<<<<<< HEAD
 EXPORT_SYMBOL(dvb_ringbuffer_pkt_read);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 void dvb_ringbuffer_pkt_dispose(struct dvb_ringbuffer *rbuf, size_t idx)
 {
@@ -345,10 +318,7 @@ void dvb_ringbuffer_pkt_dispose(struct dvb_ringbuffer *rbuf, size_t idx)
 		}
 	}
 }
-<<<<<<< HEAD
 EXPORT_SYMBOL(dvb_ringbuffer_pkt_dispose);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 ssize_t dvb_ringbuffer_pkt_next(struct dvb_ringbuffer *rbuf, size_t idx, size_t* pktlen)
 {
@@ -377,12 +347,9 @@ ssize_t dvb_ringbuffer_pkt_next(struct dvb_ringbuffer *rbuf, size_t idx, size_t*
 			return idx;
 		}
 
-<<<<<<< HEAD
 		if (curpktstatus == PKT_PENDING)
 			return -EFAULT;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		consumed += curpktlen + DVB_RINGBUFFER_PKTHDRSIZE;
 		idx = (idx + curpktlen + DVB_RINGBUFFER_PKTHDRSIZE) % rbuf->size;
 	}
@@ -390,12 +357,7 @@ ssize_t dvb_ringbuffer_pkt_next(struct dvb_ringbuffer *rbuf, size_t idx, size_t*
 	// no packets available
 	return -1;
 }
-<<<<<<< HEAD
 EXPORT_SYMBOL(dvb_ringbuffer_pkt_next);
-=======
-
-
->>>>>>> remotes/linux2/linux-3.4.y
 
 EXPORT_SYMBOL(dvb_ringbuffer_init);
 EXPORT_SYMBOL(dvb_ringbuffer_empty);
@@ -405,8 +367,5 @@ EXPORT_SYMBOL(dvb_ringbuffer_flush_spinlock_wakeup);
 EXPORT_SYMBOL(dvb_ringbuffer_read_user);
 EXPORT_SYMBOL(dvb_ringbuffer_read);
 EXPORT_SYMBOL(dvb_ringbuffer_write);
-<<<<<<< HEAD
 EXPORT_SYMBOL(dvb_ringbuffer_write_user);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y

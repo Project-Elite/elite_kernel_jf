@@ -1030,7 +1030,6 @@ static int tc_get_qdisc(struct sk_buff *skb, struct nlmsghdr *n, void *arg)
 }
 
 /*
-<<<<<<< HEAD
  * enable/disable flow on qdisc.
  */
 void
@@ -1060,8 +1059,6 @@ tc_qdisc_flow_control(struct net_device *dev, u32 tcm_handle, int enable_flow)
 EXPORT_SYMBOL(tc_qdisc_flow_control);
 
 /*
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  * Create/change qdisc.
  */
 

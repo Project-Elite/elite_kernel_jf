@@ -59,14 +59,11 @@ static int is_targeted(struct usb_device *dev)
 	     le16_to_cpu(dev->descriptor.idProduct) == 0xbadd))
 		return 0;
 
-<<<<<<< HEAD
 	/* OTG PET device is always targeted (see OTG 2.0 ECN 6.4.2) */
 	if ((le16_to_cpu(dev->descriptor.idVendor) == 0x1a0a &&
 	     le16_to_cpu(dev->descriptor.idProduct) == 0x0200))
 		return 1;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/* NOTE: can't use usb_match_id() since interface caches
 	 * aren't set up yet. this is cut/paste from that code.
 	 */
@@ -100,7 +97,6 @@ static int is_targeted(struct usb_device *dev)
 		if ((id->match_flags & USB_DEVICE_ID_MATCH_DEV_PROTOCOL) &&
 		    (id->bDeviceProtocol != dev->descriptor.bDeviceProtocol))
 			continue;
-<<<<<<< HEAD
 #if defined(CONFIG_USB_PEHCI_HCD) || defined(CONFIG_USB_PEHCI_HCD_MODULE)
 		/*Hub is targeted device,so code execution should reach here */
 		if (USB_CLASS_HUB == dev->descriptor.bDeviceClass) {
@@ -125,9 +121,6 @@ static int is_targeted(struct usb_device *dev)
 			}
 		}
 #endif
-=======
-
->>>>>>> remotes/linux2/linux-3.4.y
 		return 1;
 	}
 

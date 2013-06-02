@@ -499,15 +499,9 @@ static int crypto_blkcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
 {
 	struct crypto_report_blkcipher rblkcipher;
 
-<<<<<<< HEAD
 	snprintf(rblkcipher.type, CRYPTO_MAX_ALG_NAME, "%s", "blkcipher");
 	snprintf(rblkcipher.geniv, CRYPTO_MAX_ALG_NAME, "%s",
 		 alg->cra_blkcipher.geniv ?: "<default>");
-=======
-	strncpy(rblkcipher.type, "blkcipher", sizeof(rblkcipher.type));
-	strncpy(rblkcipher.geniv, alg->cra_blkcipher.geniv ?: "<default>",
-		sizeof(rblkcipher.geniv));
->>>>>>> remotes/linux2/linux-3.4.y
 
 	rblkcipher.blocksize = alg->cra_blocksize;
 	rblkcipher.min_keysize = alg->cra_blkcipher.min_keysize;

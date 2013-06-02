@@ -343,10 +343,6 @@ void __init feroceon_l2_init(int __l2_wt_override)
 	outer_cache.inv_range = feroceon_l2_inv_range;
 	outer_cache.clean_range = feroceon_l2_clean_range;
 	outer_cache.flush_range = feroceon_l2_flush_range;
-<<<<<<< HEAD
-=======
-	outer_cache.inv_all = l2_inv_all;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	enable_l2();
 

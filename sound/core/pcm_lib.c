@@ -6,12 +6,7 @@
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
-<<<<<<< HEAD
  *   the Free Software Foundation; only version 2 of the License.
-=======
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
->>>>>>> remotes/linux2/linux-3.4.y
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -1034,11 +1029,7 @@ static int snd_interval_ratden(struct snd_interval *i,
  * Returns non-zero if the value is changed, zero if not changed.
  */
 int snd_interval_list(struct snd_interval *i, unsigned int count,
-<<<<<<< HEAD
 		      unsigned int *list, unsigned int mask)
-=======
-		      const unsigned int *list, unsigned int mask)
->>>>>>> remotes/linux2/linux-3.4.y
 {
         unsigned int k;
 	struct snd_interval list_range;
@@ -1809,7 +1800,6 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
 			long t = runtime->period_size * 2 / runtime->rate;
 			wait_time = max(t, wait_time);
 		}
-<<<<<<< HEAD
 #ifndef TEMP_REDUCDED
 		/* sometimes read function is stuck.
 		   because of abnormal open/close and read function time
@@ -1818,9 +1808,6 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
 #else
 		wait_time = msecs_to_jiffies(wait_time * 1000);
 #endif		
-=======
-		wait_time = msecs_to_jiffies(wait_time * 1000);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	for (;;) {
@@ -2011,12 +1998,9 @@ static int pcm_sanity_check(struct snd_pcm_substream *substream)
 	struct snd_pcm_runtime *runtime;
 	if (PCM_RUNTIME_CHECK(substream))
 		return -ENXIO;
-<<<<<<< HEAD
 	/* TODO: consider and -EINVAL here */
 	if (substream->hw_no_buffer)
 		snd_printd("%s: warning this PCM is host less\n", __func__);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	runtime = substream->runtime;
 	if (snd_BUG_ON(!substream->ops->copy && !runtime->dma_area))
 		return -EINVAL;

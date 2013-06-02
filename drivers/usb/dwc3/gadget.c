@@ -49,10 +49,7 @@
 
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
-<<<<<<< HEAD
 #include <linux/usb/otg.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 #include "core.h"
 #include "gadget.h"
@@ -242,16 +239,8 @@ void dwc3_gadget_giveback(struct dwc3_ep *dep, struct dwc3_request *req,
 	if (req->request.status == -EINPROGRESS)
 		req->request.status = status;
 
-<<<<<<< HEAD
 	usb_gadget_unmap_request(&dwc->gadget, &req->request,
 			req->direction);
-=======
-	if (dwc->ep0_bounced && dep->number == 0)
-		dwc->ep0_bounced = false;
-	else
-		usb_gadget_unmap_request(&dwc->gadget, &req->request,
-				req->direction);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	dev_dbg(dwc->dev, "request %p from %s completed %d/%d ===> %d\n",
 			req, dep->name, req->request.actual,
@@ -325,11 +314,7 @@ int dwc3_send_gadget_ep_cmd(struct dwc3 *dwc, unsigned ep,
 	} while (1);
 }
 
-<<<<<<< HEAD
 dma_addr_t dwc3_trb_dma_offset(struct dwc3_ep *dep,
-=======
-static dma_addr_t dwc3_trb_dma_offset(struct dwc3_ep *dep,
->>>>>>> remotes/linux2/linux-3.4.y
 		struct dwc3_trb *trb)
 {
 	u32		offset = (char *) trb - (char *) dep->trb_pool;
@@ -1342,7 +1327,6 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
 	is_on = !!is_on;
 
 	spin_lock_irqsave(&dwc->lock, flags);
-<<<<<<< HEAD
 
 	dwc->softconnect = is_on;
 
@@ -1396,9 +1380,6 @@ static int dwc3_gadget_vbus_session(struct usb_gadget *_gadget, int is_active)
 		}
 	}
 
-=======
-	dwc3_gadget_run_stop(dwc, is_on);
->>>>>>> remotes/linux2/linux-3.4.y
 	spin_unlock_irqrestore(&dwc->lock, flags);
 
 	return 0;
@@ -1489,10 +1470,7 @@ static const struct usb_gadget_ops dwc3_gadget_ops = {
 	.get_frame		= dwc3_gadget_get_frame,
 	.wakeup			= dwc3_gadget_wakeup,
 	.set_selfpowered	= dwc3_gadget_set_selfpowered,
-<<<<<<< HEAD
 	.vbus_session		= dwc3_gadget_vbus_session,
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	.pullup			= dwc3_gadget_pullup,
 	.udc_start		= dwc3_gadget_start,
 	.udc_stop		= dwc3_gadget_stop,
@@ -1526,10 +1504,6 @@ static int __devinit dwc3_gadget_init_endpoints(struct dwc3 *dwc)
 
 		if (epnum == 0 || epnum == 1) {
 			dep->endpoint.maxpacket = 512;
-<<<<<<< HEAD
-=======
-			dep->endpoint.maxburst = 1;
->>>>>>> remotes/linux2/linux-3.4.y
 			dep->endpoint.ops = &dwc3_gadget_ep0_ops;
 			if (!epnum)
 				dwc->gadget.ep0 = &dep->endpoint;
@@ -1854,10 +1828,6 @@ static void dwc3_stop_active_transfer(struct dwc3 *dwc, u32 epnum)
 		ret = dwc3_send_gadget_ep_cmd(dwc, dep->number, cmd, &params);
 		WARN_ON_ONCE(ret);
 		dep->res_trans_idx = 0;
-<<<<<<< HEAD
-=======
-		dep->flags &= ~DWC3_EP_BUSY;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 
@@ -2237,7 +2207,6 @@ static void dwc3_gadget_interrupt(struct dwc3 *dwc,
 		break;
 	case DWC3_DEVICE_EVENT_OVERFLOW:
 		dev_vdbg(dwc->dev, "Overflow\n");
-<<<<<<< HEAD
 		/*
 		 * Controllers prior to 2.30a revision has a bug where
 		 * Overflow Event may overwrite an unacknowledged event
@@ -2265,8 +2234,6 @@ static void dwc3_gadget_interrupt(struct dwc3 *dwc,
 		 */
 		if (dwc->revision < DWC3_REVISION_230A)
 			dev_warn(dwc->dev, "Vendor Device Test LMP Received\n");
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	default:
 		dev_dbg(dwc->dev, "UNKNOWN IRQ %d\n", event->type);
@@ -2428,12 +2395,7 @@ int __devinit dwc3_gadget_init(struct dwc3 *dwc)
 	}
 
 	/* Enable all but Start and End of Frame IRQs */
-<<<<<<< HEAD
 	reg = (DWC3_DEVTEN_EVNTOVERFLOWEN |
-=======
-	reg = (DWC3_DEVTEN_VNDRDEVTSTRCVEDEN |
-			DWC3_DEVTEN_EVNTOVERFLOWEN |
->>>>>>> remotes/linux2/linux-3.4.y
 			DWC3_DEVTEN_CMDCMPLTEN |
 			DWC3_DEVTEN_ERRTICERREN |
 			DWC3_DEVTEN_WKUPEVTEN |
@@ -2456,7 +2418,6 @@ int __devinit dwc3_gadget_init(struct dwc3 *dwc)
 		goto err7;
 	}
 
-<<<<<<< HEAD
 	if (dwc->dotg) {
 		/* dwc3 otg driver is active (DRD mode + SRPSupport=1) */
 		ret = otg_set_peripheral(&dwc->dotg->otg, &dwc->gadget);
@@ -2471,8 +2432,6 @@ int __devinit dwc3_gadget_init(struct dwc3 *dwc)
 		pm_runtime_get(&dwc->gadget.dev);
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 
 err7:
@@ -2508,14 +2467,11 @@ void dwc3_gadget_exit(struct dwc3 *dwc)
 {
 	int			irq;
 
-<<<<<<< HEAD
 	if (dwc->dotg) {
 		pm_runtime_put(&dwc->gadget.dev);
 		pm_runtime_disable(&dwc->gadget.dev);
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	usb_del_gadget_udc(&dwc->gadget);
 	irq = platform_get_irq(to_platform_device(dwc->dev), 0);
 

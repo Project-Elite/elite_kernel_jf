@@ -1034,20 +1034,14 @@ static int __cpuinit smp_cpu_notify(struct notifier_block *self,
 	unsigned int cpu = (unsigned int)(long)hcpu;
 	struct cpu *c = &pcpu_devices[cpu].cpu;
 	struct device *s = &c->dev;
-<<<<<<< HEAD
 	struct s390_idle_data *idle;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	int err = 0;
 
 	switch (action) {
 	case CPU_ONLINE:
 	case CPU_ONLINE_FROZEN:
-<<<<<<< HEAD
 		idle = &per_cpu(s390_idle, cpu);
 		memset(idle, 0, sizeof(struct s390_idle_data));
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		err = sysfs_create_group(&s->kobj, &cpu_online_attr_group);
 		break;
 	case CPU_DEAD:

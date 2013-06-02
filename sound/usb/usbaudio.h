@@ -36,11 +36,7 @@ struct snd_usb_audio {
 	struct snd_card *card;
 	struct usb_interface *pm_intf;
 	u32 usb_id;
-<<<<<<< HEAD
 	struct mutex shutdown_mutex;
-=======
-	struct rw_semaphore shutdown_rwsem;
->>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int shutdown:1;
 	unsigned int probing:1;
 	unsigned int autosuspended:1;	

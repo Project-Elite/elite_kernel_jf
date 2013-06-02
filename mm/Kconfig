@@ -117,11 +117,7 @@ config SPARSEMEM_VMEMMAP_ENABLE
 
 config SPARSEMEM_ALLOC_MEM_MAP_TOGETHER
 	def_bool y
-<<<<<<< HEAD
 	depends on SPARSEMEM
-=======
-	depends on SPARSEMEM && X86_64
->>>>>>> remotes/linux2/linux-3.4.y
 
 config SPARSEMEM_VMEMMAP
 	bool "Sparse Memory virtual memmap"
@@ -149,11 +145,7 @@ config MEMORY_HOTPLUG
 	bool "Allow for memory hot-add"
 	depends on SPARSEMEM || X86_64_ACPI_NUMA
 	depends on HOTPLUG && ARCH_ENABLE_MEMORY_HOTPLUG
-<<<<<<< HEAD
 	depends on (IA64 || X86 || PPC_BOOK3S_64 || SUPERH || S390 || ARM)
-=======
-	depends on (IA64 || X86 || PPC_BOOK3S_64 || SUPERH || S390)
->>>>>>> remotes/linux2/linux-3.4.y
 
 config MEMORY_HOTPLUG_SPARSE
 	def_bool y
@@ -206,11 +198,7 @@ config COMPACTION
 config MIGRATION
 	bool "Page migration"
 	def_bool y
-<<<<<<< HEAD
 	depends on NUMA || ARCH_ENABLE_MEMORY_HOTREMOVE || COMPACTION || CMA
-=======
-	depends on NUMA || ARCH_ENABLE_MEMORY_HOTREMOVE || COMPACTION
->>>>>>> remotes/linux2/linux-3.4.y
 	help
 	  Allows the migration of the physical location of pages of processes
 	  while the virtual addresses are not changed. This is useful in

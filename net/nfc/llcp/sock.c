@@ -514,11 +514,6 @@ static int llcp_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 
 	pr_debug("%p %zu\n", sk, len);
 
-<<<<<<< HEAD
-=======
-	msg->msg_namelen = 0;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	lock_sock(sk);
 
 	if (sk->sk_state == LLCP_CLOSED &&

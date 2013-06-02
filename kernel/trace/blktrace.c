@@ -1788,11 +1788,8 @@ void blk_fill_rwbs(char *rwbs, u32 rw, int bytes)
 		rwbs[i++] = 'W';
 	else if (rw & REQ_DISCARD)
 		rwbs[i++] = 'D';
-<<<<<<< HEAD
 	else if (rw & REQ_SANITIZE)
 		rwbs[i++] = 'Z';
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	else if (bytes)
 		rwbs[i++] = 'R';
 	else

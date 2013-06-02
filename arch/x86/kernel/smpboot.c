@@ -66,11 +66,6 @@
 #include <asm/mwait.h>
 #include <asm/apic.h>
 #include <asm/io_apic.h>
-<<<<<<< HEAD
-=======
-#include <asm/i387.h>
-#include <asm/fpu-internal.h>
->>>>>>> remotes/linux2/linux-3.4.y
 #include <asm/setup.h>
 #include <asm/uv/uv.h>
 #include <linux/mc146818rtc.h>
@@ -856,12 +851,6 @@ int __cpuinit native_cpu_up(unsigned int cpu)
 
 	per_cpu(cpu_state, cpu) = CPU_UP_PREPARE;
 
-<<<<<<< HEAD
-=======
-	/* the FPU context is blank, nobody can own it */
-	__cpu_disable_lazy_restore(cpu);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	err = do_boot_cpu(apicid, cpu);
 	if (err) {
 		pr_debug("do_boot_cpu failed %d\n", err);

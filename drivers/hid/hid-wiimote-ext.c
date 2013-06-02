@@ -378,7 +378,6 @@ static void handler_nunchuck(struct wiimote_ext *ext, const __u8 *payload)
 
 	if (ext->motionp) {
 		input_report_key(ext->input,
-<<<<<<< HEAD
 			wiiext_keymap[WIIEXT_KEY_Z], !!(payload[5] & 0x04));
 		input_report_key(ext->input,
 			wiiext_keymap[WIIEXT_KEY_C], !!(payload[5] & 0x08));
@@ -387,16 +386,6 @@ static void handler_nunchuck(struct wiimote_ext *ext, const __u8 *payload)
 			wiiext_keymap[WIIEXT_KEY_Z], !!(payload[5] & 0x01));
 		input_report_key(ext->input,
 			wiiext_keymap[WIIEXT_KEY_C], !!(payload[5] & 0x02));
-=======
-			wiiext_keymap[WIIEXT_KEY_Z], !(payload[5] & 0x04));
-		input_report_key(ext->input,
-			wiiext_keymap[WIIEXT_KEY_C], !(payload[5] & 0x08));
-	} else {
-		input_report_key(ext->input,
-			wiiext_keymap[WIIEXT_KEY_Z], !(payload[5] & 0x01));
-		input_report_key(ext->input,
-			wiiext_keymap[WIIEXT_KEY_C], !(payload[5] & 0x02));
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	input_sync(ext->input);

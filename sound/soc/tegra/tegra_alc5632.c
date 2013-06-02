@@ -95,10 +95,7 @@ static struct snd_soc_jack_gpio tegra_alc5632_hp_jack_gpio = {
 	.name = "Headset detection",
 	.report = SND_JACK_HEADSET,
 	.debounce_time = 150,
-<<<<<<< HEAD
 	.invert = 1,
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static const struct snd_soc_dapm_widget tegra_alc5632_dapm_widgets[] = {

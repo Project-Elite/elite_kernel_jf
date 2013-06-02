@@ -4,14 +4,11 @@
 #include <linux/rwsem.h>
 
 struct autogroup {
-<<<<<<< HEAD
 	/*
 	 * reference doesn't mean how many thread attach to this
 	 * autogroup now. It just stands for the number of task
 	 * could use this autogroup.
 	 */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	struct kref		kref;
 	struct task_group	*tg;
 	struct rw_semaphore	lock;

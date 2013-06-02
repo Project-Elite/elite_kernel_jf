@@ -517,11 +517,7 @@ void hfsplus_file_truncate(struct inode *inode)
 		struct address_space *mapping = inode->i_mapping;
 		struct page *page;
 		void *fsdata;
-<<<<<<< HEAD
 		u32 size = inode->i_size;
-=======
-		loff_t size = inode->i_size;
->>>>>>> remotes/linux2/linux-3.4.y
 
 		res = pagecache_write_begin(NULL, mapping, size, 0,
 						AOP_FLAG_UNINTERRUPTIBLE,

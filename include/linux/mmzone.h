@@ -35,7 +35,6 @@
  */
 #define PAGE_ALLOC_COSTLY_ORDER 3
 
-<<<<<<< HEAD
 enum {
 	MIGRATE_UNMOVABLE,
 	MIGRATE_RECLAIMABLE,
@@ -79,15 +78,6 @@ bool is_cma_pageblock(struct page *page);
 #  define is_migrate_cma(migratetype) false
 #  define cma_wmark_pages(zone) 0
 #endif
-=======
-#define MIGRATE_UNMOVABLE     0
-#define MIGRATE_RECLAIMABLE   1
-#define MIGRATE_MOVABLE       2
-#define MIGRATE_PCPTYPES      3 /* the number of types on the pcp lists */
-#define MIGRATE_RESERVE       3
-#define MIGRATE_ISOLATE       4 /* can't allocate from here */
-#define MIGRATE_TYPES         5
->>>>>>> remotes/linux2/linux-3.4.y
 
 #define for_each_migratetype_order(order, type) \
 	for (order = 0; order < MAX_ORDER; order++) \
@@ -162,10 +152,7 @@ enum zone_stat_item {
 	NUMA_OTHER,		/* allocation from other node */
 #endif
 	NR_ANON_TRANSPARENT_HUGEPAGES,
-<<<<<<< HEAD
 	NR_FREE_CMA_PAGES,
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	NR_VM_ZONE_STAT_ITEMS };
 
 /*
@@ -397,7 +384,6 @@ struct zone {
 	/* see spanned/present_pages for more description */
 	seqlock_t		span_seqlock;
 #endif
-<<<<<<< HEAD
 #ifdef CONFIG_CMA
 	/*
 	 * CMA needs to increase watermark levels during the allocation
@@ -405,8 +391,6 @@ struct zone {
 	 */
 	unsigned long		min_cma_pages;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	struct free_area	free_area[MAX_ORDER];
 
 #ifndef CONFIG_SPARSEMEM
@@ -544,15 +528,12 @@ static inline int zone_is_oom_locked(const struct zone *zone)
 	return test_bit(ZONE_OOM_LOCKED, &zone->flags);
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_SMP
 unsigned long zone_nr_free_pages(struct zone *zone);
 #else
 #define zone_nr_free_pages(zone) zone_page_state(zone, NR_FREE_PAGES)
 #endif /* CONFIG_SMP */
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * The "priority" of VM scanning is how much of the queues we will scan in one
  * go. A value of 12 for DEF_PRIORITY implies that we will scan 1/4096th of the
@@ -732,11 +713,7 @@ typedef struct pglist_data {
 					     range, including holes */
 	int node_id;
 	wait_queue_head_t kswapd_wait;
-<<<<<<< HEAD
 	struct task_struct *kswapd;
-=======
-	struct task_struct *kswapd;	/* Protected by lock_memory_hotplug() */
->>>>>>> remotes/linux2/linux-3.4.y
 	int kswapd_max_order;
 	enum zone_type classzone_idx;
 } pg_data_t;
@@ -1192,14 +1169,10 @@ static inline int pfn_present(unsigned long pfn)
 #define pfn_to_nid(pfn)		(0)
 #endif
 
-<<<<<<< HEAD
 #ifndef early_pfn_valid
 #define early_pfn_valid(pfn)	pfn_valid(pfn)
 #endif
 
-=======
-#define early_pfn_valid(pfn)	pfn_valid(pfn)
->>>>>>> remotes/linux2/linux-3.4.y
 void sparse_init(void);
 #else
 #define sparse_init()	do {} while (0)

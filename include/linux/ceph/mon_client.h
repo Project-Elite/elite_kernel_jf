@@ -70,11 +70,7 @@ struct ceph_mon_client {
 	bool hunting;
 	int cur_mon;                       /* last monitor i contacted */
 	unsigned long sub_sent, sub_renew_after;
-<<<<<<< HEAD
 	struct ceph_connection *con;
-=======
-	struct ceph_connection con;
->>>>>>> remotes/linux2/linux-3.4.y
 	bool have_fsid;
 
 	/* pending generic requests */

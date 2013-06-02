@@ -30,7 +30,6 @@
 #define SDIO_DEVICE_ID_STE_CW1200	0x2280
 #endif
 
-<<<<<<< HEAD
 #ifndef SDIO_VENDOR_ID_MSM
 #define SDIO_VENDOR_ID_MSM		0x0070
 #endif
@@ -51,8 +50,6 @@
 #define SDIO_DEVICE_ID_MSM_QCA_AR6003_2	0x301
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * This hook just adds a quirk for all sdio devices
  */
@@ -72,7 +69,6 @@ static const struct mmc_fixup mmc_fixup_methods[] = {
 	SDIO_FIXUP(SDIO_VENDOR_ID_TI, SDIO_DEVICE_ID_TI_WL1271,
 		   remove_quirk, MMC_QUIRK_BROKEN_CLK_GATING),
 
-<<<<<<< HEAD
 	SDIO_FIXUP(SDIO_VENDOR_ID_MSM, SDIO_DEVICE_ID_MSM_WCN1314,
 		   remove_quirk, MMC_QUIRK_BROKEN_CLK_GATING),
 
@@ -82,8 +78,6 @@ static const struct mmc_fixup mmc_fixup_methods[] = {
 	SDIO_FIXUP(SDIO_VENDOR_ID_MSM_QCA, SDIO_DEVICE_ID_MSM_QCA_AR6003_2,
 		   remove_quirk, MMC_QUIRK_BROKEN_CLK_GATING),
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	SDIO_FIXUP(SDIO_VENDOR_ID_TI, SDIO_DEVICE_ID_TI_WL1271,
 		   add_quirk, MMC_QUIRK_NONSTD_FUNC_IF),
 

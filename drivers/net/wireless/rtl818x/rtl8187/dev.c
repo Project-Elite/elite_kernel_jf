@@ -44,11 +44,7 @@ MODULE_AUTHOR("Larry Finger <Larry.Finger@lwfinger.net>");
 MODULE_DESCRIPTION("RTL8187/RTL8187B USB wireless driver");
 MODULE_LICENSE("GPL");
 
-<<<<<<< HEAD
 static struct usb_device_id rtl8187_table[] __devinitdata = {
-=======
-static struct usb_device_id rtl8187_table[] = {
->>>>>>> remotes/linux2/linux-3.4.y
 	/* Asus */
 	{USB_DEVICE(0x0b05, 0x171d), .driver_info = DEVICE_RTL8187},
 	/* Belkin */

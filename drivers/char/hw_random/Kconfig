@@ -250,7 +250,6 @@ config UML_RANDOM
 	  (check your distro, or download from
 	  http://sourceforge.net/projects/gkernel/).  rngd periodically reads
 	  /dev/hwrng and injects the entropy into /dev/random.
-<<<<<<< HEAD
 
 config HW_RANDOM_MSM
 	tristate "Qualcomm MSM Random Number Generator support"
@@ -264,5 +263,3 @@ config HW_RANDOM_MSM
 	  module will be called msm_rng.
 
 	  If unsure, say Y.
-=======
->>>>>>> remotes/linux2/linux-3.4.y

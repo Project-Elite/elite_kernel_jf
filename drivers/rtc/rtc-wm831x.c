@@ -24,11 +24,7 @@
 #include <linux/mfd/wm831x/core.h>
 #include <linux/delay.h>
 #include <linux/platform_device.h>
-<<<<<<< HEAD
 
-=======
-#include <linux/random.h>
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * R16416 (0x4020) - RTC Write Counter
@@ -100,29 +96,6 @@ struct wm831x_rtc {
 	unsigned int alarm_enabled:1;
 };
 
-<<<<<<< HEAD
-=======
-static void wm831x_rtc_add_randomness(struct wm831x *wm831x)
-{
-	int ret;
-	u16 reg;
-
-	/*
-	 * The write counter contains a pseudo-random number which is
-	 * regenerated every time we set the RTC so it should be a
-	 * useful per-system source of entropy.
-	 */
-	ret = wm831x_reg_read(wm831x, WM831X_RTC_WRITE_COUNTER);
-	if (ret >= 0) {
-		reg = ret;
-		add_device_randomness(&reg, sizeof(reg));
-	} else {
-		dev_warn(wm831x->dev, "Failed to read RTC write counter: %d\n",
-			 ret);
-	}
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Read current time and date in RTC
  */
@@ -458,11 +431,6 @@ static int wm831x_rtc_probe(struct platform_device *pdev)
 			alm_irq, ret);
 	}
 
-<<<<<<< HEAD
-=======
-	wm831x_rtc_add_randomness(wm831x);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 
 err:

@@ -316,7 +316,6 @@ s_MgrMakeProbeRequest(
     return pTxPacket;
 }
 
-<<<<<<< HEAD
 void vCommandTimerWait(void *hDeviceContext, unsigned int MSecond)
 {
     PSDevice        pDevice = (PSDevice)hDeviceContext;
@@ -328,21 +327,6 @@ void vCommandTimerWait(void *hDeviceContext, unsigned int MSecond)
     pDevice->sTimerCommand.expires = (unsigned int)RUN_AT((MSecond * HZ) >> 10);
     add_timer(&pDevice->sTimerCommand);
     return;
-=======
-void vCommandTimerWait(void *hDeviceContext, unsigned long MSecond)
-{
-	PSDevice pDevice = (PSDevice)hDeviceContext;
-
-	init_timer(&pDevice->sTimerCommand);
-
-	pDevice->sTimerCommand.data = (unsigned long)pDevice;
-	pDevice->sTimerCommand.function = (TimerFunction)vRunCommand;
-	pDevice->sTimerCommand.expires = RUN_AT((MSecond * HZ) / 1000);
-
-	add_timer(&pDevice->sTimerCommand);
-
-	return;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 void vRunCommand(void *hDeviceContext)

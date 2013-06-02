@@ -32,12 +32,9 @@
 #include <linux/prefetch.h>
 
 #include <trace/events/kmem.h>
-<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG_DOUBLE_FREE
 #include <mach/sec_debug.h>
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Lock order:
@@ -3464,7 +3461,6 @@ out_unlock:
 }
 EXPORT_SYMBOL(verify_mem_not_deleted);
 #endif
-<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG_DOUBLE_FREE
 void kfree(const void *y)
 #else
@@ -3483,14 +3479,6 @@ void kfree(const void *x)
 		return;
 #endif
 
-=======
-
-void kfree(const void *x)
-{
-	struct page *page;
-	void *object = (void *)x;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	trace_kfree(_RET_IP_, x);
 
 	if (unlikely(ZERO_OR_NULL_PTR(x)))

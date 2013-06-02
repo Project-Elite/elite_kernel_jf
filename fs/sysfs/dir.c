@@ -457,33 +457,20 @@ int __sysfs_add_one(struct sysfs_addrm_cxt *acxt, struct sysfs_dirent *sd)
 /**
  *	sysfs_pathname - return full path to sysfs dirent
  *	@sd: sysfs_dirent whose path we want
-<<<<<<< HEAD
  *	@path: caller allocated buffer
  *
  *	Gives the name "/" to the sysfs_root entry; any path returned
  *	is relative to wherever sysfs is mounted.
  *
  *	XXX: does no error checking on @path size
-=======
- *	@path: caller allocated buffer of size PATH_MAX
- *
- *	Gives the name "/" to the sysfs_root entry; any path returned
- *	is relative to wherever sysfs is mounted.
->>>>>>> remotes/linux2/linux-3.4.y
  */
 static char *sysfs_pathname(struct sysfs_dirent *sd, char *path)
 {
 	if (sd->s_parent) {
 		sysfs_pathname(sd->s_parent, path);
-<<<<<<< HEAD
 		strcat(path, "/");
 	}
 	strcat(path, sd->s_name);
-=======
-		strlcat(path, "/", PATH_MAX);
-	}
-	strlcat(path, sd->s_name, PATH_MAX);
->>>>>>> remotes/linux2/linux-3.4.y
 	return path;
 }
 
@@ -516,17 +503,9 @@ int sysfs_add_one(struct sysfs_addrm_cxt *acxt, struct sysfs_dirent *sd)
 		char *path = kzalloc(PATH_MAX, GFP_KERNEL);
 		WARN(1, KERN_WARNING
 		     "sysfs: cannot create duplicate filename '%s'\n",
-<<<<<<< HEAD
 		     (path == NULL) ? sd->s_name :
 		     strcat(strcat(sysfs_pathname(acxt->parent_sd, path), "/"),
 		            sd->s_name));
-=======
-		     (path == NULL) ? sd->s_name
-				    : (sysfs_pathname(acxt->parent_sd, path),
-				       strlcat(path, "/", PATH_MAX),
-				       strlcat(path, sd->s_name, PATH_MAX),
-				       path));
->>>>>>> remotes/linux2/linux-3.4.y
 		kfree(path);
 	}
 
@@ -1015,10 +994,6 @@ static int sysfs_readdir(struct file * filp, void * dirent, filldir_t filldir)
 	enum kobj_ns_type type;
 	const void *ns;
 	ino_t ino;
-<<<<<<< HEAD
-=======
-	loff_t off;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	type = sysfs_ns_type(parent_sd);
 	ns = sysfs_info(dentry->d_sb)->ns[type];
@@ -1027,11 +1002,6 @@ static int sysfs_readdir(struct file * filp, void * dirent, filldir_t filldir)
 		ino = parent_sd->s_ino;
 		if (filldir(dirent, ".", 1, filp->f_pos, ino, DT_DIR) == 0)
 			filp->f_pos++;
-<<<<<<< HEAD
-=======
-		else
-			return 0;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	if (filp->f_pos == 1) {
 		if (parent_sd->s_parent)
@@ -1040,16 +1010,8 @@ static int sysfs_readdir(struct file * filp, void * dirent, filldir_t filldir)
 			ino = parent_sd->s_ino;
 		if (filldir(dirent, "..", 2, filp->f_pos, ino, DT_DIR) == 0)
 			filp->f_pos++;
-<<<<<<< HEAD
 	}
 	mutex_lock(&sysfs_mutex);
-=======
-		else
-			return 0;
-	}
-	mutex_lock(&sysfs_mutex);
-	off = filp->f_pos;
->>>>>>> remotes/linux2/linux-3.4.y
 	for (pos = sysfs_dir_pos(ns, parent_sd, filp->f_pos, pos);
 	     pos;
 	     pos = sysfs_dir_next_pos(ns, parent_sd, filp->f_pos, pos)) {
@@ -1061,64 +1023,27 @@ static int sysfs_readdir(struct file * filp, void * dirent, filldir_t filldir)
 		len = strlen(name);
 		ino = pos->s_ino;
 		type = dt_type(pos);
-<<<<<<< HEAD
 		filp->f_pos = pos->s_hash;
 		filp->private_data = sysfs_get(pos);
 
 		mutex_unlock(&sysfs_mutex);
 		ret = filldir(dirent, name, len, filp->f_pos, ino, type);
-=======
-		off = filp->f_pos = pos->s_hash;
-		filp->private_data = sysfs_get(pos);
-
-		mutex_unlock(&sysfs_mutex);
-		ret = filldir(dirent, name, len, off, ino, type);
->>>>>>> remotes/linux2/linux-3.4.y
 		mutex_lock(&sysfs_mutex);
 		if (ret < 0)
 			break;
 	}
 	mutex_unlock(&sysfs_mutex);
-<<<<<<< HEAD
 	if ((filp->f_pos > 1) && !pos) { /* EOF */
 		filp->f_pos = INT_MAX;
 		filp->private_data = NULL;
-=======
-
-	/* don't reference last entry if its refcount is dropped */
-	if (!pos) {
-		filp->private_data = NULL;
-
-		/* EOF and not changed as 0 or 1 in read/write path */
-		if (off == filp->f_pos && off > 1)
-			filp->f_pos = INT_MAX;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	return 0;
 }
 
-<<<<<<< HEAD
-=======
-static loff_t sysfs_dir_llseek(struct file *file, loff_t offset, int whence)
-{
-	struct inode *inode = file->f_path.dentry->d_inode;
-	loff_t ret;
-
-	mutex_lock(&inode->i_mutex);
-	ret = generic_file_llseek(file, offset, whence);
-	mutex_unlock(&inode->i_mutex);
-
-	return ret;
-}
->>>>>>> remotes/linux2/linux-3.4.y
 
 const struct file_operations sysfs_dir_operations = {
 	.read		= generic_read_dir,
 	.readdir	= sysfs_readdir,
 	.release	= sysfs_dir_release,
-<<<<<<< HEAD
 	.llseek		= generic_file_llseek,
-=======
-	.llseek		= sysfs_dir_llseek,
->>>>>>> remotes/linux2/linux-3.4.y
 };

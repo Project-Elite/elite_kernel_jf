@@ -45,7 +45,6 @@ obj-$(CONFIG_SPI_PL022)			+= spi-pl022.o
 obj-$(CONFIG_SPI_PPC4xx)		+= spi-ppc4xx.o
 obj-$(CONFIG_SPI_PXA2XX)		+= spi-pxa2xx.o
 obj-$(CONFIG_SPI_PXA2XX_PCI)		+= spi-pxa2xx-pci.o
-<<<<<<< HEAD
 ifdef CONFIG_MACH_JF_DCM
 obj-$(CONFIG_SPI_QSD)			+= spi_qsd_jpn_temp.o
 obj-$(CONFIG_SPI_QUP)			+= spi_qsd_jpn_temp.o
@@ -53,8 +52,6 @@ else
 obj-$(CONFIG_SPI_QSD)			+= spi_qsd.o
 obj-$(CONFIG_SPI_QUP)			+= spi_qsd.o
 endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 obj-$(CONFIG_SPI_RSPI)			+= spi-rspi.o
 obj-$(CONFIG_SPI_S3C24XX)		+= spi-s3c24xx-hw.o
 spi-s3c24xx-hw-y			:= spi-s3c24xx.o

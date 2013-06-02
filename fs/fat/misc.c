@@ -56,15 +56,11 @@ void fat_msg(struct super_block *sb, const char *level, const char *fmt, ...)
 	va_start(args, fmt);
 	vaf.fmt = fmt;
 	vaf.va = &args;
-<<<<<<< HEAD
 	if (!strncmp(level, KERN_ERR, sizeof(KERN_ERR)))
 		printk_ratelimited("%sFAT-fs (%s): %pV\n", level,
 				   sb->s_id, &vaf);
 	else
 		printk("%sFAT-fs (%s): %pV\n", level, sb->s_id, &vaf);
-=======
-	printk("%sFAT-fs (%s): %pV\n", level, sb->s_id, &vaf);
->>>>>>> remotes/linux2/linux-3.4.y
 	va_end(args);
 }
 

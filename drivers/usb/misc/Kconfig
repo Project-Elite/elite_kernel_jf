@@ -218,7 +218,6 @@ config USB_TEST
 	  See <http://www.linux-usb.org/usbtest/> for more information,
 	  including sample test device firmware and "how to use it".
 
-<<<<<<< HEAD
 config USB_EHSET_TEST_FIXTURE
 	tristate "USB EHSET Test Fixture Driver"
 	depends on USB && USB_EHCI_EHSET
@@ -234,8 +233,6 @@ config USB_EHSET_TEST_FIXTURE
 	  for more information.
 
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 config USB_ISIGHTFW
 	tristate "iSight firmware loading support"
 	depends on USB
@@ -262,7 +259,6 @@ config USB_YUREX
 	  To compile this driver as a module, choose M here: the
 	  module will be called yurex.
 
-<<<<<<< HEAD
 config USB_QCOM_DIAG_BRIDGE
 	tristate "USB Qualcomm diagnostic bridge driver"
 	depends on USB
@@ -307,5 +303,3 @@ config USB_QCOM_KS_BRIDGE
 	  boot images, ram-dumps and efs sync
 	  To compile this driver as a module, choose M here: the module
 	  will be called ks_bridge. If unsure, choose N.
-=======
->>>>>>> remotes/linux2/linux-3.4.y

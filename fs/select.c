@@ -345,13 +345,8 @@ static int max_select_fd(unsigned long n, fd_set_bits *fds)
 	struct fdtable *fdt;
 
 	/* handle last in-complete long-word first */
-<<<<<<< HEAD
 	set = ~(~0UL << (n & (__NFDBITS-1)));
 	n /= __NFDBITS;
-=======
-	set = ~(~0UL << (n & (BITS_PER_LONG-1)));
-	n /= BITS_PER_LONG;
->>>>>>> remotes/linux2/linux-3.4.y
 	fdt = files_fdtable(current->files);
 	open_fds = fdt->open_fds + n;
 	max = 0;
@@ -378,11 +373,7 @@ get_max:
 			max++;
 			set >>= 1;
 		} while (set);
-<<<<<<< HEAD
 		max += n * __NFDBITS;
-=======
-		max += n * BITS_PER_LONG;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return max;
@@ -444,19 +435,11 @@ int do_select(int n, fd_set_bits *fds, struct timespec *end_time)
 			in = *inp++; out = *outp++; ex = *exp++;
 			all_bits = in | out | ex;
 			if (all_bits == 0) {
-<<<<<<< HEAD
 				i += __NFDBITS;
 				continue;
 			}
 
 			for (j = 0; j < __NFDBITS; ++j, ++i, bit <<= 1) {
-=======
-				i += BITS_PER_LONG;
-				continue;
-			}
-
-			for (j = 0; j < BITS_PER_LONG; ++j, ++i, bit <<= 1) {
->>>>>>> remotes/linux2/linux-3.4.y
 				int fput_needed;
 				if (i >= n)
 					break;

@@ -71,11 +71,7 @@ void sctp_auth_key_put(struct sctp_auth_bytes *key)
 		return;
 
 	if (atomic_dec_and_test(&key->refcnt)) {
-<<<<<<< HEAD
 		kfree(key);
-=======
-		kzfree(key);
->>>>>>> remotes/linux2/linux-3.4.y
 		SCTP_DBG_OBJCNT_DEC(keys);
 	}
 }

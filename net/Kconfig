@@ -79,7 +79,6 @@ source "net/netlabel/Kconfig"
 
 endif # if INET
 
-<<<<<<< HEAD
 config ANDROID_PARANOID_NETWORK
 	bool "Only allow certain groups to create sockets"
 	default y
@@ -94,8 +93,6 @@ config NET_ACTIVITY_STATS
 	 modem activity on 2G, 3G, 4G wireless networks. Counts number of
 	 transmissions and groups them in specified time buckets.
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 config NETWORK_SECMARK
 	bool "Security Marking"
 	help
@@ -235,11 +232,7 @@ source "net/batman-adv/Kconfig"
 source "net/openvswitch/Kconfig"
 
 config RPS
-<<<<<<< HEAD
 	boolean "RPS"
-=======
-	boolean
->>>>>>> remotes/linux2/linux-3.4.y
 	depends on SMP && SYSFS && USE_GENERIC_SMP_HELPERS
 	default y
 

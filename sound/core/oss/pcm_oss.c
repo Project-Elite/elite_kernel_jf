@@ -2441,13 +2441,6 @@ static int snd_pcm_oss_open(struct inode *inode, struct file *file)
 		mutex_unlock(&pcm->open_mutex);
 		schedule();
 		mutex_lock(&pcm->open_mutex);
-<<<<<<< HEAD
-=======
-		if (pcm->card->shutdown) {
-			err = -ENODEV;
-			break;
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 		if (signal_pending(current)) {
 			err = -ERESTARTSYS;
 			break;
@@ -2457,10 +2450,6 @@ static int snd_pcm_oss_open(struct inode *inode, struct file *file)
 	mutex_unlock(&pcm->open_mutex);
 	if (err < 0)
 		goto __error;
-<<<<<<< HEAD
-=======
-	snd_card_unref(pcm->card);
->>>>>>> remotes/linux2/linux-3.4.y
 	return err;
 
       __error:
@@ -2468,11 +2457,6 @@ static int snd_pcm_oss_open(struct inode *inode, struct file *file)
       __error2:
       	snd_card_file_remove(pcm->card, file);
       __error1:
-<<<<<<< HEAD
-=======
-	if (pcm)
-		snd_card_unref(pcm->card);
->>>>>>> remotes/linux2/linux-3.4.y
 	return err;
 }
 

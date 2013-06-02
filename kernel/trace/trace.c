@@ -38,10 +38,7 @@
 #include <linux/poll.h>
 #include <linux/nmi.h>
 #include <linux/fs.h>
-<<<<<<< HEAD
 #include <linux/coresight-stm.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 #include "trace.h"
 #include "trace_output.h"
@@ -712,11 +709,7 @@ __update_max_tr(struct trace_array *tr, struct task_struct *tsk, int cpu)
 void
 update_max_tr(struct trace_array *tr, struct task_struct *tsk, int cpu)
 {
-<<<<<<< HEAD
 	struct ring_buffer *buf = tr->buffer;
-=======
-	struct ring_buffer *buf;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (trace_stop_count)
 		return;
@@ -728,10 +721,6 @@ update_max_tr(struct trace_array *tr, struct task_struct *tsk, int cpu)
 	}
 	arch_spin_lock(&ftrace_max_lock);
 
-<<<<<<< HEAD
-=======
-	buf = tr->buffer;
->>>>>>> remotes/linux2/linux-3.4.y
 	tr->buffer = max_tr.buffer;
 	max_tr.buffer = buf;
 
@@ -1641,10 +1630,7 @@ int trace_array_vprintk(struct trace_array *tr,
 	memcpy(&entry->buf, trace_buf, len);
 	entry->buf[len] = '\0';
 	if (!filter_check_discard(call, entry, buffer, event)) {
-<<<<<<< HEAD
 		stm_log(OST_ENTITY_TRACE_PRINTK, event, size);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		ring_buffer_unlock_commit(buffer, event);
 		ftrace_trace_stack(buffer, irq_flags, 6, pc);
 	}
@@ -2664,18 +2650,10 @@ tracing_cpumask_write(struct file *filp, const char __user *ubuf,
 		if (cpumask_test_cpu(cpu, tracing_cpumask) &&
 				!cpumask_test_cpu(cpu, tracing_cpumask_new)) {
 			atomic_inc(&global_trace.data[cpu]->disabled);
-<<<<<<< HEAD
-=======
-			ring_buffer_record_disable_cpu(global_trace.buffer, cpu);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 		if (!cpumask_test_cpu(cpu, tracing_cpumask) &&
 				cpumask_test_cpu(cpu, tracing_cpumask_new)) {
 			atomic_dec(&global_trace.data[cpu]->disabled);
-<<<<<<< HEAD
-=======
-			ring_buffer_record_enable_cpu(global_trace.buffer, cpu);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 	arch_spin_unlock(&ftrace_max_lock);
@@ -2764,33 +2742,11 @@ static int set_tracer_option(struct tracer *trace, char *cmp, int neg)
 	return -EINVAL;
 }
 
-<<<<<<< HEAD
 static void set_tracer_flags(unsigned int mask, int enabled)
 {
 	/* do nothing if flag is already set */
 	if (!!(trace_flags & mask) == !!enabled)
 		return;
-=======
-/* Some tracers require overwrite to stay enabled */
-int trace_keep_overwrite(struct tracer *tracer, u32 mask, int set)
-{
-	if (tracer->enabled && (mask & TRACE_ITER_OVERWRITE) && !set)
-		return -1;
-
-	return 0;
-}
-
-int set_tracer_flag(unsigned int mask, int enabled)
-{
-	/* do nothing if flag is already set */
-	if (!!(trace_flags & mask) == !!enabled)
-		return 0;
-
-	/* Give the tracer a chance to approve the change */
-	if (current_trace->flag_changed)
-		if (current_trace->flag_changed(current_trace, mask, !!enabled))
-			return -EINVAL;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (enabled)
 		trace_flags |= mask;
@@ -2802,11 +2758,6 @@ int set_tracer_flag(unsigned int mask, int enabled)
 
 	if (mask == TRACE_ITER_OVERWRITE)
 		ring_buffer_change_overwrite(global_trace.buffer, enabled);
-<<<<<<< HEAD
-=======
-
-	return 0;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static ssize_t
@@ -2816,11 +2767,7 @@ tracing_trace_options_write(struct file *filp, const char __user *ubuf,
 	char buf[64];
 	char *cmp;
 	int neg = 0;
-<<<<<<< HEAD
 	int ret;
-=======
-	int ret = -ENODEV;
->>>>>>> remotes/linux2/linux-3.4.y
 	int i;
 
 	if (cnt >= sizeof(buf))
@@ -2837,23 +2784,14 @@ tracing_trace_options_write(struct file *filp, const char __user *ubuf,
 		cmp += 2;
 	}
 
-<<<<<<< HEAD
 	for (i = 0; trace_options[i]; i++) {
 		if (strcmp(cmp, trace_options[i]) == 0) {
 			set_tracer_flags(1 << i, !neg);
-=======
-	mutex_lock(&trace_types_lock);
-
-	for (i = 0; trace_options[i]; i++) {
-		if (strcmp(cmp, trace_options[i]) == 0) {
-			ret = set_tracer_flag(1 << i, !neg);
->>>>>>> remotes/linux2/linux-3.4.y
 			break;
 		}
 	}
 
 	/* If no option could be set, test the specific tracer options */
-<<<<<<< HEAD
 	if (!trace_options[i]) {
 		mutex_lock(&trace_types_lock);
 		ret = set_tracer_option(current_trace, cmp, neg);
@@ -2861,15 +2799,6 @@ tracing_trace_options_write(struct file *filp, const char __user *ubuf,
 		if (ret)
 			return ret;
 	}
-=======
-	if (!trace_options[i])
-		ret = set_tracer_option(current_trace, cmp, neg);
-
-	mutex_unlock(&trace_types_lock);
-
-	if (ret < 0)
-		return ret;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	*ppos += cnt;
 
@@ -3193,12 +3122,6 @@ static int tracing_set_tracer(const char *buf)
 		goto out;
 
 	trace_branch_disable();
-<<<<<<< HEAD
-=======
-
-	current_trace->enabled = false;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	if (current_trace && current_trace->reset)
 		current_trace->reset(tr);
 	if (current_trace && current_trace->use_max_tr) {
@@ -3228,10 +3151,6 @@ static int tracing_set_tracer(const char *buf)
 			goto out;
 	}
 
-<<<<<<< HEAD
-=======
-	current_trace->enabled = true;
->>>>>>> remotes/linux2/linux-3.4.y
 	trace_branch_enable(tr);
  out:
 	mutex_unlock(&trace_types_lock);
@@ -3646,10 +3565,6 @@ static ssize_t tracing_splice_read_pipe(struct file *filp,
 		.pages		= pages_def,
 		.partial	= partial_def,
 		.nr_pages	= 0, /* This gets updated below. */
-<<<<<<< HEAD
-=======
-		.nr_pages_max	= PIPE_DEF_BUFFERS,
->>>>>>> remotes/linux2/linux-3.4.y
 		.flags		= flags,
 		.ops		= &tracing_pipe_buf_ops,
 		.spd_release	= tracing_spd_release_pipe,
@@ -3721,11 +3636,7 @@ static ssize_t tracing_splice_read_pipe(struct file *filp,
 
 	ret = splice_to_pipe(pipe, &spd);
 out:
-<<<<<<< HEAD
 	splice_shrink_spd(pipe, &spd);
-=======
-	splice_shrink_spd(&spd);
->>>>>>> remotes/linux2/linux-3.4.y
 	return ret;
 
 out_err:
@@ -3843,11 +3754,7 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
 	int nr_pages = 1;
 	ssize_t written;
 	void *page1;
-<<<<<<< HEAD
 	void *page2 = NULL;
-=======
-	void *page2;
->>>>>>> remotes/linux2/linux-3.4.y
 	int offset;
 	int size;
 	int len;
@@ -3921,10 +3828,7 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
 	} else
 		entry->buf[cnt] = '\0';
 
-<<<<<<< HEAD
 	stm_log(OST_ENTITY_TRACE_MARKER, event, size);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	ring_buffer_unlock_commit(buffer, event);
 
 	written = cnt;
@@ -4223,10 +4127,6 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
 	struct splice_pipe_desc spd = {
 		.pages		= pages_def,
 		.partial	= partial_def,
-<<<<<<< HEAD
-=======
-		.nr_pages_max	= PIPE_DEF_BUFFERS,
->>>>>>> remotes/linux2/linux-3.4.y
 		.flags		= flags,
 		.ops		= &buffer_pipe_buf_ops,
 		.spd_release	= buffer_spd_release,
@@ -4314,11 +4214,7 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
 	}
 
 	ret = splice_to_pipe(pipe, &spd);
-<<<<<<< HEAD
 	splice_shrink_spd(pipe, &spd);
-=======
-	splice_shrink_spd(&spd);
->>>>>>> remotes/linux2/linux-3.4.y
 out:
 	return ret;
 }
@@ -4588,17 +4484,7 @@ trace_options_core_write(struct file *filp, const char __user *ubuf, size_t cnt,
 
 	if (val != 0 && val != 1)
 		return -EINVAL;
-<<<<<<< HEAD
 	set_tracer_flags(1 << index, val);
-=======
-
-	mutex_lock(&trace_types_lock);
-	ret = set_tracer_flag(1 << index, val);
-	mutex_unlock(&trace_types_lock);
-
-	if (ret < 0)
-		return ret;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	*ppos += cnt;
 
@@ -4801,11 +4687,6 @@ static __init int tracer_init_debugfs(void)
 	trace_access_lock_init();
 
 	d_tracer = tracing_init_dentry();
-<<<<<<< HEAD
-=======
-	if (!d_tracer)
-		return 0;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	trace_create_file("tracing_enabled", 0644, d_tracer,
 			&global_trace, &tracing_ctrl_fops);
@@ -4942,7 +4823,6 @@ void trace_init_global_iter(struct trace_iterator *iter)
 	iter->cpu_file = TRACE_PIPE_ALL_CPU;
 }
 
-<<<<<<< HEAD
 static void
 __ftrace_dump(bool disable_tracing, enum ftrace_dump_mode oops_dump_mode)
 {
@@ -4973,34 +4853,6 @@ __ftrace_dump(bool disable_tracing, enum ftrace_dump_mode oops_dump_mode)
 
 	if (disable_tracing)
 		ftrace_kill();
-=======
-void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
-{
-	/* use static because iter can be a bit big for the stack */
-	static struct trace_iterator iter;
-	static atomic_t dump_running;
-	unsigned int old_userobj;
-	unsigned long flags;
-	int cnt = 0, cpu;
-
-	/* Only allow one dump user at a time. */
-	if (atomic_inc_return(&dump_running) != 1) {
-		atomic_dec(&dump_running);
-		return;
-	}
-
-	/*
-	 * Always turn off tracing when we dump.
-	 * We don't need to show trace output of what happens
-	 * between multiple crashes.
-	 *
-	 * If the user does a sysrq-z, then they can re-enable
-	 * tracing with echo 1 > tracing_on.
-	 */
-	tracing_off();
-
-	local_irq_save(flags);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	trace_init_global_iter(&iter);
 
@@ -5033,15 +4885,6 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
 
 	printk(KERN_TRACE "Dumping ftrace buffer:\n");
 
-<<<<<<< HEAD
-=======
-	/* Did function tracer already get disabled? */
-	if (ftrace_is_dead()) {
-		printk("# WARNING: FUNCTION TRACING IS CORRUPTED\n");
-		printk("#          MAY BE MISSING FUNCTION EVENTS\n");
-	}
-
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * We need to stop all tracing on all CPUS to read the
 	 * the next buffer. This is a bit expensive, but is
@@ -5081,7 +4924,6 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
 		printk(KERN_TRACE "---------------------------------\n");
 
  out_enable:
-<<<<<<< HEAD
 	/* Re-enable tracing if requested */
 	if (!disable_tracing) {
 		trace_flags |= old_userobj;
@@ -5102,16 +4944,6 @@ void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
 {
 	__ftrace_dump(true, oops_dump_mode);
 }
-=======
-	trace_flags |= old_userobj;
-
-	for_each_tracing_cpu(cpu) {
-		atomic_dec(&iter.tr->data[cpu]->disabled);
-	}
- 	atomic_dec(&dump_running);
-	local_irq_restore(flags);
-}
->>>>>>> remotes/linux2/linux-3.4.y
 EXPORT_SYMBOL_GPL(ftrace_dump);
 
 __init static int tracer_alloc_buffers(void)

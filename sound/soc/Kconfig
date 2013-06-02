@@ -41,10 +41,7 @@ source "sound/soc/nuc900/Kconfig"
 source "sound/soc/omap/Kconfig"
 source "sound/soc/kirkwood/Kconfig"
 source "sound/soc/mid-x86/Kconfig"
-<<<<<<< HEAD
 source "sound/soc/msm/Kconfig"
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 source "sound/soc/mxs/Kconfig"
 source "sound/soc/pxa/Kconfig"
 source "sound/soc/samsung/Kconfig"

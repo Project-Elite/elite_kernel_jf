@@ -60,28 +60,6 @@ bool intel_ddc_probe(struct intel_encoder *intel_encoder, int ddc_bus)
 }
 
 /**
-<<<<<<< HEAD
-=======
- * intel_connector_update_modes - update connector from edid
- * @connector: DRM connector device to use
- * @edid: previously read EDID information
- */
-int intel_connector_update_modes(struct drm_connector *connector,
-				struct edid *edid)
-{
-	int ret;
-
-	drm_mode_connector_update_edid_property(connector, edid);
-	ret = drm_add_edid_modes(connector, edid);
-	drm_edid_to_eld(connector, edid);
-	connector->display_info.raw_edid = NULL;
-	kfree(edid);
-
-	return ret;
-}
-
-/**
->>>>>>> remotes/linux2/linux-3.4.y
  * intel_ddc_get_modes - get modelist from monitor
  * @connector: DRM connector device to use
  * @adapter: i2c adapter
@@ -92,7 +70,6 @@ int intel_ddc_get_modes(struct drm_connector *connector,
 			struct i2c_adapter *adapter)
 {
 	struct edid *edid;
-<<<<<<< HEAD
 	int ret = 0;
 
 	edid = drm_get_edid(connector, adapter);
@@ -105,14 +82,6 @@ int intel_ddc_get_modes(struct drm_connector *connector,
 	}
 
 	return ret;
-=======
-
-	edid = drm_get_edid(connector, adapter);
-	if (!edid)
-		return 0;
-
-	return intel_connector_update_modes(connector, edid);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static const struct drm_prop_enum_list force_audio_names[] = {

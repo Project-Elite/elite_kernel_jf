@@ -238,11 +238,7 @@ EXPORT_SYMBOL_GPL(omap_dm_timer_enable);
 
 void omap_dm_timer_disable(struct omap_dm_timer *timer)
 {
-<<<<<<< HEAD
 	pm_runtime_put(&timer->pdev->dev);
-=======
-	pm_runtime_put_sync(&timer->pdev->dev);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL_GPL(omap_dm_timer_disable);
 

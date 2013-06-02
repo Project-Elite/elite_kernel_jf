@@ -3405,11 +3405,7 @@ il4965_remove_dynamic_key(struct il_priv *il,
 		return 0;
 	}
 
-<<<<<<< HEAD
 	if (il->stations[sta_id].sta.key.key_offset == WEP_INVALID_OFFSET) {
-=======
-	if (il->stations[sta_id].sta.key.key_flags & STA_KEY_FLG_INVALID) {
->>>>>>> remotes/linux2/linux-3.4.y
 		IL_WARN("Removing wrong key %d 0x%x\n", keyconf->keyidx,
 			key_flags);
 		spin_unlock_irqrestore(&il->sta_lock, flags);
@@ -3424,11 +3420,7 @@ il4965_remove_dynamic_key(struct il_priv *il,
 	memset(&il->stations[sta_id].sta.key, 0, sizeof(struct il4965_keyinfo));
 	il->stations[sta_id].sta.key.key_flags =
 	    STA_KEY_FLG_NO_ENC | STA_KEY_FLG_INVALID;
-<<<<<<< HEAD
 	il->stations[sta_id].sta.key.key_offset = WEP_INVALID_OFFSET;
-=======
-	il->stations[sta_id].sta.key.key_offset = keyconf->hw_key_idx;
->>>>>>> remotes/linux2/linux-3.4.y
 	il->stations[sta_id].sta.sta.modify_mask = STA_MODIFY_KEY_MASK;
 	il->stations[sta_id].sta.mode = STA_CONTROL_MODIFY_MSK;
 

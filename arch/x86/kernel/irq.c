@@ -165,13 +165,10 @@ u64 arch_irq_stat_cpu(unsigned int cpu)
 u64 arch_irq_stat(void)
 {
 	u64 sum = atomic_read(&irq_err_count);
-<<<<<<< HEAD
 
 #ifdef CONFIG_X86_IO_APIC
 	sum += atomic_read(&irq_mis_count);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return sum;
 }
 

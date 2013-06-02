@@ -36,10 +36,6 @@
 #define ACPI_PROCESSOR_AGGREGATOR_DEVICE_NAME "Processor Aggregator"
 #define ACPI_PROCESSOR_AGGREGATOR_NOTIFY 0x80
 static DEFINE_MUTEX(isolated_cpus_lock);
-<<<<<<< HEAD
-=======
-static DEFINE_MUTEX(round_robin_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 static unsigned long power_saving_mwait_eax;
 
@@ -111,11 +107,7 @@ static void round_robin_cpu(unsigned int tsk_index)
 	if (!alloc_cpumask_var(&tmp, GFP_KERNEL))
 		return;
 
-<<<<<<< HEAD
 	mutex_lock(&isolated_cpus_lock);
-=======
-	mutex_lock(&round_robin_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	cpumask_clear(tmp);
 	for_each_cpu(cpu, pad_busy_cpus)
 		cpumask_or(tmp, tmp, topology_thread_cpumask(cpu));
@@ -124,11 +116,7 @@ static void round_robin_cpu(unsigned int tsk_index)
 	if (cpumask_empty(tmp))
 		cpumask_andnot(tmp, cpu_online_mask, pad_busy_cpus);
 	if (cpumask_empty(tmp)) {
-<<<<<<< HEAD
 		mutex_unlock(&isolated_cpus_lock);
-=======
-		mutex_unlock(&round_robin_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 		return;
 	}
 	for_each_cpu(cpu, tmp) {
@@ -143,11 +131,7 @@ static void round_robin_cpu(unsigned int tsk_index)
 	tsk_in_cpu[tsk_index] = preferred_cpu;
 	cpumask_set_cpu(preferred_cpu, pad_busy_cpus);
 	cpu_weight[preferred_cpu]++;
-<<<<<<< HEAD
 	mutex_unlock(&isolated_cpus_lock);
-=======
-	mutex_unlock(&round_robin_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	set_cpus_allowed_ptr(current, cpumask_of(preferred_cpu));
 }

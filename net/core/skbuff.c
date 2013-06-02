@@ -1712,10 +1712,6 @@ int skb_splice_bits(struct sk_buff *skb, unsigned int offset,
 	struct splice_pipe_desc spd = {
 		.pages = pages,
 		.partial = partial,
-<<<<<<< HEAD
-=======
-		.nr_pages_max = MAX_SKB_FRAGS,
->>>>>>> remotes/linux2/linux-3.4.y
 		.flags = flags,
 		.ops = &sock_pipe_buf_ops,
 		.spd_release = sock_spd_release,
@@ -1762,11 +1758,7 @@ done:
 		lock_sock(sk);
 	}
 
-<<<<<<< HEAD
 	splice_shrink_spd(pipe, &spd);
-=======
-	splice_shrink_spd(&spd);
->>>>>>> remotes/linux2/linux-3.4.y
 	return ret;
 }
 

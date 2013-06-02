@@ -316,15 +316,9 @@ struct ext4_group_desc
  */
 
 struct flex_groups {
-<<<<<<< HEAD
 	atomic_t free_inodes;
 	atomic_t free_clusters;
 	atomic_t used_dirs;
-=======
-	atomic64_t	free_clusters;
-	atomic_t	free_inodes;
-	atomic_t	used_dirs;
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 #define EXT4_BG_INODE_UNINIT	0x0001 /* Inode table/bitmap not in use */
@@ -1146,12 +1140,8 @@ struct ext4_sb_info {
 	unsigned long s_desc_per_block;	/* Number of group descriptors per block */
 	ext4_group_t s_groups_count;	/* Number of groups in the fs */
 	ext4_group_t s_blockfile_groups;/* Groups acceptable for non-extent files */
-<<<<<<< HEAD
 	unsigned long s_overhead_last;  /* Last calculated overhead */
 	unsigned long s_blocks_last;    /* Last seen block count */
-=======
-	unsigned long s_overhead;  /* # of fs overhead clusters */
->>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int s_cluster_ratio;	/* Number of blocks per cluster */
 	unsigned int s_cluster_bits;	/* log2 of s_cluster_ratio */
 	loff_t s_bitmap_maxbytes;	/* max bytes for bitmap files */
@@ -1793,11 +1783,7 @@ struct mmpd_data {
 # define NORET_AND	noreturn,
 
 /* bitmap.c */
-<<<<<<< HEAD
 extern unsigned int ext4_count_free(struct buffer_head *, unsigned);
-=======
-extern unsigned int ext4_count_free(char *bitmap, unsigned numchars);
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* balloc.c */
 extern unsigned int ext4_block_group(struct super_block *sb,
@@ -1964,10 +1950,6 @@ extern int ext4_group_extend(struct super_block *sb,
 extern int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count);
 
 /* super.c */
-<<<<<<< HEAD
-=======
-extern int ext4_calculate_overhead(struct super_block *sb);
->>>>>>> remotes/linux2/linux-3.4.y
 extern void *ext4_kvmalloc(size_t size, gfp_t flags);
 extern void *ext4_kvzalloc(size_t size, gfp_t flags);
 extern void ext4_kvfree(void *ptr);
@@ -2047,14 +2029,11 @@ extern __le16 ext4_group_desc_csum(struct ext4_sb_info *sbi, __u32 group,
 				   struct ext4_group_desc *gdp);
 extern int ext4_group_desc_csum_verify(struct ext4_sb_info *sbi, __u32 group,
 				       struct ext4_group_desc *gdp);
-<<<<<<< HEAD
 extern void print_bh(struct super_block *sb,
 			struct buffer_head *bh, int start, int len);
 extern void print_block_data(struct super_block *sb, sector_t blocknr,
 			unsigned char *data_to_dump, int start, int len);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 static inline ext4_fsblk_t ext4_blocks_count(struct ext4_super_block *es)
 {

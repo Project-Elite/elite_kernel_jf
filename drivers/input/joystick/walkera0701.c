@@ -196,10 +196,6 @@ static void walkera0701_close(struct input_dev *dev)
 	struct walkera_dev *w = input_get_drvdata(dev);
 
 	parport_disable_irq(w->parport);
-<<<<<<< HEAD
-=======
-	hrtimer_cancel(&w->timer);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int walkera0701_connect(struct walkera_dev *w, int parport)
@@ -228,12 +224,6 @@ static int walkera0701_connect(struct walkera_dev *w, int parport)
 	if (parport_claim(w->pardevice))
 		goto init_err1;
 
-<<<<<<< HEAD
-=======
-	hrtimer_init(&w->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-	w->timer.function = timer_handler;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	w->input_dev = input_allocate_device();
 	if (!w->input_dev)
 		goto init_err2;
@@ -264,11 +254,8 @@ static int walkera0701_connect(struct walkera_dev *w, int parport)
 	if (err)
 		goto init_err3;
 
-<<<<<<< HEAD
 	hrtimer_init(&w->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	w->timer.function = timer_handler;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 
  init_err3:
@@ -284,10 +271,7 @@ static int walkera0701_connect(struct walkera_dev *w, int parport)
 
 static void walkera0701_disconnect(struct walkera_dev *w)
 {
-<<<<<<< HEAD
 	hrtimer_cancel(&w->timer);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	input_unregister_device(w->input_dev);
 	parport_release(w->pardevice);
 	parport_unregister_device(w->pardevice);

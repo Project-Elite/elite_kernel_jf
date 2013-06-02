@@ -473,15 +473,8 @@ static int imxdma_xfer_desc(struct imxdma_desc *d)
 			slot = i;
 			break;
 		}
-<<<<<<< HEAD
 		if (slot < 0)
 			return -EBUSY;
-=======
-		if (slot < 0) {
-			spin_unlock_irqrestore(&imxdma->lock, flags);
-			return -EBUSY;
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 
 		imxdma->slots_2d[slot].xsr = d->x;
 		imxdma->slots_2d[slot].ysr = d->y;

@@ -623,17 +623,9 @@ static ssize_t export_store(struct class *class,
 	 */
 
 	status = gpio_request(gpio, "sysfs");
-<<<<<<< HEAD
 	if (status < 0)
 		goto done;
 
-=======
-	if (status < 0) {
-		if (status == -EPROBE_DEFER)
-			status = -ENODEV;
-		goto done;
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 	status = gpio_export(gpio, true);
 	if (status < 0)
 		gpio_free(gpio);
@@ -1199,15 +1191,8 @@ int gpio_request(unsigned gpio, const char *label)
 
 	spin_lock_irqsave(&gpio_lock, flags);
 
-<<<<<<< HEAD
 	if (!gpio_is_valid(gpio))
 		goto done;
-=======
-	if (!gpio_is_valid(gpio)) {
-		status = -EINVAL;
-		goto done;
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 	desc = &gpio_desc[gpio];
 	chip = desc->chip;
 	if (chip == NULL)

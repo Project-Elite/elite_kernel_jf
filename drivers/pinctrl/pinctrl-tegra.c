@@ -259,11 +259,7 @@ static int tegra_pinconf_reg(struct tegra_pmx *pmx,
 		*bank = g->drv_bank;
 		*reg = g->drv_reg;
 		*bit = g->lpmd_bit;
-<<<<<<< HEAD
 		*width = 1;
-=======
-		*width = 2;
->>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	case TEGRA_PINCONF_PARAM_DRIVE_DOWN_STRENGTH:
 		*bank = g->drv_bank;

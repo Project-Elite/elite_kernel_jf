@@ -35,7 +35,6 @@
 static void *videomemory;
 static u_long videomemorysize = VIDEOMEMSIZE;
 module_param(videomemorysize, ulong, 0);
-<<<<<<< HEAD
 static char *mode_option __devinitdata;
 static int bpp __devinitdata = 8;
 
@@ -43,8 +42,6 @@ module_param(mode_option, charp, 0);
 MODULE_PARM_DESC(mode_option, "Initial video mode e.g. '648x480-8@60'");
 module_param(bpp, int, 0);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /**********************************************************************
  *
@@ -479,7 +476,6 @@ static int __init vfb_setup(char *options)
 		/* Test disable for backwards compatibility */
 		if (!strcmp(this_opt, "disable"))
 			vfb_enable = 0;
-<<<<<<< HEAD
 		else if (!strncmp(this_opt, "bpp=", 4)) {
 			if (kstrtoint(this_opt + 4, 0, &bpp) < 0)
 				bpp = 8;
@@ -488,8 +484,6 @@ static int __init vfb_setup(char *options)
 				videomemorysize = VIDEOMEMSIZE;
 		} else
 			mode_option = this_opt;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	return 1;
 }
@@ -525,13 +519,8 @@ static int __devinit vfb_probe(struct platform_device *dev)
 	info->screen_base = (char __iomem *)videomemory;
 	info->fbops = &vfb_ops;
 
-<<<<<<< HEAD
 	retval = fb_find_mode(&info->var, info, mode_option,
 			      NULL, 0, NULL, bpp);
-=======
-	retval = fb_find_mode(&info->var, info, NULL,
-			      NULL, 0, NULL, 8);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!retval || (retval == 4))
 		info->var = vfb_default;

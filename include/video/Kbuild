@@ -1,7 +1,4 @@
 header-y += edid.h
 header-y += sisfb.h
 header-y += uvesafb.h
-<<<<<<< HEAD
 header-y += msm_hdmi_modes.h
-=======
->>>>>>> remotes/linux2/linux-3.4.y

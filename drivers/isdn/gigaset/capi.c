@@ -264,11 +264,6 @@ static inline void dump_rawmsg(enum debuglevel level, const char *tag,
 		CAPIMSG_APPID(data), CAPIMSG_MSGID(data), l,
 		CAPIMSG_CONTROL(data));
 	l -= 12;
-<<<<<<< HEAD
-=======
-	if (l <= 0)
-		return;
->>>>>>> remotes/linux2/linux-3.4.y
 	dbgline = kmalloc(3 * l, GFP_ATOMIC);
 	if (!dbgline)
 		return;

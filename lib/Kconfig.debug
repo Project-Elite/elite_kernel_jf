@@ -676,14 +676,9 @@ config DEBUG_LOCKING_API_SELFTESTS
 	  mutexes and rwsems.
 
 config STACKTRACE
-<<<<<<< HEAD
 	bool "Stacktrace"
 	depends on STACKTRACE_SUPPORT
 	default y
-=======
-	bool
-	depends on STACKTRACE_SUPPORT
->>>>>>> remotes/linux2/linux-3.4.y
 
 config DEBUG_STACK_USAGE
 	bool "Stack utilization instrumentation"

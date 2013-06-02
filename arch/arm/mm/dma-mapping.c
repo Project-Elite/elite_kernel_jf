@@ -17,17 +17,12 @@
 #include <linux/init.h>
 #include <linux/device.h>
 #include <linux/dma-mapping.h>
-<<<<<<< HEAD
 #include <linux/dma-contiguous.h>
 #include <linux/highmem.h>
 #include <linux/memblock.h>
 #include <linux/slab.h>
 #include <linux/iommu.h>
 #include <linux/vmalloc.h>
-=======
-#include <linux/highmem.h>
-#include <linux/slab.h>
->>>>>>> remotes/linux2/linux-3.4.y
 
 #include <asm/memory.h>
 #include <asm/highmem.h>
@@ -35,7 +30,6 @@
 #include <asm/tlbflush.h>
 #include <asm/sizes.h>
 #include <asm/mach/arch.h>
-<<<<<<< HEAD
 #include <asm/mach/map.h>
 #include <asm/system_info.h>
 #include <asm/dma-contiguous.h>
@@ -142,11 +136,6 @@ struct dma_map_ops arm_dma_ops = {
 };
 EXPORT_SYMBOL(arm_dma_ops);
 
-=======
-
-#include "mm.h"
-
->>>>>>> remotes/linux2/linux-3.4.y
 static u64 get_coherent_dma_mask(struct device *dev)
 {
 	u64 mask = (u64)arm_dma_limit;
@@ -174,7 +163,6 @@ static u64 get_coherent_dma_mask(struct device *dev)
 	return mask;
 }
 
-<<<<<<< HEAD
 static void __dma_clear_buffer(struct page *page, size_t size)
 {
 	void *ptr;
@@ -190,8 +178,6 @@ static void __dma_clear_buffer(struct page *page, size_t size)
 	}
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Allocate a DMA buffer for 'dev' of size 'size' using the
  * specified gfp mask.  Note that 'size' must be page aligned.
@@ -200,26 +186,6 @@ static struct page *__dma_alloc_buffer(struct device *dev, size_t size, gfp_t gf
 {
 	unsigned long order = get_order(size);
 	struct page *page, *p, *e;
-<<<<<<< HEAD
-=======
-	void *ptr;
-	u64 mask = get_coherent_dma_mask(dev);
-
-#ifdef CONFIG_DMA_API_DEBUG
-	u64 limit = (mask + 1) & ~mask;
-	if (limit && size >= limit) {
-		dev_warn(dev, "coherent allocation too big (requested %#x mask %#llx)\n",
-			size, mask);
-		return NULL;
-	}
-#endif
-
-	if (!mask)
-		return NULL;
-
-	if (mask < 0xffffffffULL)
-		gfp |= GFP_DMA;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	page = alloc_pages(gfp, order);
 	if (!page)
@@ -232,18 +198,7 @@ static struct page *__dma_alloc_buffer(struct device *dev, size_t size, gfp_t gf
 	for (p = page + (size >> PAGE_SHIFT), e = page + (1 << order); p < e; p++)
 		__free_page(p);
 
-<<<<<<< HEAD
 	__dma_clear_buffer(page, size);
-=======
-	/*
-	 * Ensure that the allocated pages are zeroed, and that any data
-	 * lurking in the kernel direct-mapped region is invalidated.
-	 */
-	ptr = page_address(page);
-	memset(ptr, 0, size);
-	dmac_flush_range(ptr, ptr + size);
-	outer_flush_range(__pa(ptr), __pa(ptr) + size);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return page;
 }
@@ -271,15 +226,9 @@ static void __dma_free_buffer(struct page *page, size_t size)
  */
 static pte_t **consistent_pte;
 
-<<<<<<< HEAD
 #define DEFAULT_CONSISTENT_DMA_SIZE (7*SZ_2M)
 
 static unsigned long consistent_base = CONSISTENT_END - DEFAULT_CONSISTENT_DMA_SIZE;
-=======
-#define DEFAULT_CONSISTENT_DMA_SIZE SZ_2M
-
-unsigned long consistent_base = CONSISTENT_END - DEFAULT_CONSISTENT_DMA_SIZE;
->>>>>>> remotes/linux2/linux-3.4.y
 
 void __init init_consistent_dma_size(unsigned long size)
 {
@@ -319,12 +268,9 @@ static int __init consistent_init(void)
 	unsigned long base = consistent_base;
 	unsigned long num_ptes = (CONSISTENT_END - base) >> PMD_SHIFT;
 
-<<<<<<< HEAD
 	if (IS_ENABLED(CONFIG_CMA) && !IS_ENABLED(CONFIG_ARM_DMA_USE_IOMMU))
 		return 0;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	consistent_pte = kmalloc(num_ptes * sizeof(pte_t), GFP_KERNEL);
 	if (!consistent_pte) {
 		pr_err("%s: no memory\n", __func__);
@@ -339,22 +285,14 @@ static int __init consistent_init(void)
 
 		pud = pud_alloc(&init_mm, pgd, base);
 		if (!pud) {
-<<<<<<< HEAD
 			pr_err("%s: no pud tables\n", __func__);
-=======
-			printk(KERN_ERR "%s: no pud tables\n", __func__);
->>>>>>> remotes/linux2/linux-3.4.y
 			ret = -ENOMEM;
 			break;
 		}
 
 		pmd = pmd_alloc(&init_mm, pud, base);
 		if (!pmd) {
-<<<<<<< HEAD
 			pr_err("%s: no pmd tables\n", __func__);
-=======
-			printk(KERN_ERR "%s: no pmd tables\n", __func__);
->>>>>>> remotes/linux2/linux-3.4.y
 			ret = -ENOMEM;
 			break;
 		}
@@ -362,11 +300,7 @@ static int __init consistent_init(void)
 
 		pte = pte_alloc_kernel(pmd, base);
 		if (!pte) {
-<<<<<<< HEAD
 			pr_err("%s: no pte tables\n", __func__);
-=======
-			printk(KERN_ERR "%s: no pte tables\n", __func__);
->>>>>>> remotes/linux2/linux-3.4.y
 			ret = -ENOMEM;
 			break;
 		}
@@ -377,7 +311,6 @@ static int __init consistent_init(void)
 
 	return ret;
 }
-<<<<<<< HEAD
 core_initcall(consistent_init);
 
 static void *__alloc_from_contiguous(struct device *dev, size_t size,
@@ -473,10 +406,6 @@ void __init dma_contiguous_remap(void)
 		iotable_init(&map, 1);
 	}
 }
-=======
-
-core_initcall(consistent_init);
->>>>>>> remotes/linux2/linux-3.4.y
 
 static void *
 __dma_alloc_remap(struct page *page, size_t size, gfp_t gfp, pgprot_t prot,
@@ -487,11 +416,7 @@ __dma_alloc_remap(struct page *page, size_t size, gfp_t gfp, pgprot_t prot,
 	int bit;
 
 	if (!consistent_pte) {
-<<<<<<< HEAD
 		pr_err("%s: not initialised\n", __func__);
-=======
-		printk(KERN_ERR "%s: not initialised\n", __func__);
->>>>>>> remotes/linux2/linux-3.4.y
 		dump_stack();
 		return NULL;
 	}
@@ -518,11 +443,7 @@ __dma_alloc_remap(struct page *page, size_t size, gfp_t gfp, pgprot_t prot,
 		u32 off = CONSISTENT_OFFSET(c->vm_start) & (PTRS_PER_PTE-1);
 
 		pte = consistent_pte[idx] + off;
-<<<<<<< HEAD
 		c->priv = page;
-=======
-		c->vm_pages = page;
->>>>>>> remotes/linux2/linux-3.4.y
 
 		do {
 			BUG_ON(!pte_none(*pte));
@@ -554,22 +475,14 @@ static void __dma_free_remap(void *cpu_addr, size_t size)
 
 	c = arm_vmregion_find_remove(&consistent_head, (unsigned long)cpu_addr);
 	if (!c) {
-<<<<<<< HEAD
 		pr_err("%s: trying to free invalid coherent area: %p\n",
-=======
-		printk(KERN_ERR "%s: trying to free invalid coherent area: %p\n",
->>>>>>> remotes/linux2/linux-3.4.y
 		       __func__, cpu_addr);
 		dump_stack();
 		return;
 	}
 
 	if ((c->vm_end - c->vm_start) != size) {
-<<<<<<< HEAD
 		pr_err("%s: freeing wrong coherent size (%ld != %d)\n",
-=======
-		printk(KERN_ERR "%s: freeing wrong coherent size (%ld != %d)\n",
->>>>>>> remotes/linux2/linux-3.4.y
 		       __func__, c->vm_end - c->vm_start, size);
 		dump_stack();
 		size = c->vm_end - c->vm_start;
@@ -591,13 +504,8 @@ static void __dma_free_remap(void *cpu_addr, size_t size)
 		}
 
 		if (pte_none(pte) || !pte_present(pte))
-<<<<<<< HEAD
 			pr_crit("%s: bad page in kernel page table\n",
 				__func__);
-=======
-			printk(KERN_CRIT "%s: bad page in kernel page table\n",
-			       __func__);
->>>>>>> remotes/linux2/linux-3.4.y
 	} while (size -= PAGE_SIZE);
 
 	flush_tlb_kernel_range(c->vm_start, c->vm_end);
@@ -605,7 +513,6 @@ static void __dma_free_remap(void *cpu_addr, size_t size)
 	arm_vmregion_free(&consistent_head, c);
 }
 
-<<<<<<< HEAD
 static int __dma_update_pte(pte_t *pte, pgtable_t token, unsigned long addr,
 			    void *data)
 {
@@ -804,22 +711,6 @@ static void *__dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
 	if (mask < 0xffffffffULL)
 		gfp |= GFP_DMA;
 
-=======
-#else	/* !CONFIG_MMU */
-
-#define __dma_alloc_remap(page, size, gfp, prot, c)	page_address(page)
-#define __dma_free_remap(addr, size)			do { } while (0)
-
-#endif	/* CONFIG_MMU */
-
-static void *
-__dma_alloc(struct device *dev, size_t size, dma_addr_t *handle, gfp_t gfp,
-	    pgprot_t prot, const void *caller)
-{
-	struct page *page;
-	void *addr;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Following is a work-around (a.k.a. hack) to prevent pages
 	 * with __GFP_COMP being passed to split_page() which cannot
@@ -829,7 +720,6 @@ __dma_alloc(struct device *dev, size_t size, dma_addr_t *handle, gfp_t gfp,
 	 */
 	gfp &= ~(__GFP_COMP);
 
-<<<<<<< HEAD
 	*handle = DMA_ERROR_CODE;
 	size = PAGE_ALIGN(size);
 
@@ -845,24 +735,6 @@ __dma_alloc(struct device *dev, size_t size, dma_addr_t *handle, gfp_t gfp,
 
 	if (addr)
 		*handle = pfn_to_dma(dev, page_to_pfn(page));
-=======
-	*handle = ~0;
-	size = PAGE_ALIGN(size);
-
-	page = __dma_alloc_buffer(dev, size, gfp);
-	if (!page)
-		return NULL;
-
-	if (!arch_is_coherent())
-		addr = __dma_alloc_remap(page, size, gfp, prot, caller);
-	else
-		addr = page_address(page);
-
-	if (addr)
-		*handle = pfn_to_dma(dev, page_to_pfn(page));
-	else
-		__dma_free_buffer(page, size);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return addr;
 }
@@ -871,7 +743,6 @@ __dma_alloc(struct device *dev, size_t size, dma_addr_t *handle, gfp_t gfp,
  * Allocate DMA-coherent memory space and return both the kernel remapped
  * virtual and bus address for that space.
  */
-<<<<<<< HEAD
 void *arm_dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
 		    gfp_t gfp, struct dma_attrs *attrs)
 {
@@ -879,17 +750,10 @@ void *arm_dma_alloc(struct device *dev, size_t size, dma_addr_t *handle,
 	void *memory;
 	bool no_kernel_mapping = dma_get_attr(DMA_ATTR_NO_KERNEL_MAPPING,
 					attrs);
-=======
-void *
-dma_alloc_coherent(struct device *dev, size_t size, dma_addr_t *handle, gfp_t gfp)
-{
-	void *memory;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (dma_alloc_from_coherent(dev, size, handle, &memory))
 		return memory;
 
-<<<<<<< HEAD
 	return __dma_alloc(dev, size, handle, gfp, prot,
 			   __builtin_return_address(0), no_kernel_mapping);
 }
@@ -913,57 +777,11 @@ int arm_dma_mmap(struct device *dev, struct vm_area_struct *vma,
 			      pfn + vma->vm_pgoff,
 			      vma->vm_end - vma->vm_start,
 			      vma->vm_page_prot);
-=======
-	return __dma_alloc(dev, size, handle, gfp,
-			   pgprot_dmacoherent(pgprot_kernel),
-			   __builtin_return_address(0));
-}
-EXPORT_SYMBOL(dma_alloc_coherent);
-
-/*
- * Allocate a writecombining region, in much the same way as
- * dma_alloc_coherent above.
- */
-void *
-dma_alloc_writecombine(struct device *dev, size_t size, dma_addr_t *handle, gfp_t gfp)
-{
-	return __dma_alloc(dev, size, handle, gfp,
-			   pgprot_writecombine(pgprot_kernel),
-			   __builtin_return_address(0));
-}
-EXPORT_SYMBOL(dma_alloc_writecombine);
-
-static int dma_mmap(struct device *dev, struct vm_area_struct *vma,
-		    void *cpu_addr, dma_addr_t dma_addr, size_t size)
-{
-	int ret = -ENXIO;
-#ifdef CONFIG_MMU
-	unsigned long user_size, kern_size;
-	struct arm_vmregion *c;
-
-	user_size = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
-
-	c = arm_vmregion_find(&consistent_head, (unsigned long)cpu_addr);
-	if (c) {
-		unsigned long off = vma->vm_pgoff;
-
-		kern_size = (c->vm_end - c->vm_start) >> PAGE_SHIFT;
-
-		if (off < kern_size &&
-		    user_size <= (kern_size - off)) {
-			ret = remap_pfn_range(vma, vma->vm_start,
-					      page_to_pfn(c->vm_pages) + off,
-					      user_size << PAGE_SHIFT,
-					      vma->vm_page_prot);
-		}
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 #endif	/* CONFIG_MMU */
 
 	return ret;
 }
 
-<<<<<<< HEAD
 /*
  * Free a buffer as defined by the above mapping.
  */
@@ -971,38 +789,12 @@ void arm_dma_free(struct device *dev, size_t size, void *cpu_addr,
 		  dma_addr_t handle, struct dma_attrs *attrs)
 {
 	struct page *page = pfn_to_page(dma_to_pfn(dev, handle));
-=======
-int dma_mmap_coherent(struct device *dev, struct vm_area_struct *vma,
-		      void *cpu_addr, dma_addr_t dma_addr, size_t size)
-{
-	vma->vm_page_prot = pgprot_dmacoherent(vma->vm_page_prot);
-	return dma_mmap(dev, vma, cpu_addr, dma_addr, size);
-}
-EXPORT_SYMBOL(dma_mmap_coherent);
-
-int dma_mmap_writecombine(struct device *dev, struct vm_area_struct *vma,
-			  void *cpu_addr, dma_addr_t dma_addr, size_t size)
-{
-	vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
-	return dma_mmap(dev, vma, cpu_addr, dma_addr, size);
-}
-EXPORT_SYMBOL(dma_mmap_writecombine);
-
-/*
- * free a page as defined by the above mapping.
- * Must not be called with IRQs disabled.
- */
-void dma_free_coherent(struct device *dev, size_t size, void *cpu_addr, dma_addr_t handle)
-{
-	WARN_ON(irqs_disabled());
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (dma_release_from_coherent(dev, get_order(size), cpu_addr))
 		return;
 
 	size = PAGE_ALIGN(size);
 
-<<<<<<< HEAD
 	if (arch_is_coherent() || nommu()) {
 		__dma_free_buffer(page, size);
 	} else if (!IS_ENABLED(CONFIG_CMA)) {
@@ -1025,81 +817,15 @@ static void dma_cache_maint_page(struct page *page, unsigned long offset,
 {
 	/*
 	 * A single sg entry may refer to multiple physically contiguous
-=======
-	if (!arch_is_coherent())
-		__dma_free_remap(cpu_addr, size);
-
-	__dma_free_buffer(pfn_to_page(dma_to_pfn(dev, handle)), size);
-}
-EXPORT_SYMBOL(dma_free_coherent);
-
-/*
- * Make an area consistent for devices.
- * Note: Drivers should NOT use this function directly, as it will break
- * platforms with CONFIG_DMABOUNCE.
- * Use the driver DMA support - see dma-mapping.h (dma_sync_*)
- */
-void ___dma_single_cpu_to_dev(const void *kaddr, size_t size,
-	enum dma_data_direction dir)
-{
-	unsigned long paddr;
-
-	BUG_ON(!virt_addr_valid(kaddr) || !virt_addr_valid(kaddr + size - 1));
-
-	dmac_map_area(kaddr, size, dir);
-
-	paddr = __pa(kaddr);
-	if (dir == DMA_FROM_DEVICE) {
-		outer_inv_range(paddr, paddr + size);
-	} else {
-		outer_clean_range(paddr, paddr + size);
-	}
-	/* FIXME: non-speculating: flush on bidirectional mappings? */
-}
-EXPORT_SYMBOL(___dma_single_cpu_to_dev);
-
-void ___dma_single_dev_to_cpu(const void *kaddr, size_t size,
-	enum dma_data_direction dir)
-{
-	BUG_ON(!virt_addr_valid(kaddr) || !virt_addr_valid(kaddr + size - 1));
-
-	/* FIXME: non-speculating: not required */
-	/* don't bother invalidating if DMA to device */
-	if (dir != DMA_TO_DEVICE) {
-		unsigned long paddr = __pa(kaddr);
-		outer_inv_range(paddr, paddr + size);
-	}
-
-	dmac_unmap_area(kaddr, size, dir);
-}
-EXPORT_SYMBOL(___dma_single_dev_to_cpu);
-
-static void dma_cache_maint_page(struct page *page, unsigned long offset,
-	size_t size, enum dma_data_direction dir,
-	void (*op)(const void *, size_t, int))
-{
-	unsigned long pfn;
-	size_t left = size;
-
-	pfn = page_to_pfn(page) + offset / PAGE_SIZE;
-	offset %= PAGE_SIZE;
-
-	/*
-	 * A single sg entry may refer to multiple physically contiguous
->>>>>>> remotes/linux2/linux-3.4.y
 	 * pages.  But we still need to process highmem pages individually.
 	 * If highmem is not configured then the bulk of this loop gets
 	 * optimized out.
 	 */
-<<<<<<< HEAD
 	size_t left = size;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	do {
 		size_t len = left;
 		void *vaddr;
 
-<<<<<<< HEAD
 		if (PageHighMem(page)) {
 			if (len + offset > PAGE_SIZE) {
 				if (offset >= PAGE_SIZE) {
@@ -1108,13 +834,6 @@ static void dma_cache_maint_page(struct page *page, unsigned long offset,
 				}
 				len = PAGE_SIZE - offset;
 			}
-=======
-		page = pfn_to_page(pfn);
-
-		if (PageHighMem(page)) {
-			if (len + offset > PAGE_SIZE)
-				len = PAGE_SIZE - offset;
->>>>>>> remotes/linux2/linux-3.4.y
 			vaddr = kmap_high_get(page);
 			if (vaddr) {
 				vaddr += offset;
@@ -1131,16 +850,11 @@ static void dma_cache_maint_page(struct page *page, unsigned long offset,
 			op(vaddr, len, dir);
 		}
 		offset = 0;
-<<<<<<< HEAD
 		page++;
-=======
-		pfn++;
->>>>>>> remotes/linux2/linux-3.4.y
 		left -= len;
 	} while (left);
 }
 
-<<<<<<< HEAD
 /*
  * Make an area consistent for devices.
  * Note: Drivers should NOT use this function directly, as it will break
@@ -1148,9 +862,6 @@ static void dma_cache_maint_page(struct page *page, unsigned long offset,
  * Use the driver DMA support - see dma-mapping.h (dma_sync_*)
  */
 static void __dma_page_cpu_to_dev(struct page *page, unsigned long off,
-=======
-void ___dma_page_cpu_to_dev(struct page *page, unsigned long off,
->>>>>>> remotes/linux2/linux-3.4.y
 	size_t size, enum dma_data_direction dir)
 {
 	unsigned long paddr;
@@ -1165,14 +876,8 @@ void ___dma_page_cpu_to_dev(struct page *page, unsigned long off,
 	}
 	/* FIXME: non-speculating: flush on bidirectional mappings? */
 }
-<<<<<<< HEAD
 
 static void __dma_page_dev_to_cpu(struct page *page, unsigned long off,
-=======
-EXPORT_SYMBOL(___dma_page_cpu_to_dev);
-
-void ___dma_page_dev_to_cpu(struct page *page, unsigned long off,
->>>>>>> remotes/linux2/linux-3.4.y
 	size_t size, enum dma_data_direction dir)
 {
 	unsigned long paddr = page_to_phys(page) + off;
@@ -1190,16 +895,9 @@ void ___dma_page_dev_to_cpu(struct page *page, unsigned long off,
 	if (dir != DMA_TO_DEVICE && off == 0 && size >= PAGE_SIZE)
 		set_bit(PG_dcache_clean, &page->flags);
 }
-<<<<<<< HEAD
 
 /**
  * arm_dma_map_sg - map a set of SG buffers for streaming mode DMA
-=======
-EXPORT_SYMBOL(___dma_page_dev_to_cpu);
-
-/**
- * dma_map_sg - map a set of SG buffers for streaming mode DMA
->>>>>>> remotes/linux2/linux-3.4.y
  * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
  * @sg: list of buffers
  * @nents: number of buffers to map
@@ -1214,7 +912,6 @@ EXPORT_SYMBOL(___dma_page_dev_to_cpu);
  * Device ownership issues as mentioned for dma_map_single are the same
  * here.
  */
-<<<<<<< HEAD
 int arm_dma_map_sg(struct device *dev, struct scatterlist *sg, int nents,
 		enum dma_data_direction dir, struct dma_attrs *attrs)
 {
@@ -1231,43 +928,16 @@ int arm_dma_map_sg(struct device *dev, struct scatterlist *sg, int nents,
 		if (dma_mapping_error(dev, s->dma_address))
 			goto bad_mapping;
 	}
-=======
-int dma_map_sg(struct device *dev, struct scatterlist *sg, int nents,
-		enum dma_data_direction dir)
-{
-	struct scatterlist *s;
-	int i, j;
-
-	BUG_ON(!valid_dma_direction(dir));
-
-	for_each_sg(sg, s, nents, i) {
-		s->dma_address = __dma_map_page(dev, sg_page(s), s->offset,
-						s->length, dir);
-		if (dma_mapping_error(dev, s->dma_address))
-			goto bad_mapping;
-	}
-	debug_dma_map_sg(dev, sg, nents, nents, dir);
->>>>>>> remotes/linux2/linux-3.4.y
 	return nents;
 
  bad_mapping:
 	for_each_sg(sg, s, i, j)
-<<<<<<< HEAD
 		ops->unmap_page(dev, sg_dma_address(s), sg_dma_len(s), dir, attrs);
 	return 0;
 }
 
 /**
  * arm_dma_unmap_sg - unmap a set of SG buffers mapped by dma_map_sg
-=======
-		__dma_unmap_page(dev, sg_dma_address(s), sg_dma_len(s), dir);
-	return 0;
-}
-EXPORT_SYMBOL(dma_map_sg);
-
-/**
- * dma_unmap_sg - unmap a set of SG buffers mapped by dma_map_sg
->>>>>>> remotes/linux2/linux-3.4.y
  * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
  * @sg: list of buffers
  * @nents: number of buffers to unmap (same as was passed to dma_map_sg)
@@ -1276,7 +946,6 @@ EXPORT_SYMBOL(dma_map_sg);
  * Unmap a set of streaming mode DMA translations.  Again, CPU access
  * rules concerning calls here are the same as for dma_unmap_single().
  */
-<<<<<<< HEAD
 void arm_dma_unmap_sg(struct device *dev, struct scatterlist *sg, int nents,
 		enum dma_data_direction dir, struct dma_attrs *attrs)
 {
@@ -1291,29 +960,11 @@ void arm_dma_unmap_sg(struct device *dev, struct scatterlist *sg, int nents,
 
 /**
  * arm_dma_sync_sg_for_cpu
-=======
-void dma_unmap_sg(struct device *dev, struct scatterlist *sg, int nents,
-		enum dma_data_direction dir)
-{
-	struct scatterlist *s;
-	int i;
-
-	debug_dma_unmap_sg(dev, sg, nents, dir);
-
-	for_each_sg(sg, s, nents, i)
-		__dma_unmap_page(dev, sg_dma_address(s), sg_dma_len(s), dir);
-}
-EXPORT_SYMBOL(dma_unmap_sg);
-
-/**
- * dma_sync_sg_for_cpu
->>>>>>> remotes/linux2/linux-3.4.y
  * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
  * @sg: list of buffers
  * @nents: number of buffers to map (returned from dma_map_sg)
  * @dir: DMA transfer direction (same as was passed to dma_map_sg)
  */
-<<<<<<< HEAD
 void arm_dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg,
 			int nents, enum dma_data_direction dir)
 {
@@ -1328,35 +979,11 @@ void arm_dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg,
 
 /**
  * arm_dma_sync_sg_for_device
-=======
-void dma_sync_sg_for_cpu(struct device *dev, struct scatterlist *sg,
-			int nents, enum dma_data_direction dir)
-{
-	struct scatterlist *s;
-	int i;
-
-	for_each_sg(sg, s, nents, i) {
-		if (!dmabounce_sync_for_cpu(dev, sg_dma_address(s), 0,
-					    sg_dma_len(s), dir))
-			continue;
-
-		__dma_page_dev_to_cpu(sg_page(s), s->offset,
-				      s->length, dir);
-	}
-
-	debug_dma_sync_sg_for_cpu(dev, sg, nents, dir);
-}
-EXPORT_SYMBOL(dma_sync_sg_for_cpu);
-
-/**
- * dma_sync_sg_for_device
->>>>>>> remotes/linux2/linux-3.4.y
  * @dev: valid struct device pointer, or NULL for ISA and EISA-like devices
  * @sg: list of buffers
  * @nents: number of buffers to map (returned from dma_map_sg)
  * @dir: DMA transfer direction (same as was passed to dma_map_sg)
  */
-<<<<<<< HEAD
 void arm_dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
 			int nents, enum dma_data_direction dir)
 {
@@ -1368,26 +995,6 @@ void arm_dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
 		ops->sync_single_for_device(dev, sg_dma_address(s), s->length,
 					    dir);
 }
-=======
-void dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
-			int nents, enum dma_data_direction dir)
-{
-	struct scatterlist *s;
-	int i;
-
-	for_each_sg(sg, s, nents, i) {
-		if (!dmabounce_sync_for_device(dev, sg_dma_address(s), 0,
-					sg_dma_len(s), dir))
-			continue;
-
-		__dma_page_cpu_to_dev(sg_page(s), s->offset,
-				      s->length, dir);
-	}
-
-	debug_dma_sync_sg_for_device(dev, sg, nents, dir);
-}
-EXPORT_SYMBOL(dma_sync_sg_for_device);
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Return whether the given device DMA address mask can be supported
@@ -1403,29 +1010,15 @@ int dma_supported(struct device *dev, u64 mask)
 }
 EXPORT_SYMBOL(dma_supported);
 
-<<<<<<< HEAD
 static int arm_dma_set_mask(struct device *dev, u64 dma_mask)
-=======
-int dma_set_mask(struct device *dev, u64 dma_mask)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	if (!dev->dma_mask || !dma_supported(dev, dma_mask))
 		return -EIO;
 
-<<<<<<< HEAD
 	*dev->dma_mask = dma_mask;
 
 	return 0;
 }
-=======
-#ifndef CONFIG_DMABOUNCE
-	*dev->dma_mask = dma_mask;
-#endif
-
-	return 0;
-}
-EXPORT_SYMBOL(dma_set_mask);
->>>>>>> remotes/linux2/linux-3.4.y
 
 #define PREALLOC_DMA_DEBUG_ENTRIES	4096
 
@@ -1438,7 +1031,6 @@ static int __init dma_debug_do_init(void)
 	return 0;
 }
 fs_initcall(dma_debug_do_init);
-<<<<<<< HEAD
 
 #ifdef CONFIG_ARM_DMA_USE_IOMMU
 
@@ -2115,5 +1707,3 @@ int arm_iommu_attach_device(struct device *dev,
 }
 
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y

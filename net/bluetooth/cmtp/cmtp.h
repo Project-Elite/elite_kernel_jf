@@ -81,10 +81,6 @@ struct cmtp_session {
 
 	char name[BTNAMSIZ];
 
-<<<<<<< HEAD
-=======
-	atomic_t terminate;
->>>>>>> remotes/linux2/linux-3.4.y
 	struct task_struct *task;
 
 	wait_queue_head_t wait;

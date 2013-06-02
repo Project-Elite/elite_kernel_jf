@@ -24,11 +24,8 @@
 #include <linux/suspend.h>
 #include <linux/delay.h>
 #include <linux/of.h>
-<<<<<<< HEAD
 #include <linux/seq_file.h>
 #include <linux/uaccess.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/regulator/of_regulator.h>
 #include <linux/regulator/consumer.h>
 #include <linux/regulator/driver.h>
@@ -56,10 +53,7 @@ static LIST_HEAD(regulator_list);
 static LIST_HEAD(regulator_map_list);
 static bool has_full_constraints;
 static bool board_wants_dummy_regulator;
-<<<<<<< HEAD
 static int suppress_info_printing;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 static struct dentry *debugfs_root;
 
@@ -86,10 +80,7 @@ struct regulator {
 	int uA_load;
 	int min_uV;
 	int max_uV;
-<<<<<<< HEAD
 	int enabled;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	char *supply_name;
 	struct device_attribute dev_attr;
 	struct regulator_dev *rdev;
@@ -183,7 +174,6 @@ static int regulator_check_voltage(struct regulator_dev *rdev,
 		return -EPERM;
 	}
 
-<<<<<<< HEAD
 	/* check if requested voltage range actually overlaps the constraints */
 	if (*max_uV < rdev->constraints->min_uV ||
 	    *min_uV > rdev->constraints->max_uV) {
@@ -193,8 +183,6 @@ static int regulator_check_voltage(struct regulator_dev *rdev,
 		return -EINVAL;
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (*max_uV > rdev->constraints->max_uV)
 		*max_uV = rdev->constraints->max_uV;
 	if (*min_uV < rdev->constraints->min_uV)
@@ -216,11 +204,8 @@ static int regulator_check_consumers(struct regulator_dev *rdev,
 				     int *min_uV, int *max_uV)
 {
 	struct regulator *regulator;
-<<<<<<< HEAD
 	int init_min_uV = *min_uV;
 	int init_max_uV = *max_uV;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	list_for_each_entry(regulator, &rdev->consumer_list, list) {
 		/*
@@ -230,7 +215,6 @@ static int regulator_check_consumers(struct regulator_dev *rdev,
 		if (!regulator->min_uV && !regulator->max_uV)
 			continue;
 
-<<<<<<< HEAD
 		if (init_max_uV < regulator->min_uV
 		    || init_min_uV > regulator->max_uV)
 			rdev_err(rdev, "requested voltage range [%d, %d] does "
@@ -238,8 +222,6 @@ static int regulator_check_consumers(struct regulator_dev *rdev,
 				"[%d, %d]\n", init_min_uV, init_max_uV,
 				regulator->min_uV, regulator->max_uV);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		if (*max_uV > regulator->max_uV)
 			*max_uV = regulator->max_uV;
 		if (*min_uV < regulator->min_uV)
@@ -320,19 +302,11 @@ static int regulator_mode_constrain(struct regulator_dev *rdev, int *mode)
 static int regulator_check_drms(struct regulator_dev *rdev)
 {
 	if (!rdev->constraints) {
-<<<<<<< HEAD
 		rdev_dbg(rdev, "no constraints\n");
 		return -ENODEV;
 	}
 	if (!(rdev->constraints->valid_ops_mask & REGULATOR_CHANGE_DRMS)) {
 		rdev_dbg(rdev, "operation not allowed\n");
-=======
-		rdev_err(rdev, "no constraints\n");
-		return -ENODEV;
-	}
-	if (!(rdev->constraints->valid_ops_mask & REGULATOR_CHANGE_DRMS)) {
-		rdev_err(rdev, "operation not allowed\n");
->>>>>>> remotes/linux2/linux-3.4.y
 		return -EPERM;
 	}
 	return 0;
@@ -680,11 +654,7 @@ static void drms_uA_update(struct regulator_dev *rdev)
 {
 	struct regulator *sibling;
 	int current_uA = 0, output_uV, input_uV, err;
-<<<<<<< HEAD
 	unsigned int regulator_curr_mode, mode;
-=======
-	unsigned int mode;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	err = regulator_check_drms(rdev);
 	if (err < 0 || !rdev->desc->ops->get_optimum_mode ||
@@ -717,7 +687,6 @@ static void drms_uA_update(struct regulator_dev *rdev)
 
 	/* check the new mode is allowed */
 	err = regulator_mode_constrain(rdev, &mode);
-<<<<<<< HEAD
 	/* return if the same mode is requested */
 	if (rdev->desc->ops->get_mode) {
 		regulator_curr_mode = rdev->desc->ops->get_mode(rdev);
@@ -726,8 +695,6 @@ static void drms_uA_update(struct regulator_dev *rdev)
 	} else
 		return;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (err == 0)
 		rdev->desc->ops->set_mode(rdev, mode);
 }
@@ -1022,12 +989,8 @@ static int set_machine_constraints(struct regulator_dev *rdev,
 		}
 	}
 
-<<<<<<< HEAD
 	if (!suppress_info_printing)
 		print_constraints(rdev);
-=======
-	print_constraints(rdev);
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 out:
 	kfree(rdev->constraints);
@@ -1049,12 +1012,8 @@ static int set_supply(struct regulator_dev *rdev,
 {
 	int err;
 
-<<<<<<< HEAD
 	if (!suppress_info_printing)
 		rdev_info(rdev, "supplied by %s\n", rdev_get_name(supply_rdev));
-=======
-	rdev_info(rdev, "supplied by %s\n", rdev_get_name(supply_rdev));
->>>>>>> remotes/linux2/linux-3.4.y
 
 	rdev->supply = create_regulator(supply_rdev, &rdev->dev, "SUPPLY");
 	if (rdev->supply == NULL) {
@@ -1206,10 +1165,7 @@ static struct regulator *create_regulator(struct regulator_dev *rdev,
 			goto attr_err;
 	}
 
-<<<<<<< HEAD
 /*
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	regulator->debugfs = debugfs_create_dir(regulator->supply_name,
 						rdev->debugfs);
 	if (!regulator->debugfs) {
@@ -1222,11 +1178,7 @@ static struct regulator *create_regulator(struct regulator_dev *rdev,
 		debugfs_create_u32("max_uV", 0444, regulator->debugfs,
 				   &regulator->max_uV);
 	}
-<<<<<<< HEAD
 */
-=======
-
->>>>>>> remotes/linux2/linux-3.4.y
 	mutex_unlock(&rdev->mutex);
 	return regulator;
 link_name_err:
@@ -1616,15 +1568,11 @@ int regulator_enable(struct regulator *regulator)
 	}
 
 	mutex_lock(&rdev->mutex);
-<<<<<<< HEAD
 
 	ret = _regulator_enable(rdev);
 	if (ret == 0)
 		regulator->enabled++;
 
-=======
-	ret = _regulator_enable(rdev);
->>>>>>> remotes/linux2/linux-3.4.y
 	mutex_unlock(&rdev->mutex);
 
 	if (ret != 0 && rdev->supply)
@@ -1697,11 +1645,8 @@ int regulator_disable(struct regulator *regulator)
 
 	mutex_lock(&rdev->mutex);
 	ret = _regulator_disable(rdev);
-<<<<<<< HEAD
 	if (ret == 0)
 		regulator->enabled--;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	mutex_unlock(&rdev->mutex);
 
 	if (ret == 0 && rdev->supply)
@@ -2043,10 +1988,7 @@ static int _regulator_do_set_voltage(struct regulator_dev *rdev,
 int regulator_set_voltage(struct regulator *regulator, int min_uV, int max_uV)
 {
 	struct regulator_dev *rdev = regulator->rdev;
-<<<<<<< HEAD
 	int prev_min_uV, prev_max_uV;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	int ret = 0;
 
 	mutex_lock(&rdev->mutex);
@@ -2069,27 +2011,19 @@ int regulator_set_voltage(struct regulator *regulator, int min_uV, int max_uV)
 	ret = regulator_check_voltage(rdev, &min_uV, &max_uV);
 	if (ret < 0)
 		goto out;
-<<<<<<< HEAD
 
 	prev_min_uV = regulator->min_uV;
 	prev_max_uV = regulator->max_uV;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	regulator->min_uV = min_uV;
 	regulator->max_uV = max_uV;
 
 	ret = regulator_check_consumers(rdev, &min_uV, &max_uV);
-<<<<<<< HEAD
 	if (ret < 0) {
 		regulator->min_uV = prev_min_uV;
 		regulator->max_uV = prev_max_uV;
 		goto out;
 	}
-=======
-	if (ret < 0)
-		goto out;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	ret = _regulator_do_set_voltage(rdev, min_uV, max_uV);
 
@@ -2373,7 +2307,6 @@ out:
 	return ret;
 }
 
-<<<<<<< HEAD
 static unsigned int __regulator_get_mode(struct regulator_dev *rdev)
 {
 	int ret;
@@ -2389,8 +2322,6 @@ out:
 	return ret;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /**
  * regulator_get_mode - get regulator operating mode
  * @regulator: regulator source
@@ -2433,18 +2364,12 @@ int regulator_set_optimum_mode(struct regulator *regulator, int uA_load)
 {
 	struct regulator_dev *rdev = regulator->rdev;
 	struct regulator *consumer;
-<<<<<<< HEAD
 	int ret, output_uV, input_uV = 0, total_uA_load = 0;
 	unsigned int mode;
 
 	if (rdev->supply)
 		input_uV = regulator_get_voltage(rdev->supply);
 
-=======
-	int ret, output_uV, input_uV, total_uA_load = 0;
-	unsigned int mode;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	mutex_lock(&rdev->mutex);
 
 	/*
@@ -2474,14 +2399,7 @@ int regulator_set_optimum_mode(struct regulator *regulator, int uA_load)
 		goto out;
 	}
 
-<<<<<<< HEAD
 	/* No supply? Use constraint voltage */
-=======
-	/* get input voltage */
-	input_uV = 0;
-	if (rdev->supply)
-		input_uV = regulator_get_voltage(rdev->supply);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (input_uV <= 0)
 		input_uV = rdev->constraints->input_uV;
 	if (input_uV <= 0) {
@@ -2698,7 +2616,6 @@ err:
 EXPORT_SYMBOL_GPL(regulator_bulk_enable);
 
 /**
-<<<<<<< HEAD
  * regulator_bulk_set_voltage - set voltage for multiple regulator consumers
  *
  * @num_consumers: Number of consumers
@@ -2735,8 +2652,6 @@ err:
 EXPORT_SYMBOL_GPL(regulator_bulk_set_voltage);
 
 /**
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  * regulator_bulk_disable - disable multiple regulator consumers
  *
  * @num_consumers: Number of consumers
@@ -2989,7 +2904,6 @@ static int add_regulator_attributes(struct regulator_dev *rdev)
 	return status;
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_FS
 
 #define MAX_DEBUG_BUF_LEN 50
@@ -3301,21 +3215,12 @@ static void rdev_init_debugfs(struct regulator_dev *rdev)
 		rdev_warn(rdev, "Failed to create debugfs directory\n");
 		rdev->debugfs = NULL;
 		goto error;
-=======
-static void rdev_init_debugfs(struct regulator_dev *rdev)
-{
-	rdev->debugfs = debugfs_create_dir(rdev_get_name(rdev), debugfs_root);
-	if (!rdev->debugfs) {
-		rdev_warn(rdev, "Failed to create debugfs directory\n");
-		return;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	debugfs_create_u32("use_count", 0444, rdev->debugfs,
 			   &rdev->use_count);
 	debugfs_create_u32("open_count", 0444, rdev->debugfs,
 			   &rdev->open_count);
-<<<<<<< HEAD
 	debugfs_create_file("consumers", 0444, rdev->debugfs, rdev,
 			    &reg_consumers_fops);
 
@@ -3406,9 +3311,6 @@ static inline void rdev_init_debugfs(struct regulator_dev *rdev)
 	return;
 }
 #endif
-=======
-}
->>>>>>> remotes/linux2/linux-3.4.y
 
 /**
  * regulator_register - register regulator
@@ -3552,14 +3454,10 @@ struct regulator_dev *regulator_register(struct regulator_desc *regulator_desc,
 
 	list_add(&rdev->list, &regulator_list);
 
-<<<<<<< HEAD
 	mutex_unlock(&regulator_list_mutex);
 	rdev_init_debugfs(rdev);
 	return rdev;
 
-=======
-	rdev_init_debugfs(rdev);
->>>>>>> remotes/linux2/linux-3.4.y
 out:
 	mutex_unlock(&regulator_list_mutex);
 	return rdev;
@@ -3717,7 +3615,6 @@ void regulator_use_dummy_regulator(void)
 EXPORT_SYMBOL_GPL(regulator_use_dummy_regulator);
 
 /**
-<<<<<<< HEAD
  * regulator_suppress_info_printing - disable printing of info messages
  *
  * The regulator framework calls print_constraints() when a regulator is
@@ -3734,8 +3631,6 @@ void regulator_suppress_info_printing(void)
 EXPORT_SYMBOL_GPL(regulator_suppress_info_printing);
 
 /**
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  * rdev_get_drvdata - get rdev regulator driver data
  * @rdev: regulator
  *
@@ -3891,12 +3786,8 @@ static int __init regulator_init_complete(void)
 		if (has_full_constraints) {
 			/* We log since this may kill the system if it
 			 * goes wrong. */
-<<<<<<< HEAD
 			if (!suppress_info_printing)
 				rdev_info(rdev, "disabling\n");
-=======
-			rdev_info(rdev, "disabling\n");
->>>>>>> remotes/linux2/linux-3.4.y
 			ret = ops->disable(rdev);
 			if (ret != 0) {
 				rdev_err(rdev, "couldn't disable: %d\n", ret);
@@ -3907,13 +3798,9 @@ static int __init regulator_init_complete(void)
 			 * so warn even if we aren't going to do
 			 * anything here.
 			 */
-<<<<<<< HEAD
 			if (!suppress_info_printing)
 				rdev_warn(rdev, "incomplete constraints, "
 						"leaving on\n");
-=======
-			rdev_warn(rdev, "incomplete constraints, leaving on\n");
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 
 unlock:

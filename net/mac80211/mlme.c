@@ -187,11 +187,7 @@ static u32 ieee80211_enable_ht(struct ieee80211_sub_if_data *sdata,
 	u32 changed = 0;
 	int hti_cfreq;
 	u16 ht_opmode;
-<<<<<<< HEAD
 	bool enable_ht = true;
-=======
-	bool enable_ht = true, queues_stopped = false;
->>>>>>> remotes/linux2/linux-3.4.y
 	enum nl80211_channel_type prev_chantype;
 	enum nl80211_channel_type rx_channel_type = NL80211_CHAN_NO_HT;
 	enum nl80211_channel_type tx_channel_type;
@@ -258,10 +254,6 @@ static u32 ieee80211_enable_ht(struct ieee80211_sub_if_data *sdata,
 		 */
 		ieee80211_stop_queues_by_reason(&sdata->local->hw,
 				IEEE80211_QUEUE_STOP_REASON_CHTYPE_CHANGE);
-<<<<<<< HEAD
-=======
-		queues_stopped = true;
->>>>>>> remotes/linux2/linux-3.4.y
 
 		/* flush out all packets */
 		synchronize_net();
@@ -280,21 +272,12 @@ static u32 ieee80211_enable_ht(struct ieee80211_sub_if_data *sdata,
 						 IEEE80211_RC_HT_CHANGED,
 						 tx_channel_type);
 		rcu_read_unlock();
-<<<<<<< HEAD
 
 		if (beacon_htcap_ie)
 			ieee80211_wake_queues_by_reason(&sdata->local->hw,
 				IEEE80211_QUEUE_STOP_REASON_CHTYPE_CHANGE);
 	}
 
-=======
-	}
-
-	if (queues_stopped)
-		ieee80211_wake_queues_by_reason(&sdata->local->hw,
-			IEEE80211_QUEUE_STOP_REASON_CHTYPE_CHANGE);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	ht_opmode = le16_to_cpu(hti->operation_mode);
 
 	/* if bss configuration changed store the new one */
@@ -1392,10 +1375,7 @@ static void ieee80211_set_disassoc(struct ieee80211_sub_if_data *sdata,
 	struct ieee80211_local *local = sdata->local;
 	struct sta_info *sta;
 	u32 changed = 0;
-<<<<<<< HEAD
 	u8 bssid[ETH_ALEN];
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	ASSERT_MGD_MTX(ifmgd);
 
@@ -1405,14 +1385,10 @@ static void ieee80211_set_disassoc(struct ieee80211_sub_if_data *sdata,
 	if (WARN_ON(!ifmgd->associated))
 		return;
 
-<<<<<<< HEAD
 	memcpy(bssid, ifmgd->associated->bssid, ETH_ALEN);
 
 	ifmgd->associated = NULL;
 	memset(ifmgd->bssid, 0, ETH_ALEN);
-=======
-	ifmgd->associated = NULL;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * we need to commit the associated = NULL change because the
@@ -1432,11 +1408,7 @@ static void ieee80211_set_disassoc(struct ieee80211_sub_if_data *sdata,
 	netif_carrier_off(sdata->dev);
 
 	mutex_lock(&local->sta_mtx);
-<<<<<<< HEAD
 	sta = sta_info_get(sdata, bssid);
-=======
-	sta = sta_info_get(sdata, ifmgd->bssid);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (sta) {
 		set_sta_flag(sta, WLAN_STA_BLOCK_BA);
 		ieee80211_sta_tear_down_BA_sessions(sta, tx);
@@ -1445,24 +1417,13 @@ static void ieee80211_set_disassoc(struct ieee80211_sub_if_data *sdata,
 
 	/* deauthenticate/disassociate now */
 	if (tx || frame_buf)
-<<<<<<< HEAD
 		ieee80211_send_deauth_disassoc(sdata, bssid, stype, reason,
 					       tx, frame_buf);
-=======
-		ieee80211_send_deauth_disassoc(sdata, ifmgd->bssid, stype,
-					       reason, tx, frame_buf);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* flush out frame */
 	if (tx)
 		drv_flush(local, false);
 
-<<<<<<< HEAD
-=======
-	/* clear bssid only after building the needed mgmt frames */
-	memset(ifmgd->bssid, 0, ETH_ALEN);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	/* remove AP and TDLS peers */
 	sta_info_flush(local, sdata);
 
@@ -1852,12 +1813,7 @@ ieee80211_rx_mgmt_auth(struct ieee80211_sub_if_data *sdata,
 	if (status_code != WLAN_STATUS_SUCCESS) {
 		printk(KERN_DEBUG "%s: %pM denied authentication (status %d)\n",
 		       sdata->name, mgmt->sa, status_code);
-<<<<<<< HEAD
 		goto out;
-=======
-		ieee80211_destroy_auth_data(sdata, false);
-		return RX_MGMT_CFG80211_RX_AUTH;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	switch (ifmgd->auth_data->algorithm) {
@@ -1879,10 +1835,7 @@ ieee80211_rx_mgmt_auth(struct ieee80211_sub_if_data *sdata,
 	}
 
 	printk(KERN_DEBUG "%s: authenticated\n", sdata->name);
-<<<<<<< HEAD
  out:
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	ifmgd->auth_data->done = true;
 	ifmgd->auth_data->timeout = jiffies + IEEE80211_AUTH_WAIT_ASSOC;
 	run_again(ifmgd, ifmgd->auth_data->timeout);
@@ -2230,7 +2183,6 @@ ieee80211_rx_mgmt_assoc_resp(struct ieee80211_sub_if_data *sdata,
 		       sdata->name, mgmt->sa, status_code);
 		ieee80211_destroy_assoc_data(sdata, false);
 	} else {
-<<<<<<< HEAD
 		printk(KERN_DEBUG "%s: associated\n", sdata->name);
 
 		if (!ieee80211_assoc_success(sdata, *bss, mgmt, len)) {
@@ -2240,15 +2192,6 @@ ieee80211_rx_mgmt_assoc_resp(struct ieee80211_sub_if_data *sdata,
 			cfg80211_put_bss(*bss);
 			return RX_MGMT_CFG80211_ASSOC_TIMEOUT;
 		}
-=======
-		if (!ieee80211_assoc_success(sdata, *bss, mgmt, len)) {
-			/* oops -- internal error -- send timeout for now */
-			ieee80211_destroy_assoc_data(sdata, false);
-			cfg80211_put_bss(*bss);
-			return RX_MGMT_CFG80211_ASSOC_TIMEOUT;
-		}
-		printk(KERN_DEBUG "%s: associated\n", sdata->name);
->>>>>>> remotes/linux2/linux-3.4.y
 
 		/*
 		 * destroy assoc_data afterwards, as otherwise an idle
@@ -3291,11 +3234,6 @@ int ieee80211_mgd_auth(struct ieee80211_sub_if_data *sdata,
 	goto out_unlock;
 
  err_clear:
-<<<<<<< HEAD
-=======
-	memset(ifmgd->bssid, 0, ETH_ALEN);
-	ieee80211_bss_info_change_notify(sdata, BSS_CHANGED_BSSID);
->>>>>>> remotes/linux2/linux-3.4.y
 	ifmgd->auth_data = NULL;
  err_free:
 	kfree(auth_data);
@@ -3474,11 +3412,6 @@ int ieee80211_mgd_assoc(struct ieee80211_sub_if_data *sdata,
 	err = 0;
 	goto out;
  err_clear:
-<<<<<<< HEAD
-=======
-	memset(ifmgd->bssid, 0, ETH_ALEN);
-	ieee80211_bss_info_change_notify(sdata, BSS_CHANGED_BSSID);
->>>>>>> remotes/linux2/linux-3.4.y
 	ifmgd->assoc_data = NULL;
  err_free:
 	kfree(assoc_data);

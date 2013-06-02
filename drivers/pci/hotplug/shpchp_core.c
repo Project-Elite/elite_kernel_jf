@@ -40,10 +40,7 @@ bool shpchp_debug;
 bool shpchp_poll_mode;
 int shpchp_poll_time;
 struct workqueue_struct *shpchp_wq;
-<<<<<<< HEAD
 struct workqueue_struct *shpchp_ordered_wq;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 #define DRIVER_VERSION	"0.4"
 #define DRIVER_AUTHOR	"Dan Zink <dan.zink@compaq.com>, Greg Kroah-Hartman <greg@kroah.com>, Dely Sy <dely.l.sy@intel.com>"
@@ -178,10 +175,7 @@ void cleanup_slots(struct controller *ctrl)
 		list_del(&slot->slot_list);
 		cancel_delayed_work(&slot->work);
 		flush_workqueue(shpchp_wq);
-<<<<<<< HEAD
 		flush_workqueue(shpchp_ordered_wq);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		pci_hp_deregister(slot->hotplug_slot);
 	}
 }
@@ -370,23 +364,17 @@ static int __init shpcd_init(void)
 	if (!shpchp_wq)
 		return -ENOMEM;
 
-<<<<<<< HEAD
 	shpchp_ordered_wq = alloc_ordered_workqueue("shpchp_ordered", 0);
 	if (!shpchp_ordered_wq) {
 		destroy_workqueue(shpchp_wq);
 		return -ENOMEM;
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	retval = pci_register_driver(&shpc_driver);
 	dbg("%s: pci_register_driver = %d\n", __func__, retval);
 	info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
 	if (retval) {
-<<<<<<< HEAD
 		destroy_workqueue(shpchp_ordered_wq);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		destroy_workqueue(shpchp_wq);
 	}
 	return retval;
@@ -396,10 +384,7 @@ static void __exit shpcd_cleanup(void)
 {
 	dbg("unload_shpchpd()\n");
 	pci_unregister_driver(&shpc_driver);
-<<<<<<< HEAD
 	destroy_workqueue(shpchp_ordered_wq);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	destroy_workqueue(shpchp_wq);
 	info(DRIVER_DESC " version: " DRIVER_VERSION " unloaded\n");
 }

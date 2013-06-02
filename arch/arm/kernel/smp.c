@@ -43,12 +43,9 @@
 #include <asm/localtimer.h>
 #include <asm/smp_plat.h>
 
-<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG
 #include <mach/sec_debug.h>
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * as from 2.5, kernels no longer have an init_tasks structure
  * so we need some other way of telling a new secondary core
@@ -57,19 +54,13 @@
 struct secondary_data secondary_data;
 
 enum ipi_msg_type {
-<<<<<<< HEAD
 	IPI_CPU_START = 1,
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	IPI_TIMER = 2,
 	IPI_RESCHEDULE,
 	IPI_CALL_FUNC,
 	IPI_CALL_FUNC_SINGLE,
 	IPI_CPU_STOP,
-<<<<<<< HEAD
 	IPI_CPU_BACKTRACE,
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static DECLARE_COMPLETION(cpu_running);
@@ -196,11 +187,7 @@ void __cpu_die(unsigned int cpu)
 		pr_err("CPU%u: cpu didn't die\n", cpu);
 		return;
 	}
-<<<<<<< HEAD
 	pr_debug("CPU%u: shutdown\n", cpu);
-=======
-	printk(KERN_NOTICE "CPU%u: shutdown\n", cpu);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!platform_cpu_kill(cpu))
 		printk("CPU%u: unable to kill\n", cpu);
@@ -258,11 +245,6 @@ static void __cpuinit smp_store_cpu_info(unsigned int cpuid)
 	store_cpu_topology(cpuid);
 }
 
-<<<<<<< HEAD
-=======
-static void percpu_timer_setup(void);
-
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * This is the secondary CPU boot entry.  We're using this CPUs
  * idle thread stack, but a set of temporary page tables.
@@ -270,25 +252,12 @@ static void percpu_timer_setup(void);
 asmlinkage void __cpuinit secondary_start_kernel(void)
 {
 	struct mm_struct *mm = &init_mm;
-<<<<<<< HEAD
 	unsigned int cpu = smp_processor_id();
-=======
-	unsigned int cpu;
-
-	/*
-	 * The identity mapping is uncached (strongly ordered), so
-	 * switch away from it before attempting any exclusive accesses.
-	 */
-	cpu_switch_mm(mm->pgd, mm);
-	enter_lazy_tlb(mm, current);
-	local_flush_tlb_all();
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * All kernel threads share the same mm context; grab a
 	 * reference and switch to it.
 	 */
-<<<<<<< HEAD
 	atomic_inc(&mm->mm_count);
 	current->active_mm = mm;
 	cpumask_set_cpu(cpu, mm_cpumask(mm));
@@ -297,14 +266,6 @@ asmlinkage void __cpuinit secondary_start_kernel(void)
 	local_flush_tlb_all();
 
 	pr_debug("CPU%u: Booted secondary processor\n", cpu);
-=======
-	cpu = smp_processor_id();
-	atomic_inc(&mm->mm_count);
-	current->active_mm = mm;
-	cpumask_set_cpu(cpu, mm_cpumask(mm));
-
-	printk("CPU%u: Booted secondary processor\n", cpu);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	cpu_init();
 	preempt_disable();
@@ -419,21 +380,14 @@ void arch_send_call_function_single_ipi(int cpu)
 }
 
 static const char *ipi_types[NR_IPI] = {
-<<<<<<< HEAD
 #define S(x,s)	[x - IPI_CPU_START] = s
 	S(IPI_CPU_START, "CPU start interrupts"),
-=======
-#define S(x,s)	[x - IPI_TIMER] = s
->>>>>>> remotes/linux2/linux-3.4.y
 	S(IPI_TIMER, "Timer broadcast interrupts"),
 	S(IPI_RESCHEDULE, "Rescheduling interrupts"),
 	S(IPI_CALL_FUNC, "Function call interrupts"),
 	S(IPI_CALL_FUNC_SINGLE, "Single function call interrupts"),
 	S(IPI_CPU_STOP, "CPU stop interrupts"),
-<<<<<<< HEAD
 	S(IPI_CPU_BACKTRACE, "CPU backtrace"),
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 void show_ipi_list(struct seq_file *p, int prec)
@@ -513,11 +467,7 @@ int local_timer_register(struct local_timer_ops *ops)
 }
 #endif
 
-<<<<<<< HEAD
 void __cpuinit percpu_timer_setup(void)
-=======
-static void __cpuinit percpu_timer_setup(void)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	unsigned int cpu = smp_processor_id();
 	struct clock_event_device *evt = &per_cpu(percpu_clockevent, cpu);
@@ -557,7 +507,6 @@ static void ipi_cpu_stop(unsigned int cpu)
 		raw_spin_lock(&stop_lock);
 		printk(KERN_CRIT "CPU%u: stopping\n", cpu);
 		dump_stack();
-<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG
 		sec_debug_dump_stack();
 #endif
@@ -565,12 +514,6 @@ static void ipi_cpu_stop(unsigned int cpu)
 	}
 
 	set_cpu_active(cpu, false);
-=======
-		raw_spin_unlock(&stop_lock);
-	}
-
-	set_cpu_online(cpu, false);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	local_fiq_disable();
 	local_irq_disable();
@@ -579,7 +522,6 @@ static void ipi_cpu_stop(unsigned int cpu)
 		cpu_relax();
 }
 
-<<<<<<< HEAD
 static cpumask_t backtrace_mask;
 static DEFINE_RAW_SPINLOCK(backtrace_lock);
 
@@ -633,8 +575,6 @@ static void ipi_cpu_backtrace(unsigned int cpu, struct pt_regs *regs)
 	}
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Main handler for inter-processor interrupts
  */
@@ -648,7 +588,6 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 	unsigned int cpu = smp_processor_id();
 	struct pt_regs *old_regs = set_irq_regs(regs);
 
-<<<<<<< HEAD
 	if (ipinr >= IPI_CPU_START && ipinr < IPI_CPU_START + NR_IPI)
 		__inc_irq_stat(cpu, ipi_irqs[ipinr - IPI_CPU_START]);
 
@@ -656,12 +595,6 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 	case IPI_CPU_START:
 		/* Wake up from WFI/WFE using SGI */
 		break;
-=======
-	if (ipinr >= IPI_TIMER && ipinr < IPI_TIMER + NR_IPI)
-		__inc_irq_stat(cpu, ipi_irqs[ipinr - IPI_TIMER]);
-
-	switch (ipinr) {
->>>>>>> remotes/linux2/linux-3.4.y
 	case IPI_TIMER:
 		irq_enter();
 		ipi_timer();
@@ -690,13 +623,10 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 		irq_exit();
 		break;
 
-<<<<<<< HEAD
 	case IPI_CPU_BACKTRACE:
 		ipi_cpu_backtrace(cpu, regs);
 		break;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	default:
 		printk(KERN_CRIT "CPU%u: Unknown IPI message 0x%x\n",
 		       cpu, ipinr);
@@ -733,17 +663,10 @@ void smp_send_stop(void)
 
 	/* Wait up to one second for other CPUs to stop */
 	timeout = USEC_PER_SEC;
-<<<<<<< HEAD
 	while (num_active_cpus() > 1 && timeout--)
 		udelay(1);
 
 	if (num_active_cpus() > 1)
-=======
-	while (num_online_cpus() > 1 && timeout--)
-		udelay(1);
-
-	if (num_online_cpus() > 1)
->>>>>>> remotes/linux2/linux-3.4.y
 		pr_warning("SMP: failed to stop secondary CPUs\n");
 
 	smp_kill_cpus(&mask);

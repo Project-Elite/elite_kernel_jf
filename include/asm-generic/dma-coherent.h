@@ -3,22 +3,15 @@
 
 #ifdef CONFIG_HAVE_GENERIC_DMA_COHERENT
 /*
-<<<<<<< HEAD
  * These three functions are only for dma allocator.
-=======
- * These two functions are only for dma allocator.
->>>>>>> remotes/linux2/linux-3.4.y
  * Don't use them in device drivers.
  */
 int dma_alloc_from_coherent(struct device *dev, ssize_t size,
 				       dma_addr_t *dma_handle, void **ret);
 int dma_release_from_coherent(struct device *dev, int order, void *vaddr);
 
-<<<<<<< HEAD
 int dma_mmap_from_coherent(struct device *dev, struct vm_area_struct *vma,
 			    void *cpu_addr, size_t size, int *ret);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Standard interface
  */

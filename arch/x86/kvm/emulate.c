@@ -3737,13 +3737,6 @@ static int decode_operand(struct x86_emulate_ctxt *ctxt, struct operand *op,
 		break;
 	case OpMem8:
 		ctxt->memop.bytes = 1;
-<<<<<<< HEAD
-=======
-		if (ctxt->memop.type == OP_REG) {
-			ctxt->memop.addr.reg = decode_register(ctxt, ctxt->modrm_rm, 1);
-			fetch_register_operand(&ctxt->memop);
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 		goto mem_common;
 	case OpMem16:
 		ctxt->memop.bytes = 2;

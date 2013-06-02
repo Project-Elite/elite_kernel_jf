@@ -1302,11 +1302,7 @@ static int kaweth_internal_control_msg(struct usb_device *usb_dev,
         int retv;
         int length = 0; /* shut up GCC */
 
-<<<<<<< HEAD
         urb = usb_alloc_urb(0, GFP_NOIO);
-=======
-	urb = usb_alloc_urb(0, GFP_ATOMIC);
->>>>>>> remotes/linux2/linux-3.4.y
         if (!urb)
                 return -ENOMEM;
 

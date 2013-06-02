@@ -29,7 +29,6 @@
 #include <linux/of_platform.h>
 #include <linux/of_gpio.h>
 #include <linux/spinlock.h>
-<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG
 #include <mach/sec_debug.h>
 #else
@@ -38,11 +37,6 @@
 
 struct gpio_button_data {
 	struct gpio_keys_button *button;
-=======
-
-struct gpio_button_data {
-	const struct gpio_keys_button *button;
->>>>>>> remotes/linux2/linux-3.4.y
 	struct input_dev *input;
 	struct timer_list timer;
 	struct work_struct work;
@@ -51,15 +45,12 @@ struct gpio_button_data {
 	spinlock_t lock;
 	bool disabled;
 	bool key_pressed;
-<<<<<<< HEAD
 	#ifdef KEY_BOOSTER
 	struct delayed_work	work_dvfs_off;
 	struct delayed_work	work_dvfs_chg;
 	bool dvfs_lock_status;
 	struct mutex		dvfs_lock;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 struct gpio_keys_drvdata {
@@ -68,15 +59,12 @@ struct gpio_keys_drvdata {
 	unsigned int n_buttons;
 	int (*enable)(struct device *dev);
 	void (*disable)(struct device *dev);
-<<<<<<< HEAD
 #ifdef CONFIG_SENSORS_HALL
 	int gpio_flip_cover;
 	int irq_flip_cover;
 	bool flip_cover;
 	struct delayed_work flip_cover_dwork;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	struct gpio_button_data data[0];
 };
 
@@ -352,7 +340,6 @@ static struct attribute *gpio_keys_attrs[] = {
 static struct attribute_group gpio_keys_attr_group = {
 	.attrs = gpio_keys_attrs,
 };
-<<<<<<< HEAD
 #ifdef KEY_BOOSTER
 static void gpio_key_change_dvfs_lock(struct work_struct *work)
 {
@@ -426,8 +413,6 @@ static int gpio_key_init_dvfs(struct gpio_button_data *bdata)
 	return 0;
 }
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 {
@@ -436,12 +421,9 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 	unsigned int type = button->type ?: EV_KEY;
 	int state = (gpio_get_value_cansleep(button->gpio) ? 1 : 0) ^ button->active_low;
 
-<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG
 	sec_debug_check_crash_key(button->code, state);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (type == EV_ABS) {
 		if (state)
 			input_event(input, type, button->code, button->value);
@@ -455,7 +437,6 @@ static void gpio_keys_gpio_work_func(struct work_struct *work)
 {
 	struct gpio_button_data *bdata =
 		container_of(work, struct gpio_button_data, work);
-<<<<<<< HEAD
 #ifdef KEY_BOOSTER
 	const struct gpio_keys_button *button = bdata->button;
 	int state = (gpio_get_value_cansleep(button->gpio) ? 1 : 0) ^ button->active_low;
@@ -465,10 +446,6 @@ static void gpio_keys_gpio_work_func(struct work_struct *work)
 	if (button->code == KEY_HOME)
 		gpio_key_set_dvfs_lock(bdata, !!state);
 #endif
-=======
-
-	gpio_keys_gpio_report_event(bdata);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void gpio_keys_gpio_timer(unsigned long _data)
@@ -543,11 +520,7 @@ out:
 static int __devinit gpio_keys_setup_key(struct platform_device *pdev,
 					 struct input_dev *input,
 					 struct gpio_button_data *bdata,
-<<<<<<< HEAD
 					 struct gpio_keys_button *button)
-=======
-					 const struct gpio_keys_button *button)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	const char *desc = button->desc ? button->desc : "gpio_keys";
 	struct device *dev = &pdev->dev;
@@ -647,7 +620,6 @@ fail:
 	return error;
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_SENSORS_HALL
 static void flip_cover_work(struct work_struct *work)
 {
@@ -723,12 +695,6 @@ static int gpio_keys_open(struct input_dev *input)
 		schedule_delayed_work(&ddata->flip_cover_dwork, HZ / 2);
 	}
 #endif
-=======
-static int gpio_keys_open(struct input_dev *input)
-{
-	struct gpio_keys_drvdata *ddata = input_get_drvdata(input);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	return ddata->enable ? ddata->enable(input->dev.parent) : 0;
 }
 
@@ -740,7 +706,6 @@ static void gpio_keys_close(struct input_dev *input)
 		ddata->disable(input->dev.parent);
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_SENSORS_HALL
 static ssize_t sysfs_hall_detect_show(struct device *dev,
 				struct device_attribute *attr, char *buf)
@@ -758,8 +723,6 @@ static ssize_t sysfs_hall_detect_show(struct device *dev,
 static DEVICE_ATTR(hall_detect, 0664, sysfs_hall_detect_show, NULL);
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Handlers for alternative sources of platform_data
  */
@@ -869,7 +832,6 @@ static void gpio_remove_key(struct gpio_button_data *bdata)
 		gpio_free(bdata->button->gpio);
 }
 
-<<<<<<< HEAD
 static ssize_t  sysfs_key_onoff_show(struct device *dev,
 	struct device_attribute *attr, char *buf)
 {
@@ -928,29 +890,21 @@ out:
 
 static DEVICE_ATTR(wakeup_keys, 0664, NULL, wakeup_enable);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static int __devinit gpio_keys_probe(struct platform_device *pdev)
 {
 	const struct gpio_keys_platform_data *pdata = pdev->dev.platform_data;
 	struct gpio_keys_drvdata *ddata;
-<<<<<<< HEAD
 	struct gpio_keys_button *button = NULL;
 	struct gpio_button_data *bdata = NULL ;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	struct device *dev = &pdev->dev;
 	struct gpio_keys_platform_data alt_pdata;
 	struct input_dev *input;
 	int i, error;
 	int wakeup = 0;
-<<<<<<< HEAD
 #ifdef CONFIG_SENSORS_HALL
 	int ret;
 	struct device *sec_key;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!pdata) {
 		error = gpio_keys_get_devtree_pdata(dev, &alt_pdata);
@@ -973,13 +927,10 @@ static int __devinit gpio_keys_probe(struct platform_device *pdev)
 	ddata->n_buttons = pdata->nbuttons;
 	ddata->enable = pdata->enable;
 	ddata->disable = pdata->disable;
-<<<<<<< HEAD
 #ifdef CONFIG_SENSORS_HALL
 	ddata->gpio_flip_cover = pdata->gpio_flip_cover;
 	ddata->irq_flip_cover = gpio_to_irq(ddata->gpio_flip_cover);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	mutex_init(&ddata->disable_lock);
 
 	platform_set_drvdata(pdev, ddata);
@@ -988,13 +939,10 @@ static int __devinit gpio_keys_probe(struct platform_device *pdev)
 	input->name = pdata->name ? : pdev->name;
 	input->phys = "gpio-keys/input0";
 	input->dev.parent = &pdev->dev;
-<<<<<<< HEAD
 #ifdef CONFIG_SENSORS_HALL
 	input->evbit[0] |= BIT_MASK(EV_SW);
 	input_set_capability(input, EV_SW, SW_FLIP);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	input->open = gpio_keys_open;
 	input->close = gpio_keys_close;
 
@@ -1008,13 +956,8 @@ static int __devinit gpio_keys_probe(struct platform_device *pdev)
 		__set_bit(EV_REP, input->evbit);
 
 	for (i = 0; i < pdata->nbuttons; i++) {
-<<<<<<< HEAD
 		button = &pdata->buttons[i];
 		bdata = &ddata->data[i];
-=======
-		const struct gpio_keys_button *button = &pdata->buttons[i];
-		struct gpio_button_data *bdata = &ddata->data[i];
->>>>>>> remotes/linux2/linux-3.4.y
 
 		error = gpio_keys_setup_key(pdev, input, bdata, button);
 		if (error)
@@ -1023,7 +966,6 @@ static int __devinit gpio_keys_probe(struct platform_device *pdev)
 		if (button->wakeup)
 			wakeup = 1;
 	}
-<<<<<<< HEAD
 #ifdef KEY_BOOSTER
 		error = gpio_key_init_dvfs(bdata);
 		if (error < 0) {
@@ -1031,9 +973,6 @@ static int __devinit gpio_keys_probe(struct platform_device *pdev)
 			goto fail2;
 		}
 #endif
-=======
-
->>>>>>> remotes/linux2/linux-3.4.y
 	error = sysfs_create_group(&pdev->dev.kobj, &gpio_keys_attr_group);
 	if (error) {
 		dev_err(dev, "Unable to export keys/switches, error: %d\n",
@@ -1056,7 +995,6 @@ static int __devinit gpio_keys_probe(struct platform_device *pdev)
 	}
 	input_sync(input);
 
-<<<<<<< HEAD
 #ifdef CONFIG_SENSORS_HALL
 	sec_key = device_create(sec_class, NULL, 0, NULL, "sec_key");
 	if (IS_ERR(sec_key))
@@ -1081,9 +1019,6 @@ static int __devinit gpio_keys_probe(struct platform_device *pdev)
 	dev_set_drvdata(sec_key, ddata);
 #endif
 	device_init_wakeup(&pdev->dev, 1);
-=======
-	device_init_wakeup(&pdev->dev, wakeup);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 
@@ -1144,12 +1079,9 @@ static int gpio_keys_suspend(struct device *dev)
 			if (bdata->button->wakeup)
 				enable_irq_wake(bdata->irq);
 		}
-<<<<<<< HEAD
 #ifdef CONFIG_SENSORS_HALL
 		enable_irq_wake(ddata->irq_flip_cover);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return 0;
@@ -1168,13 +1100,10 @@ static int gpio_keys_resume(struct device *dev)
 		if (gpio_is_valid(bdata->button->gpio))
 			gpio_keys_gpio_report_event(bdata);
 	}
-<<<<<<< HEAD
 #ifdef disable_irq_wake
 	if (device_may_wakeup(dev))
 		disable_irq_wake(ddata->irq_flip_cover);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	input_sync(ddata->input);
 
 	return 0;

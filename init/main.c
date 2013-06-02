@@ -107,13 +107,10 @@ bool early_boot_irqs_disabled __read_mostly;
 enum system_states system_state __read_mostly;
 EXPORT_SYMBOL(system_state);
 
-<<<<<<< HEAD
 #ifdef CONFIG_SAMSUNG_LPM_MODE
 int poweroff_charging;
 #endif /*  CONFIG_SAMSUNG_LPM_MODE */
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Boot command-line arguments
  */
@@ -232,7 +229,6 @@ static int __init loglevel(char *str)
 
 early_param("loglevel", loglevel);
 
-<<<<<<< HEAD
 /*batt_id_value */
  int console_batt_stat;
  static int __init battStatus(char *str)
@@ -249,8 +245,6 @@ early_param("loglevel", loglevel);
 }
 early_param("batt_id_value", battStatus);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /* Change NUL term back to "=", to make "param" the whole string. */
 static int __init repair_env_string(char *param, char *val)
 {
@@ -385,10 +379,7 @@ static __initdata DECLARE_COMPLETION(kthreadd_done);
 static noinline void __init_refok rest_init(void)
 {
 	int pid;
-<<<<<<< HEAD
 	const struct sched_param param = { .sched_priority = 1 };
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	rcu_scheduler_starting();
 	/*
@@ -402,10 +393,7 @@ static noinline void __init_refok rest_init(void)
 	rcu_read_lock();
 	kthreadd_task = find_task_by_pid_ns(pid, &init_pid_ns);
 	rcu_read_unlock();
-<<<<<<< HEAD
 	sched_setscheduler_nocheck(kthreadd_task, SCHED_FIFO, &param);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	complete(&kthreadd_done);
 
 	/*
@@ -434,7 +422,6 @@ static int __init do_early_param(char *param, char *val)
 		}
 	}
 	/* We accept everything at this stage. */
-<<<<<<< HEAD
 #ifdef CONFIG_SAMSUNG_LPM_MODE
 	/*  check power off charging */
 	if ((strncmp(param, "androidboot.bootchg", 19) == 0)) {
@@ -442,8 +429,6 @@ static int __init do_early_param(char *param, char *val)
 			poweroff_charging = 1;
 	}
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -646,11 +631,7 @@ asmlinkage void __init start_kernel(void)
 	pidmap_init();
 	anon_vma_init();
 #ifdef CONFIG_X86
-<<<<<<< HEAD
 	if (efi_enabled)
-=======
-	if (efi_enabled(EFI_RUNTIME_SERVICES))
->>>>>>> remotes/linux2/linux-3.4.y
 		efi_enter_virtual_mode();
 #endif
 	thread_info_cache_init();
@@ -678,12 +659,6 @@ asmlinkage void __init start_kernel(void)
 	acpi_early_init(); /* before LAPIC and SMP init */
 	sfi_init_late();
 
-<<<<<<< HEAD
-=======
-	if (efi_enabled(EFI_RUNTIME_SERVICES))
-		efi_free_boot_services();
-
->>>>>>> remotes/linux2/linux-3.4.y
 	ftrace_init();
 
 	/* Do the rest non-__init'ed, we're now alive */

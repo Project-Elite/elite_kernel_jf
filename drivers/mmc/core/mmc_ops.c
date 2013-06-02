@@ -335,10 +335,7 @@ int mmc_send_ext_csd(struct mmc_card *card, u8 *ext_csd)
 	return mmc_send_cxd_data(card, card->host, MMC_SEND_EXT_CSD,
 			ext_csd, 512);
 }
-<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(mmc_send_ext_csd);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 int mmc_spi_read_ocr(struct mmc_host *host, int highcap, u32 *ocrp)
 {
@@ -371,31 +368,19 @@ int mmc_spi_set_crc(struct mmc_host *host, int use_crc)
 }
 
 /**
-<<<<<<< HEAD
  *	__mmc_switch - modify EXT_CSD register
-=======
- *	mmc_switch - modify EXT_CSD register
->>>>>>> remotes/linux2/linux-3.4.y
  *	@card: the MMC card associated with the data transfer
  *	@set: cmd set values
  *	@index: EXT_CSD register index
  *	@value: value to program into EXT_CSD register
  *	@timeout_ms: timeout (ms) for operation performed by register write,
  *                   timeout of zero implies maximum possible timeout
-<<<<<<< HEAD
  *	@use_busy_signal: use the busy signal as response type
  *
  *	Modifies the EXT_CSD register for selected card.
  */
 int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 	       unsigned int timeout_ms, bool use_busy_signal)
-=======
- *
- *	Modifies the EXT_CSD register for selected card.
- */
-int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
-	       unsigned int timeout_ms)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	int err;
 	struct mmc_command cmd = {0};
@@ -409,7 +394,6 @@ int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 		  (index << 16) |
 		  (value << 8) |
 		  set;
-<<<<<<< HEAD
 	cmd.flags = MMC_CMD_AC;
 	if (use_busy_signal)
 		cmd.flags |= MMC_RSP_SPI_R1B | MMC_RSP_R1B;
@@ -417,22 +401,16 @@ int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 		cmd.flags |= MMC_RSP_SPI_R1 | MMC_RSP_R1;
 
 
-=======
-	cmd.flags = MMC_RSP_SPI_R1B | MMC_RSP_R1B | MMC_CMD_AC;
->>>>>>> remotes/linux2/linux-3.4.y
 	cmd.cmd_timeout_ms = timeout_ms;
 
 	err = mmc_wait_for_cmd(card->host, &cmd, MMC_CMD_RETRIES);
 	if (err)
 		return err;
 
-<<<<<<< HEAD
 	/* No need to check card status in case of unblocking command */
 	if (!use_busy_signal)
 		return 0;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/* Must check status to be sure of no errors */
 	do {
 		err = mmc_send_status(card, &status);
@@ -457,7 +435,6 @@ int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 
 	return 0;
 }
-<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(__mmc_switch);
 
 int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
@@ -465,8 +442,6 @@ int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 {
 	return __mmc_switch(card, set, index, value, timeout_ms, true);
 }
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 EXPORT_SYMBOL_GPL(mmc_switch);
 
 int mmc_send_status(struct mmc_card *card, u32 *status)
@@ -551,12 +526,9 @@ mmc_send_bus_test(struct mmc_card *card, struct mmc_host *host, u8 opcode,
 
 	data.sg = &sg;
 	data.sg_len = 1;
-<<<<<<< HEAD
 	data.timeout_ns = 1000000;
 	data.timeout_clks = 0;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	sg_init_one(&sg, data_buf, len);
 	mmc_wait_for_req(host, &mrq);
 	err = 0;

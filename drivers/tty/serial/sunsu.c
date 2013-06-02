@@ -968,10 +968,6 @@ static struct uart_ops sunsu_pops = {
 #define UART_NR	4
 
 static struct uart_sunsu_port sunsu_ports[UART_NR];
-<<<<<<< HEAD
-=======
-static int nr_inst; /* Number of already registered ports */
->>>>>>> remotes/linux2/linux-3.4.y
 
 #ifdef CONFIG_SERIO
 
@@ -1341,7 +1337,6 @@ static int __init sunsu_console_setup(struct console *co, char *options)
 	printk("Console: ttyS%d (SU)\n",
 	       (sunsu_reg.minor - 64) + co->index);
 
-<<<<<<< HEAD
 	/*
 	 * Check whether an invalid uart number has been specified, and
 	 * if so, search for the first available port that does have
@@ -1349,10 +1344,6 @@ static int __init sunsu_console_setup(struct console *co, char *options)
 	 */
 	if (co->index >= UART_NR)
 		co->index = 0;
-=======
-	if (co->index > nr_inst)
-		return -ENODEV;
->>>>>>> remotes/linux2/linux-3.4.y
 	port = &sunsu_ports[co->index].port;
 
 	/*
@@ -1417,10 +1408,7 @@ static enum su_type __devinit su_get_type(struct device_node *dp)
 
 static int __devinit su_probe(struct platform_device *op)
 {
-<<<<<<< HEAD
 	static int inst;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	struct device_node *dp = op->dev.of_node;
 	struct uart_sunsu_port *up;
 	struct resource *rp;
@@ -1430,26 +1418,16 @@ static int __devinit su_probe(struct platform_device *op)
 
 	type = su_get_type(dp);
 	if (type == SU_PORT_PORT) {
-<<<<<<< HEAD
 		if (inst >= UART_NR)
 			return -EINVAL;
 		up = &sunsu_ports[inst];
-=======
-		if (nr_inst >= UART_NR)
-			return -EINVAL;
-		up = &sunsu_ports[nr_inst];
->>>>>>> remotes/linux2/linux-3.4.y
 	} else {
 		up = kzalloc(sizeof(*up), GFP_KERNEL);
 		if (!up)
 			return -ENOMEM;
 	}
 
-<<<<<<< HEAD
 	up->port.line = inst;
-=======
-	up->port.line = nr_inst;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	spin_lock_init(&up->port.lock);
 
@@ -1483,11 +1461,6 @@ static int __devinit su_probe(struct platform_device *op)
 		}
 		dev_set_drvdata(&op->dev, up);
 
-<<<<<<< HEAD
-=======
-		nr_inst++;
-
->>>>>>> remotes/linux2/linux-3.4.y
 		return 0;
 	}
 
@@ -1515,11 +1488,7 @@ static int __devinit su_probe(struct platform_device *op)
 
 	dev_set_drvdata(&op->dev, up);
 
-<<<<<<< HEAD
 	inst++;
-=======
-	nr_inst++;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 

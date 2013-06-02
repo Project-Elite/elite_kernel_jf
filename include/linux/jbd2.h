@@ -470,10 +470,6 @@ struct transaction_s
 		T_COMMIT,
 		T_COMMIT_DFLUSH,
 		T_COMMIT_JFLUSH,
-<<<<<<< HEAD
-=======
-		T_COMMIT_CALLBACK,
->>>>>>> remotes/linux2/linux-3.4.y
 		T_FINISHED
 	}			t_state;
 
@@ -601,7 +597,6 @@ struct transaction_s
 	 */
 	unsigned int t_synchronous_commit:1;
 
-<<<<<<< HEAD
 	/*
 	 * This transaction's callback is invoked [j_list_lock]
 	 */
@@ -612,8 +607,6 @@ struct transaction_s
 	 */
 	unsigned int t_dropped:1;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/* Disk flush needs to be sent to fs partition [no locking] */
 	int			t_need_data_flush;
 
@@ -1108,10 +1101,6 @@ extern int	   jbd2_journal_destroy    (journal_t *);
 extern int	   jbd2_journal_recover    (journal_t *journal);
 extern int	   jbd2_journal_wipe       (journal_t *, int);
 extern int	   jbd2_journal_skip_recovery	(journal_t *);
-<<<<<<< HEAD
-=======
-extern void	   jbd2_journal_update_sb_errno(journal_t *);
->>>>>>> remotes/linux2/linux-3.4.y
 extern void	   jbd2_journal_update_sb_log_tail	(journal_t *, tid_t,
 				unsigned long, int);
 extern void	   __jbd2_journal_abort_hard	(journal_t *);

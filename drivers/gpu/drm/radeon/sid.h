@@ -55,11 +55,6 @@
 
 #define DMIF_ADDR_CONFIG  				0xBD4
 
-<<<<<<< HEAD
-=======
-#define DMIF_ADDR_CALC  				0xC00
-
->>>>>>> remotes/linux2/linux-3.4.y
 #define	SRBM_STATUS				        0xE50
 
 #define	CC_SYS_RB_BACKEND_DISABLE			0xe80
@@ -418,10 +413,6 @@
 #       define RDERR_INT_ENABLE                         (1 << 0)
 #       define GUI_IDLE_INT_ENABLE                      (1 << 19)
 
-<<<<<<< HEAD
-=======
-#define	CP_STRMOUT_CNTL					0x84FC
->>>>>>> remotes/linux2/linux-3.4.y
 #define	SCRATCH_REG0					0x8500
 #define	SCRATCH_REG1					0x8504
 #define	SCRATCH_REG2					0x8508

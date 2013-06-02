@@ -45,13 +45,8 @@ typedef struct tagsPMKIDInfo {
 } PMKIDInfo, *PPMKIDInfo;
 
 typedef struct tagSPMKIDCache {
-<<<<<<< HEAD
     unsigned long       BSSIDInfoCount;
     PMKIDInfo   BSSIDInfo[MAX_PMKID_CACHE];
-=======
-	u32 BSSIDInfoCount;
-	PMKIDInfo BSSIDInfo[MAX_PMKID_CACHE];
->>>>>>> remotes/linux2/linux-3.4.y
 } SPMKIDCache, *PSPMKIDCache;
 
 

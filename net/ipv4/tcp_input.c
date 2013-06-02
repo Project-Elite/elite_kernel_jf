@@ -88,12 +88,6 @@ int sysctl_tcp_app_win __read_mostly = 31;
 int sysctl_tcp_adv_win_scale __read_mostly = 1;
 EXPORT_SYMBOL(sysctl_tcp_adv_win_scale);
 
-<<<<<<< HEAD
-=======
-/* rfc5961 challenge ack rate limiting */
-int sysctl_tcp_challenge_ack_limit = 100;
-
->>>>>>> remotes/linux2/linux-3.4.y
 int sysctl_tcp_stdurg __read_mostly;
 int sysctl_tcp_rfc1337 __read_mostly;
 int sysctl_tcp_max_orphans __read_mostly = NR_FILE;
@@ -119,10 +113,6 @@ int sysctl_tcp_abc __read_mostly;
 #define FLAG_DSACKING_ACK	0x800 /* SACK blocks contained D-SACK info */
 #define FLAG_NONHEAD_RETRANS_ACKED	0x1000 /* Non-head rexmitted data was ACKed */
 #define FLAG_SACK_RENEGING	0x2000 /* snd_una advanced to a sacked seq */
-<<<<<<< HEAD
-=======
-#define FLAG_UPDATE_TS_RECENT	0x4000 /* tcp_replace_ts_recent() */
->>>>>>> remotes/linux2/linux-3.4.y
 
 #define FLAG_ACKED		(FLAG_DATA_ACKED|FLAG_SYN_ACKED)
 #define FLAG_NOT_DUP		(FLAG_DATA|FLAG_WIN_UPDATE|FLAG_ACKED)
@@ -2267,16 +2257,11 @@ void tcp_enter_loss(struct sock *sk, int how)
 	if (tcp_is_reno(tp))
 		tcp_reset_reno_sack(tp);
 
-<<<<<<< HEAD
 	if (!how) {
 		/* Push undo marker, if it was plain RTO and nothing
 		 * was retransmitted. */
 		tp->undo_marker = tp->snd_una;
 	} else {
-=======
-	tp->undo_marker = tp->snd_una;
-	if (how) {
->>>>>>> remotes/linux2/linux-3.4.y
 		tp->sacked_out = 0;
 		tp->fackets_out = 0;
 	}
@@ -3052,21 +3037,13 @@ static void tcp_update_cwnd_in_recovery(struct sock *sk, int newly_acked_sacked,
  * tcp_xmit_retransmit_queue().
  */
 static void tcp_fastretrans_alert(struct sock *sk, int pkts_acked,
-<<<<<<< HEAD
 				  int newly_acked_sacked, bool is_dupack,
-=======
-				  int prior_sacked, bool is_dupack,
->>>>>>> remotes/linux2/linux-3.4.y
 				  int flag)
 {
 	struct inet_connection_sock *icsk = inet_csk(sk);
 	struct tcp_sock *tp = tcp_sk(sk);
 	int do_lost = is_dupack || ((flag & FLAG_DATA_SACKED) &&
 				    (tcp_fackets_out(tp) > tp->reordering));
-<<<<<<< HEAD
-=======
-	int newly_acked_sacked = 0;
->>>>>>> remotes/linux2/linux-3.4.y
 	int fast_rexmit = 0, mib_idx;
 
 	if (WARN_ON(!tp->packets_out && tp->sacked_out))
@@ -3126,10 +3103,6 @@ static void tcp_fastretrans_alert(struct sock *sk, int pkts_acked,
 				tcp_add_reno_sack(sk);
 		} else
 			do_lost = tcp_try_undo_partial(sk, pkts_acked);
-<<<<<<< HEAD
-=======
-		newly_acked_sacked = pkts_acked + tp->sacked_out - prior_sacked;
->>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	case TCP_CA_Loss:
 		if (flag & FLAG_DATA_ACKED)
@@ -3151,10 +3124,6 @@ static void tcp_fastretrans_alert(struct sock *sk, int pkts_acked,
 			if (is_dupack)
 				tcp_add_reno_sack(sk);
 		}
-<<<<<<< HEAD
-=======
-		newly_acked_sacked = pkts_acked + tp->sacked_out - prior_sacked;
->>>>>>> remotes/linux2/linux-3.4.y
 
 		if (icsk->icsk_ca_state <= TCP_CA_Disorder)
 			tcp_try_undo_dsack(sk);
@@ -3664,14 +3633,6 @@ static int tcp_process_frto(struct sock *sk, int flag)
 		}
 	} else {
 		if (!(flag & FLAG_DATA_ACKED) && (tp->frto_counter == 1)) {
-<<<<<<< HEAD
-=======
-			if (!tcp_packets_in_flight(tp)) {
-				tcp_enter_frto_loss(sk, 2, flag);
-				return true;
-			}
-
->>>>>>> remotes/linux2/linux-3.4.y
 			/* Prevent sending of new data. */
 			tp->snd_cwnd = min(tp->snd_cwnd,
 					   tcp_packets_in_flight(tp));
@@ -3720,48 +3681,6 @@ static int tcp_process_frto(struct sock *sk, int flag)
 	return 0;
 }
 
-<<<<<<< HEAD
-=======
-/* RFC 5961 7 [ACK Throttling] */
-static void tcp_send_challenge_ack(struct sock *sk)
-{
-	/* unprotected vars, we dont care of overwrites */
-	static u32 challenge_timestamp;
-	static unsigned int challenge_count;
-	u32 now = jiffies / HZ;
-
-	if (now != challenge_timestamp) {
-		challenge_timestamp = now;
-		challenge_count = 0;
-	}
-	if (++challenge_count <= sysctl_tcp_challenge_ack_limit) {
-		NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_TCPCHALLENGEACK);
-		tcp_send_ack(sk);
-	}
-}
-
-static void tcp_store_ts_recent(struct tcp_sock *tp)
-{
-	tp->rx_opt.ts_recent = tp->rx_opt.rcv_tsval;
-	tp->rx_opt.ts_recent_stamp = get_seconds();
-}
-
-static void tcp_replace_ts_recent(struct tcp_sock *tp, u32 seq)
-{
-	if (tp->rx_opt.saw_tstamp && !after(seq, tp->rcv_wup)) {
-		/* PAWS bug workaround wrt. ACK frames, the PAWS discard
-		 * extra check below makes sure this can only happen
-		 * for pure ACK frames.  -DaveM
-		 *
-		 * Not only, also it occurs for expired timestamps.
-		 */
-
-		if (tcp_paws_check(&tp->rx_opt, 0))
-			tcp_store_ts_recent(tp);
-	}
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 /* This routine deals with incoming acks, but not outgoing ones. */
 static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 {
@@ -3776,28 +3695,14 @@ static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 	int prior_packets;
 	int prior_sacked = tp->sacked_out;
 	int pkts_acked = 0;
-<<<<<<< HEAD
 	int newly_acked_sacked = 0;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	int frto_cwnd = 0;
 
 	/* If the ack is older than previous acks
 	 * then we can probably ignore it.
 	 */
-<<<<<<< HEAD
 	if (before(ack, prior_snd_una))
 		goto old_ack;
-=======
-	if (before(ack, prior_snd_una)) {
-		/* RFC 5961 5.2 [Blind Data Injection Attack].[Mitigation] */
-		if (before(ack, prior_snd_una - tp->max_window)) {
-			tcp_send_challenge_ack(sk);
-			return -1;
-		}
-		goto old_ack;
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* If the ack includes data we haven't sent yet, discard
 	 * this segment (RFC793 Section 3.9).
@@ -3820,15 +3725,6 @@ static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 	prior_fackets = tp->fackets_out;
 	prior_in_flight = tcp_packets_in_flight(tp);
 
-<<<<<<< HEAD
-=======
-	/* ts_recent update must be made after we are sure that the packet
-	 * is in window.
-	 */
-	if (flag & FLAG_UPDATE_TS_RECENT)
-		tcp_replace_ts_recent(tp, TCP_SKB_CB(skb)->seq);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!(flag & FLAG_SLOWPATH) && after(ack, prior_snd_una)) {
 		/* Window is constant, pure forward advance.
 		 * No more checks are required.
@@ -3872,11 +3768,8 @@ static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 	flag |= tcp_clean_rtx_queue(sk, prior_fackets, prior_snd_una);
 
 	pkts_acked = prior_packets - tp->packets_out;
-<<<<<<< HEAD
 	newly_acked_sacked = (prior_packets - prior_sacked) -
 			     (tp->packets_out - tp->sacked_out);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (tp->frto_counter)
 		frto_cwnd = tcp_process_frto(sk, flag);
@@ -3890,11 +3783,7 @@ static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 		    tcp_may_raise_cwnd(sk, flag))
 			tcp_cong_avoid(sk, ack, prior_in_flight);
 		is_dupack = !(flag & (FLAG_SND_UNA_ADVANCED | FLAG_NOT_DUP));
-<<<<<<< HEAD
 		tcp_fastretrans_alert(sk, pkts_acked, newly_acked_sacked,
-=======
-		tcp_fastretrans_alert(sk, pkts_acked, prior_sacked,
->>>>>>> remotes/linux2/linux-3.4.y
 				      is_dupack, flag);
 	} else {
 		if ((flag & FLAG_DATA_ACKED) && !frto_cwnd)
@@ -3909,11 +3798,7 @@ static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
 no_queue:
 	/* If data was DSACKed, see if we can undo a cwnd reduction. */
 	if (flag & FLAG_DSACKING_ACK)
-<<<<<<< HEAD
 		tcp_fastretrans_alert(sk, pkts_acked, newly_acked_sacked,
-=======
-		tcp_fastretrans_alert(sk, pkts_acked, prior_sacked,
->>>>>>> remotes/linux2/linux-3.4.y
 				      is_dupack, flag);
 	/* If this ack opens up a zero window, clear backoff.  It was
 	 * being used to time the probes, and is probably far higher than
@@ -3933,12 +3818,8 @@ old_ack:
 	 */
 	if (TCP_SKB_CB(skb)->sacked) {
 		flag |= tcp_sacktag_write_queue(sk, skb, prior_snd_una);
-<<<<<<< HEAD
 		newly_acked_sacked = tp->sacked_out - prior_sacked;
 		tcp_fastretrans_alert(sk, pkts_acked, newly_acked_sacked,
-=======
-		tcp_fastretrans_alert(sk, pkts_acked, prior_sacked,
->>>>>>> remotes/linux2/linux-3.4.y
 				      is_dupack, flag);
 	}
 
@@ -4144,7 +4025,6 @@ const u8 *tcp_parse_md5sig_option(const struct tcphdr *th)
 EXPORT_SYMBOL(tcp_parse_md5sig_option);
 #endif
 
-<<<<<<< HEAD
 static inline void tcp_store_ts_recent(struct tcp_sock *tp)
 {
 	tp->rx_opt.ts_recent = tp->rx_opt.rcv_tsval;
@@ -4166,8 +4046,6 @@ static inline void tcp_replace_ts_recent(struct tcp_sock *tp, u32 seq)
 	}
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /* Sorry, PAWS as specified is broken wrt. pure-ACKs -DaveM
  *
  * It is not fatal. If this ACK does _not_ change critical state (seqs, window)
@@ -5391,13 +5269,8 @@ out:
 /* Does PAWS and seqno based validation of an incoming segment, flags will
  * play significant role here.
  */
-<<<<<<< HEAD
 static int tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
 			      const struct tcphdr *th, int syn_inerr)
-=======
-static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
-				  const struct tcphdr *th, int syn_inerr)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	const u8 *hash_location;
 	struct tcp_sock *tp = tcp_sk(sk);
@@ -5422,22 +5295,13 @@ static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
 		 * an acknowledgment should be sent in reply (unless the RST
 		 * bit is set, if so drop the segment and return)".
 		 */
-<<<<<<< HEAD
 		if (!th->rst)
 			tcp_send_dupack(sk, skb);
-=======
-		if (!th->rst) {
-			if (th->syn)
-				goto syn_challenge;
-			tcp_send_dupack(sk, skb);
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 		goto discard;
 	}
 
 	/* Step 2: check RST bit */
 	if (th->rst) {
-<<<<<<< HEAD
 		tcp_reset(sk);
 		goto discard;
 	}
@@ -5463,40 +5327,6 @@ static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
 discard:
 	__kfree_skb(skb);
 	return 0;
-=======
-		/* RFC 5961 3.2 :
-		 * If sequence number exactly matches RCV.NXT, then
-		 *     RESET the connection
-		 * else
-		 *     Send a challenge ACK
-		 */
-		if (TCP_SKB_CB(skb)->seq == tp->rcv_nxt)
-			tcp_reset(sk);
-		else
-			tcp_send_challenge_ack(sk);
-		goto discard;
-	}
-
-	/* step 3: check security and precedence [ignored] */
-
-	/* step 4: Check for a SYN
-	 * RFC 5691 4.2 : Send a challenge ack
-	 */
-	if (th->syn) {
-syn_challenge:
-		if (syn_inerr)
-			TCP_INC_STATS_BH(sock_net(sk), TCP_MIB_INERRS);
-		NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_TCPSYNCHALLENGE);
-		tcp_send_challenge_ack(sk);
-		goto discard;
-	}
-
-	return true;
-
-discard:
-	__kfree_skb(skb);
-	return false;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -5526,10 +5356,7 @@ int tcp_rcv_established(struct sock *sk, struct sk_buff *skb,
 			const struct tcphdr *th, unsigned int len)
 {
 	struct tcp_sock *tp = tcp_sk(sk);
-<<<<<<< HEAD
 	int res;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 *	Header prediction.
@@ -5614,13 +5441,7 @@ int tcp_rcv_established(struct sock *sk, struct sk_buff *skb,
 			if (tp->copied_seq == tp->rcv_nxt &&
 			    len - tcp_header_len <= tp->ucopy.len) {
 #ifdef CONFIG_NET_DMA
-<<<<<<< HEAD
 				if (tcp_dma_try_early_copy(sk, skb, tcp_header_len)) {
-=======
-				if (tp->ucopy.task == current &&
-				    sock_owned_by_user(sk) &&
-				    tcp_dma_try_early_copy(sk, skb, tcp_header_len)) {
->>>>>>> remotes/linux2/linux-3.4.y
 					copied_early = 1;
 					eaten = 1;
 				}
@@ -5656,12 +5477,6 @@ int tcp_rcv_established(struct sock *sk, struct sk_buff *skb,
 				if (tcp_checksum_complete_user(sk, skb))
 					goto csum_error;
 
-<<<<<<< HEAD
-=======
-				if ((int)skb->truesize > sk->sk_forward_alloc)
-					goto step5;
-
->>>>>>> remotes/linux2/linux-3.4.y
 				/* Predicted packet is in window by definition.
 				 * seq == rcv_nxt and rcv_wup <= rcv_nxt.
 				 * Hence, check seq<=rcv_wup reduces to:
@@ -5673,12 +5488,9 @@ int tcp_rcv_established(struct sock *sk, struct sk_buff *skb,
 
 				tcp_rcv_rtt_measure_ts(sk, skb);
 
-<<<<<<< HEAD
 				if ((int)skb->truesize > sk->sk_forward_alloc)
 					goto step5;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 				NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_TCPHPHITS);
 
 				/* Bulk data transfer: receiver */
@@ -5722,21 +5534,12 @@ slow_path:
 	 *	Standard slow path.
 	 */
 
-<<<<<<< HEAD
 	res = tcp_validate_incoming(sk, skb, th, 1);
 	if (res <= 0)
 		return -res;
 
 step5:
 	if (th->ack && tcp_ack(sk, skb, FLAG_SLOWPATH) < 0)
-=======
-	if (!tcp_validate_incoming(sk, skb, th, 1))
-		return 0;
-
-step5:
-	if (th->ack &&
-	    tcp_ack(sk, skb, FLAG_SLOWPATH | FLAG_UPDATE_TS_RECENT) < 0)
->>>>>>> remotes/linux2/linux-3.4.y
 		goto discard;
 
 	tcp_rcv_rtt_measure_ts(sk, skb);
@@ -6043,10 +5846,7 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct inet_connection_sock *icsk = inet_csk(sk);
 	int queued = 0;
-<<<<<<< HEAD
 	int res;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	tp->rx_opt.saw_tstamp = 0;
 
@@ -6101,7 +5901,6 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 		return 0;
 	}
 
-<<<<<<< HEAD
 	res = tcp_validate_incoming(sk, skb, th, 0);
 	if (res <= 0)
 		return -res;
@@ -6109,15 +5908,6 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 	/* step 5: check the ACK field */
 	if (th->ack) {
 		int acceptable = tcp_ack(sk, skb, FLAG_SLOWPATH) > 0;
-=======
-	if (!tcp_validate_incoming(sk, skb, th, 0))
-		return 0;
-
-	/* step 5: check the ACK field */
-	if (th->ack) {
-		int acceptable = tcp_ack(sk, skb, FLAG_SLOWPATH |
-						  FLAG_UPDATE_TS_RECENT) > 0;
->>>>>>> remotes/linux2/linux-3.4.y
 
 		switch (sk->sk_state) {
 		case TCP_SYN_RECV:

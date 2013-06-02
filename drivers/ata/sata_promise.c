@@ -147,13 +147,6 @@ struct pdc_port_priv {
 	dma_addr_t		pkt_dma;
 };
 
-<<<<<<< HEAD
-=======
-struct pdc_host_priv {
-	spinlock_t hard_reset_lock;
-};
-
->>>>>>> remotes/linux2/linux-3.4.y
 static int pdc_sata_scr_read(struct ata_link *link, unsigned int sc_reg, u32 *val);
 static int pdc_sata_scr_write(struct ata_link *link, unsigned int sc_reg, u32 val);
 static int pdc_ata_init_one(struct pci_dev *pdev, const struct pci_device_id *ent);
@@ -808,16 +801,9 @@ static void pdc_hard_reset_port(struct ata_port *ap)
 	void __iomem *host_mmio = ap->host->iomap[PDC_MMIO_BAR];
 	void __iomem *pcictl_b1_mmio = host_mmio + PDC_PCI_CTL + 1;
 	unsigned int ata_no = pdc_ata_port_to_ata_no(ap);
-<<<<<<< HEAD
 	u8 tmp;
 
 	spin_lock(&ap->host->lock);
-=======
-	struct pdc_host_priv *hpriv = ap->host->private_data;
-	u8 tmp;
-
-	spin_lock(&hpriv->hard_reset_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	tmp = readb(pcictl_b1_mmio);
 	tmp &= ~(0x10 << ata_no);
@@ -828,11 +814,7 @@ static void pdc_hard_reset_port(struct ata_port *ap)
 	writeb(tmp, pcictl_b1_mmio);
 	readb(pcictl_b1_mmio); /* flush */
 
-<<<<<<< HEAD
 	spin_unlock(&ap->host->lock);
-=======
-	spin_unlock(&hpriv->hard_reset_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int pdc_sata_hardreset(struct ata_link *link, unsigned int *class,
@@ -1200,10 +1182,6 @@ static int pdc_ata_init_one(struct pci_dev *pdev,
 	const struct ata_port_info *pi = &pdc_port_info[ent->driver_data];
 	const struct ata_port_info *ppi[PDC_MAX_PORTS];
 	struct ata_host *host;
-<<<<<<< HEAD
-=======
-	struct pdc_host_priv *hpriv;
->>>>>>> remotes/linux2/linux-3.4.y
 	void __iomem *host_mmio;
 	int n_ports, i, rc;
 	int is_sataii_tx4;
@@ -1240,14 +1218,6 @@ static int pdc_ata_init_one(struct pci_dev *pdev,
 		dev_err(&pdev->dev, "failed to allocate host\n");
 		return -ENOMEM;
 	}
-<<<<<<< HEAD
-=======
-	hpriv = devm_kzalloc(&pdev->dev, sizeof *hpriv, GFP_KERNEL);
-	if (!hpriv)
-		return -ENOMEM;
-	spin_lock_init(&hpriv->hard_reset_lock);
-	host->private_data = hpriv;
->>>>>>> remotes/linux2/linux-3.4.y
 	host->iomap = pcim_iomap_table(pdev);
 
 	is_sataii_tx4 = pdc_is_sataii_tx4(pi->flags);

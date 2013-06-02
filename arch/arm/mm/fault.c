@@ -25,7 +25,6 @@
 #include <asm/system_misc.h>
 #include <asm/system_info.h>
 #include <asm/tlbflush.h>
-<<<<<<< HEAD
 #include <asm/cputype.h>
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
 #include <asm/io.h>
@@ -35,8 +34,6 @@
 #ifdef CONFIG_EMULATE_DOMAIN_MANAGER_V7
 #include <asm/domain.h>
 #endif /* CONFIG_EMULATE_DOMAIN_MANAGER_V7 */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 #include "fault.h"
 
@@ -135,7 +132,6 @@ void show_pte(struct mm_struct *mm, unsigned long addr)
 #else					/* CONFIG_MMU */
 void show_pte(struct mm_struct *mm, unsigned long addr)
 { }
-<<<<<<< HEAD
 #endif
 					/* CONFIG_MMU */
 #ifdef TIMA_ENABLED
@@ -208,9 +204,6 @@ inline void tima_verify_state(unsigned long pmdp, unsigned long val, unsigned lo
         }
 }
 #endif
-=======
-#endif					/* CONFIG_MMU */
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Oops.  The kernel tried to access some page that wasn't present.
@@ -225,7 +218,6 @@ __do_kernel_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
 	if (fixup_exception(regs))
 		return;
 
-<<<<<<< HEAD
 #ifdef	TIMA_ENABLED
 	printk(KERN_ERR"====> %lx\n", addr);
 	if (addr >= 0xc0000000 && (fsr & FSR_WRITE)) {
@@ -246,8 +238,6 @@ __do_kernel_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
 	}
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * No handler, we'll have to terminate things with extreme prejudice.
 	 */
@@ -258,12 +248,9 @@ __do_kernel_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
 		"paging request", addr);
 
 	show_pte(mm, addr);
-<<<<<<< HEAD
 #ifdef TIMA_ENABLED
 	tima_send_cmd(addr, 0x3f80e221);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	die("Oops", regs, fsr);
 	bust_spinlocks(0);
 	do_exit(SIGKILL);
@@ -625,7 +612,6 @@ do_bad(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 	return 1;
 }
 
-<<<<<<< HEAD
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
 #define __str(x) #x
 #define MRC(x, v1, v2, v4, v5, v6) do {					\
@@ -669,8 +655,6 @@ do_imprecise_ext(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 	return 1;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 struct fsr_info {
 	int	(*fn)(unsigned long addr, unsigned int fsr, struct pt_regs *regs);
 	int	sig;
@@ -698,7 +682,6 @@ hook_fault_code(int nr, int (*fn)(unsigned long, unsigned int, struct pt_regs *)
 	fsr_info[nr].name = name;
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_MSM_KRAIT_TBB_ABORT_HANDLER
 static int krait_tbb_fixup(unsigned int fsr, struct pt_regs *regs)
 {
@@ -768,8 +751,6 @@ static int krait_tbb_fixup(unsigned int fsr, struct pt_regs *regs)
 }
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Dispatch a data abort to the relevant handler.
  */
@@ -779,7 +760,6 @@ do_DataAbort(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 	const struct fsr_info *inf = fsr_info + fsr_fs(fsr);
 	struct siginfo info;
 
-<<<<<<< HEAD
 #ifdef CONFIG_EMULATE_DOMAIN_MANAGER_V7
 	if (emulate_domain_manager_data_abort(fsr, addr))
 		return;
@@ -790,8 +770,6 @@ do_DataAbort(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 		return;
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!inf->fn(addr, fsr & ~FSR_LNX_PF, regs))
 		return;
 
@@ -824,14 +802,11 @@ do_PrefetchAbort(unsigned long addr, unsigned int ifsr, struct pt_regs *regs)
 	const struct fsr_info *inf = ifsr_info + fsr_fs(ifsr);
 	struct siginfo info;
 
-<<<<<<< HEAD
 #ifdef CONFIG_EMULATE_DOMAIN_MANAGER_V7
 	if (emulate_domain_manager_prefetch_abort(ifsr, addr))
 		return;
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!inf->fn(addr, ifsr | FSR_LNX_PF, regs))
 		return;
 

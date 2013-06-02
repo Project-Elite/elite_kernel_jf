@@ -216,11 +216,7 @@ static char *kdb_read(char *buffer, size_t bufsize)
 	int i;
 	int diag, dtab_count;
 	int key;
-<<<<<<< HEAD
 	static int last_crlf;
-=======
-
->>>>>>> remotes/linux2/linux-3.4.y
 
 	diag = kdbgetintenv("DTABCOUNT", &dtab_count);
 	if (diag)
@@ -241,12 +237,9 @@ poll_again:
 		return buffer;
 	if (key != 9)
 		tab = 0;
-<<<<<<< HEAD
 	if (key != 10 && key != 13)
 		last_crlf = 0;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	switch (key) {
 	case 8: /* backspace */
 		if (cp > buffer) {
@@ -264,16 +257,12 @@ poll_again:
 			*cp = tmp;
 		}
 		break;
-<<<<<<< HEAD
 	case 10: /* new line */
 	case 13: /* carriage return */
 		/* handle \n after \r */
 		if (last_crlf && last_crlf != key)
 			break;
 		last_crlf = key;
-=======
-	case 13: /* enter */
->>>>>>> remotes/linux2/linux-3.4.y
 		*lastchar++ = '\n';
 		*lastchar++ = '\0';
 		if (!KDB_STATE(KGDB_TRANS)) {
@@ -571,10 +560,6 @@ int vkdb_printf(const char *fmt, va_list ap)
 {
 	int diag;
 	int linecount;
-<<<<<<< HEAD
-=======
-	int colcount;
->>>>>>> remotes/linux2/linux-3.4.y
 	int logging, saved_loglevel = 0;
 	int saved_trap_printk;
 	int got_printf_lock = 0;
@@ -607,13 +592,6 @@ int vkdb_printf(const char *fmt, va_list ap)
 	if (diag || linecount <= 1)
 		linecount = 24;
 
-<<<<<<< HEAD
-=======
-	diag = kdbgetintenv("COLUMNS", &colcount);
-	if (diag || colcount <= 1)
-		colcount = 80;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	diag = kdbgetintenv("LOGGING", &logging);
 	if (diag)
 		logging = 0;
@@ -720,11 +698,7 @@ kdb_printit:
 		gdbstub_msg_write(kdb_buffer, retlen);
 	} else {
 		if (dbg_io_ops && !dbg_io_ops->is_console) {
-<<<<<<< HEAD
 			len = strlen(kdb_buffer);
-=======
-			len = retlen;
->>>>>>> remotes/linux2/linux-3.4.y
 			cp = kdb_buffer;
 			while (len--) {
 				dbg_io_ops->write_char(*cp);
@@ -743,37 +717,11 @@ kdb_printit:
 		printk(KERN_INFO "%s", kdb_buffer);
 	}
 
-<<<<<<< HEAD
 	if (KDB_STATE(PAGER) && strchr(kdb_buffer, '\n'))
 		kdb_nextline++;
 
 	/* check for having reached the LINES number of printed lines */
 	if (kdb_nextline == linecount) {
-=======
-	if (KDB_STATE(PAGER)) {
-		/*
-		 * Check printed string to decide how to bump the
-		 * kdb_nextline to control when the more prompt should
-		 * show up.
-		 */
-		int got = 0;
-		len = retlen;
-		while (len--) {
-			if (kdb_buffer[len] == '\n') {
-				kdb_nextline++;
-				got = 0;
-			} else if (kdb_buffer[len] == '\r') {
-				got = 0;
-			} else {
-				got++;
-			}
-		}
-		kdb_nextline += got / (colcount + 1);
-	}
-
-	/* check for having reached the LINES number of printed lines */
-	if (kdb_nextline >= linecount) {
->>>>>>> remotes/linux2/linux-3.4.y
 		char buf1[16] = "";
 #if defined(CONFIG_SMP)
 		char buf2[32];
@@ -836,11 +784,7 @@ kdb_printit:
 			kdb_grepping_flag = 0;
 			kdb_printf("\n");
 		} else if (buf1[0] == ' ') {
-<<<<<<< HEAD
 			kdb_printf("\n");
-=======
-			kdb_printf("\r");
->>>>>>> remotes/linux2/linux-3.4.y
 			suspend_grep = 1; /* for this recursion */
 		} else if (buf1[0] == '\n') {
 			kdb_nextline = linecount - 1;

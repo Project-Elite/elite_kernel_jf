@@ -14,17 +14,6 @@
 struct ceph_auth_client;
 struct ceph_authorizer;
 
-<<<<<<< HEAD
-=======
-struct ceph_auth_handshake {
-	struct ceph_authorizer *authorizer;
-	void *authorizer_buf;
-	size_t authorizer_buf_len;
-	void *authorizer_reply_buf;
-	size_t authorizer_reply_buf_len;
-};
-
->>>>>>> remotes/linux2/linux-3.4.y
 struct ceph_auth_client_ops {
 	const char *name;
 
@@ -54,13 +43,9 @@ struct ceph_auth_client_ops {
 	 * the response to authenticate the service.
 	 */
 	int (*create_authorizer)(struct ceph_auth_client *ac, int peer_type,
-<<<<<<< HEAD
 				 struct ceph_authorizer **a,
 				 void **buf, size_t *len,
 				 void **reply_buf, size_t *reply_len);
-=======
-				 struct ceph_auth_handshake *auth);
->>>>>>> remotes/linux2/linux-3.4.y
 	int (*verify_authorizer_reply)(struct ceph_auth_client *ac,
 				       struct ceph_authorizer *a, size_t len);
 	void (*destroy_authorizer)(struct ceph_auth_client *ac,

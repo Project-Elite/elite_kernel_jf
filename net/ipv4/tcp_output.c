@@ -1096,10 +1096,7 @@ static void __pskb_trim_head(struct sk_buff *skb, int len)
 	eat = min_t(int, len, skb_headlen(skb));
 	if (eat) {
 		__skb_pull(skb, eat);
-<<<<<<< HEAD
 		skb->avail_size -= eat;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		len -= eat;
 		if (!len)
 			return;
@@ -1321,7 +1318,6 @@ static void tcp_cwnd_validate(struct sock *sk)
  * when we would be allowed to send the split-due-to-Nagle skb fully.
  */
 static unsigned int tcp_mss_split_point(const struct sock *sk, const struct sk_buff *skb,
-<<<<<<< HEAD
 					unsigned int mss_now, unsigned int cwnd)
 {
 	const struct tcp_sock *tp = tcp_sk(sk);
@@ -1337,23 +1333,6 @@ static unsigned int tcp_mss_split_point(const struct sock *sk, const struct sk_b
 
 	if (cwnd_len <= needed)
 		return cwnd_len;
-=======
-					unsigned int mss_now, unsigned int max_segs)
-{
-	const struct tcp_sock *tp = tcp_sk(sk);
-	u32 needed, window, max_len;
-
-	window = tcp_wnd_end(tp) - TCP_SKB_CB(skb)->seq;
-	max_len = mss_now * max_segs;
-
-	if (likely(max_len <= window && skb != tcp_write_queue_tail(sk)))
-		return max_len;
-
-	needed = min(skb->len, window);
-
-	if (max_len <= needed)
-		return max_len;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return needed - needed % mss_now;
 }
@@ -1581,12 +1560,7 @@ static int tcp_tso_should_defer(struct sock *sk, struct sk_buff *skb)
 	limit = min(send_win, cong_win);
 
 	/* If a full-sized TSO skb can be sent, do it. */
-<<<<<<< HEAD
 	if (limit >= sk->sk_gso_max_size)
-=======
-	if (limit >= min_t(unsigned int, sk->sk_gso_max_size,
-			   sk->sk_gso_max_segs * tp->mss_cache))
->>>>>>> remotes/linux2/linux-3.4.y
 		goto send_now;
 
 	/* Middle in queue won't get any more data, full sendable already? */
@@ -1613,16 +1587,8 @@ static int tcp_tso_should_defer(struct sock *sk, struct sk_buff *skb)
 			goto send_now;
 	}
 
-<<<<<<< HEAD
 	/* Ok, it looks like it is advisable to defer.  */
 	tp->tso_deferred = 1 | (jiffies << 1);
-=======
-	/* Ok, it looks like it is advisable to defer.
-	 * Do not rearm the timer if already set to not break TCP ACK clocking.
-	 */
-	if (!tp->tso_deferred)
-		tp->tso_deferred = 1 | (jiffies << 1);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 1;
 
@@ -1820,13 +1786,7 @@ static int tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
 		limit = mss_now;
 		if (tso_segs > 1 && !tcp_urg_mode(tp))
 			limit = tcp_mss_split_point(sk, skb, mss_now,
-<<<<<<< HEAD
 						    cwnd_quota);
-=======
-						    min_t(unsigned int,
-							  cwnd_quota,
-							  sk->sk_gso_max_segs));
->>>>>>> remotes/linux2/linux-3.4.y
 
 		if (skb->len > limit &&
 		    unlikely(tso_fragment(sk, skb, limit, mss_now, gfp)))
@@ -2189,17 +2149,8 @@ int tcp_retransmit_skb(struct sock *sk, struct sk_buff *skb)
 	 */
 	TCP_SKB_CB(skb)->when = tcp_time_stamp;
 
-<<<<<<< HEAD
 	/* make sure skb->data is aligned on arches that require it */
 	if (unlikely(NET_IP_ALIGN && ((unsigned long)skb->data & 3))) {
-=======
-	/* make sure skb->data is aligned on arches that require it
-	 * and check if ack-trimming & collapsing extended the headroom
-	 * beyond what csum_start can cover.
-	 */
-	if (unlikely((NET_IP_ALIGN && ((unsigned long)skb->data & 3)) ||
-		     skb_headroom(skb) >= 0xFFFF)) {
->>>>>>> remotes/linux2/linux-3.4.y
 		struct sk_buff *nskb = __pskb_copy(skb, MAX_TCP_HEADER,
 						   GFP_ATOMIC);
 		err = nskb ? tcp_transmit_skb(sk, nskb, 0, GFP_ATOMIC) :

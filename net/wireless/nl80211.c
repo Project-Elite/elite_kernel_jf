@@ -3846,7 +3846,6 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
 		       nla_data(info->attrs[NL80211_ATTR_IE]),
 		       request->ie_len);
 	}
-<<<<<<< HEAD
 	for (i = 0; i < IEEE80211_NUM_BANDS; i++)
 		if (wiphy->bands[i])
 			request->rates[i] =
@@ -3868,8 +3867,6 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
 				goto out_free;
 		}
 	}
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	for (i = 0; i < IEEE80211_NUM_BANDS; i++)
 		if (wiphy->bands[i])
@@ -3900,11 +3897,8 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
 
 	request->dev = dev;
 	request->wiphy = &rdev->wiphy;
-<<<<<<< HEAD
 	request->no_cck =
 		nla_get_flag(info->attrs[NL80211_ATTR_TX_NO_CCK_RATE]);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	rdev->scan_req = request;
 	err = rdev->ops->scan(&rdev->wiphy, dev, request);
@@ -4398,13 +4392,9 @@ static bool nl80211_valid_auth_type(enum nl80211_auth_type auth_type)
 static bool nl80211_valid_wpa_versions(u32 wpa_versions)
 {
 	return !(wpa_versions & ~(NL80211_WPA_VERSION_1 |
-<<<<<<< HEAD
 				  NL80211_WPA_VERSION_2 |
 				  /*WAPI*/
 				  NL80211_WAPI_VERSION_1));
-=======
-				  NL80211_WPA_VERSION_2));
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int nl80211_authenticate(struct sk_buff *skb, struct genl_info *info)
@@ -4577,17 +4567,12 @@ static int nl80211_crypto_settings(struct cfg80211_registered_device *rdev,
 		if (len % sizeof(u32))
 			return -EINVAL;
 
-<<<<<<< HEAD
 		if (settings->akm_suites[0] != WLAN_AKM_SUITE_CCKM) {
 			if (settings->n_akm_suites > NL80211_MAX_NR_AKM_SUITES)
 				return -EINVAL;
 		} else {
 			printk(KERN_INFO "nl80211_crypto_settings(CCKM)\n");
 		}
-=======
-		if (settings->n_akm_suites > NL80211_MAX_NR_AKM_SUITES)
-			return -EINVAL;
->>>>>>> remotes/linux2/linux-3.4.y
 
 		memcpy(settings->akm_suites, data, len);
 	}

@@ -23,10 +23,7 @@
 #include <linux/ioport.h>
 #include <linux/kernel_stat.h>
 #include <linux/ptrace.h>
-<<<<<<< HEAD
 #include <linux/random.h>	/* for rand_initialize_irq() */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/signal.h>
 #include <linux/smp.h>
 #include <linux/threads.h>

@@ -1727,12 +1727,7 @@ static ssize_t n_tty_read(struct tty_struct *tty, struct file *file,
 
 do_it_again:
 
-<<<<<<< HEAD
 	BUG_ON(!tty->read_buf);
-=======
-	if (WARN_ON(!tty->read_buf))
-		return -EAGAIN;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	c = job_control(tty, file);
 	if (c < 0)

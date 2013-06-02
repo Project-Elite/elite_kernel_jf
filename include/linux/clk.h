@@ -101,7 +101,6 @@ int clk_notifier_unregister(struct clk *clk, struct notifier_block *nb);
 struct clk *clk_get(struct device *dev, const char *id);
 
 /**
-<<<<<<< HEAD
  * devm_clk_get - Resource managed clk_get()
  * @dev: device for clk "consumer"
  * @id: clk ID.
@@ -112,8 +111,6 @@ struct clk *clk_get(struct device *dev, const char *id);
 struct clk *devm_clk_get(struct device *dev, const char *id);
 
 /**
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  * clk_prepare - prepare a clock source
  * @clk: clock source
  *

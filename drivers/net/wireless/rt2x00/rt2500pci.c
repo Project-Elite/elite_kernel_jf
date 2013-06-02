@@ -1929,10 +1929,6 @@ static int rt2500pci_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 static int rt2500pci_probe_hw(struct rt2x00_dev *rt2x00dev)
 {
 	int retval;
-<<<<<<< HEAD
-=======
-	u32 reg;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Allocate eeprom data.
@@ -1946,17 +1942,6 @@ static int rt2500pci_probe_hw(struct rt2x00_dev *rt2x00dev)
 		return retval;
 
 	/*
-<<<<<<< HEAD
-=======
-	 * Enable rfkill polling by setting GPIO direction of the
-	 * rfkill switch GPIO pin correctly.
-	 */
-	rt2x00pci_register_read(rt2x00dev, GPIOCSR, &reg);
-	rt2x00_set_field32(&reg, GPIOCSR_DIR0, 1);
-	rt2x00pci_register_write(rt2x00dev, GPIOCSR, reg);
-
-	/*
->>>>>>> remotes/linux2/linux-3.4.y
 	 * Initialize hw specifications.
 	 */
 	retval = rt2500pci_probe_hw_mode(rt2x00dev);

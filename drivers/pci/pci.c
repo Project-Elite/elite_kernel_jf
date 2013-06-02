@@ -673,7 +673,6 @@ static int pci_platform_power_transition(struct pci_dev *dev, pci_power_t state)
 		error = platform_pci_set_power_state(dev, state);
 		if (!error)
 			pci_update_current_state(dev, state);
-<<<<<<< HEAD
 		/* Fall back to PCI_D0 if native PM is not supported */
 		if (!dev->pm_cap)
 			dev->current_state = PCI_D0;
@@ -683,13 +682,6 @@ static int pci_platform_power_transition(struct pci_dev *dev, pci_power_t state)
 		if (!dev->pm_cap)
 			dev->current_state = PCI_D0;
 	}
-=======
-	} else
-		error = -ENODEV;
-
-	if (error && !dev->pm_cap) /* Fall back to PCI_D0 */
-		dev->current_state = PCI_D0;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return error;
 }
@@ -1751,14 +1743,11 @@ int pci_prepare_to_sleep(struct pci_dev *dev)
 	if (target_state == PCI_POWER_ERROR)
 		return -EIO;
 
-<<<<<<< HEAD
 	/* Some devices mustn't be in D3 during system sleep */
 	if (target_state == PCI_D3hot &&
 			(dev->dev_flags & PCI_DEV_FLAGS_NO_D3_DURING_SLEEP))
 		return 0;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	pci_enable_wake(dev, target_state, device_may_wakeup(&dev->dev));
 
 	error = pci_set_power_state(dev, target_state);

@@ -552,10 +552,6 @@ static void ifx_port_shutdown(struct tty_port *port)
 		container_of(port, struct ifx_spi_device, tty_port);
 
 	mrdy_set_low(ifx_dev);
-<<<<<<< HEAD
-=======
-	del_timer(&ifx_dev->spi_timer);
->>>>>>> remotes/linux2/linux-3.4.y
 	clear_bit(IFX_SPI_STATE_TIMER_PENDING, &ifx_dev->flags);
 	tasklet_kill(&ifx_dev->io_work_tasklet);
 }

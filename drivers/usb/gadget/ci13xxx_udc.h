@@ -25,7 +25,6 @@
 #define RX        (0)  /* similar to USB_DIR_OUT but can be used as an index */
 #define TX        (1)  /* similar to USB_DIR_IN  but can be used as an index */
 
-<<<<<<< HEAD
 /* UDC private data:
  *  16MSb - Vendor ID | 16 LSb Vendor private data
  */
@@ -34,8 +33,6 @@
 #define MSM_ETD_TYPE			BIT(1)
 #define MSM_EP_PIPE_ID_RESET_VAL	0x1F001F
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /******************************************************************************
  * STRUCTURES
  *****************************************************************************/
@@ -70,10 +67,7 @@ struct ci13xxx_qh {
 #define QH_MAX_PKT            (0x07FFUL << 16)
 #define QH_ZLT                BIT(29)
 #define QH_MULT               (0x0003UL << 30)
-<<<<<<< HEAD
 #define QH_MULT_SHIFT         11
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/* 1 */
 	u32 curr;
 	/* 2 - 8 */
@@ -113,13 +107,10 @@ struct ci13xxx_ep {
 	spinlock_t                            *lock;
 	struct device                         *device;
 	struct dma_pool                       *td_pool;
-<<<<<<< HEAD
 	unsigned long dTD_update_fail_count;
 	unsigned long			      prime_fail_count;
 	int				      prime_timer_count;
 	struct timer_list		      prime_timer;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 struct ci13xxx;
@@ -130,7 +121,6 @@ struct ci13xxx_udc_driver {
 #define CI13XXX_REQUIRE_TRANSCEIVER	BIT(1)
 #define CI13XXX_PULLUP_ON_VBUS		BIT(2)
 #define CI13XXX_DISABLE_STREAMING	BIT(3)
-<<<<<<< HEAD
 #define CI13XXX_ZERO_ITC		BIT(4)
 #define CI13XXX_IS_OTG			BIT(5)
 
@@ -140,11 +130,6 @@ struct ci13xxx_udc_driver {
 #define CI13XXX_CONTROLLER_REMOTE_WAKEUP_EVENT	3
 #define CI13XXX_CONTROLLER_RESUME_EVENT	        4
 #define CI13XXX_CONTROLLER_DISCONNECT_EVENT	    5
-=======
-
-#define CI13XXX_CONTROLLER_RESET_EVENT		0
-#define CI13XXX_CONTROLLER_STOPPED_EVENT	1
->>>>>>> remotes/linux2/linux-3.4.y
 	void	(*notify_event) (struct ci13xxx *udc, unsigned event);
 };
 
@@ -165,7 +150,6 @@ struct ci13xxx {
 	u8                         remote_wakeup; /* Is remote wakeup feature
 							enabled by the host? */
 	u8                         suspended;  /* suspended by the host */
-<<<<<<< HEAD
 	u8                         configured;  /* is device configured */
 	u8                         test_mode;  /* the selected test mode */
 
@@ -184,14 +168,6 @@ struct ci13xxx {
 struct ci13xxx_platform_data {
 	u8 usb_core_id;
 	void *prv_data;
-=======
-	u8                         test_mode;  /* the selected test mode */
-
-	struct usb_gadget_driver  *driver;     /* 3rd party gadget driver */
-	struct ci13xxx_udc_driver *udc_driver; /* device controller driver */
-	int                        vbus_active; /* is VBUS active */
-	struct usb_phy            *transceiver; /* Transceiver struct */
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /******************************************************************************
@@ -244,11 +220,8 @@ struct ci13xxx_platform_data {
 #define    USBMODE_CM_HOST    (0x03UL <<  0)
 #define USBMODE_SLOM          BIT(3)
 #define USBMODE_SDIS          BIT(4)
-<<<<<<< HEAD
 #define USBCMD_ITC(n)         (n << 16) /* n = 0, 1, 2, 4, 8, 16, 32, 64 */
 #define USBCMD_ITC_MASK       (0xFF << 16)
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* ENDPTCTRL */
 #define ENDPTCTRL_RXS         BIT(0)
@@ -272,14 +245,10 @@ do { \
 			   "[%s] " format "\n", __func__, ## args); \
 } while (0)
 
-<<<<<<< HEAD
 #ifndef err
 #define err(format, args...)    ci13xxx_printk(KERN_ERR, format, ## args)
 #endif
 
-=======
-#define err(format, args...)    ci13xxx_printk(KERN_ERR, format, ## args)
->>>>>>> remotes/linux2/linux-3.4.y
 #define warn(format, args...)   ci13xxx_printk(KERN_WARNING, format, ## args)
 #define info(format, args...)   ci13xxx_printk(KERN_INFO, format, ## args)
 

@@ -798,12 +798,6 @@ void pcie_clear_aspm(struct pci_bus *bus)
 {
 	struct pci_dev *child;
 
-<<<<<<< HEAD
-=======
-	if (aspm_force)
-		return;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Clear any ASPM setup that the firmware has carried out on this bus
 	 */

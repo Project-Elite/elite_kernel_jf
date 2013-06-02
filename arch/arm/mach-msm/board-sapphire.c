@@ -30,10 +30,7 @@
 #include <mach/system.h>
 #include <mach/vreg.h>
 #include <mach/board.h>
-<<<<<<< HEAD
 #include <mach/proc_comm.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 #include <asm/io.h>
 #include <asm/delay.h>
@@ -44,10 +41,6 @@
 
 #include "gpio_chip.h"
 #include "board-sapphire.h"
-<<<<<<< HEAD
-=======
-#include "proc_comm.h"
->>>>>>> remotes/linux2/linux-3.4.y
 #include "devices.h"
 
 void msm_init_irq(void);

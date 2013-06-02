@@ -93,11 +93,7 @@ vcs_poll_data_free(struct vcs_poll_data *poll)
 static struct vcs_poll_data *
 vcs_poll_data_get(struct file *file)
 {
-<<<<<<< HEAD
 	struct vcs_poll_data *poll = file->private_data;
-=======
-	struct vcs_poll_data *poll = file->private_data, *kill = NULL;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (poll)
 		return poll;
@@ -126,19 +122,10 @@ vcs_poll_data_get(struct file *file)
 		file->private_data = poll;
 	} else {
 		/* someone else raced ahead of us */
-<<<<<<< HEAD
 		vcs_poll_data_free(poll);
 		poll = file->private_data;
 	}
 	spin_unlock(&file->f_lock);
-=======
-		kill = poll;
-		poll = file->private_data;
-	}
-	spin_unlock(&file->f_lock);
-	if (kill)
-		vcs_poll_data_free(kill);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return poll;
 }

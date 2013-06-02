@@ -144,11 +144,7 @@ void netxen_release_tx_buffers(struct netxen_adapter *adapter)
 					 buffrag->length, PCI_DMA_TODEVICE);
 			buffrag->dma = 0ULL;
 		}
-<<<<<<< HEAD
 		for (j = 0; j < cmd_buf->frag_count; j++) {
-=======
-		for (j = 1; j < cmd_buf->frag_count; j++) {
->>>>>>> remotes/linux2/linux-3.4.y
 			buffrag++;
 			if (buffrag->dma) {
 				pci_unmap_page(adapter->pdev, buffrag->dma,

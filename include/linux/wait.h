@@ -346,7 +346,6 @@ do {									\
 	__ret;								\
 })
 
-<<<<<<< HEAD
 #define __wait_io_event_interruptible(wq, condition, ret)		\
 do {									\
 	DEFINE_WAIT(__wait);						\
@@ -434,8 +433,6 @@ do {									\
 	__ret;								\
 })
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #define __wait_event_interruptible_exclusive(wq, condition, ret)	\
 do {									\
 	DEFINE_WAIT(__wait);						\

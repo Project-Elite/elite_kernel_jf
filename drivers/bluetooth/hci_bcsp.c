@@ -49,13 +49,8 @@
 
 #define VERSION "0.3"
 
-<<<<<<< HEAD
 static int txcrc = 1;
 static int hciextn = 1;
-=======
-static bool txcrc = 1;
-static bool hciextn = 1;
->>>>>>> remotes/linux2/linux-3.4.y
 
 #define BCSP_TXWINSIZE	4
 
@@ -697,11 +692,7 @@ static int bcsp_open(struct hci_uart *hu)
 
 	BT_DBG("hu %p", hu);
 
-<<<<<<< HEAD
 	bcsp = kzalloc(sizeof(*bcsp), GFP_ATOMIC);
-=======
-	bcsp = kzalloc(sizeof(*bcsp), GFP_KERNEL);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!bcsp)
 		return -ENOMEM;
 

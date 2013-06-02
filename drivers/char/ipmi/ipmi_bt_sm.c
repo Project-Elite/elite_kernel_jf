@@ -95,15 +95,9 @@ struct si_sm_data {
 	enum bt_states	state;
 	unsigned char	seq;		/* BT sequence number */
 	struct si_sm_io	*io;
-<<<<<<< HEAD
 	unsigned char	write_data[IPMI_MAX_MSG_LENGTH];
 	int		write_count;
 	unsigned char	read_data[IPMI_MAX_MSG_LENGTH];
-=======
-	unsigned char	write_data[IPMI_MAX_MSG_LENGTH + 2]; /* +2 for memcpy */
-	int		write_count;
-	unsigned char	read_data[IPMI_MAX_MSG_LENGTH + 2]; /* +2 for memcpy */
->>>>>>> remotes/linux2/linux-3.4.y
 	int		read_count;
 	int		truncated;
 	long		timeout;	/* microseconds countdown */

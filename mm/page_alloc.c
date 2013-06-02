@@ -57,10 +57,7 @@
 #include <linux/ftrace_event.h>
 #include <linux/memcontrol.h>
 #include <linux/prefetch.h>
-<<<<<<< HEAD
 #include <linux/migrate.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/page-debug-flags.h>
 
 #include <asm/tlbflush.h>
@@ -109,12 +106,9 @@ unsigned long totalreserve_pages __read_mostly;
  */
 unsigned long dirty_balance_reserve __read_mostly;
 
-<<<<<<< HEAD
 #ifdef CONFIG_FIX_MOVABLE_ZONE
 unsigned long total_unmovable_pages __read_mostly;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 int percpu_pagelist_fraction;
 gfp_t gfp_allowed_mask __read_mostly = GFP_BOOT_MASK;
 
@@ -180,22 +174,15 @@ int sysctl_lowmem_reserve_ratio[MAX_NR_ZONES-1] = {
 	 256,
 #endif
 #ifdef CONFIG_HIGHMEM
-<<<<<<< HEAD
 	 64,
-=======
-	 32,
->>>>>>> remotes/linux2/linux-3.4.y
 #endif
 	 32,
 };
 
 EXPORT_SYMBOL(totalram_pages);
-<<<<<<< HEAD
 #ifdef CONFIG_FIX_MOVABLE_ZONE
 EXPORT_SYMBOL(total_unmovable_pages);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 static char * const zone_names[MAX_NR_ZONES] = {
 #ifdef CONFIG_ZONE_DMA
@@ -212,10 +199,7 @@ static char * const zone_names[MAX_NR_ZONES] = {
 };
 
 int min_free_kbytes = 1024;
-<<<<<<< HEAD
 int min_free_order_shift = 1;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 static unsigned long __meminitdata nr_kernel_pages;
 static unsigned long __meminitdata nr_all_pages;
@@ -537,17 +521,10 @@ static inline int page_is_buddy(struct page *page, struct page *buddy,
  * free pages of length of (1 << order) and marked with _mapcount -2. Page's
  * order is recorded in page_private(page) field.
  * So when we are allocating or freeing one, we can derive the state of the
-<<<<<<< HEAD
  * other.  That is, if we allocate a small block, and both were
  * free, the remainder of the region must be split into blocks.
  * If a block is freed, and its buddy is also free, then this
  * triggers coalescing into a block of larger size.
-=======
- * other.  That is, if we allocate a small block, and both were   
- * free, the remainder of the region must be split into blocks.   
- * If a block is freed, and its buddy is also free, then this
- * triggers coalescing into a block of larger size.            
->>>>>>> remotes/linux2/linux-3.4.y
  *
  * -- wli
  */
@@ -559,11 +536,7 @@ static inline void __free_one_page(struct page *page,
 	unsigned long page_idx;
 	unsigned long combined_idx;
 	unsigned long uninitialized_var(buddy_idx);
-<<<<<<< HEAD
 	struct page *buddy = NULL;
-=======
-	struct page *buddy;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (unlikely(PageCompound(page)))
 		if (unlikely(destroy_compound_page(page, order)))
@@ -588,12 +561,8 @@ static inline void __free_one_page(struct page *page,
 		if (page_is_guard(buddy)) {
 			clear_page_guard_flag(buddy);
 			set_page_private(page, 0);
-<<<<<<< HEAD
 			__mod_zone_freepage_state(zone, 1 << order,
 						  migratetype);
-=======
-			__mod_zone_page_state(zone, NR_FREE_PAGES, 1 << order);
->>>>>>> remotes/linux2/linux-3.4.y
 		} else {
 			list_del(&buddy->lru);
 			zone->free_area[order].nr_free--;
@@ -619,11 +588,7 @@ static inline void __free_one_page(struct page *page,
 		combined_idx = buddy_idx & page_idx;
 		higher_page = page + (combined_idx - page_idx);
 		buddy_idx = __find_buddy_index(combined_idx, order + 1);
-<<<<<<< HEAD
 		higher_buddy = page + (buddy_idx - combined_idx);
-=======
-		higher_buddy = higher_page + (buddy_idx - combined_idx);
->>>>>>> remotes/linux2/linux-3.4.y
 		if (page_is_buddy(higher_page, higher_buddy, order + 1)) {
 			list_add_tail(&page->lru,
 				&zone->free_area[order].free_list[migratetype]);
@@ -679,10 +644,7 @@ static void free_pcppages_bulk(struct zone *zone, int count,
 	int migratetype = 0;
 	int batch_free = 0;
 	int to_free = count;
-<<<<<<< HEAD
 	int mt = 0;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	spin_lock(&zone->lock);
 	zone->all_unreclaimable = 0;
@@ -712,21 +674,15 @@ static void free_pcppages_bulk(struct zone *zone, int count,
 
 		do {
 			page = list_entry(list->prev, struct page, lru);
-<<<<<<< HEAD
 			mt = get_pageblock_migratetype(page);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			/* must delete as __free_one_page list manipulates */
 			list_del(&page->lru);
 			/* MIGRATE_MOVABLE list may include MIGRATE_RESERVEs */
 			__free_one_page(page, zone, 0, page_private(page));
 			trace_mm_page_pcpu_drain(page, 0, page_private(page));
-<<<<<<< HEAD
 			if (is_migrate_cma(mt))
 				__mod_zone_page_state(zone,
 				NR_FREE_CMA_PAGES, 1);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		} while (--to_free && --batch_free && !list_empty(list));
 	}
 	__mod_zone_page_state(zone, NR_FREE_PAGES, count);
@@ -741,12 +697,8 @@ static void free_one_page(struct zone *zone, struct page *page, int order,
 	zone->pages_scanned = 0;
 
 	__free_one_page(page, zone, order, migratetype);
-<<<<<<< HEAD
 	if (unlikely(migratetype != MIGRATE_ISOLATE))
 		__mod_zone_freepage_state(zone, 1 << order, migratetype);
-=======
-	__mod_zone_page_state(zone, NR_FREE_PAGES, 1 << order);
->>>>>>> remotes/linux2/linux-3.4.y
 	spin_unlock(&zone->lock);
 }
 
@@ -812,7 +764,6 @@ void __meminit __free_pages_bootmem(struct page *page, unsigned int order)
 	__free_pages(page, order);
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_CMA
 bool is_cma_pageblock(struct page *page)
 {
@@ -836,8 +787,6 @@ void __init init_cma_reserved_pageblock(struct page *page)
 	totalram_pages += pageblock_nr_pages;
 }
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * The order of subdivision here is critical for the IO subsystem.
@@ -877,12 +826,8 @@ static inline void expand(struct zone *zone, struct page *page,
 			set_page_guard_flag(&page[size]);
 			set_page_private(&page[size], high);
 			/* Guard pages are not available for any usage */
-<<<<<<< HEAD
 			__mod_zone_freepage_state(zone, -(1 << high),
 						  migratetype);
-=======
-			__mod_zone_page_state(zone, NR_FREE_PAGES, -(1 << high));
->>>>>>> remotes/linux2/linux-3.4.y
 			continue;
 		}
 #endif
@@ -968,7 +913,6 @@ struct page *__rmqueue_smallest(struct zone *zone, unsigned int order,
  * This array describes the order lists are fallen back to when
  * the free lists for the desirable migrate type are depleted
  */
-<<<<<<< HEAD
 static int fallbacks[MIGRATE_TYPES][3] = {
 	[MIGRATE_UNMOVABLE]   = { MIGRATE_RECLAIMABLE, MIGRATE_MOVABLE,     MIGRATE_RESERVE },
 	[MIGRATE_RECLAIMABLE] = { MIGRATE_UNMOVABLE,   MIGRATE_MOVABLE,     MIGRATE_RESERVE },
@@ -985,15 +929,6 @@ int *get_migratetype_fallbacks(int mtype)
 	return fallbacks[mtype];
 }
 
-=======
-static int fallbacks[MIGRATE_TYPES][MIGRATE_TYPES-1] = {
-	[MIGRATE_UNMOVABLE]   = { MIGRATE_RECLAIMABLE, MIGRATE_MOVABLE,   MIGRATE_RESERVE },
-	[MIGRATE_RECLAIMABLE] = { MIGRATE_UNMOVABLE,   MIGRATE_MOVABLE,   MIGRATE_RESERVE },
-	[MIGRATE_MOVABLE]     = { MIGRATE_RECLAIMABLE, MIGRATE_UNMOVABLE, MIGRATE_RESERVE },
-	[MIGRATE_RESERVE]     = { MIGRATE_RESERVE,     MIGRATE_RESERVE,   MIGRATE_RESERVE }, /* Never used */
-};
-
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Move the free pages in a range to the free lists of the requested type.
  * Note that start_page and end_pages are not aligned on a pageblock
@@ -1086,20 +1021,12 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype)
 	/* Find the largest possible block of pages in the other list */
 	for (current_order = MAX_ORDER-1; current_order >= order;
 						--current_order) {
-<<<<<<< HEAD
 		for (i = 0;; i++) {
-=======
-		for (i = 0; i < MIGRATE_TYPES - 1; i++) {
->>>>>>> remotes/linux2/linux-3.4.y
 			migratetype = fallbacks[start_migratetype][i];
 
 			/* MIGRATE_RESERVE handled later if necessary */
 			if (migratetype == MIGRATE_RESERVE)
-<<<<<<< HEAD
 				break;
-=======
-				continue;
->>>>>>> remotes/linux2/linux-3.4.y
 
 			area = &(zone->free_area[current_order]);
 			if (list_empty(&area->free_list[migratetype]))
@@ -1115,17 +1042,10 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype)
 			 * back for a reclaimable kernel allocation, be more
 			 * aggressive about taking ownership of free pages
 			 */
-<<<<<<< HEAD
 			if (unlikely(current_order >= pageblock_order / 2) ||
 			    start_migratetype == MIGRATE_RECLAIMABLE ||
 			    page_group_by_mobility_disabled) {
 				int pages;
-=======
-			if (unlikely(current_order >= (pageblock_order >> 1)) ||
-					start_migratetype == MIGRATE_RECLAIMABLE ||
-					page_group_by_mobility_disabled) {
-				unsigned long pages;
->>>>>>> remotes/linux2/linux-3.4.y
 				pages = move_freepages_block(zone, page,
 								start_migratetype);
 
@@ -1147,12 +1067,8 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype)
 				change_pageblock_range(page, current_order,
 							start_migratetype);
 
-<<<<<<< HEAD
 			expand(zone, page, order, current_order, area,
 			       start_migratetype);
-=======
-			expand(zone, page, order, current_order, area, migratetype);
->>>>>>> remotes/linux2/linux-3.4.y
 
 			trace_mm_page_alloc_extfrag(page, order, current_order,
 				start_migratetype, migratetype);
@@ -1173,7 +1089,6 @@ static struct page *__rmqueue(struct zone *zone, unsigned int order,
 {
 	struct page *page;
 
-<<<<<<< HEAD
 #ifdef CONFIG_CMA
 	if (migratetype == MIGRATE_MOVABLE)
 		migratetype = MIGRATE_CMA;
@@ -1195,53 +1110,23 @@ static struct page *__rmqueue(struct zone *zone, unsigned int order,
 
 		/* Use MIGRATE_RESERVE rather than fail an allocation. */
 		migratetype = MIGRATE_RESERVE;
-=======
-retry_reserve:
-	page = __rmqueue_smallest(zone, order, migratetype);
-
-	if (unlikely(!page) && migratetype != MIGRATE_RESERVE) {
-		page = __rmqueue_fallback(zone, order, migratetype);
-
-		/*
-		 * Use MIGRATE_RESERVE rather than fail an allocation. goto
-		 * is used because __rmqueue_smallest is an inline function
-		 * and we want just one call site
-		 */
-		if (!page) {
-			migratetype = MIGRATE_RESERVE;
-			goto retry_reserve;
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	trace_mm_page_alloc_zone_locked(page, order, migratetype);
 	return page;
 }
 
-<<<<<<< HEAD
 /*
-=======
-/* 
->>>>>>> remotes/linux2/linux-3.4.y
  * Obtain a specified number of elements from the buddy allocator, all under
  * a single hold of the lock, for efficiency.  Add them to the supplied list.
  * Returns the number of new pages which were placed at *list.
  */
-<<<<<<< HEAD
 static int rmqueue_bulk(struct zone *zone, unsigned int order,
 			unsigned long count, struct list_head *list,
 			int migratetype, int cold)
 {
 	int mt = migratetype, i;
 
-=======
-static int rmqueue_bulk(struct zone *zone, unsigned int order, 
-			unsigned long count, struct list_head *list,
-			int migratetype, int cold)
-{
-	int i;
-	
->>>>>>> remotes/linux2/linux-3.4.y
 	spin_lock(&zone->lock);
 	for (i = 0; i < count; ++i) {
 		struct page *page = __rmqueue(zone, order, migratetype);
@@ -1261,7 +1146,6 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
 			list_add(&page->lru, list);
 		else
 			list_add_tail(&page->lru, list);
-<<<<<<< HEAD
 		if (IS_ENABLED(CONFIG_CMA)) {
 			mt = get_pageblock_migratetype(page);
 			if (!is_migrate_cma(mt) && mt != MIGRATE_ISOLATE)
@@ -1272,10 +1156,6 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
 		if (is_migrate_cma(mt))
 			__mod_zone_page_state(zone, NR_FREE_CMA_PAGES,
 					      -(1 << order));
-=======
-		set_page_private(page, migratetype);
-		list = &page->lru;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	__mod_zone_page_state(zone, NR_FREE_PAGES, -(i << order));
 	spin_unlock(&zone->lock);
@@ -1531,41 +1411,27 @@ int split_free_page(struct page *page)
 	unsigned int order;
 	unsigned long watermark;
 	struct zone *zone;
-<<<<<<< HEAD
 	int mt;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	BUG_ON(!PageBuddy(page));
 
 	zone = page_zone(page);
 	order = page_order(page);
-<<<<<<< HEAD
 	mt = get_pageblock_migratetype(page);
 
 	/* Obey watermarks as if the page was being allocated */
 	watermark = low_wmark_pages(zone) + (1 << order);
 	if (!is_migrate_cma(mt) && mt != MIGRATE_ISOLATE &&
 	    !zone_watermark_ok(zone, 0, watermark, 0, 0))
-=======
-
-	/* Obey watermarks as if the page was being allocated */
-	watermark = low_wmark_pages(zone) + (1 << order);
-	if (!zone_watermark_ok(zone, 0, watermark, 0, 0))
->>>>>>> remotes/linux2/linux-3.4.y
 		return 0;
 
 	/* Remove page from free list */
 	list_del(&page->lru);
 	zone->free_area[order].nr_free--;
 	rmv_page_order(page);
-<<<<<<< HEAD
 
 	if (unlikely(mt != MIGRATE_ISOLATE))
 		__mod_zone_freepage_state(zone, -(1UL << order), mt);
-=======
-	__mod_zone_page_state(zone, NR_FREE_PAGES, -(1UL << order));
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Split into individual pages */
 	set_page_refcounted(page);
@@ -1573,17 +1439,12 @@ int split_free_page(struct page *page)
 
 	if (order >= pageblock_order - 1) {
 		struct page *endpage = page + (1 << order) - 1;
-<<<<<<< HEAD
 		for (; page < endpage; page += pageblock_nr_pages) {
 			mt = get_pageblock_migratetype(page);
 			if (mt != MIGRATE_ISOLATE && !is_migrate_cma(mt))
 				set_pageblock_migratetype(page,
 							  MIGRATE_MOVABLE);
 		}
-=======
-		for (; page < endpage; page += pageblock_nr_pages)
-			set_pageblock_migratetype(page, MIGRATE_MOVABLE);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return 1 << order;
@@ -1645,12 +1506,8 @@ again:
 		spin_unlock(&zone->lock);
 		if (!page)
 			goto failed;
-<<<<<<< HEAD
 		__mod_zone_freepage_state(zone, -(1 << order),
 					  get_pageblock_migratetype(page));
-=======
-		__mod_zone_page_state(zone, NR_FREE_PAGES, -(1 << order));
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	__count_zone_vm_events(PGALLOC, zone, 1 << order);
@@ -1667,22 +1524,6 @@ failed:
 	return NULL;
 }
 
-<<<<<<< HEAD
-=======
-/* The ALLOC_WMARK bits are used as an index to zone->watermark */
-#define ALLOC_WMARK_MIN		WMARK_MIN
-#define ALLOC_WMARK_LOW		WMARK_LOW
-#define ALLOC_WMARK_HIGH	WMARK_HIGH
-#define ALLOC_NO_WATERMARKS	0x04 /* don't check watermarks at all */
-
-/* Mask to get the watermark bits */
-#define ALLOC_WMARK_MASK	(ALLOC_NO_WATERMARKS-1)
-
-#define ALLOC_HARDER		0x10 /* try to alloc harder */
-#define ALLOC_HIGH		0x20 /* __GFP_HIGH set */
-#define ALLOC_CPUSET		0x40 /* check for correct cpuset */
-
->>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_FAIL_PAGE_ALLOC
 
 static struct {
@@ -1767,14 +1608,9 @@ static inline int should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
 static bool __zone_watermark_ok(struct zone *z, int order, unsigned long mark,
 		      int classzone_idx, int alloc_flags, long free_pages)
 {
-<<<<<<< HEAD
 	/* free_pages may go negative - that's OK */
 	long min = mark;
 	long lowmem_reserve = z->lowmem_reserve[classzone_idx];
-=======
-	/* free_pages my go negative - that's OK */
-	long min = mark;
->>>>>>> remotes/linux2/linux-3.4.y
 	int o;
 
 	free_pages -= (1 << order) - 1;
@@ -1782,28 +1618,19 @@ static bool __zone_watermark_ok(struct zone *z, int order, unsigned long mark,
 		min -= min / 2;
 	if (alloc_flags & ALLOC_HARDER)
 		min -= min / 4;
-<<<<<<< HEAD
 #ifdef CONFIG_CMA
 	/* If allocation can't use CMA areas don't use free CMA pages */
 	if (!(alloc_flags & ALLOC_CMA))
 		free_pages -= zone_page_state(z, NR_FREE_CMA_PAGES);
 #endif
 	if (free_pages <= min + lowmem_reserve)
-=======
-
-	if (free_pages <= min + z->lowmem_reserve[classzone_idx])
->>>>>>> remotes/linux2/linux-3.4.y
 		return false;
 	for (o = 0; o < order; o++) {
 		/* At the next order, this order's pages become unavailable */
 		free_pages -= z->free_area[o].nr_free << o;
 
 		/* Require fewer higher order pages to be free */
-<<<<<<< HEAD
 		min >>= min_free_order_shift;
-=======
-		min >>= 1;
->>>>>>> remotes/linux2/linux-3.4.y
 
 		if (free_pages <= min)
 			return false;
@@ -2324,7 +2151,6 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
 }
 #endif /* CONFIG_COMPACTION */
 
-<<<<<<< HEAD
 /* Perform direct synchronous page reclaim */
 static int
 __perform_reclaim(gfp_t gfp_mask, unsigned int order, struct zonelist *zonelist,
@@ -2332,18 +2158,6 @@ __perform_reclaim(gfp_t gfp_mask, unsigned int order, struct zonelist *zonelist,
 {
 	struct reclaim_state reclaim_state;
 	int progress;
-=======
-/* The really slow allocator path where we enter direct reclaim */
-static inline struct page *
-__alloc_pages_direct_reclaim(gfp_t gfp_mask, unsigned int order,
-	struct zonelist *zonelist, enum zone_type high_zoneidx,
-	nodemask_t *nodemask, int alloc_flags, struct zone *preferred_zone,
-	int migratetype, unsigned long *did_some_progress)
-{
-	struct page *page = NULL;
-	struct reclaim_state reclaim_state;
-	bool drained = false;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	cond_resched();
 
@@ -2354,11 +2168,7 @@ __alloc_pages_direct_reclaim(gfp_t gfp_mask, unsigned int order,
 	reclaim_state.reclaimed_slab = 0;
 	current->reclaim_state = &reclaim_state;
 
-<<<<<<< HEAD
 	progress = try_to_free_pages(zonelist, order, gfp_mask, nodemask);
-=======
-	*did_some_progress = try_to_free_pages(zonelist, order, gfp_mask, nodemask);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	current->reclaim_state = NULL;
 	lockdep_clear_current_reclaim_state();
@@ -2366,7 +2176,6 @@ __alloc_pages_direct_reclaim(gfp_t gfp_mask, unsigned int order,
 
 	cond_resched();
 
-<<<<<<< HEAD
 	return progress;
 }
 
@@ -2382,8 +2191,6 @@ __alloc_pages_direct_reclaim(gfp_t gfp_mask, unsigned int order,
 
 	*did_some_progress = __perform_reclaim(gfp_mask, order, zonelist,
 					       nodemask);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (unlikely(!(*did_some_progress)))
 		return NULL;
 
@@ -2484,14 +2291,10 @@ gfp_to_alloc_flags(gfp_t gfp_mask)
 		     unlikely(test_thread_flag(TIF_MEMDIE))))
 			alloc_flags |= ALLOC_NO_WATERMARKS;
 	}
-<<<<<<< HEAD
 #ifdef CONFIG_CMA
 	if (allocflags_to_migratetype(gfp_mask) == MIGRATE_MOVABLE)
 		alloc_flags |= ALLOC_CMA;
 #endif
-=======
-
->>>>>>> remotes/linux2/linux-3.4.y
 	return alloc_flags;
 }
 
@@ -2700,10 +2503,7 @@ __alloc_pages_nodemask(gfp_t gfp_mask, unsigned int order,
 	struct page *page = NULL;
 	int migratetype = allocflags_to_migratetype(gfp_mask);
 	unsigned int cpuset_mems_cookie;
-<<<<<<< HEAD
 	int alloc_flags = ALLOC_WMARK_LOW|ALLOC_CPUSET;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	gfp_mask &= gfp_allowed_mask;
 
@@ -2732,7 +2532,6 @@ retry_cpuset:
 	if (!preferred_zone)
 		goto out;
 
-<<<<<<< HEAD
 #ifdef CONFIG_CMA
 	if (allocflags_to_migratetype(gfp_mask) == MIGRATE_MOVABLE)
 		alloc_flags |= ALLOC_CMA;
@@ -2740,11 +2539,6 @@ retry_cpuset:
 	/* First allocation attempt */
 	page = get_page_from_freelist(gfp_mask|__GFP_HARDWALL, nodemask, order,
 			zonelist, high_zoneidx, alloc_flags,
-=======
-	/* First allocation attempt */
-	page = get_page_from_freelist(gfp_mask|__GFP_HARDWALL, nodemask, order,
-			zonelist, high_zoneidx, ALLOC_WMARK_LOW|ALLOC_CPUSET,
->>>>>>> remotes/linux2/linux-3.4.y
 			preferred_zone, migratetype);
 	if (unlikely(!page))
 		page = __alloc_pages_slowpath(gfp_mask, order,
@@ -2991,7 +2785,6 @@ out:
 
 #define K(x) ((x) << (PAGE_SHIFT-10))
 
-<<<<<<< HEAD
 static void show_migration_types(unsigned char type)
 {
 	static const char types[MIGRATE_TYPES] = {
@@ -3017,8 +2810,6 @@ static void show_migration_types(unsigned char type)
 	printk("(%s) ", tmp);
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Show free area list (used inside shift_scroll-lock stuff)
  * We also calculate the percentage fragmentation. We do this by counting the
@@ -3053,12 +2844,8 @@ void show_free_areas(unsigned int filter)
 		" unevictable:%lu"
 		" dirty:%lu writeback:%lu unstable:%lu\n"
 		" free:%lu slab_reclaimable:%lu slab_unreclaimable:%lu\n"
-<<<<<<< HEAD
 		" mapped:%lu shmem:%lu pagetables:%lu bounce:%lu\n"
 		" free_cma:%lu\n",
-=======
-		" mapped:%lu shmem:%lu pagetables:%lu bounce:%lu\n",
->>>>>>> remotes/linux2/linux-3.4.y
 		global_page_state(NR_ACTIVE_ANON),
 		global_page_state(NR_INACTIVE_ANON),
 		global_page_state(NR_ISOLATED_ANON),
@@ -3075,12 +2862,8 @@ void show_free_areas(unsigned int filter)
 		global_page_state(NR_FILE_MAPPED),
 		global_page_state(NR_SHMEM),
 		global_page_state(NR_PAGETABLE),
-<<<<<<< HEAD
 		global_page_state(NR_BOUNCE),
 		global_page_state(NR_FREE_CMA_PAGES));
-=======
-		global_page_state(NR_BOUNCE));
->>>>>>> remotes/linux2/linux-3.4.y
 
 	for_each_populated_zone(zone) {
 		int i;
@@ -3112,10 +2895,7 @@ void show_free_areas(unsigned int filter)
 			" pagetables:%lukB"
 			" unstable:%lukB"
 			" bounce:%lukB"
-<<<<<<< HEAD
 			" free_cma:%lukB"
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			" writeback_tmp:%lukB"
 			" pages_scanned:%lu"
 			" all_unreclaimable? %s"
@@ -3145,10 +2925,7 @@ void show_free_areas(unsigned int filter)
 			K(zone_page_state(zone, NR_PAGETABLE)),
 			K(zone_page_state(zone, NR_UNSTABLE_NFS)),
 			K(zone_page_state(zone, NR_BOUNCE)),
-<<<<<<< HEAD
 			K(zone_page_state(zone, NR_FREE_CMA_PAGES)),
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			K(zone_page_state(zone, NR_WRITEBACK_TEMP)),
 			zone->pages_scanned,
 			(zone->all_unreclaimable ? "yes" : "no")
@@ -3161,10 +2938,7 @@ void show_free_areas(unsigned int filter)
 
 	for_each_populated_zone(zone) {
  		unsigned long nr[MAX_ORDER], flags, order, total = 0;
-<<<<<<< HEAD
 		unsigned char types[MAX_ORDER];
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 		if (skip_free_areas_node(filter, zone_to_nid(zone)))
 			continue;
@@ -3173,7 +2947,6 @@ void show_free_areas(unsigned int filter)
 
 		spin_lock_irqsave(&zone->lock, flags);
 		for (order = 0; order < MAX_ORDER; order++) {
-<<<<<<< HEAD
 			struct free_area *area = &zone->free_area[order];
 			int type;
 
@@ -3192,14 +2965,6 @@ void show_free_areas(unsigned int filter)
 			if (nr[order])
 				show_migration_types(types[order]);
 		}
-=======
-			nr[order] = zone->free_area[order].nr_free;
-			total += nr[order] << order;
-		}
-		spin_unlock_irqrestore(&zone->lock, flags);
-		for (order = 0; order < MAX_ORDER; order++)
-			printk("%lu*%lukB ", nr[order], K(1UL) << order);
->>>>>>> remotes/linux2/linux-3.4.y
 		printk("= %lukB\n", K(total));
 	}
 
@@ -4578,18 +4343,10 @@ static void __meminit calculate_node_totalpages(struct pglist_data *pgdat,
  * round what is now in bits to nearest long in bits, then return it in
  * bytes.
  */
-<<<<<<< HEAD
 static unsigned long __init usemap_size(unsigned long zonesize)
 {
 	unsigned long usemapsize;
 
-=======
-static unsigned long __init usemap_size(unsigned long zone_start_pfn, unsigned long zonesize)
-{
-	unsigned long usemapsize;
-
-	zonesize += zone_start_pfn & (pageblock_nr_pages-1);
->>>>>>> remotes/linux2/linux-3.4.y
 	usemapsize = roundup(zonesize, pageblock_nr_pages);
 	usemapsize = usemapsize >> pageblock_order;
 	usemapsize *= NR_PAGEBLOCK_BITS;
@@ -4599,30 +4356,17 @@ static unsigned long __init usemap_size(unsigned long zone_start_pfn, unsigned l
 }
 
 static void __init setup_usemap(struct pglist_data *pgdat,
-<<<<<<< HEAD
 				struct zone *zone, unsigned long zonesize)
 {
 	unsigned long usemapsize = usemap_size(zonesize);
-=======
-				struct zone *zone,
-				unsigned long zone_start_pfn,
-				unsigned long zonesize)
-{
-	unsigned long usemapsize = usemap_size(zone_start_pfn, zonesize);
->>>>>>> remotes/linux2/linux-3.4.y
 	zone->pageblock_flags = NULL;
 	if (usemapsize)
 		zone->pageblock_flags = alloc_bootmem_node_nopanic(pgdat,
 								   usemapsize);
 }
 #else
-<<<<<<< HEAD
 static inline void setup_usemap(struct pglist_data *pgdat,
 				struct zone *zone, unsigned long zonesize) {}
-=======
-static inline void setup_usemap(struct pglist_data *pgdat, struct zone *zone,
-				unsigned long zone_start_pfn, unsigned long zonesize) {}
->>>>>>> remotes/linux2/linux-3.4.y
 #endif /* CONFIG_SPARSEMEM */
 
 #ifdef CONFIG_HUGETLB_PAGE_SIZE_VARIABLE
@@ -4684,11 +4428,7 @@ static void __paginginit free_area_init_core(struct pglist_data *pgdat,
 	init_waitqueue_head(&pgdat->kswapd_wait);
 	pgdat->kswapd_max_order = 0;
 	pgdat_page_cgroup_init(pgdat);
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> remotes/linux2/linux-3.4.y
 	for (j = 0; j < MAX_NR_ZONES; j++) {
 		struct zone *zone = pgdat->node_zones + j;
 		unsigned long size, realsize, memmap_pages;
@@ -4754,11 +4494,7 @@ static void __paginginit free_area_init_core(struct pglist_data *pgdat,
 			continue;
 
 		set_pageblock_order(pageblock_default_order());
-<<<<<<< HEAD
 		setup_usemap(pgdat, zone, size);
-=======
-		setup_usemap(pgdat, zone, zone_start_pfn, size);
->>>>>>> remotes/linux2/linux-3.4.y
 		ret = init_currently_empty_zone(zone, zone_start_pfn,
 						size, MEMMAP_EARLY);
 		BUG_ON(ret);
@@ -4965,12 +4701,9 @@ static void __init find_zone_movable_pfns_for_nodes(void)
 	unsigned long totalpages = early_calculate_totalpages();
 	int usable_nodes = nodes_weight(node_states[N_HIGH_MEMORY]);
 
-<<<<<<< HEAD
 #ifdef CONFIG_FIX_MOVABLE_ZONE
 	required_movablecore = movable_reserved_size >> PAGE_SHIFT;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * If movablecore was specified, calculate what size of
 	 * kernelcore that corresponds so that memory usable for
@@ -5373,18 +5106,7 @@ static void setup_per_zone_lowmem_reserve(void)
 	calculate_totalreserve_pages();
 }
 
-<<<<<<< HEAD
 static void __setup_per_zone_wmarks(void)
-=======
-/**
- * setup_per_zone_wmarks - called when min_free_kbytes changes
- * or when memory is hot-{added|removed}
- *
- * Ensures that the watermark[min,low,high] values for each zone are set
- * correctly with respect to min_free_kbytes.
- */
-void setup_per_zone_wmarks(void)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	unsigned long pages_min = min_free_kbytes >> (PAGE_SHIFT - 10);
 	unsigned long lowmem_pages = 0;
@@ -5431,14 +5153,11 @@ void setup_per_zone_wmarks(void)
 
 		zone->watermark[WMARK_LOW]  = min_wmark_pages(zone) + (tmp >> 2);
 		zone->watermark[WMARK_HIGH] = min_wmark_pages(zone) + (tmp >> 1);
-<<<<<<< HEAD
 
 		zone->watermark[WMARK_MIN] += cma_wmark_pages(zone);
 		zone->watermark[WMARK_LOW] += cma_wmark_pages(zone);
 		zone->watermark[WMARK_HIGH] += cma_wmark_pages(zone);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		setup_zone_migrate_reserve(zone);
 		spin_unlock_irqrestore(&zone->lock, flags);
 	}
@@ -5447,7 +5166,6 @@ void setup_per_zone_wmarks(void)
 	calculate_totalreserve_pages();
 }
 
-<<<<<<< HEAD
 /**
  * setup_per_zone_wmarks - called when min_free_kbytes changes
  * or when memory is hot-{added|removed}
@@ -5462,8 +5180,6 @@ void setup_per_zone_wmarks(void)
 	mutex_unlock(&zonelists_mutex);
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * The inactive anon list should be small enough that the VM never has to
  * do too much work, but large enough that each inactive page has a chance
@@ -5838,24 +5554,16 @@ static int
 __count_immobile_pages(struct zone *zone, struct page *page, int count)
 {
 	unsigned long pfn, iter, found;
-<<<<<<< HEAD
 	int mt;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * For avoiding noise data, lru_add_drain_all() should be called
 	 * If ZONE_MOVABLE, the zone never contains immobile pages
 	 */
 	if (zone_idx(zone) == ZONE_MOVABLE)
 		return true;
-<<<<<<< HEAD
 	mt = get_pageblock_migratetype(page);
 	if (mt == MIGRATE_MOVABLE || is_migrate_cma(mt))
-=======
-
-	if (get_pageblock_migratetype(page) == MIGRATE_MOVABLE)
->>>>>>> remotes/linux2/linux-3.4.y
 		return true;
 
 	pfn = page_to_pfn(page);
@@ -5962,7 +5670,6 @@ int set_migratetype_isolate(struct page *page)
 
 out:
 	if (!ret) {
-<<<<<<< HEAD
 		unsigned long nr_pages;
 		int migratetype = get_pageblock_migratetype(page);
 
@@ -5970,10 +5677,6 @@ out:
 		nr_pages = move_freepages_block(zone, page, MIGRATE_ISOLATE);
 
 		__mod_zone_freepage_state(zone, -nr_pages, migratetype);
-=======
-		set_pageblock_migratetype(page, MIGRATE_ISOLATE);
-		move_freepages_block(zone, page, MIGRATE_ISOLATE);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	spin_unlock_irqrestore(&zone->lock, flags);
@@ -5982,35 +5685,22 @@ out:
 	return ret;
 }
 
-<<<<<<< HEAD
 void unset_migratetype_isolate(struct page *page, unsigned migratetype)
 {
 	struct zone *zone;
 	unsigned long flags, nr_pages;
 
-=======
-void unset_migratetype_isolate(struct page *page)
-{
-	struct zone *zone;
-	unsigned long flags;
->>>>>>> remotes/linux2/linux-3.4.y
 	zone = page_zone(page);
 	spin_lock_irqsave(&zone->lock, flags);
 	if (get_pageblock_migratetype(page) != MIGRATE_ISOLATE)
 		goto out;
-<<<<<<< HEAD
 	nr_pages = move_freepages_block(zone, page, migratetype);
 	__mod_zone_freepage_state(zone, nr_pages, migratetype);
 	set_pageblock_migratetype(page, migratetype);
-=======
-	set_pageblock_migratetype(page, MIGRATE_MOVABLE);
-	move_freepages_block(zone, page, MIGRATE_MOVABLE);
->>>>>>> remotes/linux2/linux-3.4.y
 out:
 	spin_unlock_irqrestore(&zone->lock, flags);
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_CMA
 
 static unsigned long pfn_max_align_down(unsigned long pfn)
@@ -6263,8 +5953,6 @@ void free_contig_range(unsigned long pfn, unsigned nr_pages)
 }
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_MEMORY_HOTREMOVE
 /*
  * All pages in the range must be isolated before calling this.

@@ -39,11 +39,7 @@
  * (host controller _Structural_ parameters)
  * see EHCI spec, Table 2-4 for each value
  */
-<<<<<<< HEAD
 static void __maybe_unused dbg_hcs_params (struct ehci_hcd *ehci, char *label)
-=======
-static void dbg_hcs_params (struct ehci_hcd *ehci, char *label)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	u32	params = ehci_readl(ehci, &ehci->caps->hcs_params);
 
@@ -87,11 +83,7 @@ static inline void dbg_hcs_params (struct ehci_hcd *ehci, char *label) {}
  * (host controller _Capability_ parameters)
  * see EHCI Spec, Table 2-5 for each value
  * */
-<<<<<<< HEAD
 static void __maybe_unused dbg_hcc_params (struct ehci_hcd *ehci, char *label)
-=======
-static void dbg_hcc_params (struct ehci_hcd *ehci, char *label)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	u32	params = ehci_readl(ehci, &ehci->caps->hcc_params);
 

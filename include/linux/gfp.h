@@ -391,7 +391,6 @@ static inline bool pm_suspended_storage(void)
 }
 #endif /* CONFIG_PM_SLEEP */
 
-<<<<<<< HEAD
 #ifdef CONFIG_CMA
 
 /* The below functions must be run on a range from a single zone. */
@@ -404,6 +403,4 @@ extern void init_cma_reserved_pageblock(struct page *page);
 
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #endif /* __LINUX_GFP_H */

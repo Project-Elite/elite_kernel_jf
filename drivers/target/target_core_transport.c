@@ -1341,10 +1341,6 @@ struct se_device *transport_add_device_to_core_hba(
 	dev->se_hba		= hba;
 	dev->se_sub_dev		= se_dev;
 	dev->transport		= transport;
-<<<<<<< HEAD
-=======
-	dev->dev_link_magic	= SE_DEV_LINK_MAGIC;
->>>>>>> remotes/linux2/linux-3.4.y
 	INIT_LIST_HEAD(&dev->dev_list);
 	INIT_LIST_HEAD(&dev->dev_sep_list);
 	INIT_LIST_HEAD(&dev->dev_tmr_list);
@@ -1554,19 +1550,11 @@ static int transport_check_alloc_task_attr(struct se_cmd *cmd)
 	return 0;
 }
 
-<<<<<<< HEAD
 /*	target_setup_cmd_from_cdb():
  *
  *	Called from fabric RX Thread.
  */
 int target_setup_cmd_from_cdb(
-=======
-/*	transport_generic_allocate_tasks():
- *
- *	Called from fabric RX Thread.
- */
-int transport_generic_allocate_tasks(
->>>>>>> remotes/linux2/linux-3.4.y
 	struct se_cmd *cmd,
 	unsigned char *cdb)
 {
@@ -1632,11 +1620,7 @@ int transport_generic_allocate_tasks(
 	spin_unlock(&cmd->se_lun->lun_sep_lock);
 	return 0;
 }
-<<<<<<< HEAD
 EXPORT_SYMBOL(target_setup_cmd_from_cdb);
-=======
-EXPORT_SYMBOL(transport_generic_allocate_tasks);
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Used by fabric module frontends to queue tasks directly.
@@ -1717,11 +1701,8 @@ void target_submit_cmd(struct se_cmd *se_cmd, struct se_session *se_sess,
 	 */
 	transport_init_se_cmd(se_cmd, se_tpg->se_tpg_tfo, se_sess,
 				data_length, data_dir, task_attr, sense);
-<<<<<<< HEAD
 	if (flags & TARGET_SCF_UNKNOWN_SIZE)
 		se_cmd->unknown_data_length = 1;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Obtain struct se_cmd->cmd_kref reference and add new cmd to
 	 * se_sess->sess_cmd_list.  A second kref_get here is necessary
@@ -1747,11 +1728,7 @@ void target_submit_cmd(struct se_cmd *se_cmd, struct se_session *se_sess,
 	 * Sanitize CDBs via transport_generic_cmd_sequencer() and
 	 * allocate the necessary tasks to complete the received CDB+data
 	 */
-<<<<<<< HEAD
 	rc = target_setup_cmd_from_cdb(se_cmd, cdb);
-=======
-	rc = transport_generic_allocate_tasks(se_cmd, cdb);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (rc != 0) {
 		transport_generic_request_failure(se_cmd);
 		return;
@@ -1773,12 +1750,7 @@ static void target_complete_tmr_failure(struct work_struct *work)
 
 	se_cmd->se_tmr_req->response = TMR_LUN_DOES_NOT_EXIST;
 	se_cmd->se_tfo->queue_tm_rsp(se_cmd);
-<<<<<<< HEAD
 	transport_generic_free_cmd(se_cmd, 0);
-=======
-
-	transport_cmd_check_stop_to_fabric(se_cmd);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /**
@@ -2006,10 +1978,6 @@ void transport_generic_request_failure(struct se_cmd *cmd)
 	case TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE:
 	case TCM_UNKNOWN_MODE_PAGE:
 	case TCM_WRITE_PROTECTED:
-<<<<<<< HEAD
-=======
-	case TCM_ADDRESS_OUT_OF_RANGE:
->>>>>>> remotes/linux2/linux-3.4.y
 	case TCM_CHECK_CONDITION_ABORT_CMD:
 	case TCM_CHECK_CONDITION_UNIT_ATTENTION:
 	case TCM_CHECK_CONDITION_NOT_READY:
@@ -2615,11 +2583,7 @@ static int target_check_write_same_discard(unsigned char *flags, struct se_devic
  *	Generic Command Sequencer that should work for most DAS transport
  *	drivers.
  *
-<<<<<<< HEAD
  *	Called from target_setup_cmd_from_cdb() in the $FABRIC_MOD
-=======
- *	Called from transport_generic_allocate_tasks() in the $FABRIC_MOD
->>>>>>> remotes/linux2/linux-3.4.y
  *	RX Thread.
  *
  *	FIXME: Need to support other SCSI OPCODES where as well.
@@ -3180,12 +3144,9 @@ static int transport_generic_cmd_sequencer(
 		goto out_unsupported_cdb;
 	}
 
-<<<<<<< HEAD
 	if (cmd->unknown_data_length)
 		cmd->data_length = size;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (size != cmd->data_length) {
 		pr_warn("TARGET_CORE[%s]: Expected Transfer Length:"
 			" %u does not match SCSI CDB Length: %u for SAM Opcode:"
@@ -3210,29 +3171,15 @@ static int transport_generic_cmd_sequencer(
 			/* Returns CHECK_CONDITION + INVALID_CDB_FIELD */
 			goto out_invalid_cdb_field;
 		}
-<<<<<<< HEAD
 
-=======
-		/*
-		 * For the overflow case keep the existing fabric provided
-		 * ->data_length.  Otherwise for the underflow case, reset
-		 * ->data_length to the smaller SCSI expected data transfer
-		 * length.
-		 */
->>>>>>> remotes/linux2/linux-3.4.y
 		if (size > cmd->data_length) {
 			cmd->se_cmd_flags |= SCF_OVERFLOW_BIT;
 			cmd->residual_count = (size - cmd->data_length);
 		} else {
 			cmd->se_cmd_flags |= SCF_UNDERFLOW_BIT;
 			cmd->residual_count = (cmd->data_length - size);
-<<<<<<< HEAD
 		}
 		cmd->data_length = size;
-=======
-			cmd->data_length = size;
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	if (cmd->se_cmd_flags & SCF_SCSI_DATA_SG_IO_CDB &&
@@ -3732,15 +3679,9 @@ transport_generic_get_mem(struct se_cmd *cmd)
 	return 0;
 
 out:
-<<<<<<< HEAD
 	while (i >= 0) {
 		__free_page(sg_page(&cmd->t_data_sg[i]));
 		i--;
-=======
-	while (i > 0) {
-		i--;
-		__free_page(sg_page(&cmd->t_data_sg[i]));
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	kfree(cmd->t_data_sg);
 	cmd->t_data_sg = NULL;
@@ -4720,18 +4661,6 @@ int transport_send_check_condition_and_sense(
 		/* WRITE PROTECTED */
 		buffer[offset+SPC_ASC_KEY_OFFSET] = 0x27;
 		break;
-<<<<<<< HEAD
-=======
-	case TCM_ADDRESS_OUT_OF_RANGE:
-		/* CURRENT ERROR */
-		buffer[offset] = 0x70;
-		buffer[offset+SPC_ADD_SENSE_LEN_OFFSET] = 10;
-		/* ILLEGAL REQUEST */
-		buffer[offset+SPC_SENSE_KEY_OFFSET] = ILLEGAL_REQUEST;
-		/* LOGICAL BLOCK ADDRESS OUT OF RANGE */
-		buffer[offset+SPC_ASC_KEY_OFFSET] = 0x21;
-		break;
->>>>>>> remotes/linux2/linux-3.4.y
 	case TCM_CHECK_CONDITION_UNIT_ATTENTION:
 		/* CURRENT ERROR */
 		buffer[offset] = 0x70;

@@ -645,18 +645,7 @@ static int fuse_unlink(struct inode *dir, struct dentry *entry)
 
 		spin_lock(&fc->lock);
 		fi->attr_version = ++fc->attr_version;
-<<<<<<< HEAD
 		drop_nlink(inode);
-=======
-		/*
-		 * If i_nlink == 0 then unlink doesn't make sense, yet this can
-		 * happen if userspace filesystem is careless.  It would be
-		 * difficult to enforce correct nlink usage so just ignore this
-		 * condition here
-		 */
-		if (inode->i_nlink > 0)
-			drop_nlink(inode);
->>>>>>> remotes/linux2/linux-3.4.y
 		spin_unlock(&fc->lock);
 		fuse_invalidate_attr(inode);
 		fuse_invalidate_attr(dir);

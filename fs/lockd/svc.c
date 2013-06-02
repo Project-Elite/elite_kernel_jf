@@ -251,7 +251,6 @@ out_err:
 	return err;
 }
 
-<<<<<<< HEAD
 static int lockd_up_net(struct net *net)
 {
 	struct lockd_net *ln = net_generic(net, lockd_net_id);
@@ -259,14 +258,6 @@ static int lockd_up_net(struct net *net)
 	int error;
 
 	if (ln->nlmsvc_users)
-=======
-static int lockd_up_net(struct svc_serv *serv, struct net *net)
-{
-	struct lockd_net *ln = net_generic(net, lockd_net_id);
-	int error;
-
-	if (ln->nlmsvc_users++)
->>>>>>> remotes/linux2/linux-3.4.y
 		return 0;
 
 	error = svc_rpcb_setup(serv, net);
@@ -281,7 +272,6 @@ static int lockd_up_net(struct svc_serv *serv, struct net *net)
 err_socks:
 	svc_rpcb_cleanup(serv, net);
 err_rpcb:
-<<<<<<< HEAD
 	return error;
 }
 
@@ -289,15 +279,6 @@ static void lockd_down_net(struct net *net)
 {
 	struct lockd_net *ln = net_generic(net, lockd_net_id);
 	struct svc_serv *serv = nlmsvc_rqst->rq_server;
-=======
-	ln->nlmsvc_users--;
-	return error;
-}
-
-static void lockd_down_net(struct svc_serv *serv, struct net *net)
-{
-	struct lockd_net *ln = net_generic(net, lockd_net_id);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (ln->nlmsvc_users) {
 		if (--ln->nlmsvc_users == 0) {
@@ -314,30 +295,18 @@ static void lockd_down_net(struct svc_serv *serv, struct net *net)
 /*
  * Bring up the lockd process if it's not already up.
  */
-<<<<<<< HEAD
 int lockd_up(void)
 {
 	struct svc_serv *serv;
 	int		error = 0;
 	struct net *net = current->nsproxy->net_ns;
-=======
-int lockd_up(struct net *net)
-{
-	struct svc_serv *serv;
-	int		error = 0;
-	struct lockd_net *ln = net_generic(net, lockd_net_id);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	mutex_lock(&nlmsvc_mutex);
 	/*
 	 * Check whether we're already up and running.
 	 */
 	if (nlmsvc_rqst) {
-<<<<<<< HEAD
 		error = lockd_up_net(net);
-=======
-		error = lockd_up_net(nlmsvc_rqst->rq_server, net);
->>>>>>> remotes/linux2/linux-3.4.y
 		goto out;
 	}
 
@@ -356,23 +325,9 @@ int lockd_up(struct net *net)
 		goto out;
 	}
 
-<<<<<<< HEAD
 	error = make_socks(serv, net);
 	if (error < 0)
 		goto destroy_and_out;
-=======
-	error = svc_bind(serv, net);
-	if (error < 0) {
-		printk(KERN_WARNING "lockd_up: bind service failed\n");
-		goto destroy_and_out;
-	}
-
-	ln->nlmsvc_users++;
-
-	error = make_socks(serv, net);
-	if (error < 0)
-		goto err_start;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Create the kernel thread and wait for it to start.
@@ -384,11 +339,7 @@ int lockd_up(struct net *net)
 		printk(KERN_WARNING
 			"lockd_up: svc_rqst allocation failed, error=%d\n",
 			error);
-<<<<<<< HEAD
 		goto destroy_and_out;
-=======
-		goto err_start;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	svc_sock_update_bufs(serv);
@@ -402,11 +353,7 @@ int lockd_up(struct net *net)
 		nlmsvc_rqst = NULL;
 		printk(KERN_WARNING
 			"lockd_up: kthread_run failed, error=%d\n", error);
-<<<<<<< HEAD
 		goto destroy_and_out;
-=======
-		goto err_start;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	/*
@@ -416,7 +363,6 @@ int lockd_up(struct net *net)
 destroy_and_out:
 	svc_destroy(serv);
 out:
-<<<<<<< HEAD
 	if (!error) {
 		struct lockd_net *ln = net_generic(net, lockd_net_id);
 
@@ -425,16 +371,6 @@ out:
 	}
 	mutex_unlock(&nlmsvc_mutex);
 	return error;
-=======
-	if (!error)
-		nlmsvc_users++;
-	mutex_unlock(&nlmsvc_mutex);
-	return error;
-
-err_start:
-	lockd_down_net(serv, net);
-	goto destroy_and_out;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL_GPL(lockd_up);
 
@@ -442,7 +378,6 @@ EXPORT_SYMBOL_GPL(lockd_up);
  * Decrement the user count and bring down lockd if we're the last.
  */
 void
-<<<<<<< HEAD
 lockd_down(void)
 {
 	mutex_lock(&nlmsvc_mutex);
@@ -451,15 +386,6 @@ lockd_down(void)
 			lockd_down_net(current->nsproxy->net_ns);
 			goto out;
 		}
-=======
-lockd_down(struct net *net)
-{
-	mutex_lock(&nlmsvc_mutex);
-	lockd_down_net(nlmsvc_rqst->rq_server, net);
-	if (nlmsvc_users) {
-		if (--nlmsvc_users)
-			goto out;
->>>>>>> remotes/linux2/linux-3.4.y
 	} else {
 		printk(KERN_ERR "lockd_down: no users! task=%p\n",
 			nlmsvc_task);

@@ -561,11 +561,7 @@ static irqreturn_t bluecard_interrupt(int irq, void *dev_inst)
 
 static int bluecard_hci_set_baud_rate(struct hci_dev *hdev, int baud)
 {
-<<<<<<< HEAD
 	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
-=======
-	bluecard_info_t *info = hci_get_drvdata(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 	struct sk_buff *skb;
 
 	/* Ericsson baud rate command */
@@ -613,11 +609,7 @@ static int bluecard_hci_set_baud_rate(struct hci_dev *hdev, int baud)
 
 static int bluecard_hci_flush(struct hci_dev *hdev)
 {
-<<<<<<< HEAD
 	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
-=======
-	bluecard_info_t *info = hci_get_drvdata(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Drop TX queue */
 	skb_queue_purge(&(info->txq));
@@ -628,11 +620,7 @@ static int bluecard_hci_flush(struct hci_dev *hdev)
 
 static int bluecard_hci_open(struct hci_dev *hdev)
 {
-<<<<<<< HEAD
 	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
-=======
-	bluecard_info_t *info = hci_get_drvdata(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int iobase = info->p_dev->resource[0]->start;
 
 	if (test_bit(CARD_HAS_PCCARD_ID, &(info->hw_state)))
@@ -652,11 +640,7 @@ static int bluecard_hci_open(struct hci_dev *hdev)
 
 static int bluecard_hci_close(struct hci_dev *hdev)
 {
-<<<<<<< HEAD
 	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
-=======
-	bluecard_info_t *info = hci_get_drvdata(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int iobase = info->p_dev->resource[0]->start;
 
 	if (!test_and_clear_bit(HCI_RUNNING, &(hdev->flags)))
@@ -683,11 +667,7 @@ static int bluecard_hci_send_frame(struct sk_buff *skb)
 		return -ENODEV;
 	}
 
-<<<<<<< HEAD
 	info = (bluecard_info_t *)(hdev->driver_data);
-=======
-	info = hci_get_drvdata(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	switch (bt_cb(skb)->pkt_type) {
 	case HCI_COMMAND_PKT:
@@ -711,14 +691,11 @@ static int bluecard_hci_send_frame(struct sk_buff *skb)
 }
 
 
-<<<<<<< HEAD
 static void bluecard_hci_destruct(struct hci_dev *hdev)
 {
 }
 
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static int bluecard_hci_ioctl(struct hci_dev *hdev, unsigned int cmd, unsigned long arg)
 {
 	return -ENOIOCTLCMD;
@@ -757,27 +734,18 @@ static int bluecard_open(bluecard_info_t *info)
 	info->hdev = hdev;
 
 	hdev->bus = HCI_PCCARD;
-<<<<<<< HEAD
 	hdev->driver_data = info;
-=======
-	hci_set_drvdata(hdev, info);
->>>>>>> remotes/linux2/linux-3.4.y
 	SET_HCIDEV_DEV(hdev, &info->p_dev->dev);
 
 	hdev->open     = bluecard_hci_open;
 	hdev->close    = bluecard_hci_close;
 	hdev->flush    = bluecard_hci_flush;
 	hdev->send     = bluecard_hci_send_frame;
-<<<<<<< HEAD
 	hdev->destruct = bluecard_hci_destruct;
 	hdev->ioctl    = bluecard_hci_ioctl;
 
 	hdev->owner = THIS_MODULE;
 
-=======
-	hdev->ioctl    = bluecard_hci_ioctl;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	id = inb(iobase + 0x30);
 
 	if ((id & 0x0f) == 0x02)
@@ -876,13 +844,9 @@ static int bluecard_close(bluecard_info_t *info)
 	/* Turn FPGA off */
 	outb(0x80, iobase + 0x30);
 
-<<<<<<< HEAD
 	if (hci_unregister_dev(hdev) < 0)
 		BT_ERR("Can't unregister HCI device %s", hdev->name);
 
-=======
-	hci_unregister_dev(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 	hci_free_dev(hdev);
 
 	return 0;
@@ -966,11 +930,7 @@ static void bluecard_release(struct pcmcia_device *link)
 	pcmcia_disable_device(link);
 }
 
-<<<<<<< HEAD
 static struct pcmcia_device_id bluecard_ids[] = {
-=======
-static const struct pcmcia_device_id bluecard_ids[] = {
->>>>>>> remotes/linux2/linux-3.4.y
 	PCMCIA_DEVICE_PROD_ID12("BlueCard", "LSE041", 0xbaf16fbf, 0x657cc15e),
 	PCMCIA_DEVICE_PROD_ID12("BTCFCARD", "LSE139", 0xe3987764, 0x2524b59c),
 	PCMCIA_DEVICE_PROD_ID12("WSS", "LSE039", 0x0a0736ec, 0x24e6dfab),

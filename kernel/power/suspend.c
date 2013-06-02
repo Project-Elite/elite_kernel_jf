@@ -24,22 +24,15 @@
 #include <linux/export.h>
 #include <linux/suspend.h>
 #include <linux/syscore_ops.h>
-<<<<<<< HEAD
 #include <linux/rtc.h>
-=======
-#include <linux/ftrace.h>
->>>>>>> remotes/linux2/linux-3.4.y
 #include <trace/events/power.h>
 
 #include "power.h"
 
 const char *const pm_states[PM_SUSPEND_MAX] = {
-<<<<<<< HEAD
 #ifdef CONFIG_EARLYSUSPEND
 	[PM_SUSPEND_ON]		= "on",
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	[PM_SUSPEND_STANDBY]	= "standby",
 	[PM_SUSPEND_MEM]	= "mem",
 };
@@ -223,10 +216,6 @@ int suspend_devices_and_enter(suspend_state_t state)
 			goto Close;
 	}
 	suspend_console();
-<<<<<<< HEAD
-=======
-	ftrace_stop();
->>>>>>> remotes/linux2/linux-3.4.y
 	suspend_test_start();
 	error = dpm_suspend_start(PMSG_SUSPEND);
 	if (error) {
@@ -246,10 +235,6 @@ int suspend_devices_and_enter(suspend_state_t state)
 	suspend_test_start();
 	dpm_resume_end(PMSG_RESUME);
 	suspend_test_finish("resume devices");
-<<<<<<< HEAD
-=======
-	ftrace_start();
->>>>>>> remotes/linux2/linux-3.4.y
 	resume_console();
  Close:
 	if (suspend_ops->end)
@@ -294,14 +279,7 @@ static int enter_state(suspend_state_t state)
 	if (!mutex_trylock(&pm_mutex))
 		return -EBUSY;
 
-<<<<<<< HEAD
 	suspend_sys_sync_queue();
-=======
-	printk(KERN_INFO "PM: Syncing filesystems ... ");
-	sys_sync();
-	printk("done.\n");
-
->>>>>>> remotes/linux2/linux-3.4.y
 	pr_debug("PM: Preparing system for %s sleep\n", pm_states[state]);
 	error = suspend_prepare();
 	if (error)
@@ -323,7 +301,6 @@ static int enter_state(suspend_state_t state)
 	return error;
 }
 
-<<<<<<< HEAD
 static void pm_suspend_marker(char *annotation)
 {
 	struct timespec ts;
@@ -336,8 +313,6 @@ static void pm_suspend_marker(char *annotation)
 		tm.tm_hour, tm.tm_min, tm.tm_sec, ts.tv_nsec);
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /**
  * pm_suspend - Externally visible function for suspending the system.
  * @state: System sleep state to enter.
@@ -352,10 +327,7 @@ int pm_suspend(suspend_state_t state)
 	if (state <= PM_SUSPEND_ON || state >= PM_SUSPEND_MAX)
 		return -EINVAL;
 
-<<<<<<< HEAD
 	pm_suspend_marker("entry");
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	error = enter_state(state);
 	if (error) {
 		suspend_stats.fail++;
@@ -363,10 +335,7 @@ int pm_suspend(suspend_state_t state)
 	} else {
 		suspend_stats.success++;
 	}
-<<<<<<< HEAD
 	pm_suspend_marker("exit");
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return error;
 }
 EXPORT_SYMBOL(pm_suspend);

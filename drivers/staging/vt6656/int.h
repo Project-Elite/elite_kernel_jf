@@ -34,10 +34,7 @@
 #include "device.h"
 
 /*---------------------  Export Definitions -------------------------*/
-<<<<<<< HEAD
 #pragma pack(1)
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 typedef struct tagSINTData {
     BYTE    byTSR0;
     BYTE    byPkt0;

@@ -22,10 +22,6 @@
  *
  * Authors: Dave Airlie
  *          Alex Deucher
-<<<<<<< HEAD
-=======
- *          Jerome Glisse
->>>>>>> remotes/linux2/linux-3.4.y
  */
 #include "drmP.h"
 #include "radeon_drm.h"
@@ -641,10 +637,7 @@ static bool radeon_dp_get_link_status(struct radeon_connector *radeon_connector,
 	ret = radeon_dp_aux_native_read(radeon_connector, DP_LANE0_1_STATUS,
 					link_status, DP_LINK_STATUS_SIZE, 100);
 	if (ret <= 0) {
-<<<<<<< HEAD
 		DRM_ERROR("displayport link status failed\n");
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		return false;
 	}
 
@@ -823,15 +816,8 @@ static int radeon_dp_link_train_cr(struct radeon_dp_link_train_info *dp_info)
 		else
 			mdelay(dp_info->rd_interval * 4);
 
-<<<<<<< HEAD
 		if (!radeon_dp_get_link_status(dp_info->radeon_connector, dp_info->link_status))
 			break;
-=======
-		if (!radeon_dp_get_link_status(dp_info->radeon_connector, dp_info->link_status)) {
-			DRM_ERROR("displayport link status failed\n");
-			break;
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 
 		if (dp_clock_recovery_ok(dp_info->link_status, dp_info->dp_lane_count)) {
 			clock_recovery = true;
@@ -893,15 +879,8 @@ static int radeon_dp_link_train_ce(struct radeon_dp_link_train_info *dp_info)
 		else
 			mdelay(dp_info->rd_interval * 4);
 
-<<<<<<< HEAD
 		if (!radeon_dp_get_link_status(dp_info->radeon_connector, dp_info->link_status))
 			break;
-=======
-		if (!radeon_dp_get_link_status(dp_info->radeon_connector, dp_info->link_status)) {
-			DRM_ERROR("displayport link status failed\n");
-			break;
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 
 		if (dp_channel_eq_ok(dp_info->link_status, dp_info->dp_lane_count)) {
 			channel_eq = true;

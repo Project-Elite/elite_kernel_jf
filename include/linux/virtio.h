@@ -15,10 +15,7 @@
  * @callback: the function to call when buffers are consumed (can be NULL).
  * @name: the name of this virtqueue (mainly for debugging)
  * @vdev: the virtio device this queue was created for.
-<<<<<<< HEAD
  * @vq_ops: the operations for this virtqueue (see below).
-=======
->>>>>>> remotes/linux2/linux-3.4.y
  * @priv: a pointer for the virtqueue implementation to use.
  */
 struct virtqueue {
@@ -26,7 +23,6 @@ struct virtqueue {
 	void (*callback)(struct virtqueue *vq);
 	const char *name;
 	struct virtio_device *vdev;
-<<<<<<< HEAD
 	struct virtqueue_ops *vq_ops;
 	void *priv;
 };
@@ -256,35 +252,6 @@ static inline unsigned int virtqueue_get_impl_size(struct virtqueue *vq)
 {
 	return vq->vq_ops->get_impl_size(vq);
 }
-=======
-	void *priv;
-};
-
-int virtqueue_add_buf(struct virtqueue *vq,
-		      struct scatterlist sg[],
-		      unsigned int out_num,
-		      unsigned int in_num,
-		      void *data,
-		      gfp_t gfp);
-
-void virtqueue_kick(struct virtqueue *vq);
-
-bool virtqueue_kick_prepare(struct virtqueue *vq);
-
-void virtqueue_notify(struct virtqueue *vq);
-
-void *virtqueue_get_buf(struct virtqueue *vq, unsigned int *len);
-
-void virtqueue_disable_cb(struct virtqueue *vq);
-
-bool virtqueue_enable_cb(struct virtqueue *vq);
-
-bool virtqueue_enable_cb_delayed(struct virtqueue *vq);
-
-void *virtqueue_detach_unused_buf(struct virtqueue *vq);
-
-unsigned int virtqueue_get_vring_size(struct virtqueue *vq);
->>>>>>> remotes/linux2/linux-3.4.y
 
 /**
  * virtio_device - representation of a device using virtio

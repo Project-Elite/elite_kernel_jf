@@ -681,12 +681,9 @@ static int raw_sendmsg(struct kiocb *iocb, struct socket *sock,
 	if (err < 0)
 		goto free_skb;
 
-<<<<<<< HEAD
 	/* to be able to check the received tx sock reference in raw_rcv() */
 	skb_shinfo(skb)->tx_flags |= SKBTX_DRV_NEEDS_SK_REF;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	skb->dev = dev;
 	skb->sk  = sk;
 

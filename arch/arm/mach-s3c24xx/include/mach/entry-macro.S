@@ -31,17 +31,10 @@
 
 		@@ try the interrupt offset register, since it is there
 
-<<<<<<< HEAD
 		ldr	\irqstat, [ \base, #INTPND ]
 		teq	\irqstat, #0
 		beq	1002f
 		ldr	\irqnr, [ \base, #INTOFFSET ]
-=======
-		ldr	\irqstat, [\base, #INTPND ]
-		teq	\irqstat, #0
-		beq	1002f
-		ldr	\irqnr, [\base, #INTOFFSET ]
->>>>>>> remotes/linux2/linux-3.4.y
 		mov	\tmp, #1
 		tst	\irqstat, \tmp, lsl \irqnr
 		bne	1001f

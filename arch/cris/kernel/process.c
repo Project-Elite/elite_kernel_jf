@@ -25,10 +25,6 @@
 #include <linux/elfcore.h>
 #include <linux/mqueue.h>
 #include <linux/reboot.h>
-<<<<<<< HEAD
-=======
-#include <linux/rcupdate.h>
->>>>>>> remotes/linux2/linux-3.4.y
 
 //#define DEBUG
 
@@ -106,10 +102,6 @@ void cpu_idle (void)
 {
 	/* endless idle loop with no priority at all */
 	while (1) {
-<<<<<<< HEAD
-=======
-		rcu_idle_enter();
->>>>>>> remotes/linux2/linux-3.4.y
 		while (!need_resched()) {
 			void (*idle)(void);
 			/*
@@ -122,10 +114,6 @@ void cpu_idle (void)
 				idle = default_idle;
 			idle();
 		}
-<<<<<<< HEAD
-=======
-		rcu_idle_exit();
->>>>>>> remotes/linux2/linux-3.4.y
 		schedule_preempt_disabled();
 	}
 }

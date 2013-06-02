@@ -29,11 +29,8 @@
 #define STACK_TOP_MAX	TASK_SIZE
 #endif
 
-<<<<<<< HEAD
 extern unsigned int boot_reason;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 struct debug_info {
 #ifdef CONFIG_HAVE_HW_BREAKPOINT
 	struct perf_event	*hbp[ARM_MAX_HBP_SLOTS];
@@ -129,11 +126,6 @@ static inline void prefetch(const void *ptr)
 
 #endif
 
-<<<<<<< HEAD
-=======
-#define HAVE_ARCH_PICK_MMAP_LAYOUT
-
->>>>>>> remotes/linux2/linux-3.4.y
 #endif
 
 #endif /* __ASM_ARM_PROCESSOR_H */

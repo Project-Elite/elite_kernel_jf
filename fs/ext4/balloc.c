@@ -326,11 +326,7 @@ err_out:
 	return 0;
 }
 /**
-<<<<<<< HEAD
  * ext4_read_block_bitmap()
-=======
- * ext4_read_block_bitmap_nowait()
->>>>>>> remotes/linux2/linux-3.4.y
  * @sb:			super block
  * @block_group:	given block group
  *
@@ -426,11 +422,6 @@ ext4_read_block_bitmap(struct super_block *sb, ext4_group_t block_group)
 	struct buffer_head *bh;
 
 	bh = ext4_read_block_bitmap_nowait(sb, block_group);
-<<<<<<< HEAD
-=======
-	if (!bh)
-		return NULL;
->>>>>>> remotes/linux2/linux-3.4.y
 	if (ext4_wait_block_bitmap(sb, block_group, bh)) {
 		put_bh(bh);
 		return NULL;
@@ -456,24 +447,11 @@ static int ext4_has_free_clusters(struct ext4_sb_info *sbi,
 
 	free_clusters  = percpu_counter_read_positive(fcc);
 	dirty_clusters = percpu_counter_read_positive(dcc);
-<<<<<<< HEAD
 	root_clusters = EXT4_B2C(sbi, ext4_r_blocks_count(sbi->s_es));
 
 	if (free_clusters - (nclusters + root_clusters + dirty_clusters) <
 					EXT4_FREECLUSTERS_WATERMARK) {
 		free_clusters  = EXT4_C2B(sbi, percpu_counter_sum_positive(fcc));
-=======
-
-	/*
-	 * r_blocks_count should always be multiple of the cluster ratio so
-	 * we are safe to do a plane bit shift only.
-	 */
-	root_clusters = ext4_r_blocks_count(sbi->s_es) >> sbi->s_cluster_bits;
-
-	if (free_clusters - (nclusters + root_clusters + dirty_clusters) <
-					EXT4_FREECLUSTERS_WATERMARK) {
-		free_clusters  = percpu_counter_sum_positive(fcc);
->>>>>>> remotes/linux2/linux-3.4.y
 		dirty_clusters = percpu_counter_sum_positive(dcc);
 	}
 	/* Check whether we have space after accounting for current
@@ -606,12 +584,7 @@ ext4_fsblk_t ext4_count_free_clusters(struct super_block *sb)
 		if (bitmap_bh == NULL)
 			continue;
 
-<<<<<<< HEAD
 		x = ext4_count_free(bitmap_bh, sb->s_blocksize);
-=======
-		x = ext4_count_free(bitmap_bh->b_data,
-				    EXT4_BLOCKS_PER_GROUP(sb) / 8);
->>>>>>> remotes/linux2/linux-3.4.y
 		printk(KERN_DEBUG "group %u: stored = %d, counted = %u\n",
 			i, ext4_free_group_clusters(sb, gdp), x);
 		bitmap_count += x;
@@ -619,11 +592,7 @@ ext4_fsblk_t ext4_count_free_clusters(struct super_block *sb)
 	brelse(bitmap_bh);
 	printk(KERN_DEBUG "ext4_count_free_clusters: stored = %llu"
 	       ", computed = %llu, %llu\n",
-<<<<<<< HEAD
 	       EXT4_B2C(EXT4_SB(sb), ext4_free_blocks_count(es)),
-=======
-	       EXT4_NUM_B2C(EXT4_SB(sb), ext4_free_blocks_count(es)),
->>>>>>> remotes/linux2/linux-3.4.y
 	       desc_count, bitmap_count);
 	return bitmap_count;
 #else

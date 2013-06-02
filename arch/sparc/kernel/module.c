@@ -20,11 +20,8 @@
 
 #include "entry.h"
 
-<<<<<<< HEAD
 #include "entry.h"
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_SPARC64
 
 #include <linux/jump_label.h>

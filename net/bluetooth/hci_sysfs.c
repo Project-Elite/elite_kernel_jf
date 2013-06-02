@@ -5,10 +5,7 @@
 #include <linux/init.h>
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
-<<<<<<< HEAD
 #include <linux/interrupt.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/module.h>
 
 #include <net/bluetooth/bluetooth.h>
@@ -28,11 +25,6 @@ static inline char *link_typetostr(int type)
 		return "SCO";
 	case ESCO_LINK:
 		return "eSCO";
-<<<<<<< HEAD
-=======
-	case LE_LINK:
-		return "LE";
->>>>>>> remotes/linux2/linux-3.4.y
 	default:
 		return "UNKNOWN";
 	}
@@ -40,31 +32,19 @@ static inline char *link_typetostr(int type)
 
 static ssize_t show_link_type(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_conn *conn = dev_get_drvdata(dev);
-=======
-	struct hci_conn *conn = to_hci_conn(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	return sprintf(buf, "%s\n", link_typetostr(conn->type));
 }
 
 static ssize_t show_link_address(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_conn *conn = dev_get_drvdata(dev);
-=======
-	struct hci_conn *conn = to_hci_conn(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	return sprintf(buf, "%s\n", batostr(&conn->dst));
 }
 
 static ssize_t show_link_features(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_conn *conn = dev_get_drvdata(dev);
-=======
-	struct hci_conn *conn = to_hci_conn(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return sprintf(buf, "0x%02x%02x%02x%02x%02x%02x%02x%02x\n",
 				conn->features[0], conn->features[1],
@@ -98,13 +78,8 @@ static const struct attribute_group *bt_link_groups[] = {
 
 static void bt_link_release(struct device *dev)
 {
-<<<<<<< HEAD
 	void *data = dev_get_drvdata(dev);
 	kfree(data);
-=======
-	struct hci_conn *conn = to_hci_conn(dev);
-	kfree(conn);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static struct device_type bt_link = {
@@ -113,7 +88,6 @@ static struct device_type bt_link = {
 	.release = bt_link_release,
 };
 
-<<<<<<< HEAD
 static void add_conn(struct work_struct *work)
 {
 	struct hci_conn *conn = container_of(work, struct hci_conn, work_add);
@@ -122,38 +96,6 @@ static void add_conn(struct work_struct *work)
 	dev_set_name(&conn->dev, "%s:%d", hdev->name, conn->handle);
 
 	dev_set_drvdata(&conn->dev, conn);
-=======
-/*
- * The rfcomm tty device will possibly retain even when conn
- * is down, and sysfs doesn't support move zombie device,
- * so we should move the device before conn device is destroyed.
- */
-static int __match_tty(struct device *dev, void *data)
-{
-	return !strncmp(dev_name(dev), "rfcomm", 6);
-}
-
-void hci_conn_init_sysfs(struct hci_conn *conn)
-{
-	struct hci_dev *hdev = conn->hdev;
-
-	BT_DBG("conn %p", conn);
-
-	conn->dev.type = &bt_link;
-	conn->dev.class = bt_class;
-	conn->dev.parent = &hdev->dev;
-
-	device_initialize(&conn->dev);
-}
-
-void hci_conn_add_sysfs(struct hci_conn *conn)
-{
-	struct hci_dev *hdev = conn->hdev;
-
-	BT_DBG("conn %p", conn);
-
-	dev_set_name(&conn->dev, "%s:%d", hdev->name, conn->handle);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (device_add(&conn->dev) < 0) {
 		BT_ERR("Failed to register connection device");
@@ -163,7 +105,6 @@ void hci_conn_add_sysfs(struct hci_conn *conn)
 	hci_dev_hold(hdev);
 }
 
-<<<<<<< HEAD
 /*
  * The rfcomm tty device will possibly retain even when conn
  * is down, and sysfs doesn't support move zombie device,
@@ -177,10 +118,6 @@ static int __match_tty(struct device *dev, void *data)
 static void del_conn(struct work_struct *work)
 {
 	struct hci_conn *conn = container_of(work, struct hci_conn, work_del);
-=======
-void hci_conn_del_sysfs(struct hci_conn *conn)
-{
->>>>>>> remotes/linux2/linux-3.4.y
 	struct hci_dev *hdev = conn->hdev;
 
 	if (!device_is_registered(&conn->dev))
@@ -202,7 +139,6 @@ void hci_conn_del_sysfs(struct hci_conn *conn)
 	hci_dev_put(hdev);
 }
 
-<<<<<<< HEAD
 void hci_conn_init_sysfs(struct hci_conn *conn)
 {
 	struct hci_dev *hdev = conn->hdev;
@@ -233,8 +169,6 @@ void hci_conn_del_sysfs(struct hci_conn *conn)
 	queue_work(conn->hdev->workqueue, &conn->work_del);
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static inline char *host_bustostr(int bus)
 {
 	switch (bus) {
@@ -271,31 +205,19 @@ static inline char *host_typetostr(int type)
 
 static ssize_t show_bus(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	return sprintf(buf, "%s\n", host_bustostr(hdev->bus));
 }
 
 static ssize_t show_type(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	return sprintf(buf, "%s\n", host_typetostr(hdev->dev_type));
 }
 
 static ssize_t show_name(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	char name[HCI_MAX_NAME_LENGTH + 1];
 	int i;
 
@@ -308,32 +230,20 @@ static ssize_t show_name(struct device *dev, struct device_attribute *attr, char
 
 static ssize_t show_class(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	return sprintf(buf, "0x%.2x%.2x%.2x\n",
 			hdev->dev_class[2], hdev->dev_class[1], hdev->dev_class[0]);
 }
 
 static ssize_t show_address(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	return sprintf(buf, "%s\n", batostr(&hdev->bdaddr));
 }
 
 static ssize_t show_features(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return sprintf(buf, "0x%02x%02x%02x%02x%02x%02x%02x%02x\n",
 				hdev->features[0], hdev->features[1],
@@ -344,51 +254,31 @@ static ssize_t show_features(struct device *dev, struct device_attribute *attr, 
 
 static ssize_t show_manufacturer(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	return sprintf(buf, "%d\n", hdev->manufacturer);
 }
 
 static ssize_t show_hci_version(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	return sprintf(buf, "%d\n", hdev->hci_ver);
 }
 
 static ssize_t show_hci_revision(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	return sprintf(buf, "%d\n", hdev->hci_rev);
 }
 
 static ssize_t show_idle_timeout(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	return sprintf(buf, "%d\n", hdev->idle_timeout);
 }
 
 static ssize_t store_idle_timeout(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int val;
 	int rv;
 
@@ -406,21 +296,13 @@ static ssize_t store_idle_timeout(struct device *dev, struct device_attribute *a
 
 static ssize_t show_sniff_max_interval(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	return sprintf(buf, "%d\n", hdev->sniff_max_interval);
 }
 
 static ssize_t store_sniff_max_interval(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	u16 val;
 	int rv;
 
@@ -438,21 +320,13 @@ static ssize_t store_sniff_max_interval(struct device *dev, struct device_attrib
 
 static ssize_t show_sniff_min_interval(struct device *dev, struct device_attribute *attr, char *buf)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	return sprintf(buf, "%d\n", hdev->sniff_min_interval);
 }
 
 static ssize_t store_sniff_min_interval(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
-<<<<<<< HEAD
 	struct hci_dev *hdev = dev_get_drvdata(dev);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	u16 val;
 	int rv;
 
@@ -512,14 +386,8 @@ static const struct attribute_group *bt_host_groups[] = {
 
 static void bt_host_release(struct device *dev)
 {
-<<<<<<< HEAD
 	void *data = dev_get_drvdata(dev);
 	kfree(data);
-=======
-	struct hci_dev *hdev = to_hci_dev(dev);
-	kfree(hdev);
-	module_put(THIS_MODULE);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static struct device_type bt_host = {
@@ -531,21 +399,12 @@ static struct device_type bt_host = {
 static int inquiry_cache_show(struct seq_file *f, void *p)
 {
 	struct hci_dev *hdev = f->private;
-<<<<<<< HEAD
 	struct inquiry_cache *cache = &hdev->inq_cache;
 	struct inquiry_entry *e;
 
 	hci_dev_lock_bh(hdev);
 
 	for (e = cache->list; e; e = e->next) {
-=======
-	struct discovery_state *cache = &hdev->discovery;
-	struct inquiry_entry *e;
-
-	hci_dev_lock(hdev);
-
-	list_for_each_entry(e, &cache->all, all) {
->>>>>>> remotes/linux2/linux-3.4.y
 		struct inquiry_data *data = &e->data;
 		seq_printf(f, "%s %d %d %d 0x%.2x%.2x%.2x 0x%.4x %d %d %u\n",
 			   batostr(&data->bdaddr),
@@ -556,11 +415,7 @@ static int inquiry_cache_show(struct seq_file *f, void *p)
 			   data->rssi, data->ssp_mode, e->timestamp);
 	}
 
-<<<<<<< HEAD
 	hci_dev_unlock_bh(hdev);
-=======
-	hci_dev_unlock(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -580,7 +435,6 @@ static const struct file_operations inquiry_cache_fops = {
 static int blacklist_show(struct seq_file *f, void *p)
 {
 	struct hci_dev *hdev = f->private;
-<<<<<<< HEAD
 	struct list_head *l;
 
 	hci_dev_lock_bh(hdev);
@@ -594,16 +448,6 @@ static int blacklist_show(struct seq_file *f, void *p)
 	}
 
 	hci_dev_unlock_bh(hdev);
-=======
-	struct bdaddr_list *b;
-
-	hci_dev_lock(hdev);
-
-	list_for_each_entry(b, &hdev->blacklist, list)
-		seq_printf(f, "%s\n", batostr(&b->bdaddr));
-
-	hci_dev_unlock(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -640,7 +484,6 @@ static void print_bt_uuid(struct seq_file *f, u8 *uuid)
 static int uuids_show(struct seq_file *f, void *p)
 {
 	struct hci_dev *hdev = f->private;
-<<<<<<< HEAD
 	struct list_head *l;
 
 	hci_dev_lock_bh(hdev);
@@ -654,16 +497,6 @@ static int uuids_show(struct seq_file *f, void *p)
 	}
 
 	hci_dev_unlock_bh(hdev);
-=======
-	struct bt_uuid *uuid;
-
-	hci_dev_lock(hdev);
-
-	list_for_each_entry(uuid, &hdev->uuids, list)
-		print_bt_uuid(f, uuid->uuid);
-
-	hci_dev_unlock(hdev);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -680,58 +513,13 @@ static const struct file_operations uuids_fops = {
 	.release	= single_release,
 };
 
-<<<<<<< HEAD
 int hci_register_sysfs(struct hci_dev *hdev)
-=======
-static int auto_accept_delay_set(void *data, u64 val)
-{
-	struct hci_dev *hdev = data;
-
-	hci_dev_lock(hdev);
-
-	hdev->auto_accept_delay = val;
-
-	hci_dev_unlock(hdev);
-
-	return 0;
-}
-
-static int auto_accept_delay_get(void *data, u64 *val)
-{
-	struct hci_dev *hdev = data;
-
-	hci_dev_lock(hdev);
-
-	*val = hdev->auto_accept_delay;
-
-	hci_dev_unlock(hdev);
-
-	return 0;
-}
-
-DEFINE_SIMPLE_ATTRIBUTE(auto_accept_delay_fops, auto_accept_delay_get,
-					auto_accept_delay_set, "%llu\n");
-
-void hci_init_sysfs(struct hci_dev *hdev)
-{
-	struct device *dev = &hdev->dev;
-
-	dev->type = &bt_host;
-	dev->class = bt_class;
-
-	__module_get(THIS_MODULE);
-	device_initialize(dev);
-}
-
-int hci_add_sysfs(struct hci_dev *hdev)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct device *dev = &hdev->dev;
 	int err;
 
 	BT_DBG("%p name %s bus %d", hdev, hdev->name, hdev->bus);
 
-<<<<<<< HEAD
 	dev->type = &bt_host;
 	dev->class = bt_class;
 	dev->parent = hdev->parent;
@@ -741,12 +529,6 @@ int hci_add_sysfs(struct hci_dev *hdev)
 	dev_set_drvdata(dev, hdev);
 
 	err = device_register(dev);
-=======
-	dev->parent = hdev->parent;
-	dev_set_name(dev, "%s", hdev->name);
-
-	err = device_add(dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (err < 0)
 		return err;
 
@@ -765,19 +547,10 @@ int hci_add_sysfs(struct hci_dev *hdev)
 
 	debugfs_create_file("uuids", 0444, hdev->debugfs, hdev, &uuids_fops);
 
-<<<<<<< HEAD
 	return 0;
 }
 
 void hci_unregister_sysfs(struct hci_dev *hdev)
-=======
-	debugfs_create_file("auto_accept_delay", 0444, hdev->debugfs, hdev,
-						&auto_accept_delay_fops);
-	return 0;
-}
-
-void hci_del_sysfs(struct hci_dev *hdev)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	BT_DBG("%p name %s bus %d", hdev, hdev->name, hdev->bus);
 

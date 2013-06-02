@@ -301,17 +301,10 @@ const char *event_name(struct perf_evsel *evsel)
 	if (evsel->name)
 		return evsel->name;
 
-<<<<<<< HEAD
 	return __event_name(type, config, NULL);
 }
 
 const char *__event_name(int type, u64 config, char *pmu_name)
-=======
-	return __event_name(type, config);
-}
-
-const char *__event_name(int type, u64 config)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	static char buf[32];
 
@@ -356,16 +349,12 @@ const char *__event_name(int type, u64 config)
 		return tracepoint_id_to_name(config);
 
 	default:
-<<<<<<< HEAD
 		if (pmu_name) {
 			snprintf(buf, sizeof(buf), "%s 0x%" PRIx64, pmu_name,
 					config);
 			return buf;
 		} else
 			break;
-=======
-		break;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return "unknown";
@@ -646,7 +635,6 @@ static int config_attr(struct perf_event_attr *attr,
 	return 0;
 }
 
-<<<<<<< HEAD
 int parse_events_add_numeric_legacy(struct list_head *list, int *idx,
 			     const char *name, unsigned long config,
 			     struct list_head *head_config)
@@ -673,8 +661,6 @@ int parse_events_add_numeric_legacy(struct list_head *list, int *idx,
 			 (char *) __event_name(pmu->type, config, pmu_name));
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 int parse_events_add_numeric(struct list_head *list, int *idx,
 			     unsigned long type, unsigned long config,
 			     struct list_head *head_config)
@@ -690,11 +676,7 @@ int parse_events_add_numeric(struct list_head *list, int *idx,
 		return -EINVAL;
 
 	return add_event(list, idx, &attr,
-<<<<<<< HEAD
 			 (char *) __event_name(type, config, NULL));
-=======
-			 (char *) __event_name(type, config));
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 int parse_events_add_pmu(struct list_head *list, int *idx,
@@ -718,11 +700,7 @@ int parse_events_add_pmu(struct list_head *list, int *idx,
 	if (perf_pmu__config(pmu, &attr, head_config))
 		return -EINVAL;
 
-<<<<<<< HEAD
 	return add_event(list, idx, &attr, pmu->name);
-=======
-	return add_event(list, idx, &attr, (char *) "pmu");
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 void parse_events_update_lists(struct list_head *list_event,

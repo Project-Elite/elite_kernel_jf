@@ -15,7 +15,6 @@
 
 #include <linux/types.h>
 
-<<<<<<< HEAD
 /*
  * zsmalloc mapping modes
  *
@@ -27,27 +26,17 @@ enum zs_mapmode {
 	ZS_MM_WO /* write-only (no copy-in at map time) */
 };
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 struct zs_pool;
 
 struct zs_pool *zs_create_pool(const char *name, gfp_t flags);
 void zs_destroy_pool(struct zs_pool *pool);
 
-<<<<<<< HEAD
 unsigned long zs_malloc(struct zs_pool *pool, size_t size);
 void zs_free(struct zs_pool *pool, unsigned long obj);
 
 void *zs_map_object(struct zs_pool *pool, unsigned long handle,
 			enum zs_mapmode mm);
 void zs_unmap_object(struct zs_pool *pool, unsigned long handle);
-=======
-void *zs_malloc(struct zs_pool *pool, size_t size);
-void zs_free(struct zs_pool *pool, void *obj);
-
-void *zs_map_object(struct zs_pool *pool, void *handle);
-void zs_unmap_object(struct zs_pool *pool, void *handle);
->>>>>>> remotes/linux2/linux-3.4.y
 
 u64 zs_get_total_size_bytes(struct zs_pool *pool);
 

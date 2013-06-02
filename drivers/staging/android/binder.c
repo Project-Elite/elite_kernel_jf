@@ -33,19 +33,12 @@
 #include <linux/uaccess.h>
 #include <linux/vmalloc.h>
 #include <linux/slab.h>
-<<<<<<< HEAD
 #include <linux/security.h>
 
 #include "binder.h"
 #include "binder_trace.h"
 
 static DEFINE_MUTEX(binder_main_lock);
-=======
-
-#include "binder.h"
-
-static DEFINE_MUTEX(binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 static DEFINE_MUTEX(binder_deferred_lock);
 static DEFINE_MUTEX(binder_mmap_lock);
 
@@ -508,7 +501,6 @@ out_unlock:
 	return -EBADF;
 }
 
-<<<<<<< HEAD
 static inline void binder_lock(const char *tag)
 {
 	trace_binder_lock(tag);
@@ -522,8 +514,6 @@ static inline void binder_unlock(const char *tag)
 	mutex_unlock(&binder_main_lock);
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static void binder_set_nice(long nice)
 {
 	long min_nice;
@@ -650,11 +640,8 @@ static int binder_update_page_range(struct binder_proc *proc, int allocate,
 	if (end <= start)
 		return 0;
 
-<<<<<<< HEAD
 	trace_binder_update_page_range(proc, allocate, start, end);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (vma)
 		mm = NULL;
 	else
@@ -1503,13 +1490,10 @@ static void binder_transaction(struct binder_proc *proc,
 			return_error = BR_DEAD_REPLY;
 			goto err_dead_binder;
 		}
-<<<<<<< HEAD
 		if (security_binder_transaction(proc->tsk, target_proc->tsk) < 0) {
 			return_error = BR_FAILED_REPLY;
 			goto err_invalid_target_handle;
 		}
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		if (!(tr->flags & TF_ONE_WAY) && thread->transaction_stack) {
 			struct binder_transaction *tmp;
 			tmp = thread->transaction_stack;
@@ -1586,12 +1570,9 @@ static void binder_transaction(struct binder_proc *proc,
 	t->code = tr->code;
 	t->flags = tr->flags;
 	t->priority = task_nice(current);
-<<<<<<< HEAD
 
 	trace_binder_transaction(reply, t, target_node);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	t->buffer = binder_alloc_buf(target_proc, tr->data_size,
 		tr->offsets_size, !reply && (t->flags & TF_ONE_WAY));
 	if (t->buffer == NULL) {
@@ -1602,10 +1583,7 @@ static void binder_transaction(struct binder_proc *proc,
 	t->buffer->debug_id = t->debug_id;
 	t->buffer->transaction = t;
 	t->buffer->target_node = target_node;
-<<<<<<< HEAD
 	trace_binder_transaction_alloc_buf(t->buffer);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (target_node)
 		binder_inc_node(target_node, 1, 0, NULL);
 
@@ -1665,13 +1643,10 @@ static void binder_transaction(struct binder_proc *proc,
 					fp->cookie, node->cookie);
 				goto err_binder_get_ref_for_node_failed;
 			}
-<<<<<<< HEAD
 			if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
 				return_error = BR_FAILED_REPLY;
 				goto err_binder_get_ref_for_node_failed;
 			}
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			ref = binder_get_ref_for_node(target_proc, node);
 			if (ref == NULL) {
 				return_error = BR_FAILED_REPLY;
@@ -1685,10 +1660,7 @@ static void binder_transaction(struct binder_proc *proc,
 			binder_inc_ref(ref, fp->type == BINDER_TYPE_HANDLE,
 				       &thread->todo);
 
-<<<<<<< HEAD
 			trace_binder_transaction_node_to_ref(t, node, ref);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			binder_debug(BINDER_DEBUG_TRANSACTION,
 				     "        node %d u%p -> ref %d desc %d\n",
 				     node->debug_id, node->ptr, ref->debug_id,
@@ -1705,13 +1677,10 @@ static void binder_transaction(struct binder_proc *proc,
 				return_error = BR_FAILED_REPLY;
 				goto err_binder_get_ref_failed;
 			}
-<<<<<<< HEAD
 			if (security_binder_transfer_binder(proc->tsk, target_proc->tsk)) {
 				return_error = BR_FAILED_REPLY;
 				goto err_binder_get_ref_failed;
 			}
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			if (ref->node->proc == target_proc) {
 				if (fp->type == BINDER_TYPE_HANDLE)
 					fp->type = BINDER_TYPE_BINDER;
@@ -1720,10 +1689,7 @@ static void binder_transaction(struct binder_proc *proc,
 				fp->binder = ref->node->ptr;
 				fp->cookie = ref->node->cookie;
 				binder_inc_node(ref->node, fp->type == BINDER_TYPE_BINDER, 0, NULL);
-<<<<<<< HEAD
 				trace_binder_transaction_ref_to_node(t, ref);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 				binder_debug(BINDER_DEBUG_TRANSACTION,
 					     "        ref %d desc %d -> node %d u%p\n",
 					     ref->debug_id, ref->desc, ref->node->debug_id,
@@ -1737,11 +1703,8 @@ static void binder_transaction(struct binder_proc *proc,
 				}
 				fp->handle = new_ref->desc;
 				binder_inc_ref(new_ref, fp->type == BINDER_TYPE_HANDLE, NULL);
-<<<<<<< HEAD
 				trace_binder_transaction_ref_to_ref(t, ref,
 								    new_ref);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 				binder_debug(BINDER_DEBUG_TRANSACTION,
 					     "        ref %d desc %d -> ref %d desc %d (node %d)\n",
 					     ref->debug_id, ref->desc, new_ref->debug_id,
@@ -1774,14 +1737,11 @@ static void binder_transaction(struct binder_proc *proc,
 				return_error = BR_FAILED_REPLY;
 				goto err_fget_failed;
 			}
-<<<<<<< HEAD
                         if (security_binder_transfer_file(proc->tsk, target_proc->tsk, file) < 0) {
                                 fput(file);
                                 return_error = BR_FAILED_REPLY;
                                 goto err_get_unused_fd_failed;
                         }
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			target_fd = task_get_unused_fd_flags(target_proc, O_CLOEXEC);
 			if (target_fd < 0) {
 				fput(file);
@@ -1789,10 +1749,7 @@ static void binder_transaction(struct binder_proc *proc,
 				goto err_get_unused_fd_failed;
 			}
 			task_fd_install(target_proc, target_fd, file);
-<<<<<<< HEAD
 			trace_binder_transaction_fd(t, fp->handle, target_fd);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			binder_debug(BINDER_DEBUG_TRANSACTION,
 				     "        fd %ld -> %d\n", fp->handle, target_fd);
 			/* TODO: fput? */
@@ -1841,10 +1798,7 @@ err_binder_new_node_failed:
 err_bad_object_type:
 err_bad_offset:
 err_copy_data_failed:
-<<<<<<< HEAD
 	trace_binder_transaction_failed_buffer_release(t->buffer);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	binder_transaction_buffer_release(target_proc, t->buffer, offp);
 	t->buffer->transaction = NULL;
 	binder_free_buf(target_proc, t->buffer);
@@ -1890,10 +1844,7 @@ int binder_thread_write(struct binder_proc *proc, struct binder_thread *thread,
 		if (get_user(cmd, (uint32_t __user *)ptr))
 			return -EFAULT;
 		ptr += sizeof(uint32_t);
-<<<<<<< HEAD
 		trace_binder_command(cmd);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		if (_IOC_NR(cmd) < ARRAY_SIZE(binder_stats.bc)) {
 			binder_stats.bc[_IOC_NR(cmd)]++;
 			proc->stats.bc[_IOC_NR(cmd)]++;
@@ -2063,10 +2014,7 @@ int binder_thread_write(struct binder_proc *proc, struct binder_thread *thread,
 				else
 					list_move_tail(buffer->target_node->async_todo.next, &thread->todo);
 			}
-<<<<<<< HEAD
 			trace_binder_transaction_buffer_release(buffer);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			binder_transaction_buffer_release(proc, buffer, NULL);
 			binder_free_buf(proc, buffer);
 			break;
@@ -2275,10 +2223,7 @@ int binder_thread_write(struct binder_proc *proc, struct binder_thread *thread,
 void binder_stat_br(struct binder_proc *proc, struct binder_thread *thread,
 		    uint32_t cmd)
 {
-<<<<<<< HEAD
 	trace_binder_return(cmd);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (_IOC_NR(cmd) < ARRAY_SIZE(binder_stats.br)) {
 		binder_stats.br[_IOC_NR(cmd)]++;
 		proc->stats.br[_IOC_NR(cmd)]++;
@@ -2325,10 +2270,7 @@ retry:
 			if (put_user(thread->return_error2, (uint32_t __user *)ptr))
 				return -EFAULT;
 			ptr += sizeof(uint32_t);
-<<<<<<< HEAD
 			binder_stat_br(proc, thread, thread->return_error2);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			if (ptr == end)
 				goto done;
 			thread->return_error2 = BR_OK;
@@ -2336,10 +2278,7 @@ retry:
 		if (put_user(thread->return_error, (uint32_t __user *)ptr))
 			return -EFAULT;
 		ptr += sizeof(uint32_t);
-<<<<<<< HEAD
 		binder_stat_br(proc, thread, thread->return_error);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		thread->return_error = BR_OK;
 		goto done;
 	}
@@ -2348,16 +2287,12 @@ retry:
 	thread->looper |= BINDER_LOOPER_STATE_WAITING;
 	if (wait_for_proc_work)
 		proc->ready_threads++;
-<<<<<<< HEAD
 
 	binder_unlock(__func__);
 
 	trace_binder_wait_for_work(wait_for_proc_work,
 				   !!thread->transaction_stack,
 				   !list_empty(&thread->todo));
-=======
-	mutex_unlock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (wait_for_proc_work) {
 		if (!(thread->looper & (BINDER_LOOPER_STATE_REGISTERED |
 					BINDER_LOOPER_STATE_ENTERED))) {
@@ -2381,13 +2316,9 @@ retry:
 		} else
 			ret = wait_event_interruptible(thread->wait, binder_has_thread_work(thread));
 	}
-<<<<<<< HEAD
 
 	binder_lock(__func__);
 
-=======
-	mutex_lock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (wait_for_proc_work)
 		proc->ready_threads--;
 	thread->looper &= ~BINDER_LOOPER_STATE_WAITING;
@@ -2510,10 +2441,7 @@ retry:
 			if (put_user(death->cookie, (void * __user *)ptr))
 				return -EFAULT;
 			ptr += sizeof(void *);
-<<<<<<< HEAD
 			binder_stat_br(proc, thread, cmd);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			binder_debug(BINDER_DEBUG_DEATH_NOTIFICATION,
 				     "binder: %d:%d %s %p\n",
 				      proc->pid, thread->pid,
@@ -2581,10 +2509,7 @@ retry:
 			return -EFAULT;
 		ptr += sizeof(tr);
 
-<<<<<<< HEAD
 		trace_binder_transaction_received(t);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		binder_stat_br(proc, thread, cmd);
 		binder_debug(BINDER_DEBUG_TRANSACTION,
 			     "binder: %d:%d %s %d %d:%d, cmd %d"
@@ -2625,10 +2550,7 @@ done:
 			     proc->pid, thread->pid);
 		if (put_user(BR_SPAWN_LOOPER, (uint32_t __user *)buffer))
 			return -EFAULT;
-<<<<<<< HEAD
 		binder_stat_br(proc, thread, BR_SPAWN_LOOPER);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	return 0;
 }
@@ -2644,7 +2566,6 @@ static void binder_release_work(struct list_head *list)
 			struct binder_transaction *t;
 
 			t = container_of(w, struct binder_transaction, work);
-<<<<<<< HEAD
 			if (t->buffer->target_node && !(t->flags & TF_ONE_WAY))
 				binder_send_failed_reply(t, BR_DEAD_REPLY);
 		} break;
@@ -2653,40 +2574,6 @@ static void binder_release_work(struct list_head *list)
 			binder_stats_deleted(BINDER_STAT_TRANSACTION_COMPLETE);
 		} break;
 		default:
-=======
-			if (t->buffer->target_node &&
-			    !(t->flags & TF_ONE_WAY)) {
-				binder_send_failed_reply(t, BR_DEAD_REPLY);
-			} else {
-				binder_debug(BINDER_DEBUG_DEAD_TRANSACTION,
-					"binder: undelivered transaction %d\n",
-					t->debug_id);
-				t->buffer->transaction = NULL;
-				kfree(t);
-				binder_stats_deleted(BINDER_STAT_TRANSACTION);
-			}
-		} break;
-		case BINDER_WORK_TRANSACTION_COMPLETE: {
-			binder_debug(BINDER_DEBUG_DEAD_TRANSACTION,
-				"binder: undelivered TRANSACTION_COMPLETE\n");
-			kfree(w);
-			binder_stats_deleted(BINDER_STAT_TRANSACTION_COMPLETE);
-		} break;
-		case BINDER_WORK_DEAD_BINDER_AND_CLEAR:
-		case BINDER_WORK_CLEAR_DEATH_NOTIFICATION: {
-			struct binder_ref_death *death;
-
-			death = container_of(w, struct binder_ref_death, work);
-			binder_debug(BINDER_DEBUG_DEAD_TRANSACTION,
-				"binder: undelivered death notification, %p\n",
-				death->cookie);
-			kfree(death);
-			binder_stats_deleted(BINDER_STAT_DEATH);
-		} break;
-		default:
-			pr_err("binder: unexpected work type, %d, not freed\n",
-			       w->type);
->>>>>>> remotes/linux2/linux-3.4.y
 			break;
 		}
 	}
@@ -2776,22 +2663,14 @@ static unsigned int binder_poll(struct file *filp,
 	struct binder_thread *thread = NULL;
 	int wait_for_proc_work;
 
-<<<<<<< HEAD
 	binder_lock(__func__);
 
-=======
-	mutex_lock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	thread = binder_get_thread(proc);
 
 	wait_for_proc_work = thread->transaction_stack == NULL &&
 		list_empty(&thread->todo) && thread->return_error == BR_OK;
-<<<<<<< HEAD
 
 	binder_unlock(__func__);
-=======
-	mutex_unlock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (wait_for_proc_work) {
 		if (binder_has_proc_work(proc, thread))
@@ -2819,7 +2698,6 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 	/*printk(KERN_INFO "binder_ioctl: %d:%d %x %lx\n", proc->pid, current->pid, cmd, arg);*/
 
-<<<<<<< HEAD
 	trace_binder_ioctl(cmd, arg);
 
 	ret = wait_event_interruptible(binder_user_error_wait, binder_stop_on_user_error < 2);
@@ -2827,13 +2705,6 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		goto err_unlocked;
 
 	binder_lock(__func__);
-=======
-	ret = wait_event_interruptible(binder_user_error_wait, binder_stop_on_user_error < 2);
-	if (ret)
-		return ret;
-
-	mutex_lock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	thread = binder_get_thread(proc);
 	if (thread == NULL) {
 		ret = -ENOMEM;
@@ -2858,10 +2729,7 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 		if (bwr.write_size > 0) {
 			ret = binder_thread_write(proc, thread, (void __user *)bwr.write_buffer, bwr.write_size, &bwr.write_consumed);
-<<<<<<< HEAD
 			trace_binder_write_done(ret);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			if (ret < 0) {
 				bwr.read_consumed = 0;
 				if (copy_to_user(ubuf, &bwr, sizeof(bwr)))
@@ -2871,10 +2739,7 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		}
 		if (bwr.read_size > 0) {
 			ret = binder_thread_read(proc, thread, (void __user *)bwr.read_buffer, bwr.read_size, &bwr.read_consumed, filp->f_flags & O_NONBLOCK);
-<<<<<<< HEAD
 			trace_binder_read_done(ret);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			if (!list_empty(&proc->todo))
 				wake_up_interruptible(&proc->wait);
 			if (ret < 0) {
@@ -2905,12 +2770,9 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			ret = -EBUSY;
 			goto err;
 		}
-<<<<<<< HEAD
 		ret = security_binder_set_context_mgr(proc->tsk);
 		if (ret < 0)
 			goto err;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		if (binder_context_mgr_uid != -1) {
 			if (binder_context_mgr_uid != current->cred->euid) {
 				printk(KERN_ERR "binder: BINDER_SET_"
@@ -2956,19 +2818,12 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 err:
 	if (thread)
 		thread->looper &= ~BINDER_LOOPER_STATE_NEED_RETURN;
-<<<<<<< HEAD
 	binder_unlock(__func__);
 	wait_event_interruptible(binder_user_error_wait, binder_stop_on_user_error < 2);
 	if (ret && ret != -ERESTARTSYS)
 		printk(KERN_INFO "binder: %d:%d ioctl %x %lx returned %d\n", proc->pid, current->pid, cmd, arg, ret);
 err_unlocked:
 	trace_binder_ioctl_done(ret);
-=======
-	mutex_unlock(&binder_lock);
-	wait_event_interruptible(binder_user_error_wait, binder_stop_on_user_error < 2);
-	if (ret && ret != -ERESTARTSYS)
-		printk(KERN_INFO "binder: %d:%d ioctl %x %lx returned %d\n", proc->pid, current->pid, cmd, arg, ret);
->>>>>>> remotes/linux2/linux-3.4.y
 	return ret;
 }
 
@@ -3111,24 +2966,16 @@ static int binder_open(struct inode *nodp, struct file *filp)
 	INIT_LIST_HEAD(&proc->todo);
 	init_waitqueue_head(&proc->wait);
 	proc->default_priority = task_nice(current);
-<<<<<<< HEAD
 
 	binder_lock(__func__);
 
-=======
-	mutex_lock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	binder_stats_created(BINDER_STAT_PROC);
 	hlist_add_head(&proc->proc_node, &binder_procs);
 	proc->pid = current->group_leader->pid;
 	INIT_LIST_HEAD(&proc->delivered_death);
 	filp->private_data = proc;
-<<<<<<< HEAD
 
 	binder_unlock(__func__);
-=======
-	mutex_unlock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (binder_debugfs_dir_entry_proc) {
 		char strbuf[11];
@@ -3210,10 +3057,6 @@ static void binder_deferred_release(struct binder_proc *proc)
 		nodes++;
 		rb_erase(&node->rb_node, &proc->nodes);
 		list_del_init(&node->work.entry);
-<<<<<<< HEAD
-=======
-		binder_release_work(&node->async_todo);
->>>>>>> remotes/linux2/linux-3.4.y
 		if (hlist_empty(&node->refs)) {
 			kfree(node);
 			binder_stats_deleted(BINDER_STAT_NODE);
@@ -3252,10 +3095,6 @@ static void binder_deferred_release(struct binder_proc *proc)
 		binder_delete_ref(ref);
 	}
 	binder_release_work(&proc->todo);
-<<<<<<< HEAD
-=======
-	binder_release_work(&proc->delivered_death);
->>>>>>> remotes/linux2/linux-3.4.y
 	buffers = 0;
 
 	while ((n = rb_first(&proc->allocated_buffers))) {
@@ -3316,11 +3155,7 @@ static void binder_deferred_func(struct work_struct *work)
 
 	int defer;
 	do {
-<<<<<<< HEAD
 		binder_lock(__func__);
-=======
-		mutex_lock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 		mutex_lock(&binder_deferred_lock);
 		if (!hlist_empty(&binder_deferred_list)) {
 			proc = hlist_entry(binder_deferred_list.first,
@@ -3347,11 +3182,7 @@ static void binder_deferred_func(struct work_struct *work)
 		if (defer & BINDER_DEFERRED_RELEASE)
 			binder_deferred_release(proc); /* frees proc */
 
-<<<<<<< HEAD
 		binder_unlock(__func__);
-=======
-		mutex_unlock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 		if (files)
 			put_files_struct(files);
 	} while (proc);
@@ -3692,11 +3523,7 @@ static int binder_state_show(struct seq_file *m, void *unused)
 	int do_lock = !binder_debug_no_lock;
 
 	if (do_lock)
-<<<<<<< HEAD
 		binder_lock(__func__);
-=======
-		mutex_lock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	seq_puts(m, "binder state:\n");
 
@@ -3708,11 +3535,7 @@ static int binder_state_show(struct seq_file *m, void *unused)
 	hlist_for_each_entry(proc, pos, &binder_procs, proc_node)
 		print_binder_proc(m, proc, 1);
 	if (do_lock)
-<<<<<<< HEAD
 		binder_unlock(__func__);
-=======
-		mutex_unlock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -3723,11 +3546,7 @@ static int binder_stats_show(struct seq_file *m, void *unused)
 	int do_lock = !binder_debug_no_lock;
 
 	if (do_lock)
-<<<<<<< HEAD
 		binder_lock(__func__);
-=======
-		mutex_lock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	seq_puts(m, "binder stats:\n");
 
@@ -3736,11 +3555,7 @@ static int binder_stats_show(struct seq_file *m, void *unused)
 	hlist_for_each_entry(proc, pos, &binder_procs, proc_node)
 		print_binder_proc_stats(m, proc);
 	if (do_lock)
-<<<<<<< HEAD
 		binder_unlock(__func__);
-=======
-		mutex_unlock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -3751,21 +3566,13 @@ static int binder_transactions_show(struct seq_file *m, void *unused)
 	int do_lock = !binder_debug_no_lock;
 
 	if (do_lock)
-<<<<<<< HEAD
 		binder_lock(__func__);
-=======
-		mutex_lock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	seq_puts(m, "binder transactions:\n");
 	hlist_for_each_entry(proc, pos, &binder_procs, proc_node)
 		print_binder_proc(m, proc, 0);
 	if (do_lock)
-<<<<<<< HEAD
 		binder_unlock(__func__);
-=======
-		mutex_unlock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -3775,19 +3582,11 @@ static int binder_proc_show(struct seq_file *m, void *unused)
 	int do_lock = !binder_debug_no_lock;
 
 	if (do_lock)
-<<<<<<< HEAD
 		binder_lock(__func__);
 	seq_puts(m, "binder proc state:\n");
 	print_binder_proc(m, proc, 1);
 	if (do_lock)
 		binder_unlock(__func__);
-=======
-		mutex_lock(&binder_lock);
-	seq_puts(m, "binder proc state:\n");
-	print_binder_proc(m, proc, 1);
-	if (do_lock)
-		mutex_unlock(&binder_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -3882,10 +3681,7 @@ static int __init binder_init(void)
 
 device_initcall(binder_init);
 
-<<<<<<< HEAD
 #define CREATE_TRACE_POINTS
 #include "binder_trace.h"
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 MODULE_LICENSE("GPL v2");

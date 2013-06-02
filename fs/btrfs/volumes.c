@@ -557,10 +557,6 @@ static int __btrfs_close_devices(struct btrfs_fs_devices *fs_devices)
 		new_device->writeable = 0;
 		new_device->in_fs_metadata = 0;
 		new_device->can_discard = 0;
-<<<<<<< HEAD
-=======
-		spin_lock_init(&new_device->io_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 		list_replace_rcu(&device->dev_list, &new_device->dev_list);
 
 		call_rcu(&device->rcu, free_device);
@@ -594,15 +590,6 @@ int btrfs_close_devices(struct btrfs_fs_devices *fs_devices)
 		__btrfs_close_devices(fs_devices);
 		free_fs_devices(fs_devices);
 	}
-<<<<<<< HEAD
-=======
-	/*
-	 * Wait for rcu kworkers under __btrfs_close_devices
-	 * to finish all blkdev_puts so device is really
-	 * free when umount is done.
-	 */
-	rcu_barrier();
->>>>>>> remotes/linux2/linux-3.4.y
 	return ret;
 }
 

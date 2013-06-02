@@ -292,11 +292,7 @@ struct pcmcia_device_id {
 #define INPUT_DEVICE_ID_LED_MAX		0x0f
 #define INPUT_DEVICE_ID_SND_MAX		0x07
 #define INPUT_DEVICE_ID_FF_MAX		0x7f
-<<<<<<< HEAD
 #define INPUT_DEVICE_ID_SW_MAX		0x20
-=======
-#define INPUT_DEVICE_ID_SW_MAX		0x0f
->>>>>>> remotes/linux2/linux-3.4.y
 
 #define INPUT_DEVICE_ID_MATCH_BUS	1
 #define INPUT_DEVICE_ID_MATCH_VENDOR	2
@@ -449,7 +445,6 @@ struct spi_device_id {
 			__attribute__((aligned(sizeof(kernel_ulong_t))));
 };
 
-<<<<<<< HEAD
 #define SLIMBUS_NAME_SIZE	32
 #define SLIMBUS_MODULE_PREFIX "slim:"
 
@@ -468,8 +463,6 @@ struct spmi_device_id {
 			__attribute__((aligned(sizeof(kernel_ulong_t))));
 };
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /* dmi */
 enum dmi_field {
 	DMI_NONE,

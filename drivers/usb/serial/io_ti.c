@@ -2770,10 +2770,6 @@ static struct usb_serial_driver edgeport_2port_device = {
 	.set_termios		= edge_set_termios,
 	.tiocmget		= edge_tiocmget,
 	.tiocmset		= edge_tiocmset,
-<<<<<<< HEAD
-=======
-	.get_icount		= edge_get_icount,
->>>>>>> remotes/linux2/linux-3.4.y
 	.write			= edge_write,
 	.write_room		= edge_write_room,
 	.chars_in_buffer	= edge_chars_in_buffer,

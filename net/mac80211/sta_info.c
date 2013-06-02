@@ -738,13 +738,8 @@ int __must_check __sta_info_destroy(struct sta_info *sta)
 
 	for (ac = 0; ac < IEEE80211_NUM_ACS; ac++) {
 		local->total_ps_buffered -= skb_queue_len(&sta->ps_tx_buf[ac]);
-<<<<<<< HEAD
 		__skb_queue_purge(&sta->ps_tx_buf[ac]);
 		__skb_queue_purge(&sta->tx_filtered[ac]);
-=======
-		ieee80211_purge_tx_queue(&local->hw, &sta->ps_tx_buf[ac]);
-		ieee80211_purge_tx_queue(&local->hw, &sta->tx_filtered[ac]);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 #ifdef CONFIG_MAC80211_MESH
@@ -779,11 +774,7 @@ int __must_check __sta_info_destroy(struct sta_info *sta)
 		tid_tx = rcu_dereference_raw(sta->ampdu_mlme.tid_tx[i]);
 		if (!tid_tx)
 			continue;
-<<<<<<< HEAD
 		__skb_queue_purge(&tid_tx->pending);
-=======
-		ieee80211_purge_tx_queue(&local->hw, &tid_tx->pending);
->>>>>>> remotes/linux2/linux-3.4.y
 		kfree(tid_tx);
 	}
 
@@ -853,11 +844,7 @@ void sta_info_init(struct ieee80211_local *local)
 
 void sta_info_stop(struct ieee80211_local *local)
 {
-<<<<<<< HEAD
 	del_timer(&local->sta_cleanup);
-=======
-	del_timer_sync(&local->sta_cleanup);
->>>>>>> remotes/linux2/linux-3.4.y
 	sta_info_flush(local, NULL);
 }
 
@@ -972,10 +959,6 @@ void ieee80211_sta_ps_deliver_wakeup(struct sta_info *sta)
 	struct ieee80211_local *local = sdata->local;
 	struct sk_buff_head pending;
 	int filtered = 0, buffered = 0, ac;
-<<<<<<< HEAD
-=======
-	unsigned long flags;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	clear_sta_flag(sta, WLAN_STA_SP);
 
@@ -991,24 +974,12 @@ void ieee80211_sta_ps_deliver_wakeup(struct sta_info *sta)
 	for (ac = 0; ac < IEEE80211_NUM_ACS; ac++) {
 		int count = skb_queue_len(&pending), tmp;
 
-<<<<<<< HEAD
 		skb_queue_splice_tail_init(&sta->tx_filtered[ac], &pending);
-=======
-		spin_lock_irqsave(&sta->tx_filtered[ac].lock, flags);
-		skb_queue_splice_tail_init(&sta->tx_filtered[ac], &pending);
-		spin_unlock_irqrestore(&sta->tx_filtered[ac].lock, flags);
->>>>>>> remotes/linux2/linux-3.4.y
 		tmp = skb_queue_len(&pending);
 		filtered += tmp - count;
 		count = tmp;
 
-<<<<<<< HEAD
 		skb_queue_splice_tail_init(&sta->ps_tx_buf[ac], &pending);
-=======
-		spin_lock_irqsave(&sta->ps_tx_buf[ac].lock, flags);
-		skb_queue_splice_tail_init(&sta->ps_tx_buf[ac], &pending);
-		spin_unlock_irqrestore(&sta->ps_tx_buf[ac].lock, flags);
->>>>>>> remotes/linux2/linux-3.4.y
 		tmp = skb_queue_len(&pending);
 		buffered += tmp - count;
 	}

@@ -269,11 +269,7 @@ static struct cpu_spec __initdata cpu_specs[] = {
 		.cpu_features		= CPU_FTRS_PPC970,
 		.cpu_user_features	= COMMON_USER_POWER4 |
 			PPC_FEATURE_HAS_ALTIVEC_COMP,
-<<<<<<< HEAD
 		.mmu_features		= MMU_FTR_HPTE_TABLE,
-=======
-		.mmu_features		= MMU_FTRS_PPC970,
->>>>>>> remotes/linux2/linux-3.4.y
 		.icache_bsize		= 128,
 		.dcache_bsize		= 128,
 		.num_pmcs		= 8,

@@ -29,22 +29,6 @@
 
 #ifdef CONFIG_X86_64
 static DEFINE_PER_CPU(unsigned char, is_idle);
-<<<<<<< HEAD
-=======
-static ATOMIC_NOTIFIER_HEAD(idle_notifier);
-
-void idle_notifier_register(struct notifier_block *n)
-{
-	atomic_notifier_chain_register(&idle_notifier, n);
-}
-EXPORT_SYMBOL_GPL(idle_notifier_register);
-
-void idle_notifier_unregister(struct notifier_block *n)
-{
-	atomic_notifier_chain_unregister(&idle_notifier, n);
-}
-EXPORT_SYMBOL_GPL(idle_notifier_unregister);
->>>>>>> remotes/linux2/linux-3.4.y
 #endif
 
 struct kmem_cache *task_xstate_cachep;
@@ -381,22 +365,14 @@ static inline void play_dead(void)
 void enter_idle(void)
 {
 	percpu_write(is_idle, 1);
-<<<<<<< HEAD
 	idle_notifier_call_chain(IDLE_START);
-=======
-	atomic_notifier_call_chain(&idle_notifier, IDLE_START, NULL);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void __exit_idle(void)
 {
 	if (x86_test_and_clear_bit_percpu(0, is_idle) == 0)
 		return;
-<<<<<<< HEAD
 	idle_notifier_call_chain(IDLE_END);
-=======
-	atomic_notifier_call_chain(&idle_notifier, IDLE_END, NULL);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /* Called from interrupts to signify idle end */

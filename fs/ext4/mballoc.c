@@ -736,11 +736,8 @@ void ext4_mb_generate_buddy(struct super_block *sb,
 	grp->bb_fragments = fragments;
 
 	if (free != grp->bb_free) {
-<<<<<<< HEAD
 		print_block_data(sb, 0, bitmap, 0, EXT4_BLOCK_SIZE(sb));
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		ext4_grp_locked_error(sb, group, 0, 0,
 				      "%u clusters in bitmap, %u in gd",
 				      free, grp->bb_free);
@@ -1299,11 +1296,8 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
 
 			blocknr = ext4_group_first_block_no(sb, e4b->bd_group);
 			blocknr += EXT4_C2B(EXT4_SB(sb), block);
-<<<<<<< HEAD
 			print_block_data(sb, blocknr, e4b->bd_bitmap, 0
 				, EXT4_BLOCK_SIZE(sb));
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			ext4_grp_locked_error(sb, e4b->bd_group,
 					      inode ? inode->i_ino : 0,
 					      blocknr,
@@ -1990,15 +1984,7 @@ repeat:
 		group = ac->ac_g_ex.fe_group;
 
 		for (i = 0; i < ngroups; group++, i++) {
-<<<<<<< HEAD
 			if (group == ngroups)
-=======
-			/*
-			 * Artificially restricted ngroups for non-extent
-			 * files makes group > ngroups possible on first loop.
-			 */
-			if (group >= ngroups)
->>>>>>> remotes/linux2/linux-3.4.y
 				group = 0;
 
 			/* This now checks without needing the buddy page */
@@ -2831,13 +2817,8 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
 	if (sbi->s_log_groups_per_flex) {
 		ext4_group_t flex_group = ext4_flex_group(sbi,
 							  ac->ac_b_ex.fe_group);
-<<<<<<< HEAD
 		atomic_sub(ac->ac_b_ex.fe_len,
 			   &sbi->s_flex_groups[flex_group].free_clusters);
-=======
-		atomic64_sub(ac->ac_b_ex.fe_len,
-			     &sbi->s_flex_groups[flex_group].free_clusters);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
@@ -3456,11 +3437,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
 			win = offs;
 
 		ac->ac_b_ex.fe_logical = ac->ac_o_ex.fe_logical -
-<<<<<<< HEAD
 			EXT4_B2C(sbi, win);
-=======
-			EXT4_NUM_B2C(sbi, win);
->>>>>>> remotes/linux2/linux-3.4.y
 		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
 		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
 	}
@@ -4153,11 +4130,7 @@ static void ext4_mb_add_n_trim(struct ext4_allocation_context *ac)
 		/* The max size of hash table is PREALLOC_TB_SIZE */
 		order = PREALLOC_TB_SIZE - 1;
 	/* Add the prealloc space to lg */
-<<<<<<< HEAD
 	rcu_read_lock();
-=======
-	spin_lock(&lg->lg_prealloc_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 	list_for_each_entry_rcu(tmp_pa, &lg->lg_prealloc_list[order],
 						pa_inode_list) {
 		spin_lock(&tmp_pa->pa_lock);
@@ -4181,20 +4154,12 @@ static void ext4_mb_add_n_trim(struct ext4_allocation_context *ac)
 	if (!added)
 		list_add_tail_rcu(&pa->pa_inode_list,
 					&lg->lg_prealloc_list[order]);
-<<<<<<< HEAD
 	rcu_read_unlock();
-=======
-	spin_unlock(&lg->lg_prealloc_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Now trim the list to be not more than 8 elements */
 	if (lg_prealloc_count > 8) {
 		ext4_mb_discard_lg_preallocations(sb, lg,
-<<<<<<< HEAD
 						order, lg_prealloc_count);
-=======
-						  order, lg_prealloc_count);
->>>>>>> remotes/linux2/linux-3.4.y
 		return;
 	}
 	return ;
@@ -4475,19 +4440,11 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
 	node = rb_prev(new_node);
 	if (node) {
 		entry = rb_entry(node, struct ext4_free_data, efd_node);
-<<<<<<< HEAD
 		if (can_merge(entry, new_entry)) {
 			new_entry->efd_start_cluster = entry->efd_start_cluster;
 			new_entry->efd_count += entry->efd_count;
 			rb_erase(node, &(db->bb_free_root));
 			ext4_journal_callback_del(handle, &entry->efd_jce);
-=======
-		if (can_merge(entry, new_entry) &&
-		    ext4_journal_callback_try_del(handle, &entry->efd_jce)) {
-			new_entry->efd_start_cluster = entry->efd_start_cluster;
-			new_entry->efd_count += entry->efd_count;
-			rb_erase(node, &(db->bb_free_root));
->>>>>>> remotes/linux2/linux-3.4.y
 			kmem_cache_free(ext4_free_data_cachep, entry);
 		}
 	}
@@ -4495,17 +4452,10 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
 	node = rb_next(new_node);
 	if (node) {
 		entry = rb_entry(node, struct ext4_free_data, efd_node);
-<<<<<<< HEAD
 		if (can_merge(new_entry, entry)) {
 			new_entry->efd_count += entry->efd_count;
 			rb_erase(node, &(db->bb_free_root));
 			ext4_journal_callback_del(handle, &entry->efd_jce);
-=======
-		if (can_merge(new_entry, entry) &&
-		    ext4_journal_callback_try_del(handle, &entry->efd_jce)) {
-			new_entry->efd_count += entry->efd_count;
-			rb_erase(node, &(db->bb_free_root));
->>>>>>> remotes/linux2/linux-3.4.y
 			kmem_cache_free(ext4_free_data_cachep, entry);
 		}
 	}
@@ -4631,11 +4581,7 @@ do_more:
 			EXT4_BLOCKS_PER_GROUP(sb);
 		count -= overflow;
 	}
-<<<<<<< HEAD
 	count_clusters = EXT4_B2C(sbi, count);
-=======
-	count_clusters = EXT4_NUM_B2C(sbi, count);
->>>>>>> remotes/linux2/linux-3.4.y
 	bitmap_bh = ext4_read_block_bitmap(sb, block_group);
 	if (!bitmap_bh) {
 		err = -EIO;
@@ -4725,13 +4671,8 @@ do_more:
 
 	if (sbi->s_log_groups_per_flex) {
 		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
-<<<<<<< HEAD
 		atomic_add(count_clusters,
 			   &sbi->s_flex_groups[flex_group].free_clusters);
-=======
-		atomic64_add(count_clusters,
-			     &sbi->s_flex_groups[flex_group].free_clusters);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	ext4_mb_unload_buddy(&e4b);
@@ -4871,21 +4812,12 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
 	desc->bg_checksum = ext4_group_desc_csum(sbi, block_group, desc);
 	ext4_unlock_group(sb, block_group);
 	percpu_counter_add(&sbi->s_freeclusters_counter,
-<<<<<<< HEAD
 			   EXT4_B2C(sbi, blocks_freed));
 
 	if (sbi->s_log_groups_per_flex) {
 		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
 		atomic_add(EXT4_B2C(sbi, blocks_freed),
 			   &sbi->s_flex_groups[flex_group].free_clusters);
-=======
-			   EXT4_NUM_B2C(sbi, blocks_freed));
-
-	if (sbi->s_log_groups_per_flex) {
-		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
-		atomic64_add(EXT4_NUM_B2C(sbi, blocks_freed),
-			     &sbi->s_flex_groups[flex_group].free_clusters);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	ext4_mb_unload_buddy(&e4b);
@@ -5056,14 +4988,8 @@ int ext4_trim_fs(struct super_block *sb, struct fstrim_range *range)
 	end = start + (range->len >> sb->s_blocksize_bits) - 1;
 	minlen = range->minlen >> sb->s_blocksize_bits;
 
-<<<<<<< HEAD
 	if (unlikely(minlen > EXT4_CLUSTERS_PER_GROUP(sb)) ||
 	    unlikely(start >= max_blks))
-=======
-	if (minlen > EXT4_CLUSTERS_PER_GROUP(sb) ||
-	    start >= max_blks ||
-	    range->len < sb->s_blocksize)
->>>>>>> remotes/linux2/linux-3.4.y
 		return -EINVAL;
 	if (end >= max_blks)
 		end = max_blks - 1;

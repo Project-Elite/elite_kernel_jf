@@ -13,10 +13,7 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/of.h>
-<<<<<<< HEAD
 #include <linux/string.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/regulator/machine.h>
 
 static void of_get_regulation_constraints(struct device_node *np,
@@ -65,7 +62,6 @@ static void of_get_regulation_constraints(struct device_node *np,
 		constraints->valid_ops_mask |= REGULATOR_CHANGE_STATUS;
 }
 
-<<<<<<< HEAD
 static const char *consumer_supply_prop_name = "qcom,consumer-supplies";
 #define MAX_DEV_NAME_LEN 256
 /*
@@ -131,8 +127,6 @@ static int of_get_qcom_regulator_init_data(struct device *dev,
 	return 0;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /**
  * of_get_regulator_init_data - extract regulator_init_data structure info
  * @dev: device requesting for regulator_init_data
@@ -145,10 +139,7 @@ struct regulator_init_data *of_get_regulator_init_data(struct device *dev,
 						struct device_node *node)
 {
 	struct regulator_init_data *init_data;
-<<<<<<< HEAD
 	int rc;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!node)
 		return NULL;
@@ -158,15 +149,12 @@ struct regulator_init_data *of_get_regulator_init_data(struct device *dev,
 		return NULL; /* Out of memory? */
 
 	of_get_regulation_constraints(node, &init_data);
-<<<<<<< HEAD
 	rc = of_get_qcom_regulator_init_data(dev, &init_data);
 	if (rc) {
 		devm_kfree(dev, init_data);
 		return NULL;
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return init_data;
 }
 EXPORT_SYMBOL_GPL(of_get_regulator_init_data);

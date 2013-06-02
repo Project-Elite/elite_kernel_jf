@@ -95,7 +95,6 @@ acpi_status acpi_hw_legacy_sleep(u8 sleep_state, u8 flags)
 		return_ACPI_STATUS(status);
 	}
 
-<<<<<<< HEAD
 	if (sleep_state != ACPI_STATE_S5) {
 		/*
 		 * Disable BM arbitration. This feature is contained within an
@@ -108,8 +107,6 @@ acpi_status acpi_hw_legacy_sleep(u8 sleep_state, u8 flags)
 		}
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * 1) Disable/Clear all GPEs
 	 * 2) Enable all wakeup GPEs
@@ -367,7 +364,6 @@ acpi_status acpi_hw_legacy_wake(u8 sleep_state, u8 flags)
 				    [ACPI_EVENT_POWER_BUTTON].
 				    status_register_id, ACPI_CLEAR_STATUS);
 
-<<<<<<< HEAD
 	/*
 	 * Enable BM arbitration. This feature is contained within an
 	 * optional register (PM2 Control), so ignore a BAD_ADDRESS
@@ -378,8 +374,6 @@ acpi_status acpi_hw_legacy_wake(u8 sleep_state, u8 flags)
 		return_ACPI_STATUS(status);
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	acpi_hw_execute_sleep_method(METHOD_PATHNAME__SST, ACPI_SST_WORKING);
 	return_ACPI_STATUS(status);
 }

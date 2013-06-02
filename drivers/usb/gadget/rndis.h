@@ -235,10 +235,7 @@ typedef struct rndis_params
 	struct net_device	*dev;
 
 	u32			vendorID;
-<<<<<<< HEAD
 	u8			max_pkt_per_xfer;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	const char		*vendorDescr;
 	void			(*resp_avail)(void *v);
 	void			*v;

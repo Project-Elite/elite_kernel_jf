@@ -14,16 +14,11 @@
 #include <linux/percpu.h>
 
 #include <asm/mmu_context.h>
-<<<<<<< HEAD
 #include <asm/thread_notify.h>
 #include <asm/tlbflush.h>
 
 #include <mach/msm_rtb.h>
 
-=======
-#include <asm/tlbflush.h>
-
->>>>>>> remotes/linux2/linux-3.4.y
 static DEFINE_RAW_SPINLOCK(cpu_asid_lock);
 unsigned int cpu_last_asid = ASID_FIRST_VERSION;
 #ifdef CONFIG_SMP
@@ -45,7 +40,6 @@ DEFINE_PER_CPU(struct mm_struct *, current_mm);
 	asm("	mcr	p15, 0, %0, c13, c0, 1\n" : : "r" (asid))
 #endif
 
-<<<<<<< HEAD
 static void write_contextidr(u32 contextidr)
 {
 	uncached_logk(LOGK_CTXID, (void *)contextidr);
@@ -107,8 +101,6 @@ static void set_asid(unsigned int asid)
 }
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * We fork()ed a process, and we need a new context for the child
  * to run in.  We reserve version 0 for initial tasks so we will
@@ -124,12 +116,7 @@ void __init_new_context(struct task_struct *tsk, struct mm_struct *mm)
 static void flush_context(void)
 {
 	/* set the reserved ASID before flushing the TLB */
-<<<<<<< HEAD
 	set_asid(0);
-=======
-	cpu_set_asid(0);
-	isb();
->>>>>>> remotes/linux2/linux-3.4.y
 	local_flush_tlb_all();
 	if (icache_is_vivt_asid_tagged()) {
 		__flush_icache_all();
@@ -190,12 +177,7 @@ static void reset_context(void *info)
 	set_mm_context(mm, asid);
 
 	/* set the new ASID */
-<<<<<<< HEAD
 	set_asid(mm->context.id);
-=======
-	cpu_set_asid(mm->context.id);
-	isb();
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 #else

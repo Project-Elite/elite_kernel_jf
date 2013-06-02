@@ -1,10 +1,7 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
    Copyright (C) 2000-2001 Qualcomm Incorporated
-<<<<<<< HEAD
    Copyright (c) 2011, The Linux Foundation. All rights reserved.
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -34,22 +31,15 @@
 #define SCO_DEFAULT_FLUSH_TO	0xFFFF
 
 #define SCO_CONN_TIMEOUT	(HZ * 40)
-<<<<<<< HEAD
 #define SCO_DISCONN_TIMEOUT	(HZ * 20)
-=======
-#define SCO_DISCONN_TIMEOUT	(HZ * 2)
->>>>>>> remotes/linux2/linux-3.4.y
 #define SCO_CONN_IDLE_TIMEOUT	(HZ * 60)
 
 /* SCO socket address */
 struct sockaddr_sco {
 	sa_family_t	sco_family;
 	bdaddr_t	sco_bdaddr;
-<<<<<<< HEAD
 	__u16		sco_pkt_type;
 	__s8		is_wbs;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /* SCO socket options */
@@ -85,12 +75,8 @@ struct sco_conn {
 
 struct sco_pinfo {
 	struct bt_sock	bt;
-<<<<<<< HEAD
 	__u16		pkt_type;
 
-=======
-	__u32		flags;
->>>>>>> remotes/linux2/linux-3.4.y
 	struct sco_conn	*conn;
 };
 

@@ -85,10 +85,7 @@ repeat:
 		crst_table_free(mm, table);
 	if (mm->context.asce_limit < limit)
 		goto repeat;
-<<<<<<< HEAD
 	update_mm(mm, current);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -96,12 +93,9 @@ void crst_table_downgrade(struct mm_struct *mm, unsigned long limit)
 {
 	pgd_t *pgd;
 
-<<<<<<< HEAD
 	if (mm->context.asce_limit <= limit)
 		return;
 	__tlb_flush_mm(mm);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	while (mm->context.asce_limit > limit) {
 		pgd = mm->pgd;
 		switch (pgd_val(*pgd) & _REGION_ENTRY_TYPE_MASK) {
@@ -124,10 +118,7 @@ void crst_table_downgrade(struct mm_struct *mm, unsigned long limit)
 		mm->task_size = mm->context.asce_limit;
 		crst_table_free(mm, (unsigned long *) pgd);
 	}
-<<<<<<< HEAD
 	update_mm(mm, current);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 }
 #endif
 

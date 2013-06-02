@@ -346,11 +346,7 @@ retry:
 	 */
 	err = ubi_scan_add_used(ubi, si, new_seb->pnum, new_seb->ec,
 				vid_hdr, 0);
-<<<<<<< HEAD
 	kfree(new_seb);
-=======
-	kmem_cache_free(si->scan_leb_slab, new_seb);
->>>>>>> remotes/linux2/linux-3.4.y
 	ubi_free_vid_hdr(ubi, vid_hdr);
 	return err;
 
@@ -363,11 +359,7 @@ write_error:
 		list_add(&new_seb->u.list, &si->erase);
 		goto retry;
 	}
-<<<<<<< HEAD
 	kfree(new_seb);
-=======
-	kmem_cache_free(si->scan_leb_slab, new_seb);
->>>>>>> remotes/linux2/linux-3.4.y
 out_free:
 	ubi_free_vid_hdr(ubi, vid_hdr);
 	return err;

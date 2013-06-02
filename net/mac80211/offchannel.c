@@ -103,12 +103,8 @@ static void ieee80211_offchannel_ps_disable(struct ieee80211_sub_if_data *sdata)
 	ieee80211_sta_reset_conn_monitor(sdata);
 }
 
-<<<<<<< HEAD
 void ieee80211_offchannel_stop_vifs(struct ieee80211_local *local,
 				    bool offchannel_ps_enable)
-=======
-void ieee80211_offchannel_stop_vifs(struct ieee80211_local *local)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct ieee80211_sub_if_data *sdata;
 
@@ -133,12 +129,8 @@ void ieee80211_offchannel_stop_vifs(struct ieee80211_local *local)
 
 		if (sdata->vif.type != NL80211_IFTYPE_MONITOR) {
 			netif_tx_stop_all_queues(sdata->dev);
-<<<<<<< HEAD
 			if (offchannel_ps_enable &&
 			    (sdata->vif.type == NL80211_IFTYPE_STATION) &&
-=======
-			if (sdata->vif.type == NL80211_IFTYPE_STATION &&
->>>>>>> remotes/linux2/linux-3.4.y
 			    sdata->u.mgd.associated)
 				ieee80211_offchannel_ps_enable(sdata, true);
 		}
@@ -146,12 +138,8 @@ void ieee80211_offchannel_stop_vifs(struct ieee80211_local *local)
 	mutex_unlock(&local->iflist_mtx);
 }
 
-<<<<<<< HEAD
 void ieee80211_offchannel_return(struct ieee80211_local *local,
 				 bool offchannel_ps_disable)
-=======
-void ieee80211_offchannel_return(struct ieee80211_local *local)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct ieee80211_sub_if_data *sdata;
 
@@ -164,17 +152,11 @@ void ieee80211_offchannel_return(struct ieee80211_local *local)
 			continue;
 
 		/* Tell AP we're back */
-<<<<<<< HEAD
 		if (offchannel_ps_disable &&
 		    sdata->vif.type == NL80211_IFTYPE_STATION) {
 			if (sdata->u.mgd.associated)
 				ieee80211_offchannel_ps_disable(sdata);
 		}
-=======
-		if (sdata->vif.type == NL80211_IFTYPE_STATION &&
-		    sdata->u.mgd.associated)
-			ieee80211_offchannel_ps_disable(sdata);
->>>>>>> remotes/linux2/linux-3.4.y
 
 		if (sdata->vif.type != NL80211_IFTYPE_MONITOR) {
 			/*

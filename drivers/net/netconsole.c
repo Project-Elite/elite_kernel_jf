@@ -626,10 +626,6 @@ static int netconsole_netdev_event(struct notifier_block *this,
 		goto done;
 
 	spin_lock_irqsave(&target_list_lock, flags);
-<<<<<<< HEAD
-=======
-restart:
->>>>>>> remotes/linux2/linux-3.4.y
 	list_for_each_entry(nt, &target_list, list) {
 		netconsole_target_get(nt);
 		if (nt->np.dev == dev) {
@@ -641,7 +637,6 @@ restart:
 			case NETDEV_JOIN:
 			case NETDEV_UNREGISTER:
 				/*
-<<<<<<< HEAD
 				 * rtnl_lock already held
 				 */
 				if (nt->np.dev) {
@@ -658,20 +653,6 @@ restart:
 				nt->enabled = 0;
 				stopped = true;
 				break;
-=======
-				 * we might sleep in __netpoll_cleanup()
-				 * rtnl_lock already held
-				 */
-				spin_unlock_irqrestore(&target_list_lock, flags);
-				__netpoll_cleanup(&nt->np);
-				spin_lock_irqsave(&target_list_lock, flags);
-				dev_put(nt->np.dev);
-				nt->np.dev = NULL;
-				nt->enabled = 0;
-				stopped = true;
-				netconsole_target_put(nt);
-				goto restart;
->>>>>>> remotes/linux2/linux-3.4.y
 			}
 		}
 		netconsole_target_put(nt);

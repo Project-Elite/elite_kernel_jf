@@ -769,12 +769,6 @@ BYTE    byPwr = pDevice->byCCKPwr;
         return TRUE;
     }
 
-<<<<<<< HEAD
-=======
-	if (uCH == 0)
-		return -EINVAL;
-
->>>>>>> remotes/linux2/linux-3.4.y
     switch (uRATE) {
     case RATE_1M:
     case RATE_2M:

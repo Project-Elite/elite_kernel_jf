@@ -16,10 +16,6 @@ struct pcap_subdev {
 struct pcap_platform_data {
 	unsigned int irq_base;
 	unsigned int config;
-<<<<<<< HEAD
-=======
-	int gpio;
->>>>>>> remotes/linux2/linux-3.4.y
 	void (*init) (void *);	/* board specific init */
 	int num_subdevs;
 	struct pcap_subdev *subdevs;

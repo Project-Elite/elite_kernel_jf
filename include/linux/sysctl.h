@@ -153,10 +153,7 @@ enum
 	KERN_MAX_LOCK_DEPTH=74, /* int: rtmutex's maximum lock depth */
 	KERN_NMI_WATCHDOG=75, /* int: enable/disable nmi watchdog */
 	KERN_PANIC_ON_NMI=76, /* int: whether we will panic on an unrecovered */
-<<<<<<< HEAD
 	KERN_BOOT_REASON = 77, /* int: identify reason system was booted */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 

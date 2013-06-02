@@ -912,7 +912,6 @@ void __cpuinit setup_cpu(int boot)
 
 #ifdef CONFIG_BLK_DEV_INITRD
 
-<<<<<<< HEAD
 /*
  * Note that the kernel can potentially support other compression
  * techniques than gz, though we don't do so by default.  If we ever
@@ -922,10 +921,6 @@ void __cpuinit setup_cpu(int boot)
  */
 static int __initdata set_initramfs_file;
 static char __initdata initramfs_file[128] = "initramfs.cpio.gz";
-=======
-static int __initdata set_initramfs_file;
-static char __initdata initramfs_file[128] = "initramfs";
->>>>>>> remotes/linux2/linux-3.4.y
 
 static int __init setup_initramfs_file(char *str)
 {
@@ -939,15 +934,9 @@ static int __init setup_initramfs_file(char *str)
 early_param("initramfs_file", setup_initramfs_file);
 
 /*
-<<<<<<< HEAD
  * We look for an "initramfs.cpio.gz" file in the hvfs.
  * If there is one, we allocate some memory for it and it will be
  * unpacked to the initramfs.
-=======
- * We look for a file called "initramfs" in the hvfs.  If there is one, we
- * allocate some memory for it and it will be unpacked to the initramfs.
- * If it's compressed, the initd code will uncompress it first.
->>>>>>> remotes/linux2/linux-3.4.y
  */
 static void __init load_hv_initrd(void)
 {
@@ -957,23 +946,10 @@ static void __init load_hv_initrd(void)
 
 	fd = hv_fs_findfile((HV_VirtAddr) initramfs_file);
 	if (fd == HV_ENOENT) {
-<<<<<<< HEAD
 		if (set_initramfs_file)
 			pr_warning("No such hvfs initramfs file '%s'\n",
 				   initramfs_file);
 		return;
-=======
-		if (set_initramfs_file) {
-			pr_warning("No such hvfs initramfs file '%s'\n",
-				   initramfs_file);
-			return;
-		} else {
-			/* Try old backwards-compatible name. */
-			fd = hv_fs_findfile((HV_VirtAddr)"initramfs.cpio.gz");
-			if (fd == HV_ENOENT)
-				return;
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	BUG_ON(fd < 0);
 	stat = hv_fs_fstat(fd);

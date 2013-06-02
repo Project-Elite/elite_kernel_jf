@@ -316,10 +316,7 @@ static bool svc_xprt_has_something_to_do(struct svc_xprt *xprt)
  */
 void svc_xprt_enqueue(struct svc_xprt *xprt)
 {
-<<<<<<< HEAD
 	struct svc_serv	*serv = xprt->xpt_server;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	struct svc_pool *pool;
 	struct svc_rqst	*rqstp;
 	int cpu;
@@ -365,11 +362,8 @@ void svc_xprt_enqueue(struct svc_xprt *xprt)
 				rqstp, rqstp->rq_xprt);
 		rqstp->rq_xprt = xprt;
 		svc_xprt_get(xprt);
-<<<<<<< HEAD
 		rqstp->rq_reserved = serv->sv_max_mesg;
 		atomic_add(rqstp->rq_reserved, &xprt->xpt_reserved);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		pool->sp_stats.threads_woken++;
 		wake_up(&rqstp->rq_wait);
 	} else {
@@ -649,11 +643,8 @@ int svc_recv(struct svc_rqst *rqstp, long timeout)
 	if (xprt) {
 		rqstp->rq_xprt = xprt;
 		svc_xprt_get(xprt);
-<<<<<<< HEAD
 		rqstp->rq_reserved = serv->sv_max_mesg;
 		atomic_add(rqstp->rq_reserved, &xprt->xpt_reserved);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 		/* As there is a shortage of threads and this request
 		 * had to be queued, don't allow the thread to wait so
@@ -750,11 +741,6 @@ int svc_recv(struct svc_rqst *rqstp, long timeout)
 		else
 			len = xprt->xpt_ops->xpo_recvfrom(rqstp);
 		dprintk("svc: got len=%d\n", len);
-<<<<<<< HEAD
-=======
-		rqstp->rq_reserved = serv->sv_max_mesg;
-		atomic_add(rqstp->rq_reserved, &xprt->xpt_reserved);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	svc_xprt_received(xprt);
 
@@ -811,12 +797,7 @@ int svc_send(struct svc_rqst *rqstp)
 
 	/* Grab mutex to serialize outgoing data. */
 	mutex_lock(&xprt->xpt_mutex);
-<<<<<<< HEAD
 	if (test_bit(XPT_DEAD, &xprt->xpt_flags))
-=======
-	if (test_bit(XPT_DEAD, &xprt->xpt_flags)
-			|| test_bit(XPT_CLOSE, &xprt->xpt_flags))
->>>>>>> remotes/linux2/linux-3.4.y
 		len = -ENOTCONN;
 	else
 		len = xprt->xpt_ops->xpo_sendto(rqstp);
@@ -838,10 +819,7 @@ static void svc_age_temp_xprts(unsigned long closure)
 	struct svc_serv *serv = (struct svc_serv *)closure;
 	struct svc_xprt *xprt;
 	struct list_head *le, *next;
-<<<<<<< HEAD
 	LIST_HEAD(to_be_aged);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	dprintk("svc_age_temp_xprts\n");
 
@@ -862,7 +840,6 @@ static void svc_age_temp_xprts(unsigned long closure)
 		if (atomic_read(&xprt->xpt_ref.refcount) > 1 ||
 		    test_bit(XPT_BUSY, &xprt->xpt_flags))
 			continue;
-<<<<<<< HEAD
 		svc_xprt_get(xprt);
 		list_move(le, &to_be_aged);
 		set_bit(XPT_CLOSE, &xprt->xpt_flags);
@@ -876,22 +853,12 @@ static void svc_age_temp_xprts(unsigned long closure)
 		list_del_init(le);
 		xprt = list_entry(le, struct svc_xprt, xpt_list);
 
-=======
-		list_del_init(le);
-		set_bit(XPT_CLOSE, &xprt->xpt_flags);
-		set_bit(XPT_DETACHED, &xprt->xpt_flags);
->>>>>>> remotes/linux2/linux-3.4.y
 		dprintk("queuing xprt %p for closing\n", xprt);
 
 		/* a thread will dequeue and close it soon */
 		svc_xprt_enqueue(xprt);
-<<<<<<< HEAD
 		svc_xprt_put(xprt);
 	}
-=======
-	}
-	spin_unlock_bh(&serv->sv_lock);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	mod_timer(&serv->sv_temptimer, jiffies + svc_conn_age_period * HZ);
 }

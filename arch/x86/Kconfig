@@ -31,10 +31,7 @@ config X86
 	select ARCH_WANT_OPTIONAL_GPIOLIB
 	select ARCH_WANT_FRAME_POINTERS
 	select HAVE_DMA_ATTRS
-<<<<<<< HEAD
 	select HAVE_DMA_CONTIGUOUS if !SWIOTLB
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	select HAVE_KRETPROBES
 	select HAVE_OPTPROBES
 	select HAVE_FTRACE_MCOUNT_RECORD
@@ -1247,13 +1244,10 @@ config HAVE_ARCH_BOOTMEM
 	def_bool y
 	depends on X86_32 && NUMA
 
-<<<<<<< HEAD
 config HAVE_ARCH_ALLOC_REMAP
 	def_bool y
 	depends on X86_32 && NUMA
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 config ARCH_HAVE_MEMORY_PRESENT
 	def_bool y
 	depends on X86_32 && DISCONTIGMEM

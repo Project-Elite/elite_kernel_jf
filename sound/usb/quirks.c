@@ -387,21 +387,11 @@ static int snd_usb_fasttrackpro_boot_quirk(struct usb_device *dev)
 		 * rules
 		 */
 		err = usb_driver_set_configuration(dev, 2);
-<<<<<<< HEAD
 		if (err < 0) {
 			snd_printdd("error usb_driver_set_configuration: %d\n",
 				    err);
 			return -ENODEV;
 		}
-=======
-		if (err < 0)
-			snd_printdd("error usb_driver_set_configuration: %d\n",
-				    err);
-		/* Always return an error, so that we stop creating a device
-		   that will just be destroyed and recreated with a new
-		   configuration */
-		return -ENODEV;
->>>>>>> remotes/linux2/linux-3.4.y
 	} else
 		snd_printk(KERN_INFO "usb-audio: Fast Track Pro config OK\n");
 
@@ -494,11 +484,7 @@ static int snd_usb_nativeinstruments_boot_quirk(struct usb_device *dev)
 {
 	int ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
 				  0xaf, USB_TYPE_VENDOR | USB_RECIP_DEVICE,
-<<<<<<< HEAD
 				  cpu_to_le16(1), 0, NULL, 0, 1000);
-=======
-				  1, 0, NULL, 0, 1000);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if (ret < 0)
 		return ret;

@@ -14,11 +14,6 @@
  * 2 of the License, or (at your option) any later version.
  */
 
-<<<<<<< HEAD
-=======
-#define pr_fmt(fmt) "IPv6-nf: " fmt
-
->>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/errno.h>
 #include <linux/types.h>
 #include <linux/string.h>
@@ -181,7 +176,6 @@ fq_find(__be32 id, u32 user, struct in6_addr *src, struct in6_addr *dst)
 
 	q = inet_frag_find(&nf_init_frags, &nf_frags, &arg, hash);
 	local_bh_enable();
-<<<<<<< HEAD
 	if (q == NULL)
 		goto oom;
 
@@ -189,14 +183,6 @@ fq_find(__be32 id, u32 user, struct in6_addr *src, struct in6_addr *dst)
 
 oom:
 	return NULL;
-=======
-	if (IS_ERR_OR_NULL(q)) {
-		inet_frag_maybe_warn_overflow(q, pr_fmt());
-		return NULL;
-	}
-
-	return container_of(q, struct nf_ct_frag6_queue, q);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 

@@ -28,12 +28,8 @@
 #include <linux/bitops.h>
 #include <linux/mutex.h>
 #include <linux/shmem_fs.h>
-<<<<<<< HEAD
 #include <linux/ashmem.h>
 #include <asm/cacheflush.h>
-=======
-#include "ashmem.h"
->>>>>>> remotes/linux2/linux-3.4.y
 
 #define ASHMEM_NAME_PREFIX "dev/ashmem/"
 #define ASHMEM_NAME_PREFIX_LEN (sizeof(ASHMEM_NAME_PREFIX) - 1)
@@ -50,11 +46,8 @@ struct ashmem_area {
 	struct list_head unpinned_list;	 /* list of all ashmem areas */
 	struct file *file;		 /* the shmem-based backing file */
 	size_t size;			 /* size of the mapping, in bytes */
-<<<<<<< HEAD
 	unsigned long vm_start;		 /* Start address of vm_area
 					  * which maps this ashmem */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	unsigned long prot_mask;	 /* allowed prot bits, as vm_flags */
 };
 
@@ -324,7 +317,6 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
 	}
 	get_file(asma->file);
 
-<<<<<<< HEAD
 	if (vma->vm_flags & VM_SHARED)
 		shmem_set_file(vma, asma->file);
 	else {
@@ -334,24 +326,6 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
 	}
 	vma->vm_flags |= VM_CAN_NONLINEAR;
 	asma->vm_start = vma->vm_start;
-=======
-	/*
-	 * XXX - Reworked to use shmem_zero_setup() instead of
-	 * shmem_set_file while we're in staging. -jstultz
-	 */
-	if (vma->vm_flags & VM_SHARED) {
-		ret = shmem_zero_setup(vma);
-		if (ret) {
-			fput(asma->file);
-			goto out;
-		}
-	}
-
-	if (vma->vm_file)
-		fput(vma->vm_file);
-	vma->vm_file = asma->file;
-	vma->vm_flags |= VM_CAN_NONLINEAR;
->>>>>>> remotes/linux2/linux-3.4.y
 
 out:
 	mutex_unlock(&ashmem_mutex);
@@ -652,7 +626,6 @@ static int ashmem_pin_unpin(struct ashmem_area *asma, unsigned long cmd,
 	return ret;
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_OUTER_CACHE
 static unsigned int virtaddr_to_physaddr(unsigned int virtaddr)
 {
@@ -745,8 +718,6 @@ done:
 	return ret;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static long ashmem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	struct ashmem_area *asma = file->private_data;
@@ -792,7 +763,6 @@ static long ashmem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			ashmem_shrink(&ashmem_shrinker, &sc);
 		}
 		break;
-<<<<<<< HEAD
 	case ASHMEM_CACHE_FLUSH_RANGE:
 		ret = ashmem_cache_op(asma, &clean_and_invalidate_caches);
 		break;
@@ -802,14 +772,11 @@ static long ashmem_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	case ASHMEM_CACHE_INV_RANGE:
 		ret = ashmem_cache_op(asma, &invalidate_caches);
 		break;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return ret;
 }
 
-<<<<<<< HEAD
 static int is_ashmem_file(struct file *file)
 {
 	char fname[256], *name;
@@ -863,8 +830,6 @@ void put_ashmem_file(struct file *file)
 }
 EXPORT_SYMBOL(put_ashmem_file);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static const struct file_operations ashmem_fops = {
 	.owner = THIS_MODULE,
 	.open = ashmem_open,

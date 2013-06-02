@@ -53,26 +53,19 @@ struct mmc_ext_csd {
 	u8			part_config;
 	u8			cache_ctrl;
 	u8			rst_n_function;
-<<<<<<< HEAD
 	u8			max_packed_writes;
 	u8			max_packed_reads;
 	u8			packed_event_en;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int		part_time;		/* Units: ms */
 	unsigned int		sa_timeout;		/* Units: 100ns */
 	unsigned int		generic_cmd6_time;	/* Units: 10ms */
 	unsigned int            power_off_longtime;     /* Units: ms */
-<<<<<<< HEAD
 	u8			power_off_notification;	/* state */
 	unsigned int		hs_max_dtr;
 #define MMC_HIGH_26_MAX_DTR	26000000
 #define MMC_HIGH_52_MAX_DTR	52000000
 #define MMC_HIGH_DDR_MAX_DTR	52000000
 #define MMC_HS200_MAX_DTR	200000000
-=======
-	unsigned int		hs_max_dtr;
->>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int		sectors;
 	unsigned int		card_type;
 	unsigned int		hc_erase_size;		/* In sectors */
@@ -87,19 +80,13 @@ struct mmc_ext_csd {
 	bool			hpi_en;			/* HPI enablebit */
 	bool			hpi;			/* HPI support bit */
 	unsigned int		hpi_cmd;		/* cmd used as HPI */
-<<<<<<< HEAD
 	bool			bkops;		/* background support bit */
 	bool			bkops_en;	/* background enable bit */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int            data_sector_size;       /* 512 bytes or 4KB */
 	unsigned int            data_tag_unit_size;     /* DATA TAG UNIT size */
 	unsigned int		boot_ro_lock;		/* ro lock support */
 	bool			boot_ro_lockable;
-<<<<<<< HEAD
 	u8			raw_exception_status;	/* 53 */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	u8			raw_partition_support;	/* 160 */
 	u8			raw_erased_mem_count;	/* 181 */
 	u8			raw_ext_csd_structure;	/* 194 */
@@ -113,10 +100,7 @@ struct mmc_ext_csd {
 	u8			raw_sec_erase_mult;	/* 230 */
 	u8			raw_sec_feature_support;/* 231 */
 	u8			raw_trim_mult;		/* 232 */
-<<<<<<< HEAD
 	u8			raw_bkops_status;	/* 246 */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	u8			raw_sectors[4];		/* 212 - 4 bytes */
 
 	unsigned int            feature_support;
@@ -201,7 +185,6 @@ struct sdio_cis {
 struct mmc_host;
 struct sdio_func;
 struct sdio_func_tuple;
-<<<<<<< HEAD
 struct mmc_queue;
 
 #define SDIO_MAX_FUNCS		7
@@ -241,11 +224,6 @@ struct mmc_wr_pack_stats {
 	bool print_in_read;
 };
 
-=======
-
-#define SDIO_MAX_FUNCS		7
-
->>>>>>> remotes/linux2/linux-3.4.y
 /* The number of MMC physical partitions.  These consist of:
  * boot partitions (2), general purpose partitions (4) in MMC v4.4.
  */
@@ -268,7 +246,6 @@ struct mmc_part {
 #define MMC_BLK_DATA_AREA_GP	(1<<2)
 };
 
-<<<<<<< HEAD
 /**
  * struct mmc_bkops_info - BKOPS data
  * @dw:	Idle time bkops delayed work
@@ -309,8 +286,6 @@ struct mmc_bkops_info {
 #define BKOPS_MIN_SECTORS_TO_QUEUE_DELAYED_WORK 204800 /* 100MB */
 };
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * MMC device
  */
@@ -333,12 +308,8 @@ struct mmc_card {
 #define MMC_CARD_SDXC		(1<<6)		/* card is SDXC */
 #define MMC_CARD_REMOVED	(1<<7)		/* card has been removed */
 #define MMC_STATE_HIGHSPEED_200	(1<<8)		/* card is in HS200 mode */
-<<<<<<< HEAD
 #define MMC_STATE_DOING_BKOPS	(1<<10)		/* card is doing BKOPS */
 #define MMC_STATE_NEED_BKOPS	(1<<11)		/* card needs to do BKOPS */
-=======
-#define MMC_STATE_SLEEP		(1<<9)		/* card is in sleep state */
->>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int		quirks; 	/* card quirks */
 #define MMC_QUIRK_LENIENT_FN0	(1<<0)		/* allow SDIO FN0 writes outside of the VS CCCR range */
 #define MMC_QUIRK_BLKSZ_FOR_BYTE_MODE (1<<1)	/* use func->cur_blksize */
@@ -352,18 +323,8 @@ struct mmc_card {
 #define MMC_QUIRK_BLK_NO_CMD23	(1<<7)		/* Avoid CMD23 for regular multiblock */
 #define MMC_QUIRK_BROKEN_BYTE_MODE_512 (1<<8)	/* Avoid sending 512 bytes in */
 #define MMC_QUIRK_LONG_READ_TIME (1<<9)		/* Data read time > CSD says */
-<<<<<<< HEAD
 						/* byte mode */
 #define MMC_QUIRK_INAND_DATA_TIMEOUT  (1<<8)    /* For incorrect data timeout */
-=======
-#define MMC_QUIRK_SEC_ERASE_TRIM_BROKEN (1<<10)	/* Skip secure for erase/trim */
-						/* byte mode */
-	unsigned int    poweroff_notify_state;	/* eMMC4.5 notify feature */
-#define MMC_NO_POWER_NOTIFICATION	0
-#define MMC_POWERED_ON			1
-#define MMC_POWEROFF_SHORT		2
-#define MMC_POWEROFF_LONG		3
->>>>>>> remotes/linux2/linux-3.4.y
 
 	unsigned int		erase_size;	/* erase size in sectors */
  	unsigned int		erase_shift;	/* if erase unit is power 2 */
@@ -391,7 +352,6 @@ struct mmc_card {
 
 	unsigned int		sd_bus_speed;	/* Bus Speed Mode set for the card */
 
-<<<<<<< HEAD
 	struct device_attribute	bkops_attr;	/* for enable/disable bkops mode */
 	u8			bkops_enable;	/* bkops mode on/off */
 	spinlock_t		bkops_lock;	/* lock for bkops_enable filed */
@@ -403,11 +363,6 @@ struct mmc_card {
 	struct mmc_wr_pack_stats wr_pack_stats; /* packed commands stats*/
 
 	struct mmc_bkops_info	bkops_info;
-=======
-	struct dentry		*debugfs_root;
-	struct mmc_part	part[MMC_NUM_PHY_PARTITION]; /* physical partitions */
-	unsigned int    nr_parts;
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /*
@@ -425,14 +380,11 @@ static inline void mmc_part_add(struct mmc_card *card, unsigned int size,
 	card->nr_parts++;
 }
 
-<<<<<<< HEAD
 static inline bool mmc_large_sec(struct mmc_card *card)
 {
 	return card->ext_csd.data_sector_size == 4096;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  *  The world is not perfect and supplies us with broken mmc/sdio devices.
  *  For at least some of these bugs we need a work-around.
@@ -532,12 +484,8 @@ static inline void __maybe_unused remove_quirk(struct mmc_card *card, int data)
 #define mmc_sd_card_uhs(c)	((c)->state & MMC_STATE_ULTRAHIGHSPEED)
 #define mmc_card_ext_capacity(c) ((c)->state & MMC_CARD_SDXC)
 #define mmc_card_removed(c)	((c) && ((c)->state & MMC_CARD_REMOVED))
-<<<<<<< HEAD
 #define mmc_card_doing_bkops(c)	((c)->state & MMC_STATE_DOING_BKOPS)
 #define mmc_card_need_bkops(c)	((c)->state & MMC_STATE_NEED_BKOPS)
-=======
-#define mmc_card_is_sleep(c)	((c)->state & MMC_STATE_SLEEP)
->>>>>>> remotes/linux2/linux-3.4.y
 
 #define mmc_card_set_present(c)	((c)->state |= MMC_STATE_PRESENT)
 #define mmc_card_set_readonly(c) ((c)->state |= MMC_STATE_READONLY)
@@ -549,16 +497,10 @@ static inline void __maybe_unused remove_quirk(struct mmc_card *card, int data)
 #define mmc_sd_card_set_uhs(c) ((c)->state |= MMC_STATE_ULTRAHIGHSPEED)
 #define mmc_card_set_ext_capacity(c) ((c)->state |= MMC_CARD_SDXC)
 #define mmc_card_set_removed(c) ((c)->state |= MMC_CARD_REMOVED)
-<<<<<<< HEAD
 #define mmc_card_set_doing_bkops(c)	((c)->state |= MMC_STATE_DOING_BKOPS)
 #define mmc_card_clr_doing_bkops(c)	((c)->state &= ~MMC_STATE_DOING_BKOPS)
 #define mmc_card_set_need_bkops(c)	((c)->state |= MMC_STATE_NEED_BKOPS)
 #define mmc_card_clr_need_bkops(c)	((c)->state &= ~MMC_STATE_NEED_BKOPS)
-=======
-#define mmc_card_set_sleep(c)	((c)->state |= MMC_STATE_SLEEP)
-
-#define mmc_card_clr_sleep(c)	((c)->state &= ~MMC_STATE_SLEEP)
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Quirk add/remove for MMC products.
  */
@@ -648,7 +590,6 @@ extern void mmc_unregister_driver(struct mmc_driver *);
 
 extern void mmc_fixup_device(struct mmc_card *card,
 			     const struct mmc_fixup *table);
-<<<<<<< HEAD
 extern struct mmc_wr_pack_stats *mmc_blk_get_packed_statistics(
 			struct mmc_card *card);
 
@@ -657,7 +598,4 @@ extern struct mmc_wr_pack_stats *mmc_blk_get_packed_statistics(
 extern void mmc_blk_init_packed_statistics(struct mmc_card *card);
 
 extern void mmc_blk_disable_wr_packing(struct mmc_queue *mq);
-=======
-
->>>>>>> remotes/linux2/linux-3.4.y
 #endif /* LINUX_MMC_CARD_H */

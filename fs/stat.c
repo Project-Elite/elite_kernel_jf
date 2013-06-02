@@ -57,11 +57,7 @@ EXPORT_SYMBOL(vfs_getattr);
 
 int vfs_fstat(unsigned int fd, struct kstat *stat)
 {
-<<<<<<< HEAD
 	struct file *f = fget(fd);
-=======
-	struct file *f = fget_raw(fd);
->>>>>>> remotes/linux2/linux-3.4.y
 	int error = -EBADF;
 
 	if (f) {

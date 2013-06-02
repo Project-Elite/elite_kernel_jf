@@ -307,10 +307,7 @@ static void handle_internal_command(int argc, const char **argv)
 		{ "report",	cmd_report,	0 },
 		{ "bench",	cmd_bench,	0 },
 		{ "stat",	cmd_stat,	0 },
-<<<<<<< HEAD
 		{ "periodic",   cmd_periodic,   0 },
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		{ "timechart",	cmd_timechart,	0 },
 		{ "top",	cmd_top,	0 },
 		{ "annotate",	cmd_annotate,	0 },

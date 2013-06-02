@@ -1023,11 +1023,7 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_625x_ao,
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
-<<<<<<< HEAD
 	 .ao_speed = 357,
-=======
-	 .ao_speed = 350,
->>>>>>> remotes/linux2/linux-3.4.y
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1046,11 +1042,7 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_625x_ao,
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
-<<<<<<< HEAD
 	 .ao_speed = 357,
-=======
-	 .ao_speed = 350,
->>>>>>> remotes/linux2/linux-3.4.y
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1069,11 +1061,7 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_625x_ao,
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
-<<<<<<< HEAD
 	 .ao_speed = 357,
-=======
-	 .ao_speed = 350,
->>>>>>> remotes/linux2/linux-3.4.y
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1109,11 +1097,7 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_625x_ao,
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
-<<<<<<< HEAD
 	 .ao_speed = 357,
-=======
-	 .ao_speed = 350,
->>>>>>> remotes/linux2/linux-3.4.y
 	 .num_p0_dio_channels = 32,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1132,11 +1116,7 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_625x_ao,
 	 .reg_type = ni_reg_625x,
 	 .ao_unipolar = 0,
-<<<<<<< HEAD
 	 .ao_speed = 357,
-=======
-	 .ao_speed = 350,
->>>>>>> remotes/linux2/linux-3.4.y
 	 .num_p0_dio_channels = 32,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1172,11 +1152,7 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_628x_ao,
 	 .reg_type = ni_reg_628x,
 	 .ao_unipolar = 1,
-<<<<<<< HEAD
 	 .ao_speed = 357,
-=======
-	 .ao_speed = 350,
->>>>>>> remotes/linux2/linux-3.4.y
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1195,11 +1171,7 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_628x_ao,
 	 .reg_type = ni_reg_628x,
 	 .ao_unipolar = 1,
-<<<<<<< HEAD
 	 .ao_speed = 357,
-=======
-	 .ao_speed = 350,
->>>>>>> remotes/linux2/linux-3.4.y
 	 .num_p0_dio_channels = 8,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,
@@ -1235,11 +1207,7 @@ static const struct ni_board_struct ni_boards[] = {
 	 .ao_range_table = &range_ni_M_628x_ao,
 	 .reg_type = ni_reg_628x,
 	 .ao_unipolar = 1,
-<<<<<<< HEAD
 	 .ao_speed = 357,
-=======
-	 .ao_speed = 350,
->>>>>>> remotes/linux2/linux-3.4.y
 	 .num_p0_dio_channels = 32,
 	 .caldac = {caldac_none},
 	 .has_8255 = 0,

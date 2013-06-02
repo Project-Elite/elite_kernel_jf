@@ -308,11 +308,7 @@ static int flock_make_lock(struct file *filp, struct file_lock **lock,
 	return 0;
 }
 
-<<<<<<< HEAD
 static int assign_type(struct file_lock *fl, int type)
-=======
-static int assign_type(struct file_lock *fl, long type)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	switch (type) {
 	case F_RDLCK:
@@ -449,11 +445,7 @@ static const struct lock_manager_operations lease_manager_ops = {
 /*
  * Initialize a lease, use the default lock manager operations
  */
-<<<<<<< HEAD
 static int lease_init(struct file *filp, int type, struct file_lock *fl)
-=======
-static int lease_init(struct file *filp, long type, struct file_lock *fl)
->>>>>>> remotes/linux2/linux-3.4.y
  {
 	if (assign_type(fl, type) != 0)
 		return -EINVAL;
@@ -471,11 +463,7 @@ static int lease_init(struct file *filp, long type, struct file_lock *fl)
 }
 
 /* Allocate a file_lock initialised to this type of lease */
-<<<<<<< HEAD
 static struct file_lock *lease_alloc(struct file *filp, int type)
-=======
-static struct file_lock *lease_alloc(struct file *filp, long type)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct file_lock *fl = locks_alloc_lock();
 	int error = -ENOMEM;
@@ -1477,11 +1465,7 @@ int generic_setlease(struct file *filp, long arg, struct file_lock **flp)
 	case F_WRLCK:
 		return generic_add_lease(filp, arg, flp);
 	default:
-<<<<<<< HEAD
 		BUG();
-=======
-		return -EINVAL;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 EXPORT_SYMBOL(generic_setlease);

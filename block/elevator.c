@@ -39,17 +39,12 @@
 
 #include "blk.h"
 
-<<<<<<< HEAD
 extern void set_cur_sched(const char *name);
 
 static DEFINE_SPINLOCK(elv_list_lock);
 static LIST_HEAD(elv_list);
 static struct request_queue *globalq[50];
 static unsigned int queue_size = 0;
-=======
-static DEFINE_SPINLOCK(elv_list_lock);
-static LIST_HEAD(elv_list);
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Merge hash stuff.
@@ -81,7 +76,6 @@ static int elv_iosched_allow_merge(struct request *rq, struct bio *bio)
  */
 bool elv_rq_merge_ok(struct request *rq, struct bio *bio)
 {
-<<<<<<< HEAD
 	if (!rq_mergeable(rq))
 		return 0;
 
@@ -119,9 +113,6 @@ bool elv_rq_merge_ok(struct request *rq, struct bio *bio)
 	 * only merge integrity protected bio into ditto rq
 	 */
 	if (bio_integrity(bio) != blk_integrity_rq(rq))
-=======
-	if (!blk_rq_merge_ok(rq, bio))
->>>>>>> remotes/linux2/linux-3.4.y
 		return 0;
 
 	if (!elv_iosched_allow_merge(rq, bio))
@@ -282,7 +273,6 @@ int elevator_init(struct request_queue *q, char *name)
 	}
 
 	q->elevator = eq;
-<<<<<<< HEAD
 	
 	q->index = queue_size;
 	globalq[queue_size] = q;
@@ -291,8 +281,6 @@ int elevator_init(struct request_queue *q, char *name)
 	if (queue_size > 40)
 		queue_size = 10;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 EXPORT_SYMBOL(elevator_init);
@@ -609,7 +597,6 @@ void elv_requeue_request(struct request_queue *q, struct request *rq)
 	__elv_add_request(q, rq, ELEVATOR_INSERT_REQUEUE);
 }
 
-<<<<<<< HEAD
 /**
  * elv_reinsert_request() - Insert a request back to the scheduler
  * @q:		request queue where request should be inserted
@@ -645,8 +632,6 @@ int elv_reinsert_request(struct request_queue *q, struct request *rq)
 	return res;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 void elv_drain_elevator(struct request_queue *q)
 {
 	static int printed;
@@ -690,11 +675,7 @@ void __elv_add_request(struct request_queue *q, struct request *rq, int where)
 	if (rq->cmd_flags & REQ_SOFTBARRIER) {
 		/* barriers are scheduling boundary, update end_sector */
 		if (rq->cmd_type == REQ_TYPE_FS ||
-<<<<<<< HEAD
 		    (rq->cmd_flags & (REQ_DISCARD | REQ_SANITIZE))) {
-=======
-		    (rq->cmd_flags & REQ_DISCARD)) {
->>>>>>> remotes/linux2/linux-3.4.y
 			q->end_sector = rq_end_sector(rq);
 			q->boundary_rq = rq;
 		}
@@ -845,14 +826,11 @@ void elv_completed_request(struct request_queue *q, struct request *rq)
 {
 	struct elevator_queue *e = q->elevator;
 
-<<<<<<< HEAD
 	if (rq->cmd_flags & REQ_URGENT) {
 		q->notified_urgent = false;
 		WARN_ON(!q->dispatched_urgent);
 		q->dispatched_urgent = false;
 	}
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * request is released from the driver, io must be done
 	 */
@@ -1068,7 +1046,6 @@ fail_register:
 	return err;
 }
 
-<<<<<<< HEAD
 int elevator_change_relay(const char *name, int screen_status)
 {
 	int i = 0;
@@ -1080,8 +1057,6 @@ int elevator_change_relay(const char *name, int screen_status)
 	return 0;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Switch this queue to the given IO scheduler.
  */
@@ -1118,13 +1093,10 @@ ssize_t elv_iosched_store(struct request_queue *q, const char *name,
 		return count;
 
 	ret = elevator_change(q, name);
-<<<<<<< HEAD
 	globalq[q->index] = q;
 	//pr_alert("IOSCHED_STORE: %s-%s-%s-%d\n", name, q->elevator->type->elevator_name, globalq[q->index]->elevator->type->elevator_name, q->index);
 	set_cur_sched(name);
 	
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!ret)
 		return count;
 

@@ -416,10 +416,6 @@ static void f_midi_unbind(struct usb_configuration *c, struct usb_function *f)
 	midi->id = NULL;
 
 	usb_free_descriptors(f->descriptors);
-<<<<<<< HEAD
-=======
-	usb_free_descriptors(f->hs_descriptors);
->>>>>>> remotes/linux2/linux-3.4.y
 	kfree(midi);
 }
 

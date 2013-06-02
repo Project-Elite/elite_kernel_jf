@@ -8,10 +8,6 @@
 
 #include <linux/device-mapper.h>
 #include <linux/export.h>
-<<<<<<< HEAD
-=======
-#include <linux/vmalloc.h>
->>>>>>> remotes/linux2/linux-3.4.y
 
 #ifdef CONFIG_DM_DEBUG_SPACE_MAPS
 
@@ -93,32 +89,13 @@ static int ca_create(struct count_array *ca, struct dm_space_map *sm)
 
 	ca->nr = nr_blocks;
 	ca->nr_free = nr_blocks;
-<<<<<<< HEAD
 	ca->counts = kzalloc(sizeof(*ca->counts) * nr_blocks, GFP_KERNEL);
 	if (!ca->counts)
 		return -ENOMEM;
-=======
-
-	if (!nr_blocks)
-		ca->counts = NULL;
-	else {
-		ca->counts = vzalloc(sizeof(*ca->counts) * nr_blocks);
-		if (!ca->counts)
-			return -ENOMEM;
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
 
-<<<<<<< HEAD
-=======
-static void ca_destroy(struct count_array *ca)
-{
-	vfree(ca->counts);
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 static int ca_load(struct count_array *ca, struct dm_space_map *sm)
 {
 	int r;
@@ -149,23 +126,12 @@ static int ca_load(struct count_array *ca, struct dm_space_map *sm)
 static int ca_extend(struct count_array *ca, dm_block_t extra_blocks)
 {
 	dm_block_t nr_blocks = ca->nr + extra_blocks;
-<<<<<<< HEAD
 	uint32_t *counts = kzalloc(sizeof(*counts) * nr_blocks, GFP_KERNEL);
 	if (!counts)
 		return -ENOMEM;
 
 	memcpy(counts, ca->counts, sizeof(*counts) * ca->nr);
 	kfree(ca->counts);
-=======
-	uint32_t *counts = vzalloc(sizeof(*counts) * nr_blocks);
-	if (!counts)
-		return -ENOMEM;
-
-	if (ca->counts) {
-		memcpy(counts, ca->counts, sizeof(*counts) * ca->nr);
-		ca_destroy(ca);
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 	ca->nr = nr_blocks;
 	ca->nr_free += extra_blocks;
 	ca->counts = counts;
@@ -185,14 +151,11 @@ static int ca_commit(struct count_array *old, struct count_array *new)
 	return 0;
 }
 
-<<<<<<< HEAD
 static void ca_destroy(struct count_array *ca)
 {
 	kfree(ca->counts);
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*----------------------------------------------------------------*/
 
 struct sm_checker {
@@ -380,42 +343,25 @@ struct dm_space_map *dm_sm_checker_create(struct dm_space_map *sm)
 	int r;
 	struct sm_checker *smc;
 
-<<<<<<< HEAD
 	if (!sm)
 		return NULL;
 
 	smc = kmalloc(sizeof(*smc), GFP_KERNEL);
 	if (!smc)
 		return NULL;
-=======
-	if (IS_ERR_OR_NULL(sm))
-		return ERR_PTR(-EINVAL);
-
-	smc = kmalloc(sizeof(*smc), GFP_KERNEL);
-	if (!smc)
-		return ERR_PTR(-ENOMEM);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	memcpy(&smc->sm, &ops_, sizeof(smc->sm));
 	r = ca_create(&smc->old_counts, sm);
 	if (r) {
 		kfree(smc);
-<<<<<<< HEAD
 		return NULL;
-=======
-		return ERR_PTR(r);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	r = ca_create(&smc->counts, sm);
 	if (r) {
 		ca_destroy(&smc->old_counts);
 		kfree(smc);
-<<<<<<< HEAD
 		return NULL;
-=======
-		return ERR_PTR(r);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	smc->real_sm = sm;
@@ -425,11 +371,7 @@ struct dm_space_map *dm_sm_checker_create(struct dm_space_map *sm)
 		ca_destroy(&smc->counts);
 		ca_destroy(&smc->old_counts);
 		kfree(smc);
-<<<<<<< HEAD
 		return NULL;
-=======
-		return ERR_PTR(r);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	r = ca_commit(&smc->old_counts, &smc->counts);
@@ -437,11 +379,7 @@ struct dm_space_map *dm_sm_checker_create(struct dm_space_map *sm)
 		ca_destroy(&smc->counts);
 		ca_destroy(&smc->old_counts);
 		kfree(smc);
-<<<<<<< HEAD
 		return NULL;
-=======
-		return ERR_PTR(r);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return &smc->sm;
@@ -453,42 +391,25 @@ struct dm_space_map *dm_sm_checker_create_fresh(struct dm_space_map *sm)
 	int r;
 	struct sm_checker *smc;
 
-<<<<<<< HEAD
 	if (!sm)
 		return NULL;
 
 	smc = kmalloc(sizeof(*smc), GFP_KERNEL);
 	if (!smc)
 		return NULL;
-=======
-	if (IS_ERR_OR_NULL(sm))
-		return ERR_PTR(-EINVAL);
-
-	smc = kmalloc(sizeof(*smc), GFP_KERNEL);
-	if (!smc)
-		return ERR_PTR(-ENOMEM);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	memcpy(&smc->sm, &ops_, sizeof(smc->sm));
 	r = ca_create(&smc->old_counts, sm);
 	if (r) {
 		kfree(smc);
-<<<<<<< HEAD
 		return NULL;
-=======
-		return ERR_PTR(r);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	r = ca_create(&smc->counts, sm);
 	if (r) {
 		ca_destroy(&smc->old_counts);
 		kfree(smc);
-<<<<<<< HEAD
 		return NULL;
-=======
-		return ERR_PTR(r);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	smc->real_sm = sm;

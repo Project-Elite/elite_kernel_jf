@@ -56,11 +56,7 @@ struct usbnet {
 	struct sk_buff_head	rxq_pause;
 	struct urb		*interrupt;
 	struct usb_anchor	deferred;
-<<<<<<< HEAD
 	struct work_struct	bh_w;
-=======
-	struct tasklet_struct	bh;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	struct work_struct	kevent;
 	unsigned long		flags;

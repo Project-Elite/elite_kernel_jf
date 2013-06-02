@@ -992,23 +992,11 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 	if (rinfo->head->is_dentry) {
 		struct inode *dir = req->r_locked_dir;
 
-<<<<<<< HEAD
 		err = fill_inode(dir, &rinfo->diri, rinfo->dirfrag,
 				 session, req->r_request_started, -1,
 				 &req->r_caps_reservation);
 		if (err < 0)
 			return err;
-=======
-		if (dir) {
-			err = fill_inode(dir, &rinfo->diri, rinfo->dirfrag,
-					 session, req->r_request_started, -1,
-					 &req->r_caps_reservation);
-			if (err < 0)
-				return err;
-		} else {
-			WARN_ON_ONCE(1);
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	/*
@@ -1016,10 +1004,6 @@ int ceph_fill_trace(struct super_block *sb, struct ceph_mds_request *req,
 	 * will have trouble splicing in the virtual snapdir later
 	 */
 	if (rinfo->head->is_dentry && !req->r_aborted &&
-<<<<<<< HEAD
-=======
-	    req->r_locked_dir &&
->>>>>>> remotes/linux2/linux-3.4.y
 	    (rinfo->head->is_target || strncmp(req->r_dentry->d_name.name,
 					       fsc->mount_options->snapdir_name,
 					       req->r_dentry->d_name.len))) {
@@ -1477,11 +1461,7 @@ void __ceph_do_pending_vmtruncate(struct inode *inode)
 {
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	u64 to;
-<<<<<<< HEAD
 	int wrbuffer_refs, wake = 0;
-=======
-	int wrbuffer_refs, finish = 0;
->>>>>>> remotes/linux2/linux-3.4.y
 
 retry:
 	spin_lock(&ci->i_ceph_lock);
@@ -1513,7 +1493,6 @@ retry:
 	truncate_inode_pages(inode->i_mapping, to);
 
 	spin_lock(&ci->i_ceph_lock);
-<<<<<<< HEAD
 	ci->i_truncate_pending--;
 	if (ci->i_truncate_pending == 0)
 		wake = 1;
@@ -1523,20 +1502,6 @@ retry:
 		ceph_check_caps(ci, CHECK_CAPS_AUTHONLY, NULL);
 	if (wake)
 		wake_up_all(&ci->i_cap_wq);
-=======
-	if (to == ci->i_truncate_size) {
-		ci->i_truncate_pending = 0;
-		finish = 1;
-	}
-	spin_unlock(&ci->i_ceph_lock);
-	if (!finish)
-		goto retry;
-
-	if (wrbuffer_refs == 0)
-		ceph_check_caps(ci, CHECK_CAPS_AUTHONLY, NULL);
-
-	wake_up_all(&ci->i_cap_wq);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 

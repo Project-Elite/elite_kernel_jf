@@ -1698,7 +1698,6 @@ static int elf_note_info_init(struct elf_note_info *info)
 		return 0;
 	info->psinfo = kmalloc(sizeof(*info->psinfo), GFP_KERNEL);
 	if (!info->psinfo)
-<<<<<<< HEAD
 		goto notes_free;
 	info->prstatus = kmalloc(sizeof(*info->prstatus), GFP_KERNEL);
 	if (!info->prstatus)
@@ -1723,21 +1722,6 @@ static int elf_note_info_init(struct elf_note_info *info)
  notes_free:
 	kfree(info->notes);
 	return 0;
-=======
-		return 0;
-	info->prstatus = kmalloc(sizeof(*info->prstatus), GFP_KERNEL);
-	if (!info->prstatus)
-		return 0;
-	info->fpu = kmalloc(sizeof(*info->fpu), GFP_KERNEL);
-	if (!info->fpu)
-		return 0;
-#ifdef ELF_CORE_COPY_XFPREGS
-	info->xfpu = kmalloc(sizeof(*info->xfpu), GFP_KERNEL);
-	if (!info->xfpu)
-		return 0;
-#endif
-	return 1;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int fill_note_info(struct elfhdr *elf, int phdrs,

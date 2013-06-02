@@ -1274,7 +1274,6 @@ static int usb_resume_both(struct usb_device *udev, pm_message_t msg)
 	return status;
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG
 void usb_hnp_polling_work(struct work_struct *work)
 {
@@ -1326,8 +1325,6 @@ out:
 }
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 static void choose_wakeup(struct usb_device *udev, pm_message_t msg)
 {
 	int	w;
@@ -1360,7 +1357,6 @@ int usb_suspend(struct device *dev, pm_message_t msg)
 {
 	struct usb_device	*udev = to_usb_device(dev);
 
-<<<<<<< HEAD
 	if (udev->bus->skip_resume) {
 		if (udev->state == USB_STATE_SUSPENDED) {
 			return 0;
@@ -1369,8 +1365,6 @@ int usb_suspend(struct device *dev, pm_message_t msg)
 		return -EBUSY;
 		}
 	}
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	unbind_no_pm_drivers_interfaces(udev);
 
 	/* From now on we are sure all drivers support suspend/resume
@@ -1400,7 +1394,6 @@ int usb_resume(struct device *dev, pm_message_t msg)
 	struct usb_device	*udev = to_usb_device(dev);
 	int			status;
 
-<<<<<<< HEAD
 	/*
 	 * Some buses would like to keep their devices in suspend
 	 * state after system resume.  Their resume happen when
@@ -1410,8 +1403,6 @@ int usb_resume(struct device *dev, pm_message_t msg)
 	if (udev->bus->skip_resume)
 		return 0;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/* For all calls, take the device back to full power and
 	 * tell the PM core in case it was autosuspended previously.
 	 * Unbind the interfaces that will need rebinding later,
@@ -1734,13 +1725,9 @@ static int autosuspend_check(struct usb_device *udev)
 		}
 	}
 	if (w && !device_can_wakeup(&udev->dev)) {
-<<<<<<< HEAD
 #ifndef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 		dev_dbg(&udev->dev, "remote wakeup needed for autosuspend\n");
 #endif
-=======
-		dev_dbg(&udev->dev, "remote wakeup needed for autosuspend\n");
->>>>>>> remotes/linux2/linux-3.4.y
 		return -EOPNOTSUPP;
 	}
 	udev->do_remote_wakeup = w;

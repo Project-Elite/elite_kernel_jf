@@ -25,11 +25,7 @@ static DEFINE_MUTEX(block_class_lock);
 struct kobject *block_depr;
 
 /* for extended dynamic devt allocation, currently only one major is used */
-<<<<<<< HEAD
 #define MAX_EXT_DEVT		(1 << MINORBITS)
-=======
-#define NR_EXT_DEVT		(1 << MINORBITS)
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* For extended devt allocation.  ext_devt_mutex prevents look up
  * results from going away underneath its user.
@@ -424,30 +420,17 @@ int blk_alloc_devt(struct hd_struct *part, dev_t *devt)
 	do {
 		if (!idr_pre_get(&ext_devt_idr, GFP_KERNEL))
 			return -ENOMEM;
-<<<<<<< HEAD
 		rc = idr_get_new(&ext_devt_idr, part, &idx);
-=======
-		mutex_lock(&ext_devt_mutex);
-		rc = idr_get_new(&ext_devt_idr, part, &idx);
-		if (!rc && idx >= NR_EXT_DEVT) {
-			idr_remove(&ext_devt_idr, idx);
-			rc = -EBUSY;
-		}
-		mutex_unlock(&ext_devt_mutex);
->>>>>>> remotes/linux2/linux-3.4.y
 	} while (rc == -EAGAIN);
 
 	if (rc)
 		return rc;
 
-<<<<<<< HEAD
 	if (idx > MAX_EXT_DEVT) {
 		idr_remove(&ext_devt_idr, idx);
 		return -EBUSY;
 	}
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	*devt = MKDEV(BLOCK_EXT_MAJOR, blk_mangle_minor(idx));
 	return 0;
 }
@@ -661,10 +644,7 @@ void del_gendisk(struct gendisk *disk)
 	disk_part_iter_exit(&piter);
 
 	invalidate_partition(disk, 0);
-<<<<<<< HEAD
 	blk_free_devt(disk_to_dev(disk)->devt);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	set_capacity(disk, 0);
 	disk->flags &= ~GENHD_FL_UP;
 
@@ -682,10 +662,6 @@ void del_gendisk(struct gendisk *disk)
 	if (!sysfs_deprecated)
 		sysfs_remove_link(block_depr, dev_name(disk_to_dev(disk)));
 	device_del(disk_to_dev(disk));
-<<<<<<< HEAD
-=======
-	blk_free_devt(disk_to_dev(disk)->devt);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL(del_gendisk);
 
@@ -1133,7 +1109,6 @@ static void disk_release(struct device *dev)
 		blk_put_queue(disk->queue);
 	kfree(disk);
 }
-<<<<<<< HEAD
 
 static int disk_uevent(struct device *dev, struct kobj_uevent_env *env)
 {
@@ -1157,8 +1132,6 @@ static int disk_uevent(struct device *dev, struct kobj_uevent_env *env)
 	return 0;
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 struct class block_class = {
 	.name		= "block",
 };
@@ -1177,10 +1150,7 @@ static struct device_type disk_type = {
 	.groups		= disk_attr_groups,
 	.release	= disk_release,
 	.devnode	= block_devnode,
-<<<<<<< HEAD
 	.uevent		= disk_uevent,
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 #ifdef CONFIG_PROC_FS
@@ -1638,7 +1608,6 @@ static void disk_events_workfn(struct work_struct *work)
 	struct gendisk *disk = ev->disk;
 	char *envp[ARRAY_SIZE(disk_uevents) + 1] = { };
 	unsigned int clearing = ev->clearing;
-<<<<<<< HEAD
 	unsigned int events = 0;
 	unsigned long intv;
 	int nr_events = 0, i;
@@ -1648,14 +1617,6 @@ static void disk_events_workfn(struct work_struct *work)
 		/* check events */
 		events = disk->fops->check_events(disk, clearing);
 #endif
-=======
-	unsigned int events;
-	unsigned long intv;
-	int nr_events = 0, i;
-
-	/* check events */
-	events = disk->fops->check_events(disk, clearing);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* accumulate pending events and schedule next poll if necessary */
 	spin_lock_irq(&ev->lock);
@@ -1678,7 +1639,6 @@ static void disk_events_workfn(struct work_struct *work)
 	for (i = 0; i < ARRAY_SIZE(disk_uevents); i++)
 		if (events & disk->events & (1 << i))
 			envp[nr_events++] = disk_uevents[i];
-<<<<<<< HEAD
 #ifdef CONFIG_USB_STORAGE_DETECT
 		if (disk->interfaces != GENHD_IF_USB) {
 			if (nr_events)
@@ -1686,11 +1646,6 @@ static void disk_events_workfn(struct work_struct *work)
 							KOBJ_CHANGE, envp);
 		}
 #endif
-=======
-
-	if (nr_events)
-		kobject_uevent_env(&disk_to_dev(disk)->kobj, KOBJ_CHANGE, envp);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*

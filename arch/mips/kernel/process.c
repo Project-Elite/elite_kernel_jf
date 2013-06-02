@@ -72,13 +72,9 @@ void __noreturn cpu_idle(void)
 			}
 		}
 #ifdef CONFIG_HOTPLUG_CPU
-<<<<<<< HEAD
 		if (!cpu_online(cpu) && !cpu_isset(cpu, cpu_callin_map) &&
 		    (system_state == SYSTEM_RUNNING ||
 		     system_state == SYSTEM_BOOTING))
-=======
-		if (!cpu_online(cpu) && !cpu_isset(cpu, cpu_callin_map))
->>>>>>> remotes/linux2/linux-3.4.y
 			play_dead();
 #endif
 		rcu_idle_exit();

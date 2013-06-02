@@ -54,16 +54,7 @@
 	(CONGESTION_ON_THRESH(congestion_kb) -				\
 	 (CONGESTION_ON_THRESH(congestion_kb) >> 2))
 
-<<<<<<< HEAD
 
-=======
-static inline struct ceph_snap_context *page_snap_context(struct page *page)
-{
-	if (PagePrivate(page))
-		return (void *)page->private;
-	return NULL;
-}
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Dirty a page.  Optimistically adjust accounting, on the assumption
@@ -151,16 +142,10 @@ static void ceph_invalidatepage(struct page *page, unsigned long offset)
 {
 	struct inode *inode;
 	struct ceph_inode_info *ci;
-<<<<<<< HEAD
 	struct ceph_snap_context *snapc = (void *)page->private;
 
 	BUG_ON(!PageLocked(page));
 	BUG_ON(!page->private);
-=======
-	struct ceph_snap_context *snapc = page_snap_context(page);
-
-	BUG_ON(!PageLocked(page));
->>>>>>> remotes/linux2/linux-3.4.y
 	BUG_ON(!PagePrivate(page));
 	BUG_ON(!page->mapping);
 
@@ -197,10 +182,7 @@ static int ceph_releasepage(struct page *page, gfp_t g)
 	struct inode *inode = page->mapping ? page->mapping->host : NULL;
 	dout("%p releasepage %p idx %lu\n", inode, page, page->index);
 	WARN_ON(PageDirty(page));
-<<<<<<< HEAD
 	WARN_ON(page->private);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	WARN_ON(PagePrivate(page));
 	return 0;
 }
@@ -220,11 +202,7 @@ static int readpage_nounlock(struct file *filp, struct page *page)
 	dout("readpage inode %p file %p page %p index %lu\n",
 	     inode, filp, page, page->index);
 	err = ceph_osdc_readpages(osdc, ceph_vino(inode), &ci->i_layout,
-<<<<<<< HEAD
 				  page->index << PAGE_CACHE_SHIFT, &len,
-=======
-				  (u64) page_offset(page), &len,
->>>>>>> remotes/linux2/linux-3.4.y
 				  ci->i_truncate_seq, ci->i_truncate_size,
 				  &page, 1, 0);
 	if (err == -ENOENT)
@@ -286,17 +264,6 @@ static void finish_read(struct ceph_osd_request *req, struct ceph_msg *msg)
 	kfree(req->r_pages);
 }
 
-<<<<<<< HEAD
-=======
-static void ceph_unlock_page_vector(struct page **pages, int num_pages)
-{
-	int i;
-
-	for (i = 0; i < num_pages; i++)
-		unlock_page(pages[i]);
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * start an async read(ahead) operation.  return nr_pages we submitted
  * a read for on success, or negative error code.
@@ -316,11 +283,7 @@ static int start_read(struct inode *inode, struct list_head *page_list, int max)
 	int nr_pages = 0;
 	int ret;
 
-<<<<<<< HEAD
 	off = page->index << PAGE_CACHE_SHIFT;
-=======
-	off = (u64) page_offset(page);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* count pages */
 	next_index = page->index;
@@ -342,13 +305,8 @@ static int start_read(struct inode *inode, struct list_head *page_list, int max)
 				    NULL, 0,
 				    ci->i_truncate_seq, ci->i_truncate_size,
 				    NULL, false, 1, 0);
-<<<<<<< HEAD
 	if (!req)
 		return -ENOMEM;
-=======
-	if (IS_ERR(req))
-		return PTR_ERR(req);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* build page vector */
 	nr_pages = len >> PAGE_CACHE_SHIFT;
@@ -386,10 +344,6 @@ static int start_read(struct inode *inode, struct list_head *page_list, int max)
 	return nr_pages;
 
 out_pages:
-<<<<<<< HEAD
-=======
-	ceph_unlock_page_vector(pages, nr_pages);
->>>>>>> remotes/linux2/linux-3.4.y
 	ceph_release_page_vector(pages, nr_pages);
 out:
 	ceph_osdc_put_request(req);
@@ -469,11 +423,7 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
 	struct ceph_inode_info *ci;
 	struct ceph_fs_client *fsc;
 	struct ceph_osd_client *osdc;
-<<<<<<< HEAD
 	loff_t page_off = page->index << PAGE_CACHE_SHIFT;
-=======
-	loff_t page_off = page_offset(page);
->>>>>>> remotes/linux2/linux-3.4.y
 	int len = PAGE_CACHE_SIZE;
 	loff_t i_size;
 	int err = 0;
@@ -493,11 +443,7 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
 	osdc = &fsc->client->osdc;
 
 	/* verify this is a writeable snap context */
-<<<<<<< HEAD
 	snapc = (void *)page->private;
-=======
-	snapc = page_snap_context(page);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (snapc == NULL) {
 		dout("writepage %p page %p not dirty?\n", inode, page);
 		goto out;
@@ -505,11 +451,7 @@ static int writepage_nounlock(struct page *page, struct writeback_control *wbc)
 	oldest = get_oldest_context(inode, &snap_size);
 	if (snapc->seq > oldest->seq) {
 		dout("writepage %p page %p snapc %p not writeable - noop\n",
-<<<<<<< HEAD
 		     inode, page, (void *)page->private);
-=======
-		     inode, page, snapc);
->>>>>>> remotes/linux2/linux-3.4.y
 		/* we should only noop if called by kswapd */
 		WARN_ON((current->flags & PF_MEMALLOC) == 0);
 		ceph_put_snap_context(oldest);
@@ -649,11 +591,7 @@ static void writepages_finish(struct ceph_osd_request *req,
 			clear_bdi_congested(&fsc->backing_dev_info,
 					    BLK_RW_ASYNC);
 
-<<<<<<< HEAD
 		ceph_put_snap_context((void *)page->private);
-=======
-		ceph_put_snap_context(page_snap_context(page));
->>>>>>> remotes/linux2/linux-3.4.y
 		page->private = 0;
 		ClearPagePrivate(page);
 		dout("unlocking %d %p\n", i, page);
@@ -857,11 +795,7 @@ get_more_pages:
 			}
 
 			/* only if matching snap context */
-<<<<<<< HEAD
 			pgsnapc = (void *)page->private;
-=======
-			pgsnapc = page_snap_context(page);
->>>>>>> remotes/linux2/linux-3.4.y
 			if (pgsnapc->seq > snapc->seq) {
 				dout("page snapc %p %lld > oldest %p %lld\n",
 				     pgsnapc, pgsnapc->seq, snapc, snapc->seq);
@@ -880,12 +814,8 @@ get_more_pages:
 			/* ok */
 			if (locked_pages == 0) {
 				/* prepare async write request */
-<<<<<<< HEAD
 				offset = (unsigned long long)page->index
 					<< PAGE_CACHE_SHIFT;
-=======
-				offset = (u64) page_offset(page);
->>>>>>> remotes/linux2/linux-3.4.y
 				len = wsize;
 				req = ceph_osdc_new_request(&fsc->client->osdc,
 					    &ci->i_layout,
@@ -899,13 +829,8 @@ get_more_pages:
 					    ci->i_truncate_size,
 					    &inode->i_mtime, true, 1, 0);
 
-<<<<<<< HEAD
 				if (!req) {
 					rc = -ENOMEM;
-=======
-				if (IS_ERR(req)) {
-					rc = PTR_ERR(req);
->>>>>>> remotes/linux2/linux-3.4.y
 					unlock_page(page);
 					break;
 				}
@@ -1059,11 +984,7 @@ retry_locked:
 	BUG_ON(!ci->i_snap_realm);
 	down_read(&mdsc->snap_rwsem);
 	BUG_ON(!ci->i_snap_realm->cached_context);
-<<<<<<< HEAD
 	snapc = (void *)page->private;
-=======
-	snapc = page_snap_context(page);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (snapc && snapc != ci->i_head_snapc) {
 		/*
 		 * this page is already dirty in another (older) snap
@@ -1256,11 +1177,7 @@ static int ceph_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
 	struct inode *inode = vma->vm_file->f_dentry->d_inode;
 	struct page *page = vmf->page;
 	struct ceph_mds_client *mdsc = ceph_inode_to_client(inode)->mdsc;
-<<<<<<< HEAD
 	loff_t off = page->index << PAGE_CACHE_SHIFT;
-=======
-	loff_t off = page_offset(page);
->>>>>>> remotes/linux2/linux-3.4.y
 	loff_t size, len;
 	int ret;
 

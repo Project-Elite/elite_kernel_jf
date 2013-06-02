@@ -235,18 +235,12 @@ struct moschip_port {
 	int port_num;		/*Actual port number in the device(1,2,etc) */
 	struct urb *write_urb;	/* write URB for this port */
 	struct urb *read_urb;	/* read URB for this port */
-<<<<<<< HEAD
 	struct urb *int_urb;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	__u8 shadowLCR;		/* last LCR value received */
 	__u8 shadowMCR;		/* last MCR value received */
 	char open;
 	char open_ports;
-<<<<<<< HEAD
 	char zombie;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	wait_queue_head_t wait_chase;	/* for handling sleeping while waiting for chase to finish */
 	wait_queue_head_t delta_msr_wait;	/* for handling sleeping while waiting for msr change to happen */
 	int delta_msr_cond;
@@ -511,10 +505,7 @@ static void mos7840_control_callback(struct urb *urb)
 	unsigned char *data;
 	struct moschip_port *mos7840_port;
 	__u8 regval = 0x0;
-<<<<<<< HEAD
 	int result = 0;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	int status = urb->status;
 
 	mos7840_port = urb->context;
@@ -533,11 +524,7 @@ static void mos7840_control_callback(struct urb *urb)
 	default:
 		dbg("%s - nonzero urb status received: %d", __func__,
 		    status);
-<<<<<<< HEAD
 		goto exit;
-=======
-		return;
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	dbg("%s urb buffer size is %d", __func__, urb->actual_length);
@@ -550,7 +537,6 @@ static void mos7840_control_callback(struct urb *urb)
 		mos7840_handle_new_msr(mos7840_port, regval);
 	else if (mos7840_port->MsrLsr == 1)
 		mos7840_handle_new_lsr(mos7840_port, regval);
-<<<<<<< HEAD
 
 exit:
 	spin_lock(&mos7840_port->pool_lock);
@@ -562,8 +548,6 @@ exit:
 			"%s - Error %d submitting interrupt urb\n",
 			__func__, result);
 	}
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int mos7840_get_reg(struct moschip_port *mcs, __u16 Wval, __u16 reg,
@@ -671,7 +655,6 @@ static void mos7840_interrupt_callback(struct urb *urb)
 					wreg = MODEM_STATUS_REGISTER;
 					break;
 				}
-<<<<<<< HEAD
 				spin_lock(&mos7840_port->pool_lock);
 				if (!mos7840_port->zombie) {
 					rv = mos7840_get_reg(mos7840_port, wval, wreg, &Data);
@@ -680,9 +663,6 @@ static void mos7840_interrupt_callback(struct urb *urb)
 					return;
 				}
 				spin_unlock(&mos7840_port->pool_lock);
-=======
-				rv = mos7840_get_reg(mos7840_port, wval, wreg, &Data);
->>>>>>> remotes/linux2/linux-3.4.y
 			}
 		}
 	}
@@ -1209,18 +1189,9 @@ static int mos7840_chars_in_buffer(struct tty_struct *tty)
 	}
 
 	spin_lock_irqsave(&mos7840_port->pool_lock, flags);
-<<<<<<< HEAD
 	for (i = 0; i < NUM_URBS; ++i)
 		if (mos7840_port->busy[i])
 			chars += URB_TRANSFER_BUFFER_SIZE;
-=======
-	for (i = 0; i < NUM_URBS; ++i) {
-		if (mos7840_port->busy[i]) {
-			struct urb *urb = mos7840_port->write_urb_pool[i];
-			chars += urb->transfer_buffer_length;
-		}
-	}
->>>>>>> remotes/linux2/linux-3.4.y
 	spin_unlock_irqrestore(&mos7840_port->pool_lock, flags);
 	dbg("%s - returns %d", __func__, chars);
 	return chars;
@@ -2616,10 +2587,7 @@ error:
 		kfree(mos7840_port->ctrl_buf);
 		usb_free_urb(mos7840_port->control_urb);
 		kfree(mos7840_port);
-<<<<<<< HEAD
 		serial->port[i] = NULL;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	return status;
 }
@@ -2632,10 +2600,7 @@ error:
 static void mos7840_disconnect(struct usb_serial *serial)
 {
 	int i;
-<<<<<<< HEAD
 	unsigned long flags;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	struct moschip_port *mos7840_port;
 	dbg("%s", " disconnect :entering..........");
 
@@ -2653,12 +2618,9 @@ static void mos7840_disconnect(struct usb_serial *serial)
 		mos7840_port = mos7840_get_port_private(serial->port[i]);
 		dbg ("mos7840_port %d = %p", i, mos7840_port);
 		if (mos7840_port) {
-<<<<<<< HEAD
 			spin_lock_irqsave(&mos7840_port->pool_lock, flags);
 			mos7840_port->zombie = 1;
 			spin_unlock_irqrestore(&mos7840_port->pool_lock, flags);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			usb_kill_urb(mos7840_port->control_urb);
 		}
 	}
@@ -2692,10 +2654,6 @@ static void mos7840_release(struct usb_serial *serial)
 		mos7840_port = mos7840_get_port_private(serial->port[i]);
 		dbg("mos7840_port %d = %p", i, mos7840_port);
 		if (mos7840_port) {
-<<<<<<< HEAD
-=======
-			usb_free_urb(mos7840_port->control_urb);
->>>>>>> remotes/linux2/linux-3.4.y
 			kfree(mos7840_port->ctrl_buf);
 			kfree(mos7840_port->dr);
 			kfree(mos7840_port);

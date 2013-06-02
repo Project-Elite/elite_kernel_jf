@@ -117,15 +117,11 @@ struct usb_function {
 	struct usb_descriptor_header	**ss_descriptors;
 
 	struct usb_configuration	*config;
-<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	int	(*set_intf_num)(struct usb_function *f,
 			int intf_num, int index_num);
 	int	(*set_config_desc)(int conf_num);
 #endif
-=======
-
->>>>>>> remotes/linux2/linux-3.4.y
 	/* REVISIT:  bind() functions can be marked __init, which
 	 * makes trouble for section mismatch analysis.  See if
 	 * we can't restructure things to avoid mismatching.
@@ -250,12 +246,9 @@ int usb_add_config(struct usb_composite_dev *,
 		struct usb_configuration *,
 		int (*)(struct usb_configuration *));
 
-<<<<<<< HEAD
 int usb_remove_config(struct usb_composite_dev *,
 		struct usb_configuration *);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /**
  * struct usb_composite_driver - groups configurations into a gadget
  * @name: For diagnostics, identifies the driver.
@@ -376,14 +369,11 @@ struct usb_composite_dev {
 
 	/* protects deactivations and delayed_status counts*/
 	spinlock_t			lock;
-<<<<<<< HEAD
 
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	/* states of a real cable connection */
 	bool                            cable_connect;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 extern int usb_string_id(struct usb_composite_dev *c);

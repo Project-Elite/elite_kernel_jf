@@ -106,11 +106,7 @@ static void kvp_acquire_lock(int pool)
 
 	if (fcntl(kvp_file_info[pool].fd, F_SETLKW, &fl) == -1) {
 		syslog(LOG_ERR, "Failed to acquire the lock pool: %d", pool);
-<<<<<<< HEAD
 		exit(-1);
-=======
-		exit(EXIT_FAILURE);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 
@@ -122,11 +118,7 @@ static void kvp_release_lock(int pool)
 	if (fcntl(kvp_file_info[pool].fd, F_SETLK, &fl) == -1) {
 		perror("fcntl");
 		syslog(LOG_ERR, "Failed to release the lock pool: %d", pool);
-<<<<<<< HEAD
 		exit(-1);
-=======
-		exit(EXIT_FAILURE);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 
@@ -145,27 +137,14 @@ static void kvp_update_file(int pool)
 	if (!filep) {
 		kvp_release_lock(pool);
 		syslog(LOG_ERR, "Failed to open file, pool: %d", pool);
-<<<<<<< HEAD
 		exit(-1);
-=======
-		exit(EXIT_FAILURE);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	bytes_written = fwrite(kvp_file_info[pool].records,
 				sizeof(struct kvp_record),
 				kvp_file_info[pool].num_records, filep);
 
-<<<<<<< HEAD
 	fflush(filep);
-=======
-	if (ferror(filep) || fclose(filep)) {
-		kvp_release_lock(pool);
-		syslog(LOG_ERR, "Failed to write file, pool: %d", pool);
-		exit(EXIT_FAILURE);
-	}
-
->>>>>>> remotes/linux2/linux-3.4.y
 	kvp_release_lock(pool);
 }
 
@@ -184,28 +163,14 @@ static void kvp_update_mem_state(int pool)
 	if (!filep) {
 		kvp_release_lock(pool);
 		syslog(LOG_ERR, "Failed to open file, pool: %d", pool);
-<<<<<<< HEAD
 		exit(-1);
 	}
 	while (!feof(filep)) {
-=======
-		exit(EXIT_FAILURE);
-	}
-	for (;;) {
->>>>>>> remotes/linux2/linux-3.4.y
 		readp = &record[records_read];
 		records_read += fread(readp, sizeof(struct kvp_record),
 					ENTRIES_PER_BLOCK * num_blocks,
 					filep);
 
-<<<<<<< HEAD
-=======
-		if (ferror(filep)) {
-			syslog(LOG_ERR, "Failed to read file, pool: %d", pool);
-			exit(EXIT_FAILURE);
-		}
-
->>>>>>> remotes/linux2/linux-3.4.y
 		if (!feof(filep)) {
 			/*
 			 * We have more data to read.
@@ -215,11 +180,7 @@ static void kvp_update_mem_state(int pool)
 
 			if (record == NULL) {
 				syslog(LOG_ERR, "malloc failed");
-<<<<<<< HEAD
 				exit(-1);
-=======
-				exit(EXIT_FAILURE);
->>>>>>> remotes/linux2/linux-3.4.y
 			}
 			continue;
 		}
@@ -230,10 +191,6 @@ static void kvp_update_mem_state(int pool)
 	kvp_file_info[pool].records = record;
 	kvp_file_info[pool].num_records = records_read;
 
-<<<<<<< HEAD
-=======
-	fclose(filep);
->>>>>>> remotes/linux2/linux-3.4.y
 	kvp_release_lock(pool);
 }
 static int kvp_file_init(void)
@@ -251,11 +208,7 @@ static int kvp_file_init(void)
 	if (access("/var/opt/hyperv", F_OK)) {
 		if (mkdir("/var/opt/hyperv", S_IRUSR | S_IWUSR | S_IROTH)) {
 			syslog(LOG_ERR, " Failed to create /var/opt/hyperv");
-<<<<<<< HEAD
 			exit(-1);
-=======
-			exit(EXIT_FAILURE);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 
@@ -279,25 +232,12 @@ static int kvp_file_init(void)
 			fclose(filep);
 			return 1;
 		}
-<<<<<<< HEAD
 		while (!feof(filep)) {
-=======
-		for (;;) {
->>>>>>> remotes/linux2/linux-3.4.y
 			readp = &record[records_read];
 			records_read += fread(readp, sizeof(struct kvp_record),
 					ENTRIES_PER_BLOCK,
 					filep);
 
-<<<<<<< HEAD
-=======
-			if (ferror(filep)) {
-				syslog(LOG_ERR, "Failed to read file, pool: %d",
-				       i);
-				exit(EXIT_FAILURE);
-			}
-
->>>>>>> remotes/linux2/linux-3.4.y
 			if (!feof(filep)) {
 				/*
 				 * We have more data to read.
@@ -717,21 +657,13 @@ int main(void)
 
 	if (kvp_file_init()) {
 		syslog(LOG_ERR, "Failed to initialize the pools");
-<<<<<<< HEAD
 		exit(-1);
-=======
-		exit(EXIT_FAILURE);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	fd = socket(AF_NETLINK, SOCK_DGRAM, NETLINK_CONNECTOR);
 	if (fd < 0) {
 		syslog(LOG_ERR, "netlink socket creation failed; error:%d", fd);
-<<<<<<< HEAD
 		exit(-1);
-=======
-		exit(EXIT_FAILURE);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	addr.nl_family = AF_NETLINK;
 	addr.nl_pad = 0;
@@ -743,11 +675,7 @@ int main(void)
 	if (error < 0) {
 		syslog(LOG_ERR, "bind failed; error:%d", error);
 		close(fd);
-<<<<<<< HEAD
 		exit(-1);
-=======
-		exit(EXIT_FAILURE);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	sock_opt = addr.nl_groups;
 	setsockopt(fd, 270, 1, &sock_opt, sizeof(sock_opt));
@@ -767,51 +695,24 @@ int main(void)
 	if (len < 0) {
 		syslog(LOG_ERR, "netlink_send failed; error:%d", len);
 		close(fd);
-<<<<<<< HEAD
 		exit(-1);
-=======
-		exit(EXIT_FAILURE);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	pfd.fd = fd;
 
 	while (1) {
-<<<<<<< HEAD
-=======
-		struct sockaddr *addr_p = (struct sockaddr *) &addr;
-		socklen_t addr_l = sizeof(addr);
->>>>>>> remotes/linux2/linux-3.4.y
 		pfd.events = POLLIN;
 		pfd.revents = 0;
 		poll(&pfd, 1, -1);
 
-<<<<<<< HEAD
 		len = recv(fd, kvp_recv_buffer, sizeof(kvp_recv_buffer), 0);
 
 		if (len < 0) {
 			syslog(LOG_ERR, "recv failed; error:%d", len);
-=======
-		len = recvfrom(fd, kvp_recv_buffer, sizeof(kvp_recv_buffer), 0,
-				addr_p, &addr_l);
-
-		if (len < 0) {
-			syslog(LOG_ERR, "recvfrom failed; pid:%u error:%d %s",
-					addr.nl_pid, errno, strerror(errno));
->>>>>>> remotes/linux2/linux-3.4.y
 			close(fd);
 			return -1;
 		}
 
-<<<<<<< HEAD
-=======
-		if (addr.nl_pid) {
-			syslog(LOG_WARNING, "Received packet from untrusted pid:%u",
-					addr.nl_pid);
-			continue;
-		}
-
->>>>>>> remotes/linux2/linux-3.4.y
 		incoming_msg = (struct nlmsghdr *)kvp_recv_buffer;
 		incoming_cn_msg = (struct cn_msg *)NLMSG_DATA(incoming_msg);
 		hv_msg = (struct hv_kvp_msg *)incoming_cn_msg->data;
@@ -958,11 +859,7 @@ kvp_done:
 		len = netlink_send(fd, incoming_cn_msg);
 		if (len < 0) {
 			syslog(LOG_ERR, "net_link send failed; error:%d", len);
-<<<<<<< HEAD
 			exit(-1);
-=======
-			exit(EXIT_FAILURE);
->>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 

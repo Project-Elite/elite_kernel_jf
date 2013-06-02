@@ -94,24 +94,10 @@ static ssize_t ad7314_show_temperature(struct device *dev,
 	}
 }
 
-<<<<<<< HEAD
-=======
-static ssize_t ad7314_show_name(struct device *dev,
-				struct device_attribute *devattr, char *buf)
-{
-	return sprintf(buf, "%s\n", to_spi_device(dev)->modalias);
-}
-
-static DEVICE_ATTR(name, S_IRUGO, ad7314_show_name, NULL);
->>>>>>> remotes/linux2/linux-3.4.y
 static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO,
 			  ad7314_show_temperature, NULL, 0);
 
 static struct attribute *ad7314_attributes[] = {
-<<<<<<< HEAD
-=======
-	&dev_attr_name.attr,
->>>>>>> remotes/linux2/linux-3.4.y
 	&sensor_dev_attr_temp1_input.dev_attr.attr,
 	NULL,
 };

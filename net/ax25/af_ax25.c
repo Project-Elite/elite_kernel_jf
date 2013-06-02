@@ -1646,10 +1646,6 @@ static int ax25_recvmsg(struct kiocb *iocb, struct socket *sock,
 		ax25_address src;
 		const unsigned char *mac = skb_mac_header(skb);
 
-<<<<<<< HEAD
-=======
-		memset(sax, 0, sizeof(struct full_sockaddr_ax25));
->>>>>>> remotes/linux2/linux-3.4.y
 		ax25_addr_parse(mac + 1, skb->data - mac - 1, &src, NULL,
 				&digi, NULL, NULL);
 		sax->sax25_family = AF_AX25;

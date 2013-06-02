@@ -283,11 +283,7 @@ static int rt2500usb_rfkill_poll(struct rt2x00_dev *rt2x00dev)
 	u16 reg;
 
 	rt2500usb_register_read(rt2x00dev, MAC_CSR19, &reg);
-<<<<<<< HEAD
 	return rt2x00_get_field32(reg, MAC_CSR19_BIT7);
-=======
-	return rt2x00_get_field16(reg, MAC_CSR19_BIT7);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 #ifdef CONFIG_RT2X00_LIB_LEDS
@@ -1772,10 +1768,6 @@ static int rt2500usb_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 static int rt2500usb_probe_hw(struct rt2x00_dev *rt2x00dev)
 {
 	int retval;
-<<<<<<< HEAD
-=======
-	u16 reg;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Allocate eeprom data.
@@ -1789,17 +1781,6 @@ static int rt2500usb_probe_hw(struct rt2x00_dev *rt2x00dev)
 		return retval;
 
 	/*
-<<<<<<< HEAD
-=======
-	 * Enable rfkill polling by setting GPIO direction of the
-	 * rfkill switch GPIO pin correctly.
-	 */
-	rt2500usb_register_read(rt2x00dev, MAC_CSR19, &reg);
-	rt2x00_set_field16(&reg, MAC_CSR19_BIT8, 0);
-	rt2500usb_register_write(rt2x00dev, MAC_CSR19, reg);
-
-	/*
->>>>>>> remotes/linux2/linux-3.4.y
 	 * Initialize hw specifications.
 	 */
 	retval = rt2500usb_probe_hw_mode(rt2x00dev);

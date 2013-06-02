@@ -30,21 +30,11 @@ new_skb(ulong len)
 {
 	struct sk_buff *skb;
 
-<<<<<<< HEAD
 	skb = alloc_skb(len, GFP_ATOMIC);
 	if (skb) {
 		skb_reset_mac_header(skb);
 		skb_reset_network_header(skb);
 		skb->protocol = __constant_htons(ETH_P_AOE);
-=======
-	skb = alloc_skb(len + MAX_HEADER, GFP_ATOMIC);
-	if (skb) {
-		skb_reserve(skb, MAX_HEADER);
-		skb_reset_mac_header(skb);
-		skb_reset_network_header(skb);
-		skb->protocol = __constant_htons(ETH_P_AOE);
-		skb_checksum_none_assert(skb);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	return skb;
 }

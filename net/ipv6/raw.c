@@ -107,7 +107,6 @@ found:
  *	0 - deliver
  *	1 - block
  */
-<<<<<<< HEAD
 static __inline__ int icmpv6_filter(struct sock *sk, struct sk_buff *skb)
 {
 	struct icmp6hdr *icmph;
@@ -123,22 +122,6 @@ static __inline__ int icmpv6_filter(struct sock *sk, struct sk_buff *skb)
 		return (data[bit_nr >> 5] & (1 << (bit_nr & 31))) != 0;
 	}
 	return 0;
-=======
-static int icmpv6_filter(const struct sock *sk, const struct sk_buff *skb)
-{
-	struct icmp6hdr *_hdr;
-	const struct icmp6hdr *hdr;
-
-	hdr = skb_header_pointer(skb, skb_transport_offset(skb),
-				 sizeof(_hdr), &_hdr);
-	if (hdr) {
-		const __u32 *data = &raw6_sk(sk)->filter.data[0];
-		unsigned int type = hdr->icmp6_type;
-
-		return (data[type >> 5] & (1U << (type & 31))) != 0;
-	}
-	return 1;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)

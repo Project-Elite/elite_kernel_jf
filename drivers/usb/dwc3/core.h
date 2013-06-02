@@ -50,7 +50,6 @@
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
 
-<<<<<<< HEAD
 #include "dwc3_otg.h"
 
 /* Global constants */
@@ -58,12 +57,6 @@
 #define DWC3_XHCI_RESOURCES_NUM	2
 
 #define DWC3_EVENT_BUFFERS_SIZE	(2 * PAGE_SIZE)
-=======
-/* Global constants */
-#define DWC3_ENDPOINTS_NUM	32
-
-#define DWC3_EVENT_BUFFERS_SIZE	PAGE_SIZE
->>>>>>> remotes/linux2/linux-3.4.y
 #define DWC3_EVENT_TYPE_MASK	0xfe
 
 #define DWC3_EVENT_TYPE_DEV	0
@@ -80,16 +73,12 @@
 #define DWC3_DEVICE_EVENT_ERRATIC_ERROR		9
 #define DWC3_DEVICE_EVENT_CMD_CMPL		10
 #define DWC3_DEVICE_EVENT_OVERFLOW		11
-<<<<<<< HEAD
 #define DWC3_DEVICE_EVENT_VENDOR_DEV_TEST_LMP	12
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 #define DWC3_GEVNTCOUNT_MASK	0xfffc
 #define DWC3_GSNPSID_MASK	0xffff0000
 #define DWC3_GSNPSREV_MASK	0xffff
 
-<<<<<<< HEAD
 /* DWC3 registers memory space boundries */
 #define DWC3_XHCI_REGS_START		0x0
 #define DWC3_XHCI_REGS_END		0x7fff
@@ -100,8 +89,6 @@
 #define DWC3_OTG_REGS_START		0xcc00
 #define DWC3_OTG_REGS_END		0xccff
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /* Global Registers */
 #define DWC3_GSBUSCFG0		0xc100
 #define DWC3_GSBUSCFG1		0xc104
@@ -166,14 +153,9 @@
 /* OTG Registers */
 #define DWC3_OCFG		0xcc00
 #define DWC3_OCTL		0xcc04
-<<<<<<< HEAD
 #define DWC3_OEVT		0xcc08
 #define DWC3_OEVTEN		0xcc0c
 #define DWC3_OSTS		0xcc10
-=======
-#define DWC3_OEVTEN		0xcc08
-#define DWC3_OSTS		0xcc0C
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* Bit fields */
 
@@ -198,12 +180,9 @@
 #define DWC3_GCTL_DISSCRAMBLE	(1 << 3)
 #define DWC3_GCTL_DSBLCLKGTNG	(1 << 0)
 
-<<<<<<< HEAD
 /* Global User Control Register */
 #define DWC3_GUCTL_REFCLKPER (0x3FF << 22)
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /* Global USB2 PHY Configuration Register */
 #define DWC3_GUSB2PHYCFG_PHYSOFTRST (1 << 31)
 #define DWC3_GUSB2PHYCFG_SUSPHY	(1 << 6)
@@ -211,11 +190,8 @@
 /* Global USB3 PIPE Control Register */
 #define DWC3_GUSB3PIPECTL_PHYSOFTRST (1 << 31)
 #define DWC3_GUSB3PIPECTL_SUSPHY (1 << 17)
-<<<<<<< HEAD
 #define DWC3_GUSB3PIPECTL_DELAY_P1P2P3 (7 << 19)
 #define DWC3_GUSB3PIPECTL_DIS_RXDET_U3_RXDET (1 << 22)
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* Global TX Fifo Size Register */
 #define DWC3_GTXFIFOSIZ_TXFDEF(n) ((n) & 0xffff)
@@ -226,12 +202,9 @@
 #define DWC3_GHWPARAMS1_EN_PWROPT_NO	0
 #define DWC3_GHWPARAMS1_EN_PWROPT_CLK	1
 
-<<<<<<< HEAD
 /* Global HWPARAMS6 Register */
 #define DWC3_GHWPARAMS6_SRP_SUPPORT	(1 << 10)
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /* Device Configuration Register */
 #define DWC3_DCFG_DEVADDR(addr)	((addr) << 3)
 #define DWC3_DCFG_DEVADDR_MASK	DWC3_DCFG_DEVADDR(0x7f)
@@ -350,7 +323,6 @@
 #define DWC3_DEPCMD_TYPE_BULK		2
 #define DWC3_DEPCMD_TYPE_INTR		3
 
-<<<<<<< HEAD
 /* OTG Events Register */
 #define DWC3_OEVT_DEVICEMODE			(1 << 31)
 #define DWC3_OEVTEN_OTGCONIDSTSCHNGEVNT		(1 << 24)
@@ -382,8 +354,6 @@
 #define DWC3_OTG_OCTL_DEVSETHNPEN	(1 << 1)
 #define DWC3_OTG_OCTL_HSTSETHNPEN	(1 << 0)
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /* Structures */
 
 struct dwc3_trb;
@@ -666,14 +636,9 @@ struct dwc3 {
 	spinlock_t		lock;
 	struct device		*dev;
 
-<<<<<<< HEAD
 	struct dwc3_otg		*dotg;
 	struct platform_device	*xhci;
 	struct resource		xhci_resources[DWC3_XHCI_RESOURCES_NUM];
-=======
-	struct platform_device	*xhci;
-	struct resource		*res;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	struct dwc3_event_buffer **ev_buffs;
 	struct dwc3_ep		*eps[DWC3_ENDPOINTS_NUM];
@@ -684,11 +649,6 @@ struct dwc3 {
 	void __iomem		*regs;
 	size_t			regs_size;
 
-<<<<<<< HEAD
-=======
-	int			irq;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	u32			num_event_buffers;
 	u32			u1u2;
 	u32			maximum_speed;
@@ -702,10 +662,7 @@ struct dwc3 {
 #define DWC3_REVISION_185A	0x5533185a
 #define DWC3_REVISION_188A	0x5533188a
 #define DWC3_REVISION_190A	0x5533190a
-<<<<<<< HEAD
 #define DWC3_REVISION_230A	0x5533230a
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	unsigned		is_selfpowered:1;
 	unsigned		three_stage_setup:1;
@@ -730,15 +687,12 @@ struct dwc3 {
 
 	u8			test_mode;
 	u8			test_mode_nr;
-<<<<<<< HEAD
 
 	/* Indicate if the gadget was powered by the otg driver */
 	bool			vbus_active;
 
 	/* Indicate if software connect was issued by the usb_gadget_driver */
 	bool			softconnect;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /* -------------------------------------------------------------------------- */
@@ -878,12 +832,9 @@ union dwc3_event {
 void dwc3_set_mode(struct dwc3 *dwc, u32 mode);
 int dwc3_gadget_resize_tx_fifos(struct dwc3 *dwc);
 
-<<<<<<< HEAD
 int dwc3_otg_init(struct dwc3 *dwc);
 void dwc3_otg_exit(struct dwc3 *dwc);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 int dwc3_host_init(struct dwc3 *dwc);
 void dwc3_host_exit(struct dwc3 *dwc);
 

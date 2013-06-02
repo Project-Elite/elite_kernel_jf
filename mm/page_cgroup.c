@@ -285,7 +285,6 @@ void __init page_cgroup_init(void)
 		     pfn < end_pfn;
                      pfn = ALIGN(pfn + 1, PAGES_PER_SECTION)) {
 
-<<<<<<< HEAD
 			/* 
 			 * even if the first pfn is invalid, that doesn't mean
 			 * that the entire section is not used.
@@ -295,9 +294,6 @@ void __init page_cgroup_init(void)
 			 */
 			struct mem_section *section = __pfn_to_section(pfn);
 			if (!section->section_mem_map)
-=======
-			if (!pfn_valid(pfn))
->>>>>>> remotes/linux2/linux-3.4.y
 				continue;
 			/*
 			 * Nodes's pfns can be overlapping.

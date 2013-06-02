@@ -1032,17 +1032,12 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, stru
 	inode = NULL;
 	if (bh) {
 		__u32 ino = le32_to_cpu(de->inode);
-<<<<<<< HEAD
 		if (!ext4_valid_inum(dir->i_sb, ino)) {
 			printk(KERN_ERR "Name of directory entry has bad"
 				"inode# : %s\n", de->name);
 			print_bh(dir->i_sb, bh, 0, EXT4_BLOCK_SIZE(dir->i_sb));
 			brelse(bh);
 
-=======
-		brelse(bh);
-		if (!ext4_valid_inum(dir->i_sb, ino)) {
->>>>>>> remotes/linux2/linux-3.4.y
 			EXT4_ERROR_INODE(dir, "bad inode number: %u", ino);
 			return ERR_PTR(-EIO);
 		}
@@ -1055,13 +1050,8 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, stru
 		inode = ext4_iget(dir->i_sb, ino);
 		if (inode == ERR_PTR(-ESTALE)) {
 			EXT4_ERROR_INODE(dir,
-<<<<<<< HEAD
 			 "deleted inode referenced: %u  at parent inode : %lu",
 					 ino, dir->i_ino);
-=======
-					 "deleted inode referenced: %u",
-					 ino);
->>>>>>> remotes/linux2/linux-3.4.y
 			return ERR_PTR(-EIO);
 		}
 	}
@@ -1815,13 +1805,9 @@ retry:
 	err = PTR_ERR(inode);
 	if (!IS_ERR(inode)) {
 		init_special_inode(inode, inode->i_mode, rdev);
-<<<<<<< HEAD
 #ifdef CONFIG_EXT4_FS_XATTR
 		inode->i_op = &ext4_special_inode_operations;
 #endif
-=======
-		inode->i_op = &ext4_special_inode_operations;
->>>>>>> remotes/linux2/linux-3.4.y
 		err = ext4_add_nondir(handle, dentry, inode);
 	}
 	ext4_journal_stop(handle);

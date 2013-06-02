@@ -541,10 +541,6 @@ static __devinit int wm8994_device_init(struct wm8994 *wm8994, int irq)
 		case 1:
 		case 2:
 		case 3:
-<<<<<<< HEAD
-=======
-		case 4:
->>>>>>> remotes/linux2/linux-3.4.y
 			regmap_patch = wm1811_reva_patch;
 			patch_regs = ARRAY_SIZE(wm1811_reva_patch);
 			break;

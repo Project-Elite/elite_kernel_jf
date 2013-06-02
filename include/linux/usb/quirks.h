@@ -30,9 +30,6 @@
    descriptor */
 #define USB_QUIRK_DELAY_INIT		0x00000040
 
-<<<<<<< HEAD
 #define USB_QUIRK_OTG_PET		0x00000080
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #endif /* __LINUX_USB_QUIRKS_H */

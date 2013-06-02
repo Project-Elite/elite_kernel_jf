@@ -35,10 +35,7 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 #include <linux/mtd/map.h>
-<<<<<<< HEAD
 #include <linux/mtd/partitions.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 #include <asm/uaccess.h>
 
@@ -972,12 +969,9 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
 
 	case ECCGETSTATS:
 	{
-<<<<<<< HEAD
 #ifdef CONFIG_MTD_LAZYECCSTATS
 		part_fill_badblockstats(mtd);
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		if (copy_to_user(argp, &mtd->ecc_stats,
 				 sizeof(struct mtd_ecc_stats)))
 			return -EFAULT;
@@ -1133,36 +1127,6 @@ static unsigned long mtdchar_get_unmapped_area(struct file *file,
 }
 #endif
 
-<<<<<<< HEAD
-=======
-static inline unsigned long get_vm_size(struct vm_area_struct *vma)
-{
-	return vma->vm_end - vma->vm_start;
-}
-
-static inline resource_size_t get_vm_offset(struct vm_area_struct *vma)
-{
-	return (resource_size_t) vma->vm_pgoff << PAGE_SHIFT;
-}
-
-/*
- * Set a new vm offset.
- *
- * Verify that the incoming offset really works as a page offset,
- * and that the offset and size fit in a resource_size_t.
- */
-static inline int set_vm_offset(struct vm_area_struct *vma, resource_size_t off)
-{
-	pgoff_t pgoff = off >> PAGE_SHIFT;
-	if (off != (resource_size_t) pgoff << PAGE_SHIFT)
-		return -EINVAL;
-	if (off + get_vm_size(vma) - 1 < off)
-		return -EINVAL;
-	vma->vm_pgoff = pgoff;
-	return 0;
-}
-
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * set up a mapping for shared memory segments
  */
@@ -1172,7 +1136,6 @@ static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
 	struct mtd_file_info *mfi = file->private_data;
 	struct mtd_info *mtd = mfi->mtd;
 	struct map_info *map = mtd->priv;
-<<<<<<< HEAD
 	unsigned long start;
 	unsigned long off;
 	u32 len;
@@ -1199,19 +1162,6 @@ static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
 			return -EAGAIN;
 
 		return 0;
-=======
-
-        /* This is broken because it assumes the MTD device is map-based
-	   and that mtd->priv is a valid struct map_info.  It should be
-	   replaced with something that uses the mtd_get_unmapped_area()
-	   operation properly. */
-	if (0 /*mtd->type == MTD_RAM || mtd->type == MTD_ROM*/) {
-#ifdef pgprot_noncached
-		if (file->f_flags & O_DSYNC || map->phys >= __pa(high_memory))
-			vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-#endif
-		return vm_iomap_memory(vma, map->phys, map->size);
->>>>>>> remotes/linux2/linux-3.4.y
 	}
 	return -ENOSYS;
 #else

@@ -21,10 +21,6 @@
 #include <linux/interrupt.h>
 #include <linux/sched.h>
 #include <linux/gpio.h>
-<<<<<<< HEAD
-=======
-#include <linux/slab.h>
->>>>>>> remotes/linux2/linux-3.4.y
 #include <mach/msm_fb.h>
 
 static DECLARE_WAIT_QUEUE_HEAD(nt35399_vsync_wait);

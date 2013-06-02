@@ -313,21 +313,11 @@ static void tcp_illinois_info(struct sock *sk, u32 ext,
 			.tcpv_rttcnt = ca->cnt_rtt,
 			.tcpv_minrtt = ca->base_rtt,
 		};
-<<<<<<< HEAD
 		u64 t = ca->sum_rtt;
 
 		do_div(t, ca->cnt_rtt);
 		info.tcpv_rtt = t;
 
-=======
-
-		if (info.tcpv_rttcnt > 0) {
-			u64 t = ca->sum_rtt;
-
-			do_div(t, info.tcpv_rttcnt);
-			info.tcpv_rtt = t;
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 		nla_put(skb, INET_DIAG_VEGASINFO, sizeof(info), &info);
 	}
 }

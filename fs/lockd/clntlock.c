@@ -56,11 +56,7 @@ struct nlm_host *nlmclnt_init(const struct nlmclnt_initdata *nlm_init)
 	u32 nlm_version = (nlm_init->nfs_version == 2) ? 1 : 4;
 	int status;
 
-<<<<<<< HEAD
 	status = lockd_up();
-=======
-	status = lockd_up(nlm_init->net);
->>>>>>> remotes/linux2/linux-3.4.y
 	if (status < 0)
 		return ERR_PTR(status);
 
@@ -69,11 +65,7 @@ struct nlm_host *nlmclnt_init(const struct nlmclnt_initdata *nlm_init)
 				   nlm_init->hostname, nlm_init->noresvport,
 				   nlm_init->net);
 	if (host == NULL) {
-<<<<<<< HEAD
 		lockd_down();
-=======
-		lockd_down(nlm_init->net);
->>>>>>> remotes/linux2/linux-3.4.y
 		return ERR_PTR(-ENOLCK);
 	}
 
@@ -88,15 +80,8 @@ EXPORT_SYMBOL_GPL(nlmclnt_init);
  */
 void nlmclnt_done(struct nlm_host *host)
 {
-<<<<<<< HEAD
 	nlmclnt_release_host(host);
 	lockd_down();
-=======
-	struct net *net = host->net;
-
-	nlmclnt_release_host(host);
-	lockd_down(net);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL_GPL(nlmclnt_done);
 
@@ -157,12 +142,6 @@ int nlmclnt_block(struct nlm_wait *block, struct nlm_rqst *req, long timeout)
 			timeout);
 	if (ret < 0)
 		return -ERESTARTSYS;
-<<<<<<< HEAD
-=======
-	/* Reset the lock status after a server reboot so we resend */
-	if (block->b_status == nlm_lck_denied_grace_period)
-		block->b_status = nlm_lck_blocked;
->>>>>>> remotes/linux2/linux-3.4.y
 	req->a_res.status = block->b_status;
 	return 0;
 }
@@ -241,19 +220,11 @@ reclaimer(void *ptr)
 	struct nlm_wait	  *block;
 	struct file_lock *fl, *next;
 	u32 nsmstate;
-<<<<<<< HEAD
-=======
-	struct net *net = host->net;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	allow_signal(SIGKILL);
 
 	down_write(&host->h_rwsem);
-<<<<<<< HEAD
 	lockd_up();	/* note: this cannot fail as lockd is already running */
-=======
-	lockd_up(net);	/* note: this cannot fail as lockd is already running */
->>>>>>> remotes/linux2/linux-3.4.y
 
 	dprintk("lockd: reclaiming locks for host %s\n", host->h_name);
 
@@ -304,10 +275,6 @@ restart:
 
 	/* Release host handle after use */
 	nlmclnt_release_host(host);
-<<<<<<< HEAD
 	lockd_down();
-=======
-	lockd_down(net);
->>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }

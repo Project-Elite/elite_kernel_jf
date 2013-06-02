@@ -27,10 +27,7 @@
 #include <asm/byteorder.h>
 #include <asm/memory.h>
 #include <asm-generic/pci_iomap.h>
-<<<<<<< HEAD
 #include <mach/msm_rtb.h>
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * ISA I/O bus memory addresses are 1:1 with the physical address.
@@ -51,7 +48,6 @@ extern void __raw_readsb(const void __iomem *addr, void *data, int bytelen);
 extern void __raw_readsw(const void __iomem *addr, void *data, int wordlen);
 extern void __raw_readsl(const void __iomem *addr, void *data, int longlen);
 
-<<<<<<< HEAD
 /*
  * There may be cases when clients don't want to support or can't support the
  * logging. The appropriate functions can be used but clients should carefully
@@ -98,15 +94,6 @@ extern void __raw_readsl(const void __iomem *addr, void *data, int longlen);
 #define __raw_readb(a)		__raw_read_logged((a), b, char)
 #define __raw_readw(a)		__raw_read_logged((a), w, short)
 #define __raw_readl(a)		__raw_read_logged((a), l, int)
-=======
-#define __raw_writeb(v,a)	(__chk_io_ptr(a), *(volatile unsigned char __force  *)(a) = (v))
-#define __raw_writew(v,a)	(__chk_io_ptr(a), *(volatile unsigned short __force *)(a) = (v))
-#define __raw_writel(v,a)	(__chk_io_ptr(a), *(volatile unsigned int __force   *)(a) = (v))
-
-#define __raw_readb(a)		(__chk_io_ptr(a), *(volatile unsigned char __force  *)(a))
-#define __raw_readw(a)		(__chk_io_ptr(a), *(volatile unsigned short __force *)(a))
-#define __raw_readl(a)		(__chk_io_ptr(a), *(volatile unsigned int __force   *)(a))
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Architecture ioremap implementation.

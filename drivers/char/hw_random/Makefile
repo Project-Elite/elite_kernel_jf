@@ -22,7 +22,4 @@ obj-$(CONFIG_HW_RANDOM_OCTEON) += octeon-rng.o
 obj-$(CONFIG_HW_RANDOM_NOMADIK) += nomadik-rng.o
 obj-$(CONFIG_HW_RANDOM_PICOXCELL) += picoxcell-rng.o
 obj-$(CONFIG_HW_RANDOM_PPC4XX) += ppc4xx-rng.o
-<<<<<<< HEAD
 obj-$(CONFIG_HW_RANDOM_MSM) += msm_rng.o
-=======
->>>>>>> remotes/linux2/linux-3.4.y

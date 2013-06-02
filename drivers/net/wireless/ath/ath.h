@@ -143,10 +143,6 @@ struct ath_common {
 	u32 keymax;
 	DECLARE_BITMAP(keymap, ATH_KEYMAX);
 	DECLARE_BITMAP(tkip_keymap, ATH_KEYMAX);
-<<<<<<< HEAD
-=======
-	DECLARE_BITMAP(ccmp_keymap, ATH_KEYMAX);
->>>>>>> remotes/linux2/linux-3.4.y
 	enum ath_crypt_caps crypt_caps;
 
 	unsigned int clockrate;

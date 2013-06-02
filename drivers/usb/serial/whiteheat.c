@@ -525,10 +525,6 @@ no_firmware:
 		"%s: please contact support@connecttech.com\n",
 		serial->type->description);
 	kfree(result);
-<<<<<<< HEAD
-=======
-	kfree(command);
->>>>>>> remotes/linux2/linux-3.4.y
 	return -ENODEV;
 
 no_command_private:

@@ -669,7 +669,6 @@ config USB_SERIAL_SSU100
 	  To compile this driver as a module, choose M here: the
 	  module will be called ssu100.
 
-<<<<<<< HEAD
 config USB_SERIAL_CSVT
 	tristate "USB serial driver for Circuit-Switched Video Telephony"
 	help
@@ -679,8 +678,6 @@ config USB_SERIAL_CSVT
 	  To compile this driver as a module, choose M here: the
 	  module will be called csvt.
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 config USB_SERIAL_DEBUG
 	tristate "USB Debugging Device"
 	help

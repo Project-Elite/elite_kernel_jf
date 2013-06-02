@@ -736,22 +736,15 @@ static void __sctp_unhash_endpoint(struct sctp_endpoint *ep)
 
 	epb = &ep->base;
 
-<<<<<<< HEAD
 	if (hlist_unhashed(&epb->node))
 		return;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	epb->hashent = sctp_ep_hashfn(epb->bind_addr.port);
 
 	head = &sctp_ep_hashtable[epb->hashent];
 
 	sctp_write_lock(&head->lock);
-<<<<<<< HEAD
 	__hlist_del(&epb->node);
-=======
-	hlist_del_init(&epb->node);
->>>>>>> remotes/linux2/linux-3.4.y
 	sctp_write_unlock(&head->lock);
 }
 
@@ -832,11 +825,7 @@ static void __sctp_unhash_established(struct sctp_association *asoc)
 	head = &sctp_assoc_hashtable[epb->hashent];
 
 	sctp_write_lock(&head->lock);
-<<<<<<< HEAD
 	__hlist_del(&epb->node);
-=======
-	hlist_del_init(&epb->node);
->>>>>>> remotes/linux2/linux-3.4.y
 	sctp_write_unlock(&head->lock);
 }
 

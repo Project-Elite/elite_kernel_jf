@@ -55,7 +55,6 @@
 	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw,\
 	.put = snd_soc_put_volsw, \
 	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert) }
-<<<<<<< HEAD
 #define SOC_SINGLE_S8_TLV(xname, xreg, xmin, xmax, tlv_array) \
 {	.iface  = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
@@ -66,8 +65,6 @@
 	.private_value = (unsigned long)&(struct soc_mixer_control) \
 		{.reg = xreg, .min = xmin, .max = xmax, \
 		 .platform_max = xmax} }
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #define SOC_DOUBLE(xname, reg, shift_left, shift_right, max, invert) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
 	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw, \
@@ -144,7 +141,6 @@
 	.get = xhandler_get, .put = xhandler_put, \
 	.private_value = \
 		SOC_DOUBLE_VALUE(reg, shift_left, shift_right, max, invert) }
-<<<<<<< HEAD
  #define SOC_SINGLE_MULTI_EXT(xname, xreg, xshift, xmax, xinvert, xcount,\
 	xhandler_get, xhandler_put) \
 {      .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
@@ -153,8 +149,6 @@
 	.private_value = (unsigned long)&(struct soc_multi_mixer_control) \
 		{.reg = xreg, .shift = xshift, .rshift = xshift, .max = xmax, \
 		.count = xcount, .platform_max = xmax, .invert = xinvert} }
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #define SOC_SINGLE_EXT_TLV(xname, xreg, xshift, xmax, xinvert,\
 	 xhandler_get, xhandler_put, tlv_array) \
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
@@ -209,23 +203,6 @@
 		 .rreg = xreg_right, .shift = xshift, \
 		 .min = xmin, .max = xmax} }
 
-<<<<<<< HEAD
-=======
-#define SND_SOC_BYTES(xname, xbase, xregs)		      \
-{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,   \
-	.info = snd_soc_bytes_info, .get = snd_soc_bytes_get, \
-	.put = snd_soc_bytes_put, .private_value =	      \
-		((unsigned long)&(struct soc_bytes)           \
-		{.base = xbase, .num_regs = xregs }) }
-
-#define SND_SOC_BYTES_MASK(xname, xbase, xregs, xmask)	      \
-{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,   \
-	.info = snd_soc_bytes_info, .get = snd_soc_bytes_get, \
-	.put = snd_soc_bytes_put, .private_value =	      \
-		((unsigned long)&(struct soc_bytes)           \
-		{.base = xbase, .num_regs = xregs,	      \
-		 .mask = xmask }) }
->>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Simplified versions of above macros, declaring a struct and calculating
@@ -244,7 +221,6 @@
 #define SOC_VALUE_ENUM_SINGLE_DECL(name, xreg, xshift, xmask, xtexts, xvalues) \
 	SOC_VALUE_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xmask, xtexts, xvalues)
 
-<<<<<<< HEAD
 
 /* DAI Link Host Mode Support */
 #define SND_SOC_DAI_LINK_NO_HOST		0x1
@@ -254,8 +230,6 @@
 	(soc_enum->texts ? soc_enum->texts[idx] : soc_enum->dtexts[idx])
 
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Component probe and remove ordering levels for components with runtime
  * dependencies.
@@ -302,10 +276,7 @@ struct snd_soc_jack;
 struct snd_soc_jack_zone;
 struct snd_soc_jack_pin;
 struct snd_soc_cache_ops;
-<<<<<<< HEAD
 struct snd_soc_dpcm_link;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 #include <sound/soc-dapm.h>
 
 #ifdef CONFIG_GPIOLIB
@@ -331,7 +302,6 @@ enum snd_soc_pcm_subclass {
 	SND_SOC_PCM_CLASS_BE	= 1,
 };
 
-<<<<<<< HEAD
 /*
  * Dynamic PCM DAI link states.
  */
@@ -361,8 +331,6 @@ enum snd_soc_dpcm_trigger {
 	SND_SOC_DPCM_TRIGGER_BESPOKE,
 };
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 int snd_soc_codec_set_sysclk(struct snd_soc_codec *codec, int clk_id,
 			     int source, unsigned int freq, int dir);
 int snd_soc_codec_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
@@ -408,14 +376,11 @@ int snd_soc_platform_write(struct snd_soc_platform *platform,
 					unsigned int reg, unsigned int val);
 int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
 
-<<<<<<< HEAD
 struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
 		const char *dai_link, int stream);
 struct snd_soc_pcm_runtime *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
 		const char *dai_link);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /* Utility functions to get clock rates from various things */
 int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
 int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params);
@@ -430,11 +395,8 @@ int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
 int snd_soc_jack_new(struct snd_soc_codec *codec, const char *id, int type,
 		     struct snd_soc_jack *jack);
 void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask);
-<<<<<<< HEAD
 void snd_soc_jack_report_no_dapm(struct snd_soc_jack *jack, int status,
 				 int mask);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 int snd_soc_jack_add_pins(struct snd_soc_jack *jack, int count,
 			  struct snd_soc_jack_pin *pins);
 void snd_soc_jack_notifier_register(struct snd_soc_jack *jack,
@@ -468,11 +430,7 @@ void snd_soc_free_ac97_codec(struct snd_soc_codec *codec);
  *Controls
  */
 struct snd_kcontrol *snd_soc_cnew(const struct snd_kcontrol_new *_template,
-<<<<<<< HEAD
 				  void *data, char *long_name,
-=======
-				  void *data, const char *long_name,
->>>>>>> remotes/linux2/linux-3.4.y
 				  const char *prefix);
 int snd_soc_add_codec_controls(struct snd_soc_codec *codec,
 	const struct snd_kcontrol_new *controls, int num_controls);
@@ -496,11 +454,8 @@ int snd_soc_put_value_enum_double(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol);
 int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_info *uinfo);
-<<<<<<< HEAD
 int snd_soc_info_multi_ext(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_info *uinfo);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 int snd_soc_info_volsw_ext(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_info *uinfo);
 #define snd_soc_info_bool_ext		snd_ctl_boolean_mono_info
@@ -524,16 +479,6 @@ int snd_soc_get_volsw_2r_sx(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol);
 int snd_soc_put_volsw_2r_sx(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol);
-<<<<<<< HEAD
-=======
-int snd_soc_bytes_info(struct snd_kcontrol *kcontrol,
-		       struct snd_ctl_elem_info *uinfo);
-int snd_soc_bytes_get(struct snd_kcontrol *kcontrol,
-		      struct snd_ctl_elem_value *ucontrol);
-int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
-		      struct snd_ctl_elem_value *ucontrol);
-
->>>>>>> remotes/linux2/linux-3.4.y
 
 /**
  * struct snd_soc_reg_access - Describes whether a given register is
@@ -624,10 +569,7 @@ struct snd_soc_jack {
 /* SoC PCM stream information */
 struct snd_soc_pcm_stream {
 	const char *stream_name;
-<<<<<<< HEAD
 	const char *aif_name;	/* DAPM AIF widget name */
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	u64 formats;			/* SNDRV_PCM_FMTBIT_* */
 	unsigned int rates;		/* SNDRV_PCM_RATE_* */
 	unsigned int rate_min;		/* min rate */
@@ -768,11 +710,6 @@ struct snd_soc_codec_driver {
 	/* codec stream completion event */
 	int (*stream_event)(struct snd_soc_dapm_context *dapm, int event);
 
-<<<<<<< HEAD
-=======
-	bool ignore_pmdown_time;  /* Doesn't benefit from pmdown delay */
-
->>>>>>> remotes/linux2/linux-3.4.y
 	/* probe ordering - for components with runtime dependencies */
 	int probe_order;
 	int remove_order;
@@ -818,11 +755,8 @@ struct snd_soc_platform_driver {
 	/* platform IO - used for platform DAPM */
 	unsigned int (*read)(struct snd_soc_platform *, unsigned int);
 	int (*write)(struct snd_soc_platform *, unsigned int, unsigned int);
-<<<<<<< HEAD
 
 	int (*bespoke_trigger)(struct snd_pcm_substream *, int);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 struct snd_soc_platform {
@@ -830,10 +764,6 @@ struct snd_soc_platform {
 	int id;
 	struct device *dev;
 	struct snd_soc_platform_driver *driver;
-<<<<<<< HEAD
-=======
-	struct mutex mutex;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	unsigned int suspended:1; /* platform is suspended */
 	unsigned int probed:1;
@@ -864,17 +794,13 @@ struct snd_soc_dai_link {
 
 	unsigned int dai_fmt;           /* format to set on init */
 
-<<<<<<< HEAD
 	enum snd_soc_dpcm_trigger trigger[2]; /* trigger type for DPCM */
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/* Keep DAI active over suspend */
 	unsigned int ignore_suspend:1;
 
 	/* Symmetry requirements */
 	unsigned int symmetric_rates:1;
-<<<<<<< HEAD
 	/* No PCM created for this DAI link */
 	unsigned int no_pcm:1;
 	/* This DAI link can change CODEC and platform at runtime*/
@@ -883,8 +809,6 @@ struct snd_soc_dai_link {
 	unsigned int be_id;
 	/* This DAI can support no host IO (no pcm data is copied to from host) */
 	unsigned int no_host_mode:2;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* pmdown_time is ignored at stop */
 	unsigned int ignore_pmdown_time:1;
@@ -892,13 +816,10 @@ struct snd_soc_dai_link {
 	/* codec/machine specific init - e.g. add machine controls */
 	int (*init)(struct snd_soc_pcm_runtime *rtd);
 
-<<<<<<< HEAD
 	/* hw_params re-writing for BE and FE sync */
 	int (*be_hw_params_fixup)(struct snd_soc_pcm_runtime *rtd,
 			struct snd_pcm_hw_params *params);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/* machine stream operations */
 	struct snd_soc_ops *ops;
 };
@@ -938,15 +859,12 @@ struct snd_soc_card {
 
 	struct list_head list;
 	struct mutex mutex;
-<<<<<<< HEAD
 	struct mutex dpcm_mutex;
 
 	struct mutex dapm_mutex;
 	struct mutex dapm_power_mutex;
 	struct mutex dsp_mutex;
 	spinlock_t dsp_spinlock;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	bool instantiated;
 
@@ -976,11 +894,8 @@ struct snd_soc_card {
 	int num_links;
 	struct snd_soc_pcm_runtime *rtd;
 	int num_rtd;
-<<<<<<< HEAD
 	int num_playback_channels;
 	int num_capture_channels;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	/* optional codec specific configuration */
 	struct snd_soc_codec_conf *codec_conf;
@@ -1032,7 +947,6 @@ struct snd_soc_card {
 	void *drvdata;
 };
 
-<<<<<<< HEAD
 /* DSP runtime data */
 struct snd_soc_dpcm_runtime {
 	struct list_head be_clients;
@@ -1044,8 +958,6 @@ struct snd_soc_dpcm_runtime {
 	enum snd_soc_dpcm_state state;
 };
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /* SoC machine DAI configuration, glues a codec and cpu DAI together */
 struct snd_soc_pcm_runtime {
 	struct device *dev;
@@ -1058,12 +970,9 @@ struct snd_soc_pcm_runtime {
 	unsigned int complete:1;
 	unsigned int dev_registered:1;
 
-<<<<<<< HEAD
 	/* Dynamic PCM BE runtime data */
 	struct snd_soc_dpcm_runtime dpcm[2];
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	long pmdown_time;
 
 	/* runtime devices */
@@ -1074,14 +983,11 @@ struct snd_soc_pcm_runtime {
 	struct snd_soc_dai *cpu_dai;
 
 	struct delayed_work delayed_work;
-<<<<<<< HEAD
 
 #ifdef CONFIG_DEBUG_FS
 	struct dentry *debugfs_dpcm_root;
 	struct dentry *debugfs_dpcm_state;
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /* mixer control */
@@ -1089,20 +995,11 @@ struct soc_mixer_control {
 	int min, max, platform_max;
 	unsigned int reg, rreg, shift, rshift, invert;
 };
-<<<<<<< HEAD
 struct soc_multi_mixer_control {
 	int min, max, platform_max, count;
 	unsigned int reg, rreg, shift, rshift, invert;
 };
 
-=======
-
-struct soc_bytes {
-	int base;
-	int num_regs;
-	u32 mask;
-};
->>>>>>> remotes/linux2/linux-3.4.y
 
 /* enumerated kcontrol */
 struct soc_enum {
@@ -1113,10 +1010,7 @@ struct soc_enum {
 	unsigned int max;
 	unsigned int mask;
 	const char * const *texts;
-<<<<<<< HEAD
 	char **dtexts;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	const unsigned int *values;
 	void *dapm;
 };

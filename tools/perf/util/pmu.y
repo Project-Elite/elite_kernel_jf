@@ -1,8 +1,5 @@
 
-<<<<<<< HEAD
 %name-prefix "perf_pmu_"
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 %parse-param {struct list_head *format}
 %parse-param {char *name}
 

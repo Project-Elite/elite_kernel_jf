@@ -318,7 +318,6 @@ static const struct file_operations mmc_dbg_ext_csd_fops = {
 	.llseek		= default_llseek,
 };
 
-<<<<<<< HEAD
 static int mmc_wr_pack_stats_open(struct inode *inode, struct file *filp)
 {
 	struct mmc_card *card = inode->i_private;
@@ -492,8 +491,6 @@ static const struct file_operations mmc_dbg_wr_pack_stats_fops = {
 	.write		= mmc_wr_pack_stats_write,
 };
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 void mmc_add_card_debugfs(struct mmc_card *card)
 {
 	struct mmc_host	*host = card->host;
@@ -526,15 +523,12 @@ void mmc_add_card_debugfs(struct mmc_card *card)
 					&mmc_dbg_ext_csd_fops))
 			goto err;
 
-<<<<<<< HEAD
 	if (mmc_card_mmc(card) && (card->ext_csd.rev >= 6) &&
 	    (card->host->caps2 & MMC_CAP2_PACKED_WR))
 		if (!debugfs_create_file("wr_pack_stats", S_IRUSR, root, card,
 					 &mmc_dbg_wr_pack_stats_fops))
 			goto err;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return;
 
 err:

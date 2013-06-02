@@ -5372,11 +5372,7 @@ bnx2_free_tx_skbs(struct bnx2 *bp)
 			int k, last;
 
 			if (skb == NULL) {
-<<<<<<< HEAD
 				j++;
-=======
-				j = NEXT_TX_BD(j);
->>>>>>> remotes/linux2/linux-3.4.y
 				continue;
 			}
 
@@ -5388,13 +5384,8 @@ bnx2_free_tx_skbs(struct bnx2 *bp)
 			tx_buf->skb = NULL;
 
 			last = tx_buf->nr_frags;
-<<<<<<< HEAD
 			j++;
 			for (k = 0; k < last; k++, j++) {
-=======
-			j = NEXT_TX_BD(j);
-			for (k = 0; k < last; k++, j = NEXT_TX_BD(j)) {
->>>>>>> remotes/linux2/linux-3.4.y
 				tx_buf = &txr->tx_buf_ring[TX_RING_IDX(j)];
 				dma_unmap_page(&bp->pdev->dev,
 					dma_unmap_addr(tx_buf, mapping),

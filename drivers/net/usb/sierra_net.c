@@ -678,11 +678,7 @@ static int sierra_net_get_fw_attr(struct usbnet *dev, u16 *datap)
 		return -EIO;
 	}
 
-<<<<<<< HEAD
 	*datap = *attrdata;
-=======
-	*datap = le16_to_cpu(*attrdata);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	kfree(attrdata);
 	return result;

@@ -462,12 +462,9 @@ static struct dentry *proc_sys_lookup(struct inode *dir, struct dentry *dentry,
 
 	err = ERR_PTR(-ENOMEM);
 	inode = proc_sys_make_inode(dir->i_sb, h ? h : head, p);
-<<<<<<< HEAD
 	if (h)
 		sysctl_head_finish(h);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!inode)
 		goto out;
 
@@ -476,11 +473,6 @@ static struct dentry *proc_sys_lookup(struct inode *dir, struct dentry *dentry,
 	d_add(dentry, inode);
 
 out:
-<<<<<<< HEAD
-=======
-	if (h)
-		sysctl_head_finish(h);
->>>>>>> remotes/linux2/linux-3.4.y
 	sysctl_head_finish(head);
 	return err;
 }

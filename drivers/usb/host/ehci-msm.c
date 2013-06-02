@@ -1,10 +1,6 @@
 /* ehci-msm.c - HSUSB Host Controller Driver Implementation
  *
-<<<<<<< HEAD
  * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
-=======
- * Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
->>>>>>> remotes/linux2/linux-3.4.y
  *
  * Partly derived from ehci-fsl.c and ehci-hcd.c
  * Copyright (c) 2000-2004 by David Brownell
@@ -53,11 +49,7 @@ static int ehci_msm_reset(struct usb_hcd *hcd)
 	/* bursts of unspecified length. */
 	writel(0, USB_AHBBURST);
 	/* Use the AHB transactor */
-<<<<<<< HEAD
 	writel_relaxed(0x08, USB_AHBMODE);
-=======
-	writel(0, USB_AHBMODE);
->>>>>>> remotes/linux2/linux-3.4.y
 	/* Disable streaming mode and select host mode */
 	writel(0x13, USB_USBMODE);
 
@@ -166,17 +158,8 @@ static int ehci_msm_probe(struct platform_device *pdev)
 		goto put_transceiver;
 	}
 
-<<<<<<< HEAD
 	hcd_to_ehci(hcd)->transceiver = phy;
 	device_init_wakeup(&pdev->dev, 1);
-=======
-	device_init_wakeup(&pdev->dev, 1);
-	/*
-	 * OTG device parent of HCD takes care of putting
-	 * hardware into low power mode.
-	 */
-	pm_runtime_no_callbacks(&pdev->dev);
->>>>>>> remotes/linux2/linux-3.4.y
 	pm_runtime_enable(&pdev->dev);
 
 	return 0;
@@ -199,10 +182,7 @@ static int __devexit ehci_msm_remove(struct platform_device *pdev)
 	pm_runtime_disable(&pdev->dev);
 	pm_runtime_set_suspended(&pdev->dev);
 
-<<<<<<< HEAD
 	hcd_to_ehci(hcd)->transceiver = NULL;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	otg_set_host(phy->otg, NULL);
 	usb_put_transceiver(phy);
 
@@ -211,7 +191,6 @@ static int __devexit ehci_msm_remove(struct platform_device *pdev)
 	return 0;
 }
 
-<<<<<<< HEAD
 #ifdef CONFIG_PM_RUNTIME
 static int ehci_msm_runtime_idle(struct device *dev)
 {
@@ -237,9 +216,6 @@ static int ehci_msm_runtime_resume(struct device *dev)
 #endif
 
 #ifdef CONFIG_PM_SLEEP
-=======
-#ifdef CONFIG_PM
->>>>>>> remotes/linux2/linux-3.4.y
 static int ehci_msm_pm_suspend(struct device *dev)
 {
 	struct usb_hcd *hcd = dev_get_drvdata(dev);
@@ -247,12 +223,9 @@ static int ehci_msm_pm_suspend(struct device *dev)
 
 	dev_dbg(dev, "ehci-msm PM suspend\n");
 
-<<<<<<< HEAD
 	if (!hcd->rh_registered)
 		return 0;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * EHCI helper function has also the same check before manipulating
 	 * port wakeup flags.  We do check here the same condition before
@@ -266,11 +239,7 @@ static int ehci_msm_pm_suspend(struct device *dev)
 				wakeup);
 	}
 
-<<<<<<< HEAD
 	return usb_phy_set_suspend(phy, 1);
-=======
-	return 0;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int ehci_msm_pm_resume(struct device *dev)
@@ -278,7 +247,6 @@ static int ehci_msm_pm_resume(struct device *dev)
 	struct usb_hcd *hcd = dev_get_drvdata(dev);
 
 	dev_dbg(dev, "ehci-msm PM resume\n");
-<<<<<<< HEAD
 
 	if (!hcd->rh_registered)
 		return 0;
@@ -293,20 +261,6 @@ static const struct dev_pm_ops ehci_msm_dev_pm_ops = {
 	SET_SYSTEM_SLEEP_PM_OPS(ehci_msm_pm_suspend, ehci_msm_pm_resume)
 	SET_RUNTIME_PM_OPS(ehci_msm_runtime_suspend, ehci_msm_runtime_resume,
 				ehci_msm_runtime_idle)
-=======
-	ehci_prepare_ports_for_controller_resume(hcd_to_ehci(hcd));
-
-	return 0;
-}
-#else
-#define ehci_msm_pm_suspend	NULL
-#define ehci_msm_pm_resume	NULL
-#endif
-
-static const struct dev_pm_ops ehci_msm_dev_pm_ops = {
-	.suspend         = ehci_msm_pm_suspend,
-	.resume          = ehci_msm_pm_resume,
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static struct platform_driver ehci_msm_driver = {

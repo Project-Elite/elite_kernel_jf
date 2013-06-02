@@ -937,11 +937,7 @@ static inline int atapi_cdb_len(const u16 *dev_id)
 	}
 }
 
-<<<<<<< HEAD
 static inline bool atapi_command_packet_set(const u16 *dev_id)
-=======
-static inline int atapi_command_packet_set(const u16 *dev_id)
->>>>>>> remotes/linux2/linux-3.4.y
 {
 	return (dev_id[ATA_ID_CONFIG] >> 8) & 0x1f;
 }

@@ -1386,11 +1386,6 @@ static int irda_recvmsg_dgram(struct kiocb *iocb, struct socket *sock,
 
 	IRDA_DEBUG(4, "%s()\n", __func__);
 
-<<<<<<< HEAD
-=======
-	msg->msg_namelen = 0;
-
->>>>>>> remotes/linux2/linux-3.4.y
 	skb = skb_recv_datagram(sk, flags & ~MSG_DONTWAIT,
 				flags & MSG_DONTWAIT, &err);
 	if (!skb)
@@ -2589,15 +2584,8 @@ bed:
 				    NULL, NULL, NULL);
 
 		/* Check if the we got some results */
-<<<<<<< HEAD
 		if (!self->cachedaddr)
 			return -EAGAIN;		/* Didn't find any devices */
-=======
-		if (!self->cachedaddr) {
-			err = -EAGAIN;		/* Didn't find any devices */
-			goto out;
-		}
->>>>>>> remotes/linux2/linux-3.4.y
 		daddr = self->cachedaddr;
 		/* Cleanup */
 		self->cachedaddr = 0;

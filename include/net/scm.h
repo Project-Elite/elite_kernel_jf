@@ -50,11 +50,7 @@ static __inline__ void scm_set_cred(struct scm_cookie *scm,
 {
 	scm->pid  = get_pid(pid);
 	scm->cred = cred ? get_cred(cred) : NULL;
-<<<<<<< HEAD
 	cred_to_ucred(pid, cred, &scm->creds);
-=======
-	cred_to_ucred(pid, cred, &scm->creds, false);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static __inline__ void scm_destroy_cred(struct scm_cookie *scm)

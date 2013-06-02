@@ -123,7 +123,6 @@ EXPORT_SYMBOL(cad_pid);
 
 void (*pm_power_off_prepare)(void);
 
-<<<<<<< HEAD
 /* Samsung Rooting Restriction Feature */
 #if defined CONFIG_SEC_RESTRICT_SETUID
 int sec_check_execpath(struct mm_struct *mm, char *denypath);
@@ -173,8 +172,6 @@ out:
 }
 #endif // End of CONFIG_SEC_RESTRICT_SETUID
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Returns true if current's euid is same as p's uid or euid,
  * or has CAP_SYS_NICE to p's user_ns.
@@ -372,10 +369,7 @@ void kernel_restart_prepare(char *cmd)
 	system_state = SYSTEM_RESTART;
 	usermodehelper_disable();
 	device_shutdown();
-<<<<<<< HEAD
 	syscore_shutdown();
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /**
@@ -420,11 +414,6 @@ EXPORT_SYMBOL(unregister_reboot_notifier);
 void kernel_restart(char *cmd)
 {
 	kernel_restart_prepare(cmd);
-<<<<<<< HEAD
-=======
-	disable_nonboot_cpus();
-	syscore_shutdown();
->>>>>>> remotes/linux2/linux-3.4.y
 	if (!cmd)
 		printk(KERN_EMERG "Restarting system.\n");
 	else
@@ -450,10 +439,6 @@ static void kernel_shutdown_prepare(enum system_states state)
 void kernel_halt(void)
 {
 	kernel_shutdown_prepare(SYSTEM_HALT);
-<<<<<<< HEAD
-=======
-	disable_nonboot_cpus();
->>>>>>> remotes/linux2/linux-3.4.y
 	syscore_shutdown();
 	printk(KERN_EMERG "System halted.\n");
 	kmsg_dump(KMSG_DUMP_HALT);
@@ -621,7 +606,6 @@ SYSCALL_DEFINE2(setregid, gid_t, rgid, gid_t, egid)
 	struct cred *new;
 	int retval;
 
-<<<<<<< HEAD
 #if defined CONFIG_SEC_RESTRICT_SETUID
 	if(rgid == 0 || egid == 0)
 	{
@@ -630,8 +614,6 @@ SYSCALL_DEFINE2(setregid, gid_t, rgid, gid_t, egid)
 	}
 #endif // End of CONFIG_SEC_RESTRICT_SETUID
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	new = prepare_creds();
 	if (!new)
 		return -ENOMEM;
@@ -679,7 +661,6 @@ SYSCALL_DEFINE1(setgid, gid_t, gid)
 	struct cred *new;
 	int retval;
 
-<<<<<<< HEAD
 #if defined CONFIG_SEC_RESTRICT_SETUID
 	if(gid == 0)
 	{
@@ -688,8 +669,6 @@ SYSCALL_DEFINE1(setgid, gid_t, gid)
 	}
 #endif // End of CONFIG_SEC_RESTRICT_SETUID
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	new = prepare_creds();
 	if (!new)
 		return -ENOMEM;
@@ -760,7 +739,6 @@ SYSCALL_DEFINE2(setreuid, uid_t, ruid, uid_t, euid)
 	struct cred *new;
 	int retval;
 
-<<<<<<< HEAD
 #if defined CONFIG_SEC_RESTRICT_SETUID
 	if(ruid == 0 || euid == 0)
 	{
@@ -769,8 +747,6 @@ SYSCALL_DEFINE2(setreuid, uid_t, ruid, uid_t, euid)
 	}
 #endif // End of CONFIG_SEC_RESTRICT_SETUID
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	new = prepare_creds();
 	if (!new)
 		return -ENOMEM;
@@ -832,7 +808,6 @@ SYSCALL_DEFINE1(setuid, uid_t, uid)
 	struct cred *new;
 	int retval;
 
-<<<<<<< HEAD
 #if defined CONFIG_SEC_RESTRICT_SETUID
 	if(uid == 0)
 	{
@@ -841,8 +816,6 @@ SYSCALL_DEFINE1(setuid, uid_t, uid)
 	}
 #endif // End of CONFIG_SEC_RESTRICT_SETUID
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	new = prepare_creds();
 	if (!new)
 		return -ENOMEM;
@@ -884,7 +857,6 @@ SYSCALL_DEFINE3(setresuid, uid_t, ruid, uid_t, euid, uid_t, suid)
 	struct cred *new;
 	int retval;
 
-<<<<<<< HEAD
 #if defined CONFIG_SEC_RESTRICT_SETUID
 	if(ruid == 0 || euid == 0 || suid == 0)
 	{
@@ -893,8 +865,6 @@ SYSCALL_DEFINE3(setresuid, uid_t, ruid, uid_t, euid, uid_t, suid)
 	}
 #endif // End of CONFIG_SEC_RESTRICT_SETUID
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	new = prepare_creds();
 	if (!new)
 		return -ENOMEM;
@@ -960,7 +930,6 @@ SYSCALL_DEFINE3(setresgid, gid_t, rgid, gid_t, egid, gid_t, sgid)
 	struct cred *new;
 	int retval;
 
-<<<<<<< HEAD
 #if defined CONFIG_SEC_RESTRICT_SETUID
 	if(rgid == 0 || egid == 0 || sgid == 0)
 	{
@@ -969,8 +938,6 @@ SYSCALL_DEFINE3(setresgid, gid_t, rgid, gid_t, egid, gid_t, sgid)
 	}
 #endif // End of CONFIG_SEC_RESTRICT_SETUID
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	new = prepare_creds();
 	if (!new)
 		return -ENOMEM;

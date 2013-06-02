@@ -126,10 +126,7 @@ extern asmlinkage long sys_kexec_load(unsigned long entry,
 					unsigned long nr_segments,
 					struct kexec_segment __user *segments,
 					unsigned long flags);
-<<<<<<< HEAD
 extern void __weak arch_kexec(void);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 extern int kernel_kexec(void);
 #ifdef CONFIG_COMPAT
 extern asmlinkage long compat_sys_kexec_load(unsigned long entry,

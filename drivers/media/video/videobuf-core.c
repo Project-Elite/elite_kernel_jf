@@ -330,10 +330,7 @@ static void videobuf_status(struct videobuf_queue *q, struct v4l2_buffer *b,
 		break;
 	case V4L2_MEMORY_USERPTR:
 		b->m.userptr = vb->baddr;
-<<<<<<< HEAD
 		b->reserved = vb->boff;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		b->length    = vb->bsize;
 		break;
 	case V4L2_MEMORY_OVERLAY:
@@ -604,10 +601,7 @@ int videobuf_qbuf(struct videobuf_queue *q, struct v4l2_buffer *b)
 		    buf->baddr != b->m.userptr)
 			q->ops->buf_release(q, buf);
 		buf->baddr = b->m.userptr;
-<<<<<<< HEAD
 		buf->boff = b->reserved;
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	case V4L2_MEMORY_OVERLAY:
 		buf->boff = b->m.offset;
@@ -1146,11 +1140,6 @@ unsigned int videobuf_poll_stream(struct file *file,
 			buf = list_entry(q->stream.next,
 					 struct videobuf_buffer, stream);
 	} else {
-<<<<<<< HEAD
-=======
-		if (!q->reading)
-			__videobuf_read_start(q);
->>>>>>> remotes/linux2/linux-3.4.y
 		if (!q->reading) {
 			rc = POLLERR;
 		} else if (NULL == q->read_buf) {

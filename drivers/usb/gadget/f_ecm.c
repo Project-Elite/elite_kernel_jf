@@ -92,15 +92,11 @@ static inline unsigned ecm_bitrate(struct usb_gadget *g)
  */
 
 #define LOG2_STATUS_INTERVAL_MSEC	5	/* 1 << 5 == 32 msec */
-<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_CDC_ECM
 #define ECM_STATUS_BYTECOUNT		64
 #else
 #define ECM_STATUS_BYTECOUNT		16	/* 8 byte header + data */
 #endif
-=======
-#define ECM_STATUS_BYTECOUNT		16	/* 8 byte header + data */
->>>>>>> remotes/linux2/linux-3.4.y
 
 
 /* interface descriptor: */
@@ -200,15 +196,11 @@ static struct usb_endpoint_descriptor fs_ecm_notify_desc = {
 	.bEndpointAddress =	USB_DIR_IN,
 	.bmAttributes =		USB_ENDPOINT_XFER_INT,
 	.wMaxPacketSize =	cpu_to_le16(ECM_STATUS_BYTECOUNT),
-<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_CDC_ECM
 	.bInterval =		4,
 #else
 	.bInterval =		1 << LOG2_STATUS_INTERVAL_MSEC,
 #endif
-=======
-	.bInterval =		1 << LOG2_STATUS_INTERVAL_MSEC,
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static struct usb_endpoint_descriptor fs_ecm_in_desc = {
@@ -217,12 +209,9 @@ static struct usb_endpoint_descriptor fs_ecm_in_desc = {
 
 	.bEndpointAddress =	USB_DIR_IN,
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
-<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_CDC_ECM
 	.wMaxPacketSize =	cpu_to_le16(64),
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static struct usb_endpoint_descriptor fs_ecm_out_desc = {
@@ -231,12 +220,9 @@ static struct usb_endpoint_descriptor fs_ecm_out_desc = {
 
 	.bEndpointAddress =	USB_DIR_OUT,
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
-<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_CDC_ECM
 	.wMaxPacketSize =	cpu_to_le16(64),
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static struct usb_descriptor_header *ecm_fs_function[] = {
@@ -267,15 +253,11 @@ static struct usb_endpoint_descriptor hs_ecm_notify_desc = {
 	.bEndpointAddress =	USB_DIR_IN,
 	.bmAttributes =		USB_ENDPOINT_XFER_INT,
 	.wMaxPacketSize =	cpu_to_le16(ECM_STATUS_BYTECOUNT),
-<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_CDC_ECM
 	.bInterval =		4,
 #else
 	.bInterval =		LOG2_STATUS_INTERVAL_MSEC + 4,
 #endif
-=======
-	.bInterval =		LOG2_STATUS_INTERVAL_MSEC + 4,
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static struct usb_endpoint_descriptor hs_ecm_in_desc = {
@@ -614,7 +596,6 @@ static int ecm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		if (alt == 1) {
 			struct net_device	*net;
 
-<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_CDC_ECM
 			/* Disable zlps in case of LG android USB and qct's udc.
 			 * By this, host driver can handle null packet properly.
@@ -623,17 +604,12 @@ static int ecm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 					gadget_is_musbhdrc(cdev->gadget) ||
 					gadget_is_ci13xxx_msm(cdev->gadget));
 #else
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			/* Enable zlps by default for ECM conformance;
 			 * override for musb_hdrc (avoids txdma ovhead).
 			 */
 			ecm->port.is_zlp_ok = !(gadget_is_musbhdrc(cdev->gadget)
 				);
-<<<<<<< HEAD
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 			ecm->port.cdc_filter = DEFAULT_FILTER;
 			DBG(cdev, "activate ecm\n");
 			net = gether_connect(&ecm->port);
@@ -859,15 +835,9 @@ fail:
 	/* we might as well release our claims on endpoints */
 	if (ecm->notify)
 		ecm->notify->driver_data = NULL;
-<<<<<<< HEAD
 	if (ecm->port.out_ep->desc)
 		ecm->port.out_ep->driver_data = NULL;
 	if (ecm->port.in_ep->desc)
-=======
-	if (ecm->port.out_ep)
-		ecm->port.out_ep->driver_data = NULL;
-	if (ecm->port.in_ep)
->>>>>>> remotes/linux2/linux-3.4.y
 		ecm->port.in_ep->driver_data = NULL;
 
 	ERROR(cdev, "%s: can't bind, err %d\n", f->name, status);
@@ -926,7 +896,6 @@ ecm_bind_config(struct usb_configuration *c, u8 ethaddr[ETH_ALEN])
 		ecm_string_defs[0].id = status;
 		ecm_control_intf.iInterface = status;
 
-<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_CDC_ECM
 		/* MAC address */
 		status = usb_string_id(c->cdev);
@@ -937,8 +906,6 @@ ecm_bind_config(struct usb_configuration *c, u8 ethaddr[ETH_ALEN])
 		ecm_desc.iMACAddress = status;
 #endif
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		/* data interface label */
 		status = usb_string_id(c->cdev);
 		if (status < 0)
@@ -946,20 +913,14 @@ ecm_bind_config(struct usb_configuration *c, u8 ethaddr[ETH_ALEN])
 		ecm_string_defs[2].id = status;
 		ecm_data_intf.iInterface = status;
 
-<<<<<<< HEAD
 #ifndef CONFIG_USB_ANDROID_CDC_ECM
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 		/* MAC address */
 		status = usb_string_id(c->cdev);
 		if (status < 0)
 			return status;
 		ecm_string_defs[1].id = status;
 		ecm_desc.iMACAddress = status;
-<<<<<<< HEAD
 #endif
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 		/* IAD label */
 		status = usb_string_id(c->cdev);
@@ -983,15 +944,11 @@ ecm_bind_config(struct usb_configuration *c, u8 ethaddr[ETH_ALEN])
 
 	ecm->port.cdc_filter = DEFAULT_FILTER;
 
-<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_CDC_ECM
 	ecm->port.func.name = "ecm";
 #else
 	ecm->port.func.name = "cdc_ethernet";
 #endif
-=======
-	ecm->port.func.name = "cdc_ethernet";
->>>>>>> remotes/linux2/linux-3.4.y
 	ecm->port.func.strings = ecm_strings;
 	/* descriptors are per-instance copies */
 	ecm->port.func.bind = ecm_bind;

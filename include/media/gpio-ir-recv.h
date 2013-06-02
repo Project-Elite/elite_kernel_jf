@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 /* Copyright (c) 2012, The Linux Foundation. All rights reserved.
-=======
-/* Copyright (c) 2012, Code Aurora Forum. All rights reserved.
->>>>>>> remotes/linux2/linux-3.4.y
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,14 +14,9 @@
 #define __GPIO_IR_RECV_H__
 
 struct gpio_ir_recv_platform_data {
-<<<<<<< HEAD
 	unsigned int gpio_nr;
 	bool active_low;
 	bool can_wakeup;
-=======
-	int gpio_nr;
-	bool active_low;
->>>>>>> remotes/linux2/linux-3.4.y
 };
 
 #endif /* __GPIO_IR_RECV_H__ */

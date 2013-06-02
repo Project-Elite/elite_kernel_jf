@@ -45,24 +45,16 @@ static ssize_t power_supply_show_property(struct device *dev,
 					  char *buf) {
 	static char *type_text[] = {
 		"Unknown", "Battery", "UPS", "Mains", "USB",
-<<<<<<< HEAD
 		"USB_DCP", "USB_CDP", "USB_ACA",
 #ifdef CONFIG_WIRELESS_CHARGER
 		"Wireless"
 #endif
-=======
-		"USB_DCP", "USB_CDP", "USB_ACA"
->>>>>>> remotes/linux2/linux-3.4.y
 	};
 	static char *status_text[] = {
 		"Unknown", "Charging", "Discharging", "Not charging", "Full"
 	};
 	static char *charge_type[] = {
-<<<<<<< HEAD
 		"Unknown", "N/A", "Trickle", "Fast", "Slow"
-=======
-		"Unknown", "N/A", "Trickle", "Fast"
->>>>>>> remotes/linux2/linux-3.4.y
 	};
 	static char *health_text[] = {
 		"Unknown", "Good", "Overheat", "Dead", "Over voltage",

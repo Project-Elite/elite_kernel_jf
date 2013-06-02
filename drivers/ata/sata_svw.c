@@ -142,42 +142,6 @@ static int k2_sata_scr_write(struct ata_link *link,
 	return 0;
 }
 
-<<<<<<< HEAD
-=======
-static int k2_sata_softreset(struct ata_link *link,
-			     unsigned int *class, unsigned long deadline)
-{
-	u8 dmactl;
-	void __iomem *mmio = link->ap->ioaddr.bmdma_addr;
-
-	dmactl = readb(mmio + ATA_DMA_CMD);
-
-	/* Clear the start bit */
-	if (dmactl & ATA_DMA_START) {
-		dmactl &= ~ATA_DMA_START;
-		writeb(dmactl, mmio + ATA_DMA_CMD);
-	}
-
-	return ata_sff_softreset(link, class, deadline);
-}
-
-static int k2_sata_hardreset(struct ata_link *link,
-			     unsigned int *class, unsigned long deadline)
-{
-	u8 dmactl;
-	void __iomem *mmio = link->ap->ioaddr.bmdma_addr;
-
-	dmactl = readb(mmio + ATA_DMA_CMD);
-
-	/* Clear the start bit */
-	if (dmactl & ATA_DMA_START) {
-		dmactl &= ~ATA_DMA_START;
-		writeb(dmactl, mmio + ATA_DMA_CMD);
-	}
-
-	return sata_sff_hardreset(link, class, deadline);
-}
->>>>>>> remotes/linux2/linux-3.4.y
 
 static void k2_sata_tf_load(struct ata_port *ap, const struct ata_taskfile *tf)
 {
@@ -382,11 +346,6 @@ static struct scsi_host_template k2_sata_sht = {
 
 static struct ata_port_operations k2_sata_ops = {
 	.inherits		= &ata_bmdma_port_ops,
-<<<<<<< HEAD
-=======
-	.softreset              = k2_sata_softreset,
-	.hardreset              = k2_sata_hardreset,
->>>>>>> remotes/linux2/linux-3.4.y
 	.sff_tf_load		= k2_sata_tf_load,
 	.sff_tf_read		= k2_sata_tf_read,
 	.sff_check_status	= k2_stat_check_status,

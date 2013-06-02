@@ -58,12 +58,8 @@ static ssize_t clkgate_delay_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
 	struct mmc_host *host = cls_dev_to_mmc_host(dev);
-<<<<<<< HEAD
 	return snprintf(buf, PAGE_SIZE, "%lu\n",
 			host->clkgate_delay);
-=======
-	return snprintf(buf, PAGE_SIZE, "%lu\n", host->clkgate_delay);
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static ssize_t clkgate_delay_store(struct device *dev,
@@ -78,12 +74,9 @@ static ssize_t clkgate_delay_store(struct device *dev,
 	spin_lock_irqsave(&host->clk_lock, flags);
 	host->clkgate_delay = value;
 	spin_unlock_irqrestore(&host->clk_lock, flags);
-<<<<<<< HEAD
 
 	pr_info("%s: clock gate delay set to %lu ms\n",
 			mmc_hostname(host), value);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	return count;
 }
 
@@ -340,11 +333,8 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
 
 	spin_lock_init(&host->lock);
 	init_waitqueue_head(&host->wq);
-<<<<<<< HEAD
 	wake_lock_init(&host->detect_wake_lock, WAKE_LOCK_SUSPEND,
 		kasprintf(GFP_KERNEL, "%s_detect", mmc_hostname(host)));
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 	INIT_DELAYED_WORK(&host->detect, mmc_rescan);
 #ifdef CONFIG_PM
 	host->pm_notify.notifier_call = mmc_pm_notify;
@@ -369,7 +359,6 @@ free:
 }
 
 EXPORT_SYMBOL(mmc_alloc_host);
-<<<<<<< HEAD
 #ifdef CONFIG_MMC_PERF_PROFILING
 static ssize_t
 show_perf(struct device *dev, struct device_attribute *attr, char *buf)
@@ -430,8 +419,6 @@ static struct attribute *dev_attrs[] = {
 static struct attribute_group dev_attr_grp = {
 	.attrs = dev_attrs,
 };
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 /**
  *	mmc_add_host - initialise host hardware
@@ -459,7 +446,6 @@ int mmc_add_host(struct mmc_host *host)
 #endif
 	mmc_host_clk_sysfs_init(host);
 
-<<<<<<< HEAD
 	err = sysfs_create_group(&host->parent->kobj, &dev_attr_grp);
 	if (err)
 		pr_err("%s: failed to create sysfs group with err %d\n",
@@ -468,10 +454,6 @@ int mmc_add_host(struct mmc_host *host)
 	mmc_start_host(host);
 	if (!(host->pm_flags & MMC_PM_IGNORE_PM_NOTIFY))
 		register_pm_notifier(&host->pm_notify);
-=======
-	mmc_start_host(host);
-	register_pm_notifier(&host->pm_notify);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -488,23 +470,16 @@ EXPORT_SYMBOL(mmc_add_host);
  */
 void mmc_remove_host(struct mmc_host *host)
 {
-<<<<<<< HEAD
 	if (!(host->pm_flags & MMC_PM_IGNORE_PM_NOTIFY))
 		unregister_pm_notifier(&host->pm_notify);
 
-=======
-	unregister_pm_notifier(&host->pm_notify);
->>>>>>> remotes/linux2/linux-3.4.y
 	mmc_stop_host(host);
 
 #ifdef CONFIG_DEBUG_FS
 	mmc_remove_host_debugfs(host);
 #endif
-<<<<<<< HEAD
 	sysfs_remove_group(&host->parent->kobj, &dev_attr_grp);
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	device_del(&host->class_dev);
 
@@ -526,10 +501,7 @@ void mmc_free_host(struct mmc_host *host)
 	spin_lock(&mmc_host_lock);
 	idr_remove(&mmc_host_idr, host->index);
 	spin_unlock(&mmc_host_lock);
-<<<<<<< HEAD
 	wake_lock_destroy(&host->detect_wake_lock);
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 
 	put_device(&host->class_dev);
 }

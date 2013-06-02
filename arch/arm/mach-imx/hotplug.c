@@ -42,7 +42,6 @@ static inline void cpu_enter_lowpower(void)
 	  : "cc");
 }
 
-<<<<<<< HEAD
 static inline void cpu_leave_lowpower(void)
 {
 	unsigned int v;
@@ -59,8 +58,6 @@ static inline void cpu_leave_lowpower(void)
 	  : "cc");
 }
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 /*
  * platform-specific code to shutdown a CPU
  *
@@ -70,18 +67,11 @@ void platform_cpu_die(unsigned int cpu)
 {
 	cpu_enter_lowpower();
 	imx_enable_cpu(cpu, false);
-<<<<<<< HEAD
 	cpu_do_idle();
 	cpu_leave_lowpower();
 
 	/* We should never return from idle */
 	panic("cpu %d unexpectedly exit from shutdown\n", cpu);
-=======
-
-	/* spin here until hardware takes it down */
-	while (1)
-		;
->>>>>>> remotes/linux2/linux-3.4.y
 }
 
 int platform_cpu_disable(unsigned int cpu)

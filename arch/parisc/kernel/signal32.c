@@ -67,12 +67,7 @@ put_sigset32(compat_sigset_t __user *up, sigset_t *set, size_t sz)
 {
 	compat_sigset_t s;
 
-<<<<<<< HEAD
 	if (sz != sizeof *set) panic("put_sigset32()");
-=======
-	if (sz != sizeof *set)
-		return -EINVAL;
->>>>>>> remotes/linux2/linux-3.4.y
 	sigset_64to32(&s, set);
 
 	return copy_to_user(up, &s, sizeof s);
@@ -84,12 +79,7 @@ get_sigset32(compat_sigset_t __user *up, sigset_t *set, size_t sz)
 	compat_sigset_t s;
 	int r;
 
-<<<<<<< HEAD
 	if (sz != sizeof *set) panic("put_sigset32()");
-=======
-	if (sz != sizeof *set)
-		return -EINVAL;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	if ((r = copy_from_user(&s, up, sz)) == 0) {
 		sigset_32to64(set, &s);

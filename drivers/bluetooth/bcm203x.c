@@ -24,10 +24,6 @@
 
 #include <linux/module.h>
 
-<<<<<<< HEAD
-=======
-#include <linux/atomic.h>
->>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/slab.h>
@@ -69,10 +65,6 @@ struct bcm203x_data {
 	unsigned long		state;
 
 	struct work_struct	work;
-<<<<<<< HEAD
-=======
-	atomic_t		shutdown;
->>>>>>> remotes/linux2/linux-3.4.y
 
 	struct urb		*urb;
 	unsigned char		*buffer;
@@ -105,10 +97,6 @@ static void bcm203x_complete(struct urb *urb)
 
 		data->state = BCM203X_SELECT_MEMORY;
 
-<<<<<<< HEAD
-=======
-		/* use workqueue to have a small delay */
->>>>>>> remotes/linux2/linux-3.4.y
 		schedule_work(&data->work);
 		break;
 
@@ -167,14 +155,7 @@ static void bcm203x_work(struct work_struct *work)
 	struct bcm203x_data *data =
 		container_of(work, struct bcm203x_data, work);
 
-<<<<<<< HEAD
 	if (usb_submit_urb(data->urb, GFP_ATOMIC) < 0)
-=======
-	if (atomic_read(&data->shutdown))
-		return;
-
-	if (usb_submit_urb(data->urb, GFP_KERNEL) < 0)
->>>>>>> remotes/linux2/linux-3.4.y
 		BT_ERR("Can't submit URB");
 }
 
@@ -262,10 +243,6 @@ static int bcm203x_probe(struct usb_interface *intf, const struct usb_device_id 
 
 	usb_set_intfdata(intf, data);
 
-<<<<<<< HEAD
-=======
-	/* use workqueue to have a small delay */
->>>>>>> remotes/linux2/linux-3.4.y
 	schedule_work(&data->work);
 
 	return 0;
@@ -277,12 +254,6 @@ static void bcm203x_disconnect(struct usb_interface *intf)
 
 	BT_DBG("intf %p", intf);
 
-<<<<<<< HEAD
-=======
-	atomic_inc(&data->shutdown);
-	cancel_work_sync(&data->work);
-
->>>>>>> remotes/linux2/linux-3.4.y
 	usb_kill_urb(data->urb);
 
 	usb_set_intfdata(intf, NULL);
@@ -300,7 +271,6 @@ static struct usb_driver bcm203x_driver = {
 	.id_table	= bcm203x_table,
 };
 
-<<<<<<< HEAD
 static int __init bcm203x_init(void)
 {
 	int err;
@@ -321,9 +291,6 @@ static void __exit bcm203x_exit(void)
 
 module_init(bcm203x_init);
 module_exit(bcm203x_exit);
-=======
-module_usb_driver(bcm203x_driver);
->>>>>>> remotes/linux2/linux-3.4.y
 
 MODULE_AUTHOR("Marcel Holtmann <marcel@holtmann.org>");
 MODULE_DESCRIPTION("Broadcom Blutonium firmware driver ver " VERSION);

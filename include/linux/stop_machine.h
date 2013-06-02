@@ -27,11 +27,8 @@ struct cpu_stop_work {
 	struct cpu_stop_done	*done;
 };
 
-<<<<<<< HEAD
 extern struct mutex stop_cpus_mutex;
 
-=======
->>>>>>> remotes/linux2/linux-3.4.y
 int stop_one_cpu(unsigned int cpu, cpu_stop_fn_t fn, void *arg);
 void stop_one_cpu_nowait(unsigned int cpu, cpu_stop_fn_t fn, void *arg,
 			 struct cpu_stop_work *work_buf);

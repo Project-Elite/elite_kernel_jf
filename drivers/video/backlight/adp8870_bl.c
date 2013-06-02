@@ -965,11 +965,7 @@ static int adp8870_i2c_suspend(struct i2c_client *client, pm_message_t message)
 
 static int adp8870_i2c_resume(struct i2c_client *client)
 {
-<<<<<<< HEAD
 	adp8870_set_bits(client, ADP8870_MDCR, NSTBY);
-=======
-	adp8870_set_bits(client, ADP8870_MDCR, NSTBY | BLEN);
->>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
