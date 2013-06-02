@@ -25,6 +25,7 @@ EXPORT_SYMBOL_GPL(power_supply_class);
 
 static struct device_type power_supply_dev_type;
 
+<<<<<<< HEAD
 /**
  * power_supply_set_current_limit - set current limit
  * @psy:	the power supply to control
@@ -115,6 +116,8 @@ int power_supply_set_charge_type(struct power_supply *psy, int charge_type)
 }
 EXPORT_SYMBOL_GPL(power_supply_set_charge_type);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static int __power_supply_changed_work(struct device *dev, void *data)
 {
 	struct power_supply *psy = (struct power_supply *)data;
@@ -131,12 +134,16 @@ static int __power_supply_changed_work(struct device *dev, void *data)
 
 static void power_supply_changed_work(struct work_struct *work)
 {
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct power_supply *psy = container_of(work, struct power_supply,
 						changed_work);
 
 	dev_dbg(psy->dev, "%s\n", __func__);
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&psy->changed_lock, flags);
 	if (psy->changed) {
 		psy->changed = false;
@@ -153,10 +160,19 @@ static void power_supply_changed_work(struct work_struct *work)
 	if (!psy->changed)
 		wake_unlock(&psy->work_wake_lock);
 	spin_unlock_irqrestore(&psy->changed_lock, flags);
+=======
+	class_for_each_device(power_supply_class, NULL, psy,
+			      __power_supply_changed_work);
+
+	power_supply_update_leds(psy);
+
+	kobject_uevent(&psy->dev->kobj, KOBJ_CHANGE);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 void power_supply_changed(struct power_supply *psy)
 {
+<<<<<<< HEAD
 	unsigned long flags;
 
 	dev_dbg(psy->dev, "%s\n", __func__);
@@ -165,6 +181,10 @@ void power_supply_changed(struct power_supply *psy)
 	psy->changed = true;
 	wake_lock(&psy->work_wake_lock);
 	spin_unlock_irqrestore(&psy->changed_lock, flags);
+=======
+	dev_dbg(psy->dev, "%s\n", __func__);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	schedule_work(&psy->changed_work);
 }
 EXPORT_SYMBOL_GPL(power_supply_changed);
@@ -304,9 +324,12 @@ int power_supply_register(struct device *parent, struct power_supply *psy)
 	if (rc)
 		goto device_add_failed;
 
+<<<<<<< HEAD
 	spin_lock_init(&psy->changed_lock);
 	wake_lock_init(&psy->work_wake_lock, WAKE_LOCK_SUSPEND, "power-supply");
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	rc = power_supply_create_triggers(psy);
 	if (rc)
 		goto create_triggers_failed;
@@ -316,7 +339,10 @@ int power_supply_register(struct device *parent, struct power_supply *psy)
 	goto success;
 
 create_triggers_failed:
+<<<<<<< HEAD
 	wake_lock_destroy(&psy->work_wake_lock);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	device_del(dev);
 kobject_set_name_failed:
 device_add_failed:
@@ -331,7 +357,10 @@ void power_supply_unregister(struct power_supply *psy)
 	cancel_work_sync(&psy->changed_work);
 	sysfs_remove_link(&psy->dev->kobj, "powers");
 	power_supply_remove_triggers(psy);
+<<<<<<< HEAD
 	wake_lock_destroy(&psy->work_wake_lock);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	device_unregister(psy->dev);
 }
 EXPORT_SYMBOL_GPL(power_supply_unregister);

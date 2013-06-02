@@ -614,6 +614,7 @@ decode_negTokenInit(unsigned char *security_blob, int length,
 		}
 	}
 
+<<<<<<< HEAD
 	/* mechlistMIC */
 	if (asn1_header_decode(&ctx, &end, &cls, &con, &tag) == 0) {
 		/* Check if we have reached the end of the blob, but with
@@ -662,5 +663,12 @@ decode_negTokenInit(unsigned char *security_blob, int length,
 	cFYI(1, "Need to call asn1_octets_decode() function for %s",
 		ctx.pointer);	/* is this UTF-8 or ASCII? */
 decode_negtoken_exit:
+=======
+	/*
+	 * We currently ignore anything at the end of the SPNEGO blob after
+	 * the mechTypes have been parsed, since none of that info is
+	 * used at the moment.
+	 */
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 1;
 }

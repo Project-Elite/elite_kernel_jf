@@ -202,7 +202,11 @@ static void pcap_isr_work(struct work_struct *work)
 		}
 		local_irq_enable();
 		ezx_pcap_write(pcap, PCAP_REG_MSR, pcap->msr);
+<<<<<<< HEAD
 	} while (gpio_get_value(irq_to_gpio(pcap->spi->irq)));
+=======
+	} while (gpio_get_value(pdata->gpio));
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void pcap_irq_handler(unsigned int irq, struct irq_desc *desc)

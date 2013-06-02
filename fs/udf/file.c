@@ -39,12 +39,17 @@
 #include "udf_i.h"
 #include "udf_sb.h"
 
+<<<<<<< HEAD
 static int udf_adinicb_readpage(struct file *file, struct page *page)
+=======
+static void __udf_adinicb_readpage(struct page *page)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct inode *inode = page->mapping->host;
 	char *kaddr;
 	struct udf_inode_info *iinfo = UDF_I(inode);
 
+<<<<<<< HEAD
 	BUG_ON(!PageLocked(page));
 
 	kaddr = kmap(page);
@@ -53,6 +58,20 @@ static int udf_adinicb_readpage(struct file *file, struct page *page)
 	flush_dcache_page(page);
 	SetPageUptodate(page);
 	kunmap(page);
+=======
+	kaddr = kmap(page);
+	memcpy(kaddr, iinfo->i_ext.i_data + iinfo->i_lenEAttr, inode->i_size);
+	memset(kaddr + inode->i_size, 0, PAGE_CACHE_SIZE - inode->i_size);
+	flush_dcache_page(page);
+	SetPageUptodate(page);
+	kunmap(page);
+}
+
+static int udf_adinicb_readpage(struct file *file, struct page *page)
+{
+	BUG_ON(!PageLocked(page));
+	__udf_adinicb_readpage(page);
+>>>>>>> remotes/linux2/linux-3.4.y
 	unlock_page(page);
 
 	return 0;
@@ -77,6 +96,28 @@ static int udf_adinicb_writepage(struct page *page,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int udf_adinicb_write_begin(struct file *file,
+			struct address_space *mapping, loff_t pos,
+			unsigned len, unsigned flags, struct page **pagep,
+			void **fsdata)
+{
+	struct page *page;
+
+	if (WARN_ON_ONCE(pos >= PAGE_CACHE_SIZE))
+		return -EIO;
+	page = grab_cache_page_write_begin(mapping, 0, flags);
+	if (!page)
+		return -ENOMEM;
+	*pagep = page;
+
+	if (!PageUptodate(page) && len != PAGE_CACHE_SIZE)
+		__udf_adinicb_readpage(page);
+	return 0;
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static int udf_adinicb_write_end(struct file *file,
 			struct address_space *mapping,
 			loff_t pos, unsigned len, unsigned copied,
@@ -98,8 +139,13 @@ static int udf_adinicb_write_end(struct file *file,
 const struct address_space_operations udf_adinicb_aops = {
 	.readpage	= udf_adinicb_readpage,
 	.writepage	= udf_adinicb_writepage,
+<<<<<<< HEAD
 	.write_begin = simple_write_begin,
 	.write_end = udf_adinicb_write_end,
+=======
+	.write_begin	= udf_adinicb_write_begin,
+	.write_end	= udf_adinicb_write_end,
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static ssize_t udf_file_aio_write(struct kiocb *iocb, const struct iovec *iov,

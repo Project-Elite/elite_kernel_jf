@@ -36,7 +36,11 @@
 #ifndef _DRM_H_
 #define _DRM_H_
 
+<<<<<<< HEAD
 #if defined(__KERNEL__) || defined(_LINUX) || defined(__linux__)
+=======
+#if defined(__linux__)
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <linux/types.h>
 #include <asm/ioctl.h>

@@ -1103,7 +1103,11 @@ static int nfs_lookup_revalidate(struct dentry *dentry, struct nameidata *nd)
 	struct nfs_fattr *fattr = NULL;
 	int error;
 
+<<<<<<< HEAD
 	if (nd->flags & LOOKUP_RCU)
+=======
+	if (nd && (nd->flags & LOOKUP_RCU))
+>>>>>>> remotes/linux2/linux-3.4.y
 		return -ECHILD;
 
 	parent = dget_parent(dentry);
@@ -1219,11 +1223,22 @@ static int nfs_dentry_delete(const struct dentry *dentry)
 
 }
 
+<<<<<<< HEAD
 static void nfs_drop_nlink(struct inode *inode)
 {
 	spin_lock(&inode->i_lock);
 	if (inode->i_nlink > 0)
 		drop_nlink(inode);
+=======
+/* Ensure that we revalidate inode->i_nlink */
+static void nfs_drop_nlink(struct inode *inode)
+{
+	spin_lock(&inode->i_lock);
+	/* drop the inode if we're reasonably sure this is the last link */
+	if (inode->i_nlink == 1)
+		clear_nlink(inode);
+	NFS_I(inode)->cache_validity |= NFS_INO_INVALID_ATTR;
+>>>>>>> remotes/linux2/linux-3.4.y
 	spin_unlock(&inode->i_lock);
 }
 
@@ -1238,8 +1253,13 @@ static void nfs_dentry_iput(struct dentry *dentry, struct inode *inode)
 		NFS_I(inode)->cache_validity |= NFS_INO_INVALID_DATA;
 
 	if (dentry->d_flags & DCACHE_NFSFS_RENAMED) {
+<<<<<<< HEAD
 		drop_nlink(inode);
 		nfs_complete_unlink(dentry, inode);
+=======
+		nfs_complete_unlink(dentry, inode);
+		nfs_drop_nlink(inode);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 	iput(inode);
 }
@@ -1502,7 +1522,11 @@ static int nfs_open_revalidate(struct dentry *dentry, struct nameidata *nd)
 	struct iattr attr;
 	int openflags, ret = 0;
 
+<<<<<<< HEAD
 	if (nd->flags & LOOKUP_RCU)
+=======
+	if (nd && (nd->flags & LOOKUP_RCU))
+>>>>>>> remotes/linux2/linux-3.4.y
 		return -ECHILD;
 
 	inode = dentry->d_inode;
@@ -1800,10 +1824,15 @@ static int nfs_safe_remove(struct dentry *dentry)
 	if (inode != NULL) {
 		nfs_inode_return_delegation(inode);
 		error = NFS_PROTO(dir)->remove(dir, &dentry->d_name);
+<<<<<<< HEAD
 		/* The VFS may want to delete this inode */
 		if (error == 0)
 			nfs_drop_nlink(inode);
 		nfs_mark_for_revalidate(inode);
+=======
+		if (error == 0)
+			nfs_drop_nlink(inode);
+>>>>>>> remotes/linux2/linux-3.4.y
 	} else
 		error = NFS_PROTO(dir)->remove(dir, &dentry->d_name);
 	if (error == -ENOENT)

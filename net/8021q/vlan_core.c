@@ -5,7 +5,11 @@
 #include <linux/export.h>
 #include "vlan.h"
 
+<<<<<<< HEAD
 bool vlan_do_receive(struct sk_buff **skbp, bool last_handler)
+=======
+bool vlan_do_receive(struct sk_buff **skbp)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct sk_buff *skb = *skbp;
 	u16 vlan_id = skb->vlan_tci & VLAN_VID_MASK;
@@ -13,6 +17,7 @@ bool vlan_do_receive(struct sk_buff **skbp, bool last_handler)
 	struct vlan_pcpu_stats *rx_stats;
 
 	vlan_dev = vlan_find_dev(skb->dev, vlan_id);
+<<<<<<< HEAD
 	if (!vlan_dev) {
 		/* Only the last call to vlan_do_receive() should change
 		 * pkt_type to PACKET_OTHERHOST
@@ -21,6 +26,10 @@ bool vlan_do_receive(struct sk_buff **skbp, bool last_handler)
 			skb->pkt_type = PACKET_OTHERHOST;
 		return false;
 	}
+=======
+	if (!vlan_dev)
+		return false;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	skb = *skbp = skb_share_check(skb, GFP_ATOMIC);
 	if (unlikely(!skb))
@@ -106,7 +115,10 @@ static struct sk_buff *vlan_reorder_header(struct sk_buff *skb)
 		return NULL;
 	memmove(skb->data - ETH_HLEN, skb->data - VLAN_ETH_HLEN, 2 * ETH_ALEN);
 	skb->mac_header += VLAN_HLEN;
+<<<<<<< HEAD
 	skb_reset_mac_len(skb);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return skb;
 }
 
@@ -140,6 +152,11 @@ struct sk_buff *vlan_untag(struct sk_buff *skb)
 
 	skb_reset_network_header(skb);
 	skb_reset_transport_header(skb);
+<<<<<<< HEAD
+=======
+	skb_reset_mac_len(skb);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return skb;
 
 err_free:

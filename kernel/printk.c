@@ -41,6 +41,7 @@
 #include <linux/cpu.h>
 #include <linux/notifier.h>
 #include <linux/rculist.h>
+<<<<<<< HEAD
 #include <linux/coresight-stm.h>
 
 #include <asm/uaccess.h>
@@ -58,6 +59,13 @@
 #else
 #define EXTRA_BUF_SIZE 0
 #endif
+=======
+
+#include <asm/uaccess.h>
+
+#define CREATE_TRACE_POINTS
+#include <trace/events/printk.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Architectures can override it:
@@ -200,6 +208,7 @@ static int __init log_buf_len_setup(char *str)
 }
 early_param("log_buf_len", log_buf_len_setup);
 
+<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG
 #define CONFIG_PRINTK_NOCACHE
 /*
@@ -390,6 +399,8 @@ static inline void emit_sec_log_char(char c)
 
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 void __init setup_log_buf(int early)
 {
 	unsigned long flags;
@@ -495,6 +506,7 @@ static inline void boot_delay_msec(void)
 }
 #endif
 
+<<<<<<< HEAD
 /*
  * Return the number of unread characters in the log buffer.
  */
@@ -542,6 +554,8 @@ int log_buf_copy(char *dest, int idx, int len)
 	return ret;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_SECURITY_DMESG_RESTRICT
 int dmesg_restrict = 1;
 #else
@@ -887,8 +901,24 @@ static void call_console_drivers(unsigned start, unsigned end)
 	start_print = start;
 	while (cur_index != end) {
 		if (msg_level < 0 && ((end - cur_index) > 2)) {
+<<<<<<< HEAD
 			/* strip log prefix */
 			cur_index += log_prefix(&LOG_BUF(cur_index), &msg_level, NULL);
+=======
+			/*
+			 * prepare buf_prefix, as a contiguous array,
+			 * to be processed by log_prefix function
+			 */
+			char buf_prefix[SYSLOG_PRI_MAX_LENGTH+1];
+			unsigned i;
+			for (i = 0; i < ((end - cur_index)) && (i < SYSLOG_PRI_MAX_LENGTH); i++) {
+				buf_prefix[i] = LOG_BUF(cur_index + i);
+			}
+			buf_prefix[i] = '\0'; /* force '\0' as last string character */
+
+			/* strip log prefix */
+			cur_index += log_prefix((const char *)&buf_prefix, &msg_level, NULL);
+>>>>>>> remotes/linux2/linux-3.4.y
 			start_print = cur_index;
 		}
 		while (cur_index != end) {
@@ -925,9 +955,12 @@ static void emit_log_char(char c)
 		con_start = log_end - log_buf_len;
 	if (logged_chars < log_buf_len)
 		logged_chars++;
+<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG
 	emit_sec_log_char(c);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -1000,11 +1033,14 @@ asmlinkage int printk(const char *fmt, ...)
 {
 	va_list args;
 	int r;
+<<<<<<< HEAD
 #ifdef CONFIG_MSM_RTB
 	void *caller = __builtin_return_address(0);
 
 	uncached_logk_pc(LOGK_LOGBUF, caller, (void *)log_end);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #ifdef CONFIG_KGDB_KDB
 	if (unlikely(kdb_trap_printk)) {
@@ -1141,11 +1177,15 @@ asmlinkage int vprintk(const char *fmt, va_list args)
 	printed_len += vscnprintf(printk_buf + printed_len,
 				  sizeof(printk_buf) - printed_len, fmt, args);
 
+<<<<<<< HEAD
 
 	p = printk_buf;
 #ifdef CONFIG_LGE_CRASH_HANDLER
 	store_crash_log(p);
 #endif
+=======
+	p = printk_buf;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Read log level and handle special printk prefix */
 	plen = log_prefix(p, &current_log_level, &special);
@@ -1166,8 +1206,11 @@ asmlinkage int vprintk(const char *fmt, va_list args)
 		}
 	}
 
+<<<<<<< HEAD
 	stm_log(OST_ENTITY_PRINTK, printk_buf, printed_len);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Copy the output into log_buf. If the caller didn't provide
 	 * the appropriate log prefix, we insert them here
@@ -1193,17 +1236,22 @@ asmlinkage int vprintk(const char *fmt, va_list args)
 
 			if (printk_time) {
 				/* Add the current time stamp */
+<<<<<<< HEAD
 #ifdef LOCAL_CONFIG_PRINT_EXTRA_INFO
 				char tbuf[50+EXTRA_BUF_SIZE], *tp;
 #else
 				char tbuf[50], *tp;
 #endif
+=======
+				char tbuf[50], *tp;
+>>>>>>> remotes/linux2/linux-3.4.y
 				unsigned tlen;
 				unsigned long long t;
 				unsigned long nanosec_rem;
 
 				t = cpu_clock(printk_cpu);
 				nanosec_rem = do_div(t, 1000000000);
+<<<<<<< HEAD
 #ifdef LOCAL_CONFIG_PRINT_EXTRA_INFO
 				if (console_loglevel >= 9)
 					tlen = snprintf(tbuf, sizeof(tbuf),
@@ -1216,6 +1264,8 @@ asmlinkage int vprintk(const char *fmt, va_list args)
 						task_pid_nr(current));
 				else
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 				tlen = sprintf(tbuf, "[%5lu.%06lu] ",
 						(unsigned long) t,
 						nanosec_rem / 1000);
@@ -1423,6 +1473,7 @@ void resume_console(void)
 	console_unlock();
 }
 
+<<<<<<< HEAD
 static void __cpuinit console_flush(struct work_struct *work)
 {
 	console_lock();
@@ -1431,6 +1482,8 @@ static void __cpuinit console_flush(struct work_struct *work)
 
 static __cpuinitdata DECLARE_WORK(console_cpu_notify_work, console_flush);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  * console_cpu_notify - print deferred console messages after CPU hotplug
  * @self: notifier struct
@@ -1441,19 +1494,29 @@ static __cpuinitdata DECLARE_WORK(console_cpu_notify_work, console_flush);
  * will be spooled but will not show up on the console.  This function is
  * called when a new CPU comes online (or fails to come up), and ensures
  * that any such output gets printed.
+<<<<<<< HEAD
  *
  * Special handling must be done for cases invoked from an atomic context,
  * as we can't be taking the console semaphore here.
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  */
 static int __cpuinit console_cpu_notify(struct notifier_block *self,
 	unsigned long action, void *hcpu)
 {
 	switch (action) {
+<<<<<<< HEAD
 	case CPU_DEAD:
+=======
+	case CPU_ONLINE:
+	case CPU_DEAD:
+	case CPU_DYING:
+>>>>>>> remotes/linux2/linux-3.4.y
 	case CPU_DOWN_FAILED:
 	case CPU_UP_CANCELED:
 		console_lock();
 		console_unlock();
+<<<<<<< HEAD
 		break;
 	case CPU_ONLINE:
 	case CPU_DYING:
@@ -1462,6 +1525,8 @@ static int __cpuinit console_cpu_notify(struct notifier_block *self,
 			schedule_work(&console_cpu_notify_work);
 		else
 			console_unlock();
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 	return NOTIFY_OK;
 }
@@ -1610,8 +1675,11 @@ again:
 	raw_spin_lock(&logbuf_lock);
 	if (con_start != log_end)
 		retry = 1;
+<<<<<<< HEAD
 	else
 		retry = 0;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	raw_spin_unlock_irqrestore(&logbuf_lock, flags);
 
 	if (retry && console_trylock())
@@ -2102,7 +2170,10 @@ void kmsg_dump(enum kmsg_dump_reason reason)
 		dumper->dump(dumper, reason, s1, l1, s2, l2);
 	rcu_read_unlock();
 }
+<<<<<<< HEAD
 #ifdef CONFIG_PRINTK_NOCACHE
 module_init(printk_remap_nocache);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif

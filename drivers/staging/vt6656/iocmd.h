@@ -95,13 +95,20 @@ typedef enum tagWZONETYPE {
 // Ioctl interface structure
 // Command structure
 //
+<<<<<<< HEAD
 #pragma pack(1)
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 typedef struct tagSCmdRequest {
 	u8 name[16];
 	void	*data;
 	u16	    wResult;
 	u16     wCmdCode;
+<<<<<<< HEAD
 } SCmdRequest, *PSCmdRequest;
+=======
+} __packed SCmdRequest, *PSCmdRequest;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 //
 // Scan
@@ -111,7 +118,11 @@ typedef struct tagSCmdScan {
 
     u8	    ssid[SSID_MAXLEN + 2];
 
+<<<<<<< HEAD
 } SCmdScan, *PSCmdScan;
+=======
+} __packed SCmdScan, *PSCmdScan;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 //
 // BSS Join
@@ -126,7 +137,11 @@ typedef struct tagSCmdBSSJoin {
     BOOL    bPSEnable;
     BOOL    bShareKeyAuth;
 
+<<<<<<< HEAD
 } SCmdBSSJoin, *PSCmdBSSJoin;
+=======
+} __packed SCmdBSSJoin, *PSCmdBSSJoin;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 //
 // Zonetype Setting
@@ -137,7 +152,11 @@ typedef struct tagSCmdZoneTypeSet {
  BOOL       bWrite;
  WZONETYPE  ZoneType;
 
+<<<<<<< HEAD
 } SCmdZoneTypeSet, *PSCmdZoneTypeSet;
+=======
+} __packed SCmdZoneTypeSet, *PSCmdZoneTypeSet;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 typedef struct tagSWPAResult {
          char	ifname[100];
@@ -145,7 +164,11 @@ typedef struct tagSWPAResult {
 	u8 key_mgmt;
 	u8 eap_type;
          BOOL authenticated;
+<<<<<<< HEAD
 } SWPAResult, *PSWPAResult;
+=======
+} __packed SWPAResult, *PSWPAResult;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 typedef struct tagSCmdStartAP {
 
@@ -157,7 +180,11 @@ typedef struct tagSCmdStartAP {
     BOOL    bShareKeyAuth;
     u8      byBasicRate;
 
+<<<<<<< HEAD
 } SCmdStartAP, *PSCmdStartAP;
+=======
+} __packed SCmdStartAP, *PSCmdStartAP;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 typedef struct tagSCmdSetWEP {
 
@@ -167,7 +194,11 @@ typedef struct tagSCmdSetWEP {
     BOOL    bWepKeyAvailable[WEP_NKEYS];
     u32     auWepKeyLength[WEP_NKEYS];
 
+<<<<<<< HEAD
 } SCmdSetWEP, *PSCmdSetWEP;
+=======
+} __packed SCmdSetWEP, *PSCmdSetWEP;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 typedef struct tagSBSSIDItem {
 
@@ -180,14 +211,22 @@ typedef struct tagSBSSIDItem {
     BOOL    bWEPOn;
     u32     uRSSI;
 
+<<<<<<< HEAD
 } SBSSIDItem;
+=======
+} __packed SBSSIDItem;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 
 typedef struct tagSBSSIDList {
 
 	u32		    uItem;
 	SBSSIDItem	sBSSIDList[0];
+<<<<<<< HEAD
 } SBSSIDList, *PSBSSIDList;
+=======
+} __packed SBSSIDList, *PSBSSIDList;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 
 typedef struct tagSNodeItem {
@@ -208,7 +247,11 @@ typedef struct tagSNodeItem {
     u32            uTxAttempts;
     u16            wFailureRatio;
 
+<<<<<<< HEAD
 } SNodeItem;
+=======
+} __packed SNodeItem;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 
 typedef struct tagSNodeList {
@@ -216,7 +259,11 @@ typedef struct tagSNodeList {
 	u32		    uItem;
 	SNodeItem	sNodeList[0];
 
+<<<<<<< HEAD
 } SNodeList, *PSNodeList;
+=======
+} __packed SNodeList, *PSNodeList;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 
 typedef struct tagSCmdLinkStatus {
@@ -229,7 +276,11 @@ typedef struct tagSCmdLinkStatus {
     u32     uChannel;
     u32     uLinkRate;
 
+<<<<<<< HEAD
 } SCmdLinkStatus, *PSCmdLinkStatus;
+=======
+} __packed SCmdLinkStatus, *PSCmdLinkStatus;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 //
 // 802.11 counter
@@ -247,7 +298,11 @@ typedef struct tagSDot11MIBCount {
     u32 ReceivedFragmentCount;
     u32 MulticastReceivedFrameCount;
     u32 FCSErrorCount;
+<<<<<<< HEAD
 } SDot11MIBCount, *PSDot11MIBCount;
+=======
+} __packed SDot11MIBCount, *PSDot11MIBCount;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 
 
@@ -355,13 +410,21 @@ typedef struct tagSStatMIBCount {
     u32   ullTxBroadcastBytes[2];
     u32   ullTxMulticastBytes[2];
     u32   ullTxDirectedBytes[2];
+<<<<<<< HEAD
 } SStatMIBCount, *PSStatMIBCount;
+=======
+} __packed SStatMIBCount, *PSStatMIBCount;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 typedef struct tagSCmdValue {
 
     u32     dwValue;
 
+<<<<<<< HEAD
 } SCmdValue,  *PSCmdValue;
+=======
+} __packed SCmdValue,  *PSCmdValue;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 //
 // hostapd & viawget ioctl related
@@ -431,7 +494,11 @@ struct viawget_hostapd_param {
 			u8 ssid[32];
 		} scan_req;
 	} u;
+<<<<<<< HEAD
 };
+=======
+} __packed;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*---------------------  Export Classes  ----------------------------*/
 

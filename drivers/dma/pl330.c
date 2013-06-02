@@ -1568,6 +1568,7 @@ static int pl330_submit_req(void *ch_id, struct pl330_req *r)
 		goto xfer_exit;
 	}
 
+<<<<<<< HEAD
 	/* Prefer Secure Channel */
 	if (!_manager_ns(thrd))
 		r->cfg->nonsecure = 0;
@@ -1579,6 +1580,21 @@ static int pl330_submit_req(void *ch_id, struct pl330_req *r)
 		ccr = _prepare_ccr(r->cfg);
 	else
 		ccr = readl(regs + CC(thrd->id));
+=======
+
+	/* Use last settings, if not provided */
+	if (r->cfg) {
+		/* Prefer Secure Channel */
+		if (!_manager_ns(thrd))
+			r->cfg->nonsecure = 0;
+		else
+			r->cfg->nonsecure = 1;
+
+		ccr = _prepare_ccr(r->cfg);
+	} else {
+		ccr = readl(regs + CC(thrd->id));
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* If this req doesn't have valid xfer settings */
 	if (!_is_valid(ccr)) {
@@ -2322,7 +2338,11 @@ static void pl330_tasklet(unsigned long data)
 	/* Pick up ripe tomatoes */
 	list_for_each_entry_safe(desc, _dt, &pch->work_list, node)
 		if (desc->status == DONE) {
+<<<<<<< HEAD
 			if (pch->cyclic)
+=======
+			if (!pch->cyclic)
+>>>>>>> remotes/linux2/linux-3.4.y
 				dma_cookie_complete(&desc->txd);
 			list_move_tail(&desc->node, &list);
 		}
@@ -2935,6 +2955,14 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 		num_chan = max_t(int, pi->pcfg.num_peri, pi->pcfg.num_chan);
 
 	pdmac->peripherals = kzalloc(num_chan * sizeof(*pch), GFP_KERNEL);
+<<<<<<< HEAD
+=======
+	if (!pdmac->peripherals) {
+		ret = -ENOMEM;
+		dev_err(&adev->dev, "unable to allocate pdmac->peripherals\n");
+		goto probe_err5;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	for (i = 0; i < num_chan; i++) {
 		pch = &pdmac->peripherals[i];

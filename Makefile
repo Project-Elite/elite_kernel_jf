@@ -1,6 +1,10 @@
 VERSION = 3
 PATCHLEVEL = 4
+<<<<<<< HEAD
 SUBLEVEL = 4
+=======
+SUBLEVEL = 47
+>>>>>>> remotes/linux2/linux-3.4.y
 EXTRAVERSION =
 NAME = Saber-toothed Squirrel
 
@@ -330,7 +334,11 @@ include $(srctree)/scripts/Kbuild.include
 
 AS		= $(CROSS_COMPILE)as
 LD		= $(CROSS_COMPILE)ld
+<<<<<<< HEAD
 REAL_CC		= $(CROSS_COMPILE)gcc
+=======
+CC		= $(CROSS_COMPILE)gcc
+>>>>>>> remotes/linux2/linux-3.4.y
 CPP		= $(CC) -E
 AR		= $(CROSS_COMPILE)ar
 NM		= $(CROSS_COMPILE)nm
@@ -345,11 +353,14 @@ KALLSYMS	= scripts/kallsyms
 PERL		= perl
 CHECK		= sparse
 
+<<<<<<< HEAD
 # Use the wrapper for the compiler.  This wrapper scans for new
 # warnings and causes the build to stop upon encountering them.
 CC		= $(srctree)/scripts/gcc-wrapper.py $(REAL_CC)
 # CC		= $(REAL_CC)
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
 CFLAGS_MODULE   =
@@ -580,8 +591,11 @@ ifndef CONFIG_CC_STACKPROTECTOR
 KBUILD_CFLAGS += $(call cc-option, -fno-stack-protector)
 endif
 
+<<<<<<< HEAD
 KBUILD_CFLAGS += $(call cc-disable-warning, array-bounds)
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 # This warning generated too much noise in a regular build.
 # Use make W=1 to enable this warning (see scripts/Makefile.build)
 KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
@@ -647,6 +661,7 @@ ifeq ($(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-goto.sh $(CC)), y)
 	KBUILD_CFLAGS += -DCC_HAVE_ASM_GOTO
 endif
 
+<<<<<<< HEAD
 #Disable the whole of the following block to disable L1 TIMA
 #ifeq ($(TIMA_ENABLED),1)
 #      KBUILD_CFLAGS += -DTIMA_ENABLED \
@@ -665,6 +680,8 @@ ifeq ($(TIMA_ENABLED),1)
        KBUILD_AFLAGS += -DTIMA_LKM_AUTH_ENABLED
 endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 # Add user supplied CPPFLAGS, AFLAGS and CFLAGS as the last assignments
 # But warn user when we do so
 warn-assign = \
@@ -733,7 +750,11 @@ export mod_strip_cmd
 
 
 ifeq ($(KBUILD_EXTMOD),)
+<<<<<<< HEAD
 core-y		+= kernel/ mm/ fs/ ipc/ security/ crypto/ block/ frandom/
+=======
+core-y		+= kernel/ mm/ fs/ ipc/ security/ crypto/ block/
+>>>>>>> remotes/linux2/linux-3.4.y
 
 vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \

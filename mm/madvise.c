@@ -213,13 +213,23 @@ static long madvise_remove(struct vm_area_struct *vma,
 
 	f = vma->vm_file;
 
+<<<<<<< HEAD
 	if (!f || !f->f_mapping || !f->f_mapping->host)
 			return -EINVAL;
+=======
+	if (!f || !f->f_mapping || !f->f_mapping->host) {
+			return -EINVAL;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if ((vma->vm_flags & (VM_SHARED|VM_WRITE)) != (VM_SHARED|VM_WRITE))
 		return -EACCES;
 
+<<<<<<< HEAD
 	mapping = f->f_mapping;
+=======
+	mapping = vma->vm_file->f_mapping;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	offset = (loff_t)(start - vma->vm_start)
 			+ ((loff_t)vma->vm_pgoff << PAGE_SHIFT);

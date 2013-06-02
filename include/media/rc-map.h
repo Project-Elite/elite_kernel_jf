@@ -122,7 +122,10 @@ void rc_map_init(void);
 #define RC_MAP_NORWOOD                   "rc-norwood"
 #define RC_MAP_NPGTECH                   "rc-npgtech"
 #define RC_MAP_PCTV_SEDNA                "rc-pctv-sedna"
+<<<<<<< HEAD
 #define RC_MAP_RC6_PHILIPS		 "rc-philips"
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #define RC_MAP_PINNACLE_COLOR            "rc-pinnacle-color"
 #define RC_MAP_PINNACLE_GREY             "rc-pinnacle-grey"
 #define RC_MAP_PINNACLE_PCTV_HD          "rc-pinnacle-pctv-hd"
@@ -139,7 +142,10 @@ void rc_map_init(void);
 #define RC_MAP_RC6_MCE                   "rc-rc6-mce"
 #define RC_MAP_REAL_AUDIO_220_32_KEYS    "rc-real-audio-220-32-keys"
 #define RC_MAP_SNAPSTREAM_FIREFLY        "rc-snapstream-firefly"
+<<<<<<< HEAD
 #define RC_MAP_SAMSUNG_NECX	             "rc-samsung-necx"
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #define RC_MAP_STREAMZAP                 "rc-streamzap"
 #define RC_MAP_TBS_NEC                   "rc-tbs-nec"
 #define RC_MAP_TECHNISAT_USB2            "rc-technisat-usb2"
@@ -153,7 +159,10 @@ void rc_map_init(void);
 #define RC_MAP_TT_1500                   "rc-tt-1500"
 #define RC_MAP_TWINHAN_VP1027_DVBS       "rc-twinhan1027"
 #define RC_MAP_VIDEOMATE_K100            "rc-videomate-k100"
+<<<<<<< HEAD
 #define RC_MAP_UE_RF4CE			 "rc-ue-rf4ce"
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #define RC_MAP_VIDEOMATE_S350            "rc-videomate-s350"
 #define RC_MAP_VIDEOMATE_TV_PVR          "rc-videomate-tv-pvr"
 #define RC_MAP_WINFAST                   "rc-winfast"

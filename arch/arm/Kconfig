@@ -4,8 +4,11 @@ config ARM
 	select HAVE_AOUT
 	select HAVE_DMA_API_DEBUG
 	select HAVE_IDE if PCI || ISA || PCMCIA
+<<<<<<< HEAD
 	select HAVE_DMA_CONTIGUOUS if (CPU_V6 || CPU_V6K || CPU_V7)
 	select HAVE_DMA_ATTRS
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	select HAVE_MEMBLOCK
 	select RTC_LIB
 	select SYS_SUPPORTS_APM_EMULATION
@@ -29,7 +32,11 @@ config ARM
 	select HAVE_PERF_EVENTS
 	select PERF_USE_VMALLOC
 	select HAVE_REGS_AND_STACK_ACCESS_API
+<<<<<<< HEAD
 	#select HAVE_HW_BREAKPOINT if (PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7))
+=======
+	select HAVE_HW_BREAKPOINT if (PERF_EVENTS && (CPU_V6 || CPU_V6K || CPU_V7))
+>>>>>>> remotes/linux2/linux-3.4.y
 	select HAVE_C_RECORDMCOUNT
 	select HAVE_GENERIC_HARDIRQS
 	select GENERIC_IRQ_SHOW
@@ -47,6 +54,7 @@ config ARM
 config ARM_HAS_SG_CHAIN
 	bool
 
+<<<<<<< HEAD
 config NEED_SG_DMA_LENGTH
 	bool
 
@@ -55,6 +63,8 @@ config ARM_DMA_USE_IOMMU
 	select ARM_HAS_SG_CHAIN
 	bool
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config HAVE_PWM
 	bool
 
@@ -146,6 +156,7 @@ config GENERIC_IRQ_PROBE
 
 config GENERIC_LOCKBREAK
 	bool
+<<<<<<< HEAD
 	default y if !ARM_TICKET_LOCKS
 	depends on SMP && PREEMPT
 
@@ -158,6 +169,11 @@ config ARM_TICKET_LOCKS
 	default y if ARCH_MSM_SCORPIONMP || ARCH_MSM_KRAITMP
 	depends on SMP
 
+=======
+	default y
+	depends on SMP && PREEMPT
+
+>>>>>>> remotes/linux2/linux-3.4.y
 config RWSEM_GENERIC_SPINLOCK
 	bool
 	default y
@@ -598,6 +614,10 @@ config ARCH_KIRKWOOD
 	bool "Marvell Kirkwood"
 	select CPU_FEROCEON
 	select PCI
+<<<<<<< HEAD
+=======
+	select PCI_QUIRKS
+>>>>>>> remotes/linux2/linux-3.4.y
 	select ARCH_REQUIRE_GPIOLIB
 	select GENERIC_CLOCKEVENTS
 	select NEED_MACH_IO_H
@@ -751,6 +771,7 @@ config ARCH_MSM
 	select GENERIC_CLOCKEVENTS
 	select ARCH_REQUIRE_GPIOLIB
 	select CLKDEV_LOOKUP
+<<<<<<< HEAD
 	select ARCH_HAS_CPUFREQ
 	select GENERIC_GPIO
 	select GENERIC_TIME
@@ -759,6 +780,8 @@ config ARCH_MSM
 	select HAVE_CLK_PREPARE
 	select NEED_MACH_MEMORY_H
 	select NEED_MACH_IO_H
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	help
 	  Support for Qualcomm MSM/QSD based systems.  This runs on the
 	  apps processor of the MSM/QSD and depends on a shared memory
@@ -1185,6 +1208,7 @@ config ARM_NR_BANKS
 	default 16 if ARCH_EP93XX
 	default 8
 
+<<<<<<< HEAD
 config RESERVE_FIRST_PAGE
 	bool
 	default n
@@ -1194,6 +1218,8 @@ config RESERVE_FIRST_PAGE
 	  boot operations. Reserve this page so that it is
 	  not allocated by the kernel.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config IWMMXT
 	bool "Enable iWMMXt support"
 	depends on CPU_XSCALE || CPU_XSC3 || CPU_MOHAWK || CPU_PJ4
@@ -1441,6 +1467,7 @@ config PL310_ERRATA_769419
 	  on systems with an outer cache, the store buffer is drained
 	  explicitly.
 
+<<<<<<< HEAD
 config PL310_ERRATA_727915
 	bool "Background Clean & Invalidate by Way operation can cause data corruption"
 	depends on CACHE_L2X0
@@ -1463,6 +1490,17 @@ config KSAPI
           counter statistics. It can monitor the counter statistics for
           Scorpion processor supported hardware performance counters on a per
           thread basis or AXI counters on an overall system basis.
+=======
+config ARM_ERRATA_775420
+       bool "ARM errata: A data cache maintenance operation which aborts, might lead to deadlock"
+       depends on CPU_V7
+       help
+	 This option enables the workaround for the 775420 Cortex-A9 (r2p2,
+	 r2p6,r2p8,r2p10,r3p0) erratum. In case a date cache maintenance
+	 operation aborts with MMU exception, it might cause the processor
+	 to deadlock. This workaround puts DSB before executing ISB if
+	 an abort may occur on cache maintenance.
+>>>>>>> remotes/linux2/linux-3.4.y
 
 endmenu
 
@@ -1528,6 +1566,7 @@ source "drivers/pci/Kconfig"
 
 source "drivers/pcmcia/Kconfig"
 
+<<<<<<< HEAD
 config ARM_ERRATA_764369
 	bool "ARM errata: Data cache line maintenance operation by MVA may not succeed"
 	depends on CPU_V7 && SMP
@@ -1554,6 +1593,8 @@ config PL310_ERRATA_769419
 	  on systems with an outer cache, the store buffer is drained
 	  explicitly.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 endmenu
 
 menu "Kernel Features"
@@ -1576,7 +1617,11 @@ config SMP
 	depends on HAVE_SMP
 	depends on MMU
 	select USE_GENERIC_SMP_HELPERS
+<<<<<<< HEAD
 	select HAVE_ARM_SCU
+=======
+	select HAVE_ARM_SCU if !ARCH_MSM_SCORPIONMP
+>>>>>>> remotes/linux2/linux-3.4.y
 	help
 	  This enables support for systems with more than one CPU. If you have
 	  a system with only one CPU, like most personal computers, say N. If
@@ -1637,6 +1682,7 @@ config HAVE_ARM_SCU
 	help
 	  This option enables support for the ARM system coherency unit
 
+<<<<<<< HEAD
 config ARM_ARCH_TIMER
 	bool "Architected timer support"
 	depends on CPU_V7
@@ -1644,6 +1690,8 @@ config ARM_ARCH_TIMER
 	help
 	  This option enables support for the ARM architected timer
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config HAVE_ARM_TWD
 	bool
 	depends on SMP
@@ -1687,15 +1735,22 @@ config HOTPLUG_CPU
 	  Say Y here to experiment with turning CPUs off and on.  CPUs
 	  can be controlled through /sys/devices/system/cpu.
 
+<<<<<<< HEAD
 config ARM_AUTO_HOTPLUG
 	bool "Auto hotplugging based on scheduler runqueue load for ARM SoCs"
 	default y
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config LOCAL_TIMERS
 	bool "Use local timer interrupts"
 	depends on SMP
 	default y
+<<<<<<< HEAD
 	select HAVE_ARM_TWD if (!MSM_SMP && !EXYNOS4_MCT)
+=======
+	select HAVE_ARM_TWD if (!ARCH_MSM_SCORPIONMP && !EXYNOS4_MCT)
+>>>>>>> remotes/linux2/linux-3.4.y
 	help
 	  Enable support for local timers on SMP platforms, rather then the
 	  legacy IPI broadcast method.  Local timers allows the system
@@ -1789,7 +1844,11 @@ config AEABI
 config OABI_COMPAT
 	bool "Allow old ABI binaries to run with this kernel (EXPERIMENTAL)"
 	depends on AEABI && EXPERIMENTAL && !THUMB2_KERNEL
+<<<<<<< HEAD
 	default n
+=======
+	default y
+>>>>>>> remotes/linux2/linux-3.4.y
 	help
 	  This option preserves the old syscall interface along with the
 	  new (ARM EABI) one. It also provides a compatibility layer to
@@ -1847,6 +1906,7 @@ config HW_PERF_EVENTS
 	  Enable hardware performance counter support for perf events. If
 	  disabled, perf events will use software events only.
 
+<<<<<<< HEAD
 config VMALLOC_RESERVE
 	hex "Reserved vmalloc space"
 	default 0x08000000
@@ -1882,6 +1942,10 @@ config HOLES_IN_ZONE
 	def_bool n
 	depends on SPARSEMEM
 
+=======
+source "mm/Kconfig"
+
+>>>>>>> remotes/linux2/linux-3.4.y
 config FORCE_MAX_ZONEORDER
 	int "Maximum zone order" if ARCH_SHMOBILE
 	range 11 64 if ARCH_SHMOBILE
@@ -2014,6 +2078,7 @@ config DEPRECATED_PARAM_STRUCT
 	  This was deprecated in 2001 and announced to live on for 5 years.
 	  Some old boot loaders still use this way.
 
+<<<<<<< HEAD
 config ARM_FLUSH_CONSOLE_ON_RESTART
 	bool "Force flush the console on restart"
 	help
@@ -2034,6 +2099,8 @@ config CP_ACCESS
 
 	  If unsure, say N.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 endmenu
 
 menu "Boot options"
@@ -2262,6 +2329,10 @@ source "drivers/cpufreq/Kconfig"
 config CPU_FREQ_IMX
 	tristate "CPUfreq driver for i.MX CPUs"
 	depends on ARCH_MXC && CPU_FREQ
+<<<<<<< HEAD
+=======
+	select CPU_FREQ_TABLE
+>>>>>>> remotes/linux2/linux-3.4.y
 	help
 	  This enables the CPUfreq driver for i.MX CPUs.
 
@@ -2341,6 +2412,7 @@ source "drivers/cpuidle/Kconfig"
 
 endmenu
 
+<<<<<<< HEAD
 config CPU_FREQ_MSM
         bool
         depends on CPU_FREQ && ARCH_MSM
@@ -2349,6 +2421,8 @@ config CPU_FREQ_MSM
           This enables the CPUFreq driver for Qualcomm CPUs.
           If in doubt, say Y.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 menu "Floating point emulation"
 
 comment "At least one emulation must be selected"
@@ -2438,7 +2512,11 @@ menu "Power management options"
 source "kernel/power/Kconfig"
 
 config ARCH_SUSPEND_POSSIBLE
+<<<<<<< HEAD
 	depends on !ARCH_S5PC100 && !ARCH_FSM9XXX
+=======
+	depends on !ARCH_S5PC100
+>>>>>>> remotes/linux2/linux-3.4.y
 	depends on CPU_ARM920T || CPU_ARM926T || CPU_SA1100 || \
 		CPU_V6 || CPU_V6K || CPU_V7 || CPU_XSC3 || CPU_XSCALE
 	def_bool y

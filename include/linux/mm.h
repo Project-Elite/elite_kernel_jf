@@ -31,9 +31,12 @@ extern unsigned long max_mapnr;
 
 extern unsigned long num_physpages;
 extern unsigned long totalram_pages;
+<<<<<<< HEAD
 #ifdef CONFIG_FIX_MOVABLE_ZONE
 extern unsigned long total_unmovable_pages;
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 extern void * high_memory;
 extern int page_cluster;
 
@@ -876,7 +879,10 @@ extern bool skip_free_areas_node(unsigned int flags, int nid);
 
 int shmem_lock(struct file *file, int lock, struct user_struct *user);
 struct file *shmem_file_setup(const char *name, loff_t size, unsigned long flags);
+<<<<<<< HEAD
 void shmem_set_file(struct vm_area_struct *vma, struct file *file);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 int shmem_zero_setup(struct vm_area_struct *);
 
 extern int can_do_mlock(void);
@@ -1511,6 +1517,11 @@ int vm_insert_pfn(struct vm_area_struct *vma, unsigned long addr,
 			unsigned long pfn);
 int vm_insert_mixed(struct vm_area_struct *vma, unsigned long addr,
 			unsigned long pfn);
+<<<<<<< HEAD
+=======
+int vm_iomap_memory(struct vm_area_struct *vma, phys_addr_t start, unsigned long len);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 
 struct page *follow_page(struct vm_area_struct *, unsigned long address,
 			unsigned int foll_flags);
@@ -1599,6 +1610,10 @@ void vmemmap_populate_print_last(void);
 enum mf_flags {
 	MF_COUNT_INCREASED = 1 << 0,
 	MF_ACTION_REQUIRED = 1 << 1,
+<<<<<<< HEAD
+=======
+	MF_MUST_KILL = 1 << 2,
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 extern int memory_failure(unsigned long pfn, int trapno, int flags);
 extern void memory_failure_queue(unsigned long pfn, int trapno, int flags);

@@ -85,7 +85,11 @@ endif
 ifdef CONFIG_X86_X32
 	x32_ld_ok := $(call try-run,\
 			/bin/echo -e '1: .quad 1b' | \
+<<<<<<< HEAD
 			$(CC) $(KBUILD_AFLAGS) -c -xassembler -o "$$TMP" - && \
+=======
+			$(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" - && \
+>>>>>>> remotes/linux2/linux-3.4.y
 			$(OBJCOPY) -O elf32-x86-64 "$$TMP" "$$TMPO" && \
 			$(LD) -m elf32_x86_64 "$$TMPO" -o "$$TMP",y,n)
         ifeq ($(x32_ld_ok),y)

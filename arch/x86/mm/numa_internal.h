@@ -21,12 +21,15 @@ void __init numa_reset_distance(void);
 
 void __init x86_numa_init(void);
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86_64
 static inline void init_alloc_remap(int nid, u64 start, u64 end)	{ }
 #else
 void __init init_alloc_remap(int nid, u64 start, u64 end);
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_NUMA_EMU
 void __init numa_emulation(struct numa_meminfo *numa_meminfo,
 			   int numa_dist_cnt);

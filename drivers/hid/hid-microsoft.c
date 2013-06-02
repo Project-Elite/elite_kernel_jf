@@ -29,22 +29,44 @@
 #define MS_RDESC		0x08
 #define MS_NOGET		0x10
 #define MS_DUPLICATE_USAGES	0x20
+<<<<<<< HEAD
 
 /*
  * Microsoft Wireless Desktop Receiver (Model 1028) has
  * 'Usage Min/Max' where it ought to have 'Physical Min/Max'
  */
+=======
+#define MS_RDESC_3K		0x40
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static __u8 *ms_report_fixup(struct hid_device *hdev, __u8 *rdesc,
 		unsigned int *rsize)
 {
 	unsigned long quirks = (unsigned long)hid_get_drvdata(hdev);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Microsoft Wireless Desktop Receiver (Model 1028) has
+	 * 'Usage Min/Max' where it ought to have 'Physical Min/Max'
+	 */
+>>>>>>> remotes/linux2/linux-3.4.y
 	if ((quirks & MS_RDESC) && *rsize == 571 && rdesc[557] == 0x19 &&
 			rdesc[559] == 0x29) {
 		hid_info(hdev, "fixing up Microsoft Wireless Receiver Model 1028 report descriptor\n");
 		rdesc[557] = 0x35;
 		rdesc[559] = 0x45;
 	}
+<<<<<<< HEAD
+=======
+	/* the same as above (s/usage/physical/) */
+	if ((quirks & MS_RDESC_3K) && *rsize == 106 &&
+			!memcmp((char []){ 0x19, 0x00, 0x29, 0xff },
+				&rdesc[94], 4)) {
+		rdesc[94] = 0x35;
+		rdesc[96] = 0x45;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 	return rdesc;
 }
 
@@ -193,7 +215,11 @@ static const struct hid_device_id ms_devices[] = {
 	{ HID_USB_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_MS_PRESENTER_8K_USB),
 		.driver_data = MS_PRESENTER },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_MS_DIGITAL_MEDIA_3K),
+<<<<<<< HEAD
 		.driver_data = MS_ERGONOMY },
+=======
+		.driver_data = MS_ERGONOMY | MS_RDESC_3K },
+>>>>>>> remotes/linux2/linux-3.4.y
 	{ HID_USB_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_WIRELESS_OPTICAL_DESKTOP_3_0),
 		.driver_data = MS_NOGET },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_MS_COMFORT_MOUSE_4500),

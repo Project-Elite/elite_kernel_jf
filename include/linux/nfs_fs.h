@@ -264,11 +264,14 @@ static inline const struct nfs_rpc_ops *NFS_PROTO(const struct inode *inode)
 	return NFS_SERVER(inode)->nfs_client->rpc_ops;
 }
 
+<<<<<<< HEAD
 static inline __be32 *NFS_COOKIEVERF(const struct inode *inode)
 {
 	return NFS_I(inode)->cookieverf;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static inline unsigned NFS_MINATTRTIMEO(const struct inode *inode)
 {
 	struct nfs_server *nfss = NFS_SERVER(inode);

@@ -585,7 +585,11 @@ static int rndis_init_response(int configNr, rndis_init_msg_type *buf)
 	resp->MinorVersion = cpu_to_le32(RNDIS_MINOR_VERSION);
 	resp->DeviceFlags = cpu_to_le32(RNDIS_DF_CONNECTIONLESS);
 	resp->Medium = cpu_to_le32(RNDIS_MEDIUM_802_3);
+<<<<<<< HEAD
 	resp->MaxPacketsPerTransfer = cpu_to_le32(params->max_pkt_per_xfer);
+=======
+	resp->MaxPacketsPerTransfer = cpu_to_le32(1);
+>>>>>>> remotes/linux2/linux-3.4.y
 	resp->MaxTransferSize = cpu_to_le32(
 		  params->dev->mtu
 		+ sizeof(struct ethhdr)
@@ -902,7 +906,10 @@ int rndis_register(void (*resp_avail)(void *v), void *v)
 			rndis_per_dev_params[i].used = 1;
 			rndis_per_dev_params[i].resp_avail = resp_avail;
 			rndis_per_dev_params[i].v = v;
+<<<<<<< HEAD
 			rndis_per_dev_params[i].max_pkt_per_xfer = 1;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			pr_debug("%s: configNr = %d\n", __func__, i);
 			return i;
 		}
@@ -956,6 +963,7 @@ int rndis_set_param_medium(u8 configNr, u32 medium, u32 speed)
 	return 0;
 }
 
+<<<<<<< HEAD
 void rndis_set_max_pkt_xfer(u8 configNr, u8 max_pkt_per_xfer)
 {
 	pr_debug("%s:\n", __func__);
@@ -963,6 +971,8 @@ void rndis_set_max_pkt_xfer(u8 configNr, u8 max_pkt_per_xfer)
 	rndis_per_dev_params[configNr].max_pkt_per_xfer = max_pkt_per_xfer;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 void rndis_add_hdr(struct sk_buff *skb)
 {
 	struct rndis_packet_msg_type *header;
@@ -1154,15 +1164,21 @@ static struct proc_dir_entry *rndis_connect_state [RNDIS_MAX_CONFIGS];
 
 #endif /* CONFIG_USB_GADGET_DEBUG_FILES */
 
+<<<<<<< HEAD
 static bool rndis_initialized;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 int rndis_init(void)
 {
 	u8 i;
 
+<<<<<<< HEAD
 	if (rndis_initialized)
 		return 0;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	for (i = 0; i < RNDIS_MAX_CONFIGS; i++) {
 #ifdef	CONFIG_USB_GADGET_DEBUG_FILES
 		char name [20];
@@ -1189,7 +1205,10 @@ int rndis_init(void)
 		INIT_LIST_HEAD(&(rndis_per_dev_params[i].resp_queue));
 	}
 
+<<<<<<< HEAD
 	rndis_initialized = true;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -1198,6 +1217,7 @@ void rndis_exit(void)
 #ifdef CONFIG_USB_GADGET_DEBUG_FILES
 	u8 i;
 	char name[20];
+<<<<<<< HEAD
 #endif
 
 	if (!rndis_initialized)
@@ -1205,6 +1225,9 @@ void rndis_exit(void)
 	rndis_initialized = false;
 
 #ifdef CONFIG_USB_GADGET_DEBUG_FILES
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	for (i = 0; i < RNDIS_MAX_CONFIGS; i++) {
 		sprintf(name, NAME_TEMPLATE, i);
 		remove_proc_entry(name, NULL);

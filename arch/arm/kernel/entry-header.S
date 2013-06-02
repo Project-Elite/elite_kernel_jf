@@ -5,9 +5,12 @@
 #include <asm/asm-offsets.h>
 #include <asm/errno.h>
 #include <asm/thread_info.h>
+<<<<<<< HEAD
 #ifdef TIMA_EMUL_ENABLED
 #include <asm/entry-macro-tima.S>
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 @ Bad Abort numbers
 @ -----------------
@@ -43,12 +46,16 @@
 #ifdef CONFIG_ALIGNMENT_TRAP
 	ldr	\rtemp, .LCcralign
 	ldr	\rtemp, [\rtemp]
+<<<<<<< HEAD
 #ifndef TIMA_EMUL_ENABLED
 	mcr	p15, 0, \rtemp, c1, c0
 #else
 	tima_macro_emul_crit_instn \rtemp, 0x3f808221
 
 #endif
+=======
+	mcr	p15, 0, \rtemp, c1, c0
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif
 	.endm
 

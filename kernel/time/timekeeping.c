@@ -70,6 +70,15 @@ struct timekeeper {
 	/* The raw monotonic time for the CLOCK_MONOTONIC_RAW posix clock. */
 	struct timespec raw_time;
 
+<<<<<<< HEAD
+=======
+	/* Offset clock monotonic -> clock realtime */
+	ktime_t offs_real;
+
+	/* Offset clock monotonic -> clock boottime */
+	ktime_t offs_boot;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Seqlock for all timekeeper values */
 	seqlock_t lock;
 };
@@ -172,6 +181,17 @@ static inline s64 timekeeping_get_ns_raw(void)
 	return clocksource_cyc2ns(cycle_delta, clock->mult, clock->shift);
 }
 
+<<<<<<< HEAD
+=======
+static void update_rt_offset(void)
+{
+	struct timespec tmp, *wtm = &timekeeper.wall_to_monotonic;
+
+	set_normalized_timespec(&tmp, -wtm->tv_sec, -wtm->tv_nsec);
+	timekeeper.offs_real = timespec_to_ktime(tmp);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /* must hold write on timekeeper.lock */
 static void timekeeping_update(bool clearntp)
 {
@@ -179,6 +199,10 @@ static void timekeeping_update(bool clearntp)
 		timekeeper.ntp_error = 0;
 		ntp_clear();
 	}
+<<<<<<< HEAD
+=======
+	update_rt_offset();
+>>>>>>> remotes/linux2/linux-3.4.y
 	update_vsyscall(&timekeeper.xtime, &timekeeper.wall_to_monotonic,
 			 timekeeper.clock, timekeeper.mult);
 }
@@ -370,7 +394,11 @@ int do_settimeofday(const struct timespec *tv)
 	struct timespec ts_delta;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if ((unsigned long)tv->tv_nsec >= NSEC_PER_SEC)
+=======
+	if (!timespec_valid_strict(tv))
+>>>>>>> remotes/linux2/linux-3.4.y
 		return -EINVAL;
 
 	write_seqlock_irqsave(&timekeeper.lock, flags);
@@ -405,6 +433,11 @@ EXPORT_SYMBOL(do_settimeofday);
 int timekeeping_inject_offset(struct timespec *ts)
 {
 	unsigned long flags;
+<<<<<<< HEAD
+=======
+	struct timespec tmp;
+	int ret = 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if ((unsigned long)ts->tv_nsec >= NSEC_PER_SEC)
 		return -EINVAL;
@@ -413,10 +446,23 @@ int timekeeping_inject_offset(struct timespec *ts)
 
 	timekeeping_forward_now();
 
+<<<<<<< HEAD
+=======
+	tmp = timespec_add(timekeeper.xtime,  *ts);
+	if (!timespec_valid_strict(&tmp)) {
+		ret = -EINVAL;
+		goto error;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	timekeeper.xtime = timespec_add(timekeeper.xtime, *ts);
 	timekeeper.wall_to_monotonic =
 				timespec_sub(timekeeper.wall_to_monotonic, *ts);
 
+<<<<<<< HEAD
+=======
+error: /* even if we error out, we forwarded the time, so call update */
+>>>>>>> remotes/linux2/linux-3.4.y
 	timekeeping_update(true);
 
 	write_sequnlock_irqrestore(&timekeeper.lock, flags);
@@ -424,7 +470,11 @@ int timekeeping_inject_offset(struct timespec *ts)
 	/* signal hrtimers about time change */
 	clock_was_set();
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return ret;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL(timekeeping_inject_offset);
 
@@ -584,7 +634,24 @@ void __init timekeeping_init(void)
 	struct timespec now, boot;
 
 	read_persistent_clock(&now);
+<<<<<<< HEAD
 	read_boot_clock(&boot);
+=======
+	if (!timespec_valid_strict(&now)) {
+		pr_warn("WARNING: Persistent clock returned invalid value!\n"
+			"         Check your CMOS/BIOS settings.\n");
+		now.tv_sec = 0;
+		now.tv_nsec = 0;
+	}
+
+	read_boot_clock(&boot);
+	if (!timespec_valid_strict(&boot)) {
+		pr_warn("WARNING: Boot clock returned invalid value!\n"
+			"         Check your CMOS/BIOS settings.\n");
+		boot.tv_sec = 0;
+		boot.tv_nsec = 0;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	seqlock_init(&timekeeper.lock);
 
@@ -606,6 +673,10 @@ void __init timekeeping_init(void)
 	}
 	set_normalized_timespec(&timekeeper.wall_to_monotonic,
 				-boot.tv_sec, -boot.tv_nsec);
+<<<<<<< HEAD
+=======
+	update_rt_offset();
+>>>>>>> remotes/linux2/linux-3.4.y
 	timekeeper.total_sleep_time.tv_sec = 0;
 	timekeeper.total_sleep_time.tv_nsec = 0;
 	write_sequnlock_irqrestore(&timekeeper.lock, flags);
@@ -614,6 +685,15 @@ void __init timekeeping_init(void)
 /* time in seconds when suspend began */
 static struct timespec timekeeping_suspend_time;
 
+<<<<<<< HEAD
+=======
+static void update_sleep_time(struct timespec t)
+{
+	timekeeper.total_sleep_time = t;
+	timekeeper.offs_boot = timespec_to_ktime(t);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  * __timekeeping_inject_sleeptime - Internal function to add sleep interval
  * @delta: pointer to a timespec delta value
@@ -623,7 +703,11 @@ static struct timespec timekeeping_suspend_time;
  */
 static void __timekeeping_inject_sleeptime(struct timespec *delta)
 {
+<<<<<<< HEAD
 	if (!timespec_valid(delta)) {
+=======
+	if (!timespec_valid_strict(delta)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		printk(KERN_WARNING "__timekeeping_inject_sleeptime: Invalid "
 					"sleep delta value!\n");
 		return;
@@ -632,8 +716,12 @@ static void __timekeeping_inject_sleeptime(struct timespec *delta)
 	timekeeper.xtime = timespec_add(timekeeper.xtime, *delta);
 	timekeeper.wall_to_monotonic =
 			timespec_sub(timekeeper.wall_to_monotonic, *delta);
+<<<<<<< HEAD
 	timekeeper.total_sleep_time = timespec_add(
 					timekeeper.total_sleep_time, *delta);
+=======
+	update_sleep_time(timespec_add(timekeeper.total_sleep_time, *delta));
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 
@@ -698,6 +786,10 @@ static void timekeeping_resume(void)
 	timekeeper.clock->cycle_last = timekeeper.clock->read(timekeeper.clock);
 	timekeeper.ntp_error = 0;
 	timekeeping_suspended = 0;
+<<<<<<< HEAD
+=======
+	timekeeping_update(false);
+>>>>>>> remotes/linux2/linux-3.4.y
 	write_sequnlock_irqrestore(&timekeeper.lock, flags);
 
 	touch_softlockup_watchdog();
@@ -965,10 +1057,19 @@ static cycle_t logarithmic_accumulation(cycle_t offset, int shift)
 		leap = second_overflow(timekeeper.xtime.tv_sec);
 		timekeeper.xtime.tv_sec += leap;
 		timekeeper.wall_to_monotonic.tv_sec -= leap;
+<<<<<<< HEAD
 	}
 
 	/* Accumulate raw time */
 	raw_nsecs = timekeeper.raw_interval << shift;
+=======
+		if (leap)
+			clock_was_set_delayed();
+	}
+
+	/* Accumulate raw time */
+	raw_nsecs = (u64)timekeeper.raw_interval << shift;
+>>>>>>> remotes/linux2/linux-3.4.y
 	raw_nsecs += timekeeper.raw_time.tv_nsec;
 	if (raw_nsecs >= NSEC_PER_SEC) {
 		u64 raw_secs = raw_nsecs;
@@ -1011,9 +1112,18 @@ static void update_wall_time(void)
 #else
 	offset = (clock->read(clock) - clock->cycle_last) & clock->mask;
 #endif
+<<<<<<< HEAD
 	timekeeper.xtime_nsec = (s64)timekeeper.xtime.tv_nsec <<
 						timekeeper.shift;
 
+=======
+	/* Check if there's really nothing to do */
+	if (offset < timekeeper.cycle_interval)
+		goto out;
+
+	timekeeper.xtime_nsec = (s64)timekeeper.xtime.tv_nsec <<
+						timekeeper.shift;
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * With NO_HZ we may have to accumulate many cycle_intervals
 	 * (think "ticks") worth of time at once. To do this efficiently,
@@ -1081,6 +1191,11 @@ static void update_wall_time(void)
 		leap = second_overflow(timekeeper.xtime.tv_sec);
 		timekeeper.xtime.tv_sec += leap;
 		timekeeper.wall_to_monotonic.tv_sec -= leap;
+<<<<<<< HEAD
+=======
+		if (leap)
+			clock_was_set_delayed();
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	timekeeping_update(false);
@@ -1248,6 +1363,43 @@ void get_xtime_and_monotonic_and_sleep_offset(struct timespec *xtim,
 	} while (read_seqretry(&timekeeper.lock, seq));
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HIGH_RES_TIMERS
+/**
+ * ktime_get_update_offsets - hrtimer helper
+ * @offs_real:	pointer to storage for monotonic -> realtime offset
+ * @offs_boot:	pointer to storage for monotonic -> boottime offset
+ *
+ * Returns current monotonic time and updates the offsets
+ * Called from hrtimer_interupt() or retrigger_next_event()
+ */
+ktime_t ktime_get_update_offsets(ktime_t *offs_real, ktime_t *offs_boot)
+{
+	ktime_t now;
+	unsigned int seq;
+	u64 secs, nsecs;
+
+	do {
+		seq = read_seqbegin(&timekeeper.lock);
+
+		secs = timekeeper.xtime.tv_sec;
+		nsecs = timekeeper.xtime.tv_nsec;
+		nsecs += timekeeping_get_ns();
+		/* If arch requires, add in gettimeoffset() */
+		nsecs += arch_gettimeoffset();
+
+		*offs_real = timekeeper.offs_real;
+		*offs_boot = timekeeper.offs_boot;
+	} while (read_seqretry(&timekeeper.lock, seq));
+
+	now = ktime_add_ns(ktime_set(secs, 0), nsecs);
+	now = ktime_sub(now, *offs_real);
+	return now;
+}
+#endif
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  * ktime_get_monotonic_offset() - get wall_to_monotonic in ktime_t format
  */

@@ -114,6 +114,7 @@ out:
 EXPORT_SYMBOL_GPL(snd_soc_jack_report);
 
 /**
+<<<<<<< HEAD
  * snd_soc_jack_report_no_dapm - Report the current status for a jack
  *				 without DAPM sync
  * @jack:   the jack
@@ -131,6 +132,8 @@ void snd_soc_jack_report_no_dapm(struct snd_soc_jack *jack, int status,
 EXPORT_SYMBOL_GPL(snd_soc_jack_report_no_dapm);
 
 /**
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  * snd_soc_jack_add_zones - Associate voltage zones with jack
  *
  * @jack:  ASoC jack

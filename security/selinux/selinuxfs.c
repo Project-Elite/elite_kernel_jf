@@ -31,10 +31,13 @@
 #include <linux/kobject.h>
 #include <linux/ctype.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG
 #include <linux/proc_avc.h>
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* selinuxfs pseudo filesystem for exporting the security policy API.
    Based on the proc code and the fs/nfsd/nfsctl.c code. */
 

@@ -141,11 +141,15 @@ extern unsigned long nr_uninterruptible(void);
 extern unsigned long nr_iowait(void);
 extern unsigned long nr_iowait_cpu(int cpu);
 extern unsigned long this_cpu_load(void);
+<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 extern unsigned long this_cpu_loadx(int i);
 #endif
 extern void sched_update_nr_prod(int cpu, unsigned long nr, bool inc);
 extern void sched_get_nr_running_avg(int *avg, int *iowait_avg);
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 
 extern void calc_global_load(unsigned long ticks);
 
@@ -1283,6 +1287,12 @@ struct task_struct {
 	const struct sched_class *sched_class;
 	struct sched_entity se;
 	struct sched_rt_entity rt;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CGROUP_SCHED
+	struct task_group *sched_task_group;
+#endif
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #ifdef CONFIG_PREEMPT_NOTIFIERS
 	/* list of struct preempt_notifier: */
@@ -1805,9 +1815,12 @@ static inline void put_task_struct(struct task_struct *t)
 extern void task_times(struct task_struct *p, cputime_t *ut, cputime_t *st);
 extern void thread_group_times(struct task_struct *p, cputime_t *ut, cputime_t *st);
 
+<<<<<<< HEAD
 extern int task_free_register(struct notifier_block *n);
 extern int task_free_unregister(struct notifier_block *n);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Per process flags
  */
@@ -1823,7 +1836,10 @@ extern int task_free_unregister(struct notifier_block *n);
 #define PF_MEMALLOC	0x00000800	/* Allocating memory */
 #define PF_NPROC_EXCEEDED 0x00001000	/* set_user noticed that RLIMIT_NPROC was exceeded */
 #define PF_USED_MATH	0x00002000	/* if unset the fpu must be initialized before use */
+<<<<<<< HEAD
 #define PF_WAKE_UP_IDLE 0x00004000	/* try to wake up on an idle CPU */
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #define PF_NOFREEZE	0x00008000	/* this thread should not be frozen */
 #define PF_FROZEN	0x00010000	/* frozen for system suspend */
 #define PF_FSTRANS	0x00020000	/* inside a filesystem transaction */
@@ -1941,6 +1957,7 @@ static inline int set_cpus_allowed_ptr(struct task_struct *p,
 }
 #endif
 
+<<<<<<< HEAD
 static inline void set_wake_up_idle(bool enabled)
 {
 	if (enabled)
@@ -1948,6 +1965,15 @@ static inline void set_wake_up_idle(bool enabled)
 	else
 		current->flags &= ~PF_WAKE_UP_IDLE;
 }
+=======
+#ifdef CONFIG_NO_HZ
+void calc_load_enter_idle(void);
+void calc_load_exit_idle(void);
+#else
+static inline void calc_load_enter_idle(void) { }
+static inline void calc_load_exit_idle(void) { }
+#endif /* CONFIG_NO_HZ */
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #ifndef CONFIG_CPUMASK_OFFSTACK
 static inline int set_cpus_allowed(struct task_struct *p, cpumask_t new_mask)
@@ -2043,7 +2069,10 @@ extern unsigned int sysctl_sched_latency;
 extern unsigned int sysctl_sched_min_granularity;
 extern unsigned int sysctl_sched_wakeup_granularity;
 extern unsigned int sysctl_sched_child_runs_first;
+<<<<<<< HEAD
 extern unsigned int sysctl_sched_wake_to_idle;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 enum sched_tunable_scaling {
 	SCHED_TUNABLESCALING_NONE,
@@ -2701,7 +2730,20 @@ static inline void thread_group_cputime_init(struct signal_struct *sig)
 extern void recalc_sigpending_and_wake(struct task_struct *t);
 extern void recalc_sigpending(void);
 
+<<<<<<< HEAD
 extern void signal_wake_up(struct task_struct *t, int resume_stopped);
+=======
+extern void signal_wake_up_state(struct task_struct *t, unsigned int state);
+
+static inline void signal_wake_up(struct task_struct *t, bool resume)
+{
+	signal_wake_up_state(t, resume ? TASK_WAKEKILL : 0);
+}
+static inline void ptrace_signal_wake_up(struct task_struct *t, bool resume)
+{
+	signal_wake_up_state(t, resume ? __TASK_TRACED : 0);
+}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Wrappers for p->thread_info->cpu access. No-op on UP.
@@ -2753,7 +2795,11 @@ extern int sched_group_set_rt_period(struct task_group *tg,
 extern long sched_group_rt_period(struct task_group *tg);
 extern int sched_rt_can_attach(struct task_group *tg, struct task_struct *tsk);
 #endif
+<<<<<<< HEAD
 #endif
+=======
+#endif /* CONFIG_CGROUP_SCHED */
+>>>>>>> remotes/linux2/linux-3.4.y
 
 extern int task_can_switch_user(struct user_struct *up,
 					struct task_struct *tsk);

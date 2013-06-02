@@ -83,6 +83,7 @@ struct clk *clk_get(struct device *dev, const char *con_id)
 }
 EXPORT_SYMBOL(clk_get);
 
+<<<<<<< HEAD
 static void devm_clk_release(struct device *dev, void *res)
 {
 	clk_put(*(struct clk **)res);
@@ -108,6 +109,8 @@ struct clk *devm_clk_get(struct device *dev, const char *id)
 }
 EXPORT_SYMBOL(devm_clk_get);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 void clk_put(struct clk *clk)
 {
 	__clk_put(clk);
@@ -122,7 +125,11 @@ void clkdev_add(struct clk_lookup *cl)
 }
 EXPORT_SYMBOL(clkdev_add);
 
+<<<<<<< HEAD
 void clkdev_add_table(struct clk_lookup *cl, size_t num)
+=======
+void __init clkdev_add_table(struct clk_lookup *cl, size_t num)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	mutex_lock(&clocks_mutex);
 	while (num--) {

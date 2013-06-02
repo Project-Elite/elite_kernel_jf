@@ -1299,6 +1299,10 @@ static struct device *new_device(const char *name, u16 type)
 	dev->feature_len = 0;
 	dev->num_vq = 0;
 	dev->running = false;
+<<<<<<< HEAD
+=======
+	dev->next = NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Append to device list.  Prepending to a single-linked list is

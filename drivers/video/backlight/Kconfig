@@ -361,6 +361,7 @@ config BACKLIGHT_PANDORA
 	  If you have a Pandora console, say Y to enable the
 	  backlight driver.
 
+<<<<<<< HEAD
 config BACKLIGHT_LM3530
 	tristate "select lm3530 device as LGE backlight management"
 	help
@@ -371,6 +372,8 @@ config BACKLIGHT_LM3533
 	help
 	  Say Y to enable the backlight driver for TI LM3533.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 endif # BACKLIGHT_CLASS_DEVICE
 
 endif # BACKLIGHT_LCD_SUPPORT

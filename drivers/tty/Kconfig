@@ -41,7 +41,11 @@ config CONSOLE_TRANSLATIONS
 config VT_CONSOLE
 	bool "Support for console on virtual terminal" if EXPERT
 	depends on VT
+<<<<<<< HEAD
 	default n
+=======
+	default y
+>>>>>>> remotes/linux2/linux-3.4.y
 	---help---
 	  The system console is the device which receives all kernel messages
 	  and warnings and which allows logins in single user mode. If you
@@ -323,6 +327,7 @@ config N_GSM
 	  This line discipline provides support for the GSM MUX protocol and
 	  presents the mux as a set of 61 individual tty devices.
 
+<<<<<<< HEAD
 config N_SMUX
 	tristate "SMUX line discipline support"
 	depends on NET && SERIAL_MSM_HS
@@ -342,6 +347,8 @@ config SMUX_CTL
 	help
 	  Support for SMUX control driver on top of serial MUX.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config TRACE_ROUTER
 	tristate "Trace data router for MIPI P1149.7 cJTAG standard"
 	depends on TRACE_SINK

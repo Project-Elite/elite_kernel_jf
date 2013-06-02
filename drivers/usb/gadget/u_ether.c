@@ -46,8 +46,11 @@
 
 #define UETH__VERSION	"29-May-2008"
 
+<<<<<<< HEAD
 static struct workqueue_struct	*uether_wq;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 struct eth_dev {
 	/* lock is held while accessing port_usb
 	 * or updating its backlink port_usb->ioport
@@ -60,12 +63,16 @@ struct eth_dev {
 
 	spinlock_t		req_lock;	/* guard {rx,tx}_reqs */
 	struct list_head	tx_reqs, rx_reqs;
+<<<<<<< HEAD
 	unsigned		tx_qlen;
 /* Minimum number of TX USB request queued to UDC */
 #define TX_REQ_THRESHOLD	5
 	int			no_tx_req_used;
 	int			tx_skb_hold_count;
 	u32			tx_req_bufsize;
+=======
+	atomic_t		tx_qlen;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	struct sk_buff_head	rx_frames;
 
@@ -76,7 +83,10 @@ struct eth_dev {
 						struct sk_buff_head *list);
 
 	struct work_struct	work;
+<<<<<<< HEAD
 	struct work_struct	rx_work;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	unsigned long		todo;
 #define	WORK_RX_MEMORY		0
@@ -91,9 +101,16 @@ struct eth_dev {
 
 #define DEFAULT_QLEN	2	/* double buffering by default */
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_GADGET_DUALSPEED
 
 static unsigned qmult = 10;
+=======
+
+#ifdef CONFIG_USB_GADGET_DUALSPEED
+
+static unsigned qmult = 5;
+>>>>>>> remotes/linux2/linux-3.4.y
 module_param(qmult, uint, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(qmult, "queue length multiplier at high/super speed");
 
@@ -120,7 +137,10 @@ static inline int qlen(struct usb_gadget *gadget)
 #undef DBG
 #undef VDBG
 #undef ERROR
+<<<<<<< HEAD
 #undef DEBUG
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #undef INFO
 
 #define xprintk(d, level, fmt, args...) \
@@ -268,16 +288,28 @@ enomem:
 		DBG(dev, "rx submit --> %d\n", retval);
 		if (skb)
 			dev_kfree_skb_any(skb);
+<<<<<<< HEAD
+=======
+		spin_lock_irqsave(&dev->req_lock, flags);
+		list_add(&req->list, &dev->rx_reqs);
+		spin_unlock_irqrestore(&dev->req_lock, flags);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 	return retval;
 }
 
 static void rx_complete(struct usb_ep *ep, struct usb_request *req)
 {
+<<<<<<< HEAD
 	struct sk_buff	*skb = req->context;
 	struct eth_dev	*dev = ep->driver_data;
 	int		status = req->status;
 	bool		queue = 0;
+=======
+	struct sk_buff	*skb = req->context, *skb2;
+	struct eth_dev	*dev = ep->driver_data;
+	int		status = req->status;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	switch (status) {
 
@@ -293,10 +325,13 @@ static void rx_complete(struct usb_ep *ep, struct usb_request *req)
 				status = dev->unwrap(dev->port_usb,
 							skb,
 							&dev->rx_frames);
+<<<<<<< HEAD
 				if (status == -EINVAL)
 					dev->net->stats.rx_errors++;
 				else if (status == -EOVERFLOW)
 					dev->net->stats.rx_over_errors++;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			} else {
 				dev_kfree_skb_any(skb);
 				status = -ENOTCONN;
@@ -305,9 +340,36 @@ static void rx_complete(struct usb_ep *ep, struct usb_request *req)
 		} else {
 			skb_queue_tail(&dev->rx_frames, skb);
 		}
+<<<<<<< HEAD
 
 		if (!status)
 			queue = 1;
+=======
+		skb = NULL;
+
+		skb2 = skb_dequeue(&dev->rx_frames);
+		while (skb2) {
+			if (status < 0
+					|| ETH_HLEN > skb2->len
+					|| skb2->len > ETH_FRAME_LEN) {
+				dev->net->stats.rx_errors++;
+				dev->net->stats.rx_length_errors++;
+				DBG(dev, "rx length %d\n", skb2->len);
+				dev_kfree_skb_any(skb2);
+				goto next_frame;
+			}
+			skb2->protocol = eth_type_trans(skb2, dev->net);
+			dev->net->stats.rx_packets++;
+			dev->net->stats.rx_bytes += skb2->len;
+
+			/* no buffer copies needed, unless hardware can't
+			 * use skb buffers.
+			 */
+			status = netif_rx(skb2);
+next_frame:
+			skb2 = skb_dequeue(&dev->rx_frames);
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 
 	/* software-driven interface shutdown */
@@ -330,13 +392,17 @@ quiesce:
 		/* FALLTHROUGH */
 
 	default:
+<<<<<<< HEAD
 		queue = 1;
 		dev_kfree_skb_any(skb);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		dev->net->stats.rx_errors++;
 		DBG(dev, "rx status %d\n", status);
 		break;
 	}
 
+<<<<<<< HEAD
 clean:
 	spin_lock(&dev->req_lock);
 	list_add(&req->list, &dev->rx_reqs);
@@ -344,6 +410,19 @@ clean:
 
 	if (queue)
 		queue_work(uether_wq, &dev->rx_work);
+=======
+	if (skb)
+		dev_kfree_skb_any(skb);
+	if (!netif_running(dev->net)) {
+clean:
+		spin_lock(&dev->req_lock);
+		list_add(&req->list, &dev->rx_reqs);
+		spin_unlock(&dev->req_lock);
+		req = NULL;
+	}
+	if (req)
+		rx_submit(dev, req, GFP_ATOMIC);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int prealloc(struct list_head *list, struct usb_ep *ep, unsigned n)
@@ -408,24 +487,33 @@ static void rx_fill(struct eth_dev *dev, gfp_t gfp_flags)
 {
 	struct usb_request	*req;
 	unsigned long		flags;
+<<<<<<< HEAD
 	int			req_cnt = 0;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* fill unused rxq slots with some skb */
 	spin_lock_irqsave(&dev->req_lock, flags);
 	while (!list_empty(&dev->rx_reqs)) {
+<<<<<<< HEAD
 		/* break the nexus of continuous completion and re-submission*/
 		if (++req_cnt > qlen(dev->gadget))
 			break;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		req = container_of(dev->rx_reqs.next,
 				struct usb_request, list);
 		list_del_init(&req->list);
 		spin_unlock_irqrestore(&dev->req_lock, flags);
 
 		if (rx_submit(dev, req, gfp_flags) < 0) {
+<<<<<<< HEAD
 			spin_lock_irqsave(&dev->req_lock, flags);
 			list_add(&req->list, &dev->rx_reqs);
 			spin_unlock_irqrestore(&dev->req_lock, flags);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			defer_kevent(dev, WORK_RX_MEMORY);
 			return;
 		}
@@ -435,6 +523,7 @@ static void rx_fill(struct eth_dev *dev, gfp_t gfp_flags)
 	spin_unlock_irqrestore(&dev->req_lock, flags);
 }
 
+<<<<<<< HEAD
 static void process_rx_w(struct work_struct *work)
 {
 	struct eth_dev	*dev = container_of(work, struct eth_dev, rx_work);
@@ -465,6 +554,8 @@ static void process_rx_w(struct work_struct *work)
 		rx_fill(dev, GFP_KERNEL);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static void eth_work(struct work_struct *work)
 {
 	struct eth_dev	*dev = container_of(work, struct eth_dev, work);
@@ -482,11 +573,14 @@ static void tx_complete(struct usb_ep *ep, struct usb_request *req)
 {
 	struct sk_buff	*skb = req->context;
 	struct eth_dev	*dev = ep->driver_data;
+<<<<<<< HEAD
 	struct net_device *net = dev->net;
 	struct usb_request *new_req;
 	struct usb_ep *in;
 	int length;
 	int retval;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	switch (req->status) {
 	default:
@@ -497,14 +591,19 @@ static void tx_complete(struct usb_ep *ep, struct usb_request *req)
 	case -ESHUTDOWN:		/* disconnect etc */
 		break;
 	case 0:
+<<<<<<< HEAD
 		if (!req->zero)
 			dev->net->stats.tx_bytes += req->length-1;
 		else
 			dev->net->stats.tx_bytes += req->length;
+=======
+		dev->net->stats.tx_bytes += skb->len;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 	dev->net->stats.tx_packets++;
 
 	spin_lock(&dev->req_lock);
+<<<<<<< HEAD
 	list_add_tail(&req->list, &dev->tx_reqs);
 
 	if (dev->port_usb->multi_pkt_xfer) {
@@ -565,6 +664,13 @@ static void tx_complete(struct usb_ep *ep, struct usb_request *req)
 		dev_kfree_skb_any(skb);
 	}
 
+=======
+	list_add(&req->list, &dev->tx_reqs);
+	spin_unlock(&dev->req_lock);
+	dev_kfree_skb_any(skb);
+
+	atomic_dec(&dev->tx_qlen);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (netif_carrier_ok(dev->net))
 		netif_wake_queue(dev->net);
 }
@@ -574,6 +680,7 @@ static inline int is_promisc(u16 cdc_filter)
 	return cdc_filter & USB_CDC_PACKET_TYPE_PROMISCUOUS;
 }
 
+<<<<<<< HEAD
 static void alloc_tx_buffer(struct eth_dev *dev)
 {
 	struct list_head	*act;
@@ -594,6 +701,8 @@ static void alloc_tx_buffer(struct eth_dev *dev)
 	}
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 					struct net_device *net)
 {
@@ -604,13 +713,19 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 	unsigned long		flags;
 	struct usb_ep		*in;
 	u16			cdc_filter;
+<<<<<<< HEAD
 	bool                    multi_pkt_xfer = false;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	spin_lock_irqsave(&dev->lock, flags);
 	if (dev->port_usb) {
 		in = dev->port_usb->in_ep;
 		cdc_filter = dev->port_usb->cdc_filter;
+<<<<<<< HEAD
 		multi_pkt_xfer = dev->port_usb->multi_pkt_xfer;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	} else {
 		in = NULL;
 		cdc_filter = 0;
@@ -622,10 +737,13 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 		return NETDEV_TX_OK;
 	}
 
+<<<<<<< HEAD
 	/* Allocate memory for tx_reqs to support multi packet transfer */
 	if (multi_pkt_xfer && !dev->tx_req_bufsize)
 		alloc_tx_buffer(dev);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* apply outgoing CDC or RNDIS filters */
 	if (!is_promisc(cdc_filter)) {
 		u8		*dest = skb->data;
@@ -680,6 +798,7 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 		spin_unlock_irqrestore(&dev->lock, flags);
 		if (!skb)
 			goto drop;
+<<<<<<< HEAD
 	}
 
 	spin_lock_irqsave(&dev->req_lock, flags);
@@ -718,6 +837,13 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 		req->context = skb;
 	}
 
+=======
+
+		length = skb->len;
+	}
+	req->buf = skb->data;
+	req->context = skb;
+>>>>>>> remotes/linux2/linux-3.4.y
 	req->complete = tx_complete;
 
 	/* NCM requires no zlp if transfer is dwNtbInMaxSize */
@@ -732,6 +858,7 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 	 * though any robust network rx path ignores extra padding.
 	 * and some hardware doesn't like to write zlps.
 	 */
+<<<<<<< HEAD
 	if (req->zero && !dev->zlp && (length % in->maxpacket) == 0) {
 		req->zero = 0;
 		length++;
@@ -752,6 +879,19 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 	} else {
 		req->no_interrupt = 0;
 	}
+=======
+	if (req->zero && !dev->zlp && (length % in->maxpacket) == 0)
+		length++;
+
+	req->length = length;
+
+	/* throttle high/super speed IRQ rate back slightly */
+	if (gadget_is_dualspeed(dev->gadget))
+		req->no_interrupt = (dev->gadget->speed == USB_SPEED_HIGH ||
+				     dev->gadget->speed == USB_SPEED_SUPER)
+			? ((atomic_read(&dev->tx_qlen) % qmult) != 0)
+			: 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	retval = usb_ep_queue(in, req, GFP_ATOMIC);
 	switch (retval) {
@@ -760,11 +900,19 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
 		break;
 	case 0:
 		net->trans_start = jiffies;
+<<<<<<< HEAD
 	}
 
 	if (retval) {
 		if (!multi_pkt_xfer)
 			dev_kfree_skb_any(skb);
+=======
+		atomic_inc(&dev->tx_qlen);
+	}
+
+	if (retval) {
+		dev_kfree_skb_any(skb);
+>>>>>>> remotes/linux2/linux-3.4.y
 drop:
 		dev->net->stats.tx_dropped++;
 		spin_lock_irqsave(&dev->req_lock, flags);
@@ -773,7 +921,10 @@ drop:
 		list_add(&req->list, &dev->tx_reqs);
 		spin_unlock_irqrestore(&dev->req_lock, flags);
 	}
+<<<<<<< HEAD
 success:
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return NETDEV_TX_OK;
 }
 
@@ -787,7 +938,11 @@ static void eth_start(struct eth_dev *dev, gfp_t gfp_flags)
 	rx_fill(dev, gfp_flags);
 
 	/* and open the tx floodgates */
+<<<<<<< HEAD
 	dev->tx_qlen = 0;
+=======
+	atomic_set(&dev->tx_qlen, 0);
+>>>>>>> remotes/linux2/linux-3.4.y
 	netif_wake_queue(dev->net);
 }
 
@@ -826,6 +981,11 @@ static int eth_stop(struct net_device *net)
 	spin_lock_irqsave(&dev->lock, flags);
 	if (dev->port_usb) {
 		struct gether	*link = dev->port_usb;
+<<<<<<< HEAD
+=======
+		const struct usb_endpoint_descriptor *in;
+		const struct usb_endpoint_descriptor *out;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		if (link->close)
 			link->close(link);
@@ -839,6 +999,7 @@ static int eth_stop(struct net_device *net)
 		 * their own pace; the network stack can handle old packets.
 		 * For the moment we leave this here, since it works.
 		 */
+<<<<<<< HEAD
 		usb_ep_disable(link->in_ep);
 		usb_ep_disable(link->out_ep);
 		if (netif_carrier_ok(net)) {
@@ -851,6 +1012,16 @@ static int eth_stop(struct net_device *net)
 				return -EINVAL;
 			}
 			DBG(dev, "host still using in/out endpoints\n");
+=======
+		in = link->in_ep->desc;
+		out = link->out_ep->desc;
+		usb_ep_disable(link->in_ep);
+		usb_ep_disable(link->out_ep);
+		if (netif_carrier_ok(net)) {
+			DBG(dev, "host still using in/out endpoints\n");
+			link->in_ep->desc = in;
+			link->out_ep->desc = out;
+>>>>>>> remotes/linux2/linux-3.4.y
 			usb_ep_enable(link->in_ep);
 			usb_ep_enable(link->out_ep);
 		}
@@ -862,8 +1033,11 @@ static int eth_stop(struct net_device *net)
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static u8 host_ethaddr[ETH_ALEN];
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* initial value, changed by "ifconfig usb0 hw ether xx:xx:xx:xx:xx:xx" */
 static char *dev_addr;
 module_param(dev_addr, charp, S_IRUGO);
@@ -895,6 +1069,7 @@ static int get_ether_addr(const char *str, u8 *dev_addr)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int get_host_ether_addr(u8 *str, u8 *dev_addr)
 {
 	memcpy(dev_addr, str, ETH_ALEN);
@@ -906,6 +1081,8 @@ static int get_host_ether_addr(u8 *str, u8 *dev_addr)
 	return 1;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static struct eth_dev *the_dev;
 
 static const struct net_device_ops eth_netdev_ops = {
@@ -936,6 +1113,7 @@ static struct device_type gadget_type = {
  */
 int gether_setup(struct usb_gadget *g, u8 ethaddr[ETH_ALEN])
 {
+<<<<<<< HEAD
 	return gether_setup_name(g, ethaddr, "usb");
 }
 
@@ -956,6 +1134,8 @@ int gether_setup(struct usb_gadget *g, u8 ethaddr[ETH_ALEN])
 int gether_setup_name(struct usb_gadget *g, u8 ethaddr[ETH_ALEN],
 		const char *netname)
 {
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct eth_dev		*dev;
 	struct net_device	*net;
 	int			status;
@@ -971,7 +1151,10 @@ int gether_setup_name(struct usb_gadget *g, u8 ethaddr[ETH_ALEN],
 	spin_lock_init(&dev->lock);
 	spin_lock_init(&dev->req_lock);
 	INIT_WORK(&dev->work, eth_work);
+<<<<<<< HEAD
 	INIT_WORK(&dev->rx_work, process_rx_w);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	INIT_LIST_HEAD(&dev->tx_reqs);
 	INIT_LIST_HEAD(&dev->rx_reqs);
 
@@ -979,16 +1162,26 @@ int gether_setup_name(struct usb_gadget *g, u8 ethaddr[ETH_ALEN],
 
 	/* network device setup */
 	dev->net = net;
+<<<<<<< HEAD
 	snprintf(net->name, sizeof(net->name), "%s%%d", netname);
+=======
+	strcpy(net->name, "usb%d");
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (get_ether_addr(dev_addr, net->dev_addr))
 		dev_warn(&g->dev,
 			"using random %s ethernet address\n", "self");
+<<<<<<< HEAD
 
 	if (get_host_ether_addr(host_ethaddr, dev->host_mac))
 		dev_warn(&g->dev, "using random %s ethernet address\n", "host");
 	else
 		dev_warn(&g->dev, "using previous %s ethernet address\n", "host");
+=======
+	if (get_ether_addr(host_addr, dev->host_mac))
+		dev_warn(&g->dev,
+			"using random %s ethernet address\n", "host");
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (ethaddr)
 		memcpy(ethaddr, dev->host_mac, ETH_ALEN);
@@ -1092,9 +1285,12 @@ struct net_device *gether_connect(struct gether *link)
 		dev->wrap = link->wrap;
 
 		spin_lock(&dev->lock);
+<<<<<<< HEAD
 		dev->tx_skb_hold_count = 0;
 		dev->no_tx_req_used = 0;
 		dev->tx_req_bufsize = 0;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		dev->port_usb = link;
 		link->ioport = dev;
 		if (netif_running(dev->net)) {
@@ -1139,8 +1335,13 @@ void gether_disconnect(struct gether *link)
 {
 	struct eth_dev		*dev = link->ioport;
 	struct usb_request	*req;
+<<<<<<< HEAD
 	struct sk_buff		*skb;
 
+=======
+
+	WARN_ON(!dev);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!dev)
 		return;
 
@@ -1161,8 +1362,11 @@ void gether_disconnect(struct gether *link)
 		list_del(&req->list);
 
 		spin_unlock(&dev->req_lock);
+<<<<<<< HEAD
 		if (link->multi_pkt_xfer)
 			kfree(req->buf);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		usb_ep_free_request(link->in_ep, req);
 		spin_lock(&dev->req_lock);
 	}
@@ -1182,12 +1386,15 @@ void gether_disconnect(struct gether *link)
 		spin_lock(&dev->req_lock);
 	}
 	spin_unlock(&dev->req_lock);
+<<<<<<< HEAD
 
 	spin_lock(&dev->rx_frames.lock);
 	while ((skb = __skb_dequeue(&dev->rx_frames)))
 		dev_kfree_skb_any(skb);
 	spin_unlock(&dev->rx_frames.lock);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	link->out_ep->driver_data = NULL;
 	link->out_ep->desc = NULL;
 
@@ -1201,6 +1408,7 @@ void gether_disconnect(struct gether *link)
 	link->ioport = NULL;
 	spin_unlock(&dev->lock);
 }
+<<<<<<< HEAD
 
 static int __init gether_init(void)
 {
@@ -1221,3 +1429,5 @@ static void __exit gether_exit(void)
 module_exit(gether_exit);
 MODULE_DESCRIPTION("ethernet over USB driver");
 MODULE_LICENSE("GPL v2");
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

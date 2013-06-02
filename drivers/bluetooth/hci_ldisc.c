@@ -2,9 +2,15 @@
  *
  *  Bluetooth HCI UART driver
  *
+<<<<<<< HEAD
  *  Copyright (C) 2002-2003  Maxim Krasnyansky <maxk@qualcomm.com>
  *  Copyright (C) 2004-2005  Marcel Holtmann <marcel@holtmann.org>
  *  Copyright (c) 2000-2001, 2010-2012, The Linux Foundation. All rights reserved.
+=======
+ *  Copyright (C) 2000-2001  Qualcomm Incorporated
+ *  Copyright (C) 2002-2003  Maxim Krasnyansky <maxk@qualcomm.com>
+ *  Copyright (C) 2004-2005  Marcel Holtmann <marcel@holtmann.org>
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -48,10 +54,14 @@
 
 #define VERSION "2.2"
 
+<<<<<<< HEAD
 static bool reset = 0;
 
 static struct hci_uart_proto *hup[HCI_UART_MAX_PROTO];
 static void hci_uart_tty_wakeup_action(unsigned long data);
+=======
+static struct hci_uart_proto *hup[HCI_UART_MAX_PROTO];
+>>>>>>> remotes/linux2/linux-3.4.y
 
 int hci_uart_register_proto(struct hci_uart_proto *p)
 {
@@ -175,7 +185,11 @@ static int hci_uart_open(struct hci_dev *hdev)
 /* Reset device */
 static int hci_uart_flush(struct hci_dev *hdev)
 {
+<<<<<<< HEAD
 	struct hci_uart *hu  = (struct hci_uart *) hdev->driver_data;
+=======
+	struct hci_uart *hu  = hci_get_drvdata(hdev);
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct tty_struct *tty = hu->tty;
 
 	BT_DBG("hdev %p tty %p", hdev, tty);
@@ -221,7 +235,11 @@ static int hci_uart_send_frame(struct sk_buff *skb)
 	if (!test_bit(HCI_RUNNING, &hdev->flags))
 		return -EBUSY;
 
+<<<<<<< HEAD
 	hu = (struct hci_uart *) hdev->driver_data;
+=======
+	hu = hci_get_drvdata(hdev);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	BT_DBG("%s: type %d len %d", hdev->name, bt_cb(skb)->pkt_type, skb->len);
 
@@ -232,6 +250,7 @@ static int hci_uart_send_frame(struct sk_buff *skb)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void hci_uart_destruct(struct hci_dev *hdev)
 {
 	if (!hdev)
@@ -241,6 +260,8 @@ static void hci_uart_destruct(struct hci_dev *hdev)
 	kfree(hdev->driver_data);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* ------ LDISC part ------ */
 /* hci_uart_tty_open
  * 
@@ -277,8 +298,11 @@ static int hci_uart_tty_open(struct tty_struct *tty)
 	tty->receive_room = 65536;
 
 	spin_lock_init(&hu->rx_lock);
+<<<<<<< HEAD
 	tasklet_init(&hu->tty_wakeup_task, hci_uart_tty_wakeup_action,
 			 (unsigned long)hu);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Flush any pending characters in the driver and line discipline. */
 
@@ -312,15 +336,26 @@ static void hci_uart_tty_close(struct tty_struct *tty)
 		if (hdev)
 			hci_uart_close(hdev);
 
+<<<<<<< HEAD
 		tasklet_kill(&hu->tty_wakeup_task);
 
 		if (test_and_clear_bit(HCI_UART_PROTO_SET, &hu->flags)) {
 			hu->proto->close(hu);
+=======
+		if (test_and_clear_bit(HCI_UART_PROTO_SET, &hu->flags)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (hdev) {
 				hci_unregister_dev(hdev);
 				hci_free_dev(hdev);
 			}
+<<<<<<< HEAD
 		}
+=======
+			hu->proto->close(hu);
+		}
+
+		kfree(hu);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 
@@ -328,8 +363,11 @@ static void hci_uart_tty_close(struct tty_struct *tty)
  *
  *    Callback for transmit wakeup. Called when low level
  *    device driver can accept more send data.
+<<<<<<< HEAD
  *    This callback gets called from the isr context so
  *    schedule the send data operation to tasklet.
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * Arguments:        tty    pointer to associated tty instance data
  * Return Value:    None
@@ -337,6 +375,7 @@ static void hci_uart_tty_close(struct tty_struct *tty)
 static void hci_uart_tty_wakeup(struct tty_struct *tty)
 {
 	struct hci_uart *hu = (void *)tty->disc_data;
+<<<<<<< HEAD
 	tasklet_schedule(&hu->tty_wakeup_task);
 }
 
@@ -349,14 +388,19 @@ static void hci_uart_tty_wakeup_action(unsigned long data)
 {
 	struct hci_uart *hu = (struct hci_uart *)data;
 	struct tty_struct *tty;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	BT_DBG("");
 
 	if (!hu)
 		return;
 
+<<<<<<< HEAD
 	tty = hu->tty;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
 
 	if (tty != hu->tty)
@@ -380,7 +424,10 @@ static void hci_uart_tty_wakeup_action(unsigned long data)
  */
 static void hci_uart_tty_receive(struct tty_struct *tty, const u8 *data, char *flags, int count)
 {
+<<<<<<< HEAD
 	int ret;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct hci_uart *hu = (void *)tty->disc_data;
 
 	if (!hu || tty != hu->tty)
@@ -390,9 +437,14 @@ static void hci_uart_tty_receive(struct tty_struct *tty, const u8 *data, char *f
 		return;
 
 	spin_lock(&hu->rx_lock);
+<<<<<<< HEAD
 	ret = hu->proto->recv(hu, (void *) data, count);
 	if (ret > 0)
 		hu->hdev->stat.byte_rx += count;
+=======
+	hu->proto->recv(hu, (void *) data, count);
+	hu->hdev->stat.byte_rx += count;
+>>>>>>> remotes/linux2/linux-3.4.y
 	spin_unlock(&hu->rx_lock);
 
 	tty_unthrottle(tty);
@@ -414,12 +466,17 @@ static int hci_uart_register_dev(struct hci_uart *hu)
 	hu->hdev = hdev;
 
 	hdev->bus = HCI_UART;
+<<<<<<< HEAD
 	hdev->driver_data = hu;
+=======
+	hci_set_drvdata(hdev, hu);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	hdev->open  = hci_uart_open;
 	hdev->close = hci_uart_close;
 	hdev->flush = hci_uart_flush;
 	hdev->send  = hci_uart_send_frame;
+<<<<<<< HEAD
 	hdev->destruct = hci_uart_destruct;
 	hdev->parent = hu->tty->dev;
 
@@ -430,6 +487,20 @@ static int hci_uart_register_dev(struct hci_uart *hu)
 
 	if (test_bit(HCI_UART_RAW_DEVICE, &hu->hdev_flags))
 		set_bit(HCI_QUIRK_RAW_DEVICE, &hdev->quirks);
+=======
+	hdev->parent = hu->tty->dev;
+
+	if (test_bit(HCI_UART_RAW_DEVICE, &hu->hdev_flags))
+		set_bit(HCI_QUIRK_RAW_DEVICE, &hdev->quirks);
+
+	if (!test_bit(HCI_UART_RESET_ON_INIT, &hu->hdev_flags))
+		set_bit(HCI_QUIRK_NO_RESET, &hdev->quirks);
+
+	if (test_bit(HCI_UART_CREATE_AMP, &hu->hdev_flags))
+		hdev->dev_type = HCI_AMP;
+	else
+		hdev->dev_type = HCI_BREDR;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (hci_register_dev(hdev) < 0) {
 		BT_ERR("Can't register HCI device");
@@ -491,6 +562,7 @@ static int hci_uart_tty_ioctl(struct tty_struct *tty, struct file * file,
 
 	switch (cmd) {
 	case HCIUARTSETPROTO:
+<<<<<<< HEAD
 		if (!test_and_set_bit(HCI_UART_PROTO_SET_IN_PROGRESS,
 			&hu->flags) && !test_bit(HCI_UART_PROTO_SET,
 				&hu->flags)) {
@@ -503,6 +575,13 @@ static int hci_uart_tty_ioctl(struct tty_struct *tty, struct file * file,
 				set_bit(HCI_UART_PROTO_SET, &hu->flags);
 				clear_bit(HCI_UART_PROTO_SET_IN_PROGRESS,
 						&hu->flags);
+=======
+		if (!test_and_set_bit(HCI_UART_PROTO_SET, &hu->flags)) {
+			err = hci_uart_set_proto(hu, arg);
+			if (err) {
+				clear_bit(HCI_UART_PROTO_SET, &hu->flags);
+				return err;
+>>>>>>> remotes/linux2/linux-3.4.y
 			}
 		} else
 			return -EBUSY;
@@ -595,9 +674,12 @@ static int __init hci_uart_init(void)
 #ifdef CONFIG_BT_HCIUART_ATH3K
 	ath_init();
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_BT_HCIUART_IBS
 	ibs_init();
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -618,9 +700,12 @@ static void __exit hci_uart_exit(void)
 #ifdef CONFIG_BT_HCIUART_ATH3K
 	ath_deinit();
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_BT_HCIUART_IBS
 	ibs_deinit();
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Release tty registration of line discipline */
 	if ((err = tty_unregister_ldisc(N_HCI)))
@@ -630,9 +715,12 @@ static void __exit hci_uart_exit(void)
 module_init(hci_uart_init);
 module_exit(hci_uart_exit);
 
+<<<<<<< HEAD
 module_param(reset, bool, 0644);
 MODULE_PARM_DESC(reset, "Send HCI reset command on initialization");
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 MODULE_AUTHOR("Marcel Holtmann <marcel@holtmann.org>");
 MODULE_DESCRIPTION("Bluetooth HCI UART driver ver " VERSION);
 MODULE_VERSION(VERSION);

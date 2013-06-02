@@ -1,8 +1,15 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
+<<<<<<< HEAD
    Copyright (c) 2000-2001, 2011-2012 The Linux Foundation.  All rights reserved.
    Copyright (C) 2009-2010 Gustavo F. Padovan <gustavo@padovan.org>
    Copyright (C) 2010 Google Inc.
+=======
+   Copyright (C) 2000-2001 Qualcomm Incorporated
+   Copyright (C) 2009-2010 Gustavo F. Padovan <gustavo@padovan.org>
+   Copyright (C) 2010 Google Inc.
+   Copyright (C) 2011 ProFUSION Embedded Systems
+>>>>>>> remotes/linux2/linux-3.4.y
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -26,13 +33,19 @@
 
 /* Bluetooth L2CAP sockets. */
 
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include <linux/module.h>
+=======
+#include <linux/security.h>
+#include <linux/export.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
 #include <net/bluetooth/l2cap.h>
 #include <net/bluetooth/smp.h>
+<<<<<<< HEAD
 #include <net/bluetooth/amp.h>
 
 /* ---- L2CAP timers ---- */
@@ -123,10 +136,20 @@ static struct sock *__l2cap_get_sock_by_addr(__le16 psm, bdaddr_t *src)
 found:
 	return sk;
 }
+=======
+
+static const struct proto_ops l2cap_sock_ops;
+static void l2cap_sock_init(struct sock *sk, struct sock *parent);
+static struct sock *l2cap_sock_alloc(struct net *net, struct socket *sock, int proto, gfp_t prio);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static int l2cap_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
+=======
+	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct sockaddr_l2 la;
 	int len, err = 0;
 
@@ -165,6 +188,7 @@ static int l2cap_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
 		}
 	}
 
+<<<<<<< HEAD
 	write_lock_bh(&l2cap_sk_list.lock);
 
 	if (la.l2_psm && __l2cap_get_sock_by_addr(la.l2_psm, &la.l2_bdaddr)) {
@@ -185,6 +209,24 @@ static int l2cap_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
 		l2cap_pi(sk)->scid = la.l2_cid;
 
 	write_unlock_bh(&l2cap_sk_list.lock);
+=======
+	if (la.l2_cid)
+		err = l2cap_add_scid(chan, __le16_to_cpu(la.l2_cid));
+	else
+		err = l2cap_add_psm(chan, &la.l2_bdaddr, la.l2_psm);
+
+	if (err < 0)
+		goto done;
+
+	if (__le16_to_cpu(la.l2_psm) == 0x0001 ||
+				__le16_to_cpu(la.l2_psm) == 0x0003)
+		chan->sec_level = BT_SECURITY_SDP;
+
+	bacpy(&bt_sk(sk)->src, &la.l2_bdaddr);
+
+	chan->state = BT_BOUND;
+	sk->sk_state = BT_BOUND;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 done:
 	release_sock(sk);
@@ -194,11 +236,19 @@ done:
 static int l2cap_sock_connect(struct socket *sock, struct sockaddr *addr, int alen, int flags)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 	struct sockaddr_l2 la;
 	int len, err = 0;
 
 	BT_DBG("sk %p type %d mode %d state %d", sk, sk->sk_type,
 		l2cap_pi(sk)->mode, sk->sk_state);
+=======
+	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+	struct sockaddr_l2 la;
+	int len, err = 0;
+
+	BT_DBG("sk %p", sk);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!addr || alen < sizeof(addr->sa_family) ||
 	    addr->sa_family != AF_BLUETOOTH)
@@ -211,6 +261,7 @@ static int l2cap_sock_connect(struct socket *sock, struct sockaddr *addr, int al
 	if (la.l2_cid && la.l2_psm)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	lock_sock(sk);
 
 	if ((sk->sk_type == SOCK_SEQPACKET || sk->sk_type == SOCK_STREAM)
@@ -279,12 +330,30 @@ done:
 	if (err)
 		BT_ERR("failed %d", err);
 	release_sock(sk);
+=======
+	err = l2cap_chan_connect(chan, la.l2_psm, __le16_to_cpu(la.l2_cid),
+				&la.l2_bdaddr);
+	if (err)
+		return err;
+
+	lock_sock(sk);
+
+	err = bt_sock_wait_state(sk, BT_CONNECTED,
+			sock_sndtimeo(sk, flags & O_NONBLOCK));
+
+	release_sock(sk);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return err;
 }
 
 static int l2cap_sock_listen(struct socket *sock, int backlog)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
+=======
+	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+>>>>>>> remotes/linux2/linux-3.4.y
 	int err = 0;
 
 	BT_DBG("sk %p backlog %d", sk, backlog);
@@ -297,7 +366,11 @@ static int l2cap_sock_listen(struct socket *sock, int backlog)
 		goto done;
 	}
 
+<<<<<<< HEAD
 	switch (l2cap_pi(sk)->mode) {
+=======
+	switch (chan->mode) {
+>>>>>>> remotes/linux2/linux-3.4.y
 	case L2CAP_MODE_BASIC:
 		break;
 	case L2CAP_MODE_ERTM:
@@ -310,6 +383,7 @@ static int l2cap_sock_listen(struct socket *sock, int backlog)
 		goto done;
 	}
 
+<<<<<<< HEAD
 	if (!l2cap_pi(sk)->psm && !l2cap_pi(sk)->scid) {
 		bdaddr_t *src = &bt_sk(sk)->src;
 		u16 psm;
@@ -334,6 +408,12 @@ static int l2cap_sock_listen(struct socket *sock, int backlog)
 
 	sk->sk_max_ack_backlog = backlog;
 	sk->sk_ack_backlog = 0;
+=======
+	sk->sk_max_ack_backlog = backlog;
+	sk->sk_ack_backlog = 0;
+
+	chan->state = BT_LISTEN;
+>>>>>>> remotes/linux2/linux-3.4.y
 	sk->sk_state = BT_LISTEN;
 
 done:
@@ -350,17 +430,21 @@ static int l2cap_sock_accept(struct socket *sock, struct socket *newsock, int fl
 
 	lock_sock_nested(sk, SINGLE_DEPTH_NESTING);
 
+<<<<<<< HEAD
 	if (sk->sk_state != BT_LISTEN) {
 		err = -EBADFD;
 		goto done;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	timeo = sock_rcvtimeo(sk, flags & O_NONBLOCK);
 
 	BT_DBG("sk %p timeo %ld", sk, timeo);
 
 	/* Wait for an incoming connection. (wake-one). */
 	add_wait_queue_exclusive(sk_sleep(sk), &wait);
+<<<<<<< HEAD
 	while (!(nsk = bt_accept_dequeue(sk, newsock))) {
 		set_current_state(TASK_INTERRUPTIBLE);
 		if (!timeo) {
@@ -374,6 +458,22 @@ static int l2cap_sock_accept(struct socket *sock, struct socket *newsock, int fl
 
 		if (sk->sk_state != BT_LISTEN) {
 			err = -EBADFD;
+=======
+	while (1) {
+		set_current_state(TASK_INTERRUPTIBLE);
+
+		if (sk->sk_state != BT_LISTEN) {
+			err = -EBADFD;
+			break;
+		}
+
+		nsk = bt_accept_dequeue(sk, newsock);
+		if (nsk)
+			break;
+
+		if (!timeo) {
+			err = -EAGAIN;
+>>>>>>> remotes/linux2/linux-3.4.y
 			break;
 		}
 
@@ -381,8 +481,17 @@ static int l2cap_sock_accept(struct socket *sock, struct socket *newsock, int fl
 			err = sock_intr_errno(timeo);
 			break;
 		}
+<<<<<<< HEAD
 	}
 	set_current_state(TASK_RUNNING);
+=======
+
+		release_sock(sk);
+		timeo = schedule_timeout(timeo);
+		lock_sock_nested(sk, SINGLE_DEPTH_NESTING);
+	}
+	__set_current_state(TASK_RUNNING);
+>>>>>>> remotes/linux2/linux-3.4.y
 	remove_wait_queue(sk_sleep(sk), &wait);
 
 	if (err)
@@ -401,13 +510,22 @@ static int l2cap_sock_getname(struct socket *sock, struct sockaddr *addr, int *l
 {
 	struct sockaddr_l2 *la = (struct sockaddr_l2 *) addr;
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 
 	BT_DBG("sock %p, sk %p", sock, sk);
 
+=======
+	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+
+	BT_DBG("sock %p, sk %p", sock, sk);
+
+	memset(la, 0, sizeof(struct sockaddr_l2));
+>>>>>>> remotes/linux2/linux-3.4.y
 	addr->sa_family = AF_BLUETOOTH;
 	*len = sizeof(struct sockaddr_l2);
 
 	if (peer) {
+<<<<<<< HEAD
 		la->l2_psm = l2cap_pi(sk)->psm;
 		bacpy(&la->l2_bdaddr, &bt_sk(sk)->dst);
 		la->l2_cid = cpu_to_le16(l2cap_pi(sk)->dcid);
@@ -415,6 +533,15 @@ static int l2cap_sock_getname(struct socket *sock, struct sockaddr *addr, int *l
 		la->l2_psm = l2cap_pi(sk)->sport;
 		bacpy(&la->l2_bdaddr, &bt_sk(sk)->src);
 		la->l2_cid = cpu_to_le16(l2cap_pi(sk)->scid);
+=======
+		la->l2_psm = chan->psm;
+		bacpy(&la->l2_bdaddr, &bt_sk(sk)->dst);
+		la->l2_cid = cpu_to_le16(chan->dcid);
+	} else {
+		la->l2_psm = chan->sport;
+		bacpy(&la->l2_bdaddr, &bt_sk(sk)->src);
+		la->l2_cid = cpu_to_le16(chan->scid);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return 0;
@@ -423,6 +550,10 @@ static int l2cap_sock_getname(struct socket *sock, struct sockaddr *addr, int *l
 static int l2cap_sock_getsockopt_old(struct socket *sock, int optname, char __user *optval, int __user *optlen)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
+=======
+	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct l2cap_options opts;
 	struct l2cap_conninfo cinfo;
 	int len, err = 0;
@@ -438,6 +569,7 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname, char __us
 	switch (optname) {
 	case L2CAP_OPTIONS:
 		memset(&opts, 0, sizeof(opts));
+<<<<<<< HEAD
 		opts.imtu     = l2cap_pi(sk)->imtu;
 		opts.omtu     = l2cap_pi(sk)->omtu;
 		opts.flush_to = l2cap_pi(sk)->flush_to;
@@ -445,6 +577,15 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname, char __us
 		opts.fcs      = l2cap_pi(sk)->fcs;
 		opts.max_tx   = l2cap_pi(sk)->max_tx;
 		opts.txwin_size = l2cap_pi(sk)->tx_win;
+=======
+		opts.imtu     = chan->imtu;
+		opts.omtu     = chan->omtu;
+		opts.flush_to = chan->flush_to;
+		opts.mode     = chan->mode;
+		opts.fcs      = chan->fcs;
+		opts.max_tx   = chan->max_tx;
+		opts.txwin_size = chan->tx_win;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		len = min_t(unsigned int, len, sizeof(opts));
 		if (copy_to_user(optval, (char *) &opts, len))
@@ -453,7 +594,11 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname, char __us
 		break;
 
 	case L2CAP_LM:
+<<<<<<< HEAD
 		switch (l2cap_pi(sk)->sec_level) {
+=======
+		switch (chan->sec_level) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		case BT_SECURITY_LOW:
 			opt = L2CAP_LM_AUTH;
 			break;
@@ -469,6 +614,7 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname, char __us
 			break;
 		}
 
+<<<<<<< HEAD
 		if (l2cap_pi(sk)->role_switch)
 			opt |= L2CAP_LM_MASTER;
 
@@ -478,6 +624,14 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname, char __us
 		if (l2cap_pi(sk)->flushable)
 			opt |= L2CAP_LM_FLUSHABLE;
 
+=======
+		if (test_bit(FLAG_ROLE_SWITCH, &chan->flags))
+			opt |= L2CAP_LM_MASTER;
+
+		if (test_bit(FLAG_FORCE_RELIABLE, &chan->flags))
+			opt |= L2CAP_LM_RELIABLE;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (put_user(opt, (u32 __user *) optval))
 			err = -EFAULT;
 		break;
@@ -490,8 +644,14 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname, char __us
 			break;
 		}
 
+<<<<<<< HEAD
 		cinfo.hci_handle = l2cap_pi(sk)->conn->hcon->handle;
 		memcpy(cinfo.dev_class, l2cap_pi(sk)->conn->hcon->dev_class, 3);
+=======
+		memset(&cinfo, 0, sizeof(cinfo));
+		cinfo.hci_handle = chan->conn->hcon->handle;
+		memcpy(cinfo.dev_class, chan->conn->hcon->dev_class, 3);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		len = min_t(unsigned int, len, sizeof(cinfo));
 		if (copy_to_user(optval, (char *) &cinfo, len))
@@ -511,6 +671,10 @@ static int l2cap_sock_getsockopt_old(struct socket *sock, int optname, char __us
 static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname, char __user *optval, int __user *optlen)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
+=======
+	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct bt_security sec;
 	struct bt_power pwr;
 	int len, err = 0;
@@ -530,19 +694,31 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname, ch
 
 	switch (optname) {
 	case BT_SECURITY:
+<<<<<<< HEAD
 		if (sk->sk_type != SOCK_SEQPACKET && sk->sk_type != SOCK_STREAM
 				&& sk->sk_type != SOCK_RAW) {
+=======
+		if (chan->chan_type != L2CAP_CHAN_CONN_ORIENTED &&
+					chan->chan_type != L2CAP_CHAN_RAW) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			err = -EINVAL;
 			break;
 		}
 
 		memset(&sec, 0, sizeof(sec));
+<<<<<<< HEAD
 		sec.level = l2cap_pi(sk)->sec_level;
 
 		if (sk->sk_state == BT_CONNECTED) {
 			sec.key_size = l2cap_pi(sk)->conn->hcon->enc_key_size;
 			sec.level = l2cap_pi(sk)->conn->hcon->sec_level;
 		}
+=======
+		sec.level = chan->sec_level;
+
+		if (sk->sk_state == BT_CONNECTED)
+			sec.key_size = chan->conn->hcon->enc_key_size;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		len = min_t(unsigned int, len, sizeof(sec));
 		if (copy_to_user(optval, (char *) &sec, len))
@@ -561,6 +737,16 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname, ch
 
 		break;
 
+<<<<<<< HEAD
+=======
+	case BT_FLUSHABLE:
+		if (put_user(test_bit(FLAG_FLUSHABLE, &chan->flags),
+						(u32 __user *) optval))
+			err = -EFAULT;
+
+		break;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	case BT_POWER:
 		if (sk->sk_type != SOCK_SEQPACKET && sk->sk_type != SOCK_STREAM
 				&& sk->sk_type != SOCK_RAW) {
@@ -568,7 +754,11 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname, ch
 			break;
 		}
 
+<<<<<<< HEAD
 		pwr.force_active = l2cap_pi(sk)->force_active;
+=======
+		pwr.force_active = test_bit(FLAG_FORCE_ACTIVE, &chan->flags);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		len = min_t(unsigned int, len, sizeof(pwr));
 		if (copy_to_user(optval, (char *) &pwr, len))
@@ -576,6 +766,7 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname, ch
 
 		break;
 
+<<<<<<< HEAD
 	case BT_AMP_POLICY:
 		if (put_user(l2cap_pi(sk)->amp_pref, (u32 __user *) optval))
 			err = -EFAULT;
@@ -589,6 +780,15 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname, ch
 
 		if (copy_to_user(optval, (char *) &bt_sk(sk)->le_params,
 						sizeof(bt_sk(sk)->le_params)))
+=======
+	case BT_CHANNEL_POLICY:
+		if (!enable_hs) {
+			err = -ENOPROTOOPT;
+			break;
+		}
+
+		if (put_user(chan->chan_policy, (u32 __user *) optval))
+>>>>>>> remotes/linux2/linux-3.4.y
 			err = -EFAULT;
 		break;
 
@@ -604,23 +804,36 @@ static int l2cap_sock_getsockopt(struct socket *sock, int level, int optname, ch
 static int l2cap_sock_setsockopt_old(struct socket *sock, int optname, char __user *optval, unsigned int optlen)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 	struct l2cap_options opts;
 	int len, le_sock, err = 0;
+=======
+	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+	struct l2cap_options opts;
+	int len, err = 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 	u32 opt;
 
 	BT_DBG("sk %p", sk);
 
 	lock_sock(sk);
 
+<<<<<<< HEAD
 	le_sock = l2cap_pi(sk)->scid == L2CAP_CID_LE_DATA;
 
 	switch (optname) {
 	case L2CAP_OPTIONS:
 		if (sk->sk_state == BT_CONNECTED && !le_sock) {
+=======
+	switch (optname) {
+	case L2CAP_OPTIONS:
+		if (sk->sk_state == BT_CONNECTED) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			err = -EINVAL;
 			break;
 		}
 
+<<<<<<< HEAD
 		opts.imtu     = l2cap_pi(sk)->imtu;
 		opts.omtu     = l2cap_pi(sk)->omtu;
 		opts.flush_to = l2cap_pi(sk)->flush_to;
@@ -628,6 +841,15 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname, char __us
 		opts.fcs      = l2cap_pi(sk)->fcs;
 		opts.max_tx   = l2cap_pi(sk)->max_tx;
 		opts.txwin_size = l2cap_pi(sk)->tx_win;
+=======
+		opts.imtu     = chan->imtu;
+		opts.omtu     = chan->omtu;
+		opts.flush_to = chan->flush_to;
+		opts.mode     = chan->mode;
+		opts.fcs      = chan->fcs;
+		opts.max_tx   = chan->max_tx;
+		opts.txwin_size = chan->tx_win;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		len = min_t(unsigned int, sizeof(opts), optlen);
 		if (copy_from_user((char *) &opts, optval, len)) {
@@ -635,6 +857,7 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname, char __us
 			break;
 		}
 
+<<<<<<< HEAD
 		if ((opts.imtu || opts.omtu) && le_sock &&
 				(sk->sk_state == BT_CONNECTED)) {
 			if (opts.imtu >= L2CAP_LE_DEFAULT_MTU)
@@ -649,10 +872,14 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname, char __us
 
 		if (opts.txwin_size < 1 ||
 			opts.txwin_size > L2CAP_TX_WIN_MAX_EXTENDED) {
+=======
+		if (opts.txwin_size > L2CAP_DEFAULT_EXT_WINDOW) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			err = -EINVAL;
 			break;
 		}
 
+<<<<<<< HEAD
 		l2cap_pi(sk)->mode = opts.mode;
 		switch (l2cap_pi(sk)->mode) {
 		case L2CAP_MODE_BASIC:
@@ -668,6 +895,15 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname, char __us
 			err = -EINVAL;
 			break;
 		case L2CAP_MODE_ERTM:
+=======
+		chan->mode = opts.mode;
+		switch (chan->mode) {
+		case L2CAP_MODE_BASIC:
+			clear_bit(CONF_STATE2_DEVICE, &chan->conf_state);
+			break;
+		case L2CAP_MODE_ERTM:
+		case L2CAP_MODE_STREAMING:
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (!disable_ertm)
 				break;
 			/* fall through */
@@ -676,12 +912,20 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname, char __us
 			break;
 		}
 
+<<<<<<< HEAD
 		l2cap_pi(sk)->imtu = opts.imtu;
 		l2cap_pi(sk)->omtu = opts.omtu;
 		l2cap_pi(sk)->fcs  = opts.fcs;
 		l2cap_pi(sk)->max_tx = opts.max_tx;
 		l2cap_pi(sk)->tx_win = opts.txwin_size;
 		l2cap_pi(sk)->flush_to = opts.flush_to;
+=======
+		chan->imtu = opts.imtu;
+		chan->omtu = opts.omtu;
+		chan->fcs  = opts.fcs;
+		chan->max_tx = opts.max_tx;
+		chan->tx_win = opts.txwin_size;
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 
 	case L2CAP_LM:
@@ -691,6 +935,7 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname, char __us
 		}
 
 		if (opt & L2CAP_LM_AUTH)
+<<<<<<< HEAD
 			l2cap_pi(sk)->sec_level = BT_SECURITY_LOW;
 		if (opt & L2CAP_LM_ENCRYPT)
 			l2cap_pi(sk)->sec_level = BT_SECURITY_MEDIUM;
@@ -700,6 +945,23 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname, char __us
 		l2cap_pi(sk)->role_switch    = (opt & L2CAP_LM_MASTER);
 		l2cap_pi(sk)->force_reliable = (opt & L2CAP_LM_RELIABLE);
 		l2cap_pi(sk)->flushable = (opt & L2CAP_LM_FLUSHABLE);
+=======
+			chan->sec_level = BT_SECURITY_LOW;
+		if (opt & L2CAP_LM_ENCRYPT)
+			chan->sec_level = BT_SECURITY_MEDIUM;
+		if (opt & L2CAP_LM_SECURE)
+			chan->sec_level = BT_SECURITY_HIGH;
+
+		if (opt & L2CAP_LM_MASTER)
+			set_bit(FLAG_ROLE_SWITCH, &chan->flags);
+		else
+			clear_bit(FLAG_ROLE_SWITCH, &chan->flags);
+
+		if (opt & L2CAP_LM_RELIABLE)
+			set_bit(FLAG_FORCE_RELIABLE, &chan->flags);
+		else
+			clear_bit(FLAG_FORCE_RELIABLE, &chan->flags);
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 
 	default:
@@ -714,9 +976,15 @@ static int l2cap_sock_setsockopt_old(struct socket *sock, int optname, char __us
 static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname, char __user *optval, unsigned int optlen)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 	struct bt_security sec;
 	struct bt_power pwr;
 	struct bt_le_params le_params;
+=======
+	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+	struct bt_security sec;
+	struct bt_power pwr;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct l2cap_conn *conn;
 	int len, err = 0;
 	u32 opt;
@@ -733,8 +1001,13 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname, ch
 
 	switch (optname) {
 	case BT_SECURITY:
+<<<<<<< HEAD
 		if (sk->sk_type != SOCK_SEQPACKET && sk->sk_type != SOCK_STREAM
 				&& sk->sk_type != SOCK_RAW) {
+=======
+		if (chan->chan_type != L2CAP_CHAN_CONN_ORIENTED &&
+					chan->chan_type != L2CAP_CHAN_RAW) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			err = -EINVAL;
 			break;
 		}
@@ -753,20 +1026,50 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname, ch
 			break;
 		}
 
+<<<<<<< HEAD
 		l2cap_pi(sk)->sec_level = sec.level;
 
 		conn = l2cap_pi(sk)->conn;
 		if (conn && l2cap_pi(sk)->scid == L2CAP_CID_LE_DATA) {
+=======
+		chan->sec_level = sec.level;
+
+		if (!chan->conn)
+			break;
+
+		conn = chan->conn;
+
+		/*change security for LE channels */
+		if (chan->scid == L2CAP_CID_LE_DATA) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (!conn->hcon->out) {
 				err = -EINVAL;
 				break;
 			}
 
+<<<<<<< HEAD
 			if (smp_conn_security(conn, sec.level))
 				break;
 
 			err = 0;
 			sk->sk_state = BT_CONFIG;
+=======
+			if (smp_conn_security(conn->hcon, sec.level))
+				break;
+			sk->sk_state = BT_CONFIG;
+			chan->state = BT_CONFIG;
+
+		/* or for ACL link */
+		} else if ((sk->sk_state == BT_CONNECT2 &&
+			   bt_sk(sk)->defer_setup) ||
+			   sk->sk_state == BT_CONNECTED) {
+			if (!l2cap_chan_check_security(chan))
+				bt_sk(sk)->suspended = true;
+			else
+				sk->sk_state_change(sk);
+		} else {
+			err = -EINVAL;
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 		break;
 
@@ -784,6 +1087,7 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname, ch
 		bt_sk(sk)->defer_setup = opt;
 		break;
 
+<<<<<<< HEAD
 	case BT_POWER:
 		if (sk->sk_type != SOCK_SEQPACKET && sk->sk_type != SOCK_STREAM
 				&& sk->sk_type != SOCK_RAW) {
@@ -810,10 +1114,43 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname, ch
 		if ((opt > BT_AMP_POLICY_PREFER_AMP) ||
 			((l2cap_pi(sk)->mode != L2CAP_MODE_ERTM) &&
 			 (l2cap_pi(sk)->mode != L2CAP_MODE_STREAMING))) {
+=======
+	case BT_FLUSHABLE:
+		if (get_user(opt, (u32 __user *) optval)) {
+			err = -EFAULT;
+			break;
+		}
+
+		if (opt > BT_FLUSHABLE_ON) {
 			err = -EINVAL;
 			break;
 		}
 
+		if (opt == BT_FLUSHABLE_OFF) {
+			struct l2cap_conn *conn = chan->conn;
+			/* proceed further only when we have l2cap_conn and
+			   No Flush support in the LM */
+			if (!conn || !lmp_no_flush_capable(conn->hcon->hdev)) {
+				err = -EINVAL;
+				break;
+			}
+		}
+
+		if (opt)
+			set_bit(FLAG_FLUSHABLE, &chan->flags);
+		else
+			clear_bit(FLAG_FLUSHABLE, &chan->flags);
+		break;
+
+	case BT_POWER:
+		if (chan->chan_type != L2CAP_CHAN_CONN_ORIENTED &&
+					chan->chan_type != L2CAP_CHAN_RAW) {
+>>>>>>> remotes/linux2/linux-3.4.y
+			err = -EINVAL;
+			break;
+		}
+
+<<<<<<< HEAD
 		l2cap_pi(sk)->amp_pref = (u8) opt;
 		BT_DBG("BT_AMP_POLICY now %d", opt);
 
@@ -840,10 +1177,34 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname, ch
 
 		if (copy_from_user((char *) &le_params, optval,
 					sizeof(struct bt_le_params))) {
+=======
+		pwr.force_active = BT_POWER_FORCE_ACTIVE_ON;
+
+		len = min_t(unsigned int, sizeof(pwr), optlen);
+		if (copy_from_user((char *) &pwr, optval, len)) {
 			err = -EFAULT;
 			break;
 		}
 
+		if (pwr.force_active)
+			set_bit(FLAG_FORCE_ACTIVE, &chan->flags);
+		else
+			clear_bit(FLAG_FORCE_ACTIVE, &chan->flags);
+		break;
+
+	case BT_CHANNEL_POLICY:
+		if (!enable_hs) {
+			err = -ENOPROTOOPT;
+			break;
+		}
+
+		if (get_user(opt, (u32 __user *) optval)) {
+>>>>>>> remotes/linux2/linux-3.4.y
+			err = -EFAULT;
+			break;
+		}
+
+<<<<<<< HEAD
 		conn = l2cap_pi(sk)->conn;
 		if (!conn || !conn->hcon ||
 				l2cap_pi(sk)->scid != L2CAP_CID_LE_DATA) {
@@ -866,6 +1227,20 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname, ch
 				le_params.interval_max,
 				le_params.latency,
 				le_params.supervision_timeout);
+=======
+		if (opt > BT_CHANNEL_POLICY_AMP_PREFERRED) {
+			err = -EINVAL;
+			break;
+		}
+
+		if (chan->mode != L2CAP_MODE_ERTM &&
+				chan->mode != L2CAP_MODE_STREAMING) {
+			err = -EOPNOTSUPP;
+			break;
+		}
+
+		chan->chan_policy = (u8) opt;
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 
 	default:
@@ -880,11 +1255,16 @@ static int l2cap_sock_setsockopt(struct socket *sock, int level, int optname, ch
 static int l2cap_sock_sendmsg(struct kiocb *iocb, struct socket *sock, struct msghdr *msg, size_t len)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 	struct l2cap_pinfo *pi = l2cap_pi(sk);
 	struct sk_buff *skb;
 	struct sk_buff_head seg_queue;
 	int err;
 	u8 amp_id;
+=======
+	struct l2cap_chan *chan = l2cap_pi(sk)->chan;
+	int err;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	BT_DBG("sock %p, sk %p", sock, sk);
 
@@ -898,6 +1278,7 @@ static int l2cap_sock_sendmsg(struct kiocb *iocb, struct socket *sock, struct ms
 	lock_sock(sk);
 
 	if (sk->sk_state != BT_CONNECTED) {
+<<<<<<< HEAD
 		err = -ENOTCONN;
 		goto done;
 	}
@@ -994,6 +1375,14 @@ static int l2cap_sock_sendmsg(struct kiocb *iocb, struct socket *sock, struct ms
 	}
 
 done:
+=======
+		release_sock(sk);
+		return -ENOTCONN;
+	}
+
+	err = l2cap_chan_send(chan, msg, len, sk->sk_priority);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	release_sock(sk);
 	return err;
 }
@@ -1001,11 +1390,16 @@ done:
 static int l2cap_sock_recvmsg(struct kiocb *iocb, struct socket *sock, struct msghdr *msg, size_t len, int flags)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
+=======
+	struct l2cap_pinfo *pi = l2cap_pi(sk);
+>>>>>>> remotes/linux2/linux-3.4.y
 	int err;
 
 	lock_sock(sk);
 
 	if (sk->sk_state == BT_CONNECT2 && bt_sk(sk)->defer_setup) {
+<<<<<<< HEAD
 		struct l2cap_conn_rsp rsp;
 		struct l2cap_conn *conn = l2cap_pi(sk)->conn;
 		u8 buf[128];
@@ -1038,6 +1432,12 @@ static int l2cap_sock_recvmsg(struct kiocb *iocb, struct socket *sock, struct ms
 				l2cap_build_conf_req(sk, buf), buf);
 		l2cap_pi(sk)->num_conf_req++;
 
+=======
+		sk->sk_state = BT_CONFIG;
+		pi->chan->state = BT_CONFIG;
+
+		__l2cap_connect_rsp_defer(pi->chan);
+>>>>>>> remotes/linux2/linux-3.4.y
 		release_sock(sk);
 		return 0;
 	}
@@ -1049,28 +1449,70 @@ static int l2cap_sock_recvmsg(struct kiocb *iocb, struct socket *sock, struct ms
 	else
 		err = bt_sock_recvmsg(iocb, sock, msg, len, flags);
 
+<<<<<<< HEAD
 	if (err >= 0)
 		l2cap_ertm_recv_done(sk);
 
+=======
+	if (pi->chan->mode != L2CAP_MODE_ERTM)
+		return err;
+
+	/* Attempt to put pending rx data in the socket buffer */
+
+	lock_sock(sk);
+
+	if (!test_bit(CONN_LOCAL_BUSY, &pi->chan->conn_state))
+		goto done;
+
+	if (pi->rx_busy_skb) {
+		if (!sock_queue_rcv_skb(sk, pi->rx_busy_skb))
+			pi->rx_busy_skb = NULL;
+		else
+			goto done;
+	}
+
+	/* Restore data flow when half of the receive buffer is
+	 * available.  This avoids resending large numbers of
+	 * frames.
+	 */
+	if (atomic_read(&sk->sk_rmem_alloc) <= sk->sk_rcvbuf >> 1)
+		l2cap_chan_busy(pi->chan, 0);
+
+done:
+	release_sock(sk);
+>>>>>>> remotes/linux2/linux-3.4.y
 	return err;
 }
 
 /* Kill socket (only if zapped and orphan)
  * Must be called on unlocked socket.
  */
+<<<<<<< HEAD
 void l2cap_sock_kill(struct sock *sk)
+=======
+static void l2cap_sock_kill(struct sock *sk)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket)
 		return;
 
+<<<<<<< HEAD
 	BT_DBG("sk %p state %d", sk, sk->sk_state);
 
 	/* Kill poor orphan */
 	bt_sock_unlink(&l2cap_sk_list, sk);
+=======
+	BT_DBG("sk %p state %s", sk, state_to_string(sk->sk_state));
+
+	/* Kill poor orphan */
+
+	l2cap_chan_destroy(l2cap_pi(sk)->chan);
+>>>>>>> remotes/linux2/linux-3.4.y
 	sock_set_flag(sk, SOCK_DEAD);
 	sock_put(sk);
 }
 
+<<<<<<< HEAD
 /* Must be called on unlocked socket. */
 static void l2cap_sock_close(struct sock *sk)
 {
@@ -1155,6 +1597,13 @@ void __l2cap_sock_close(struct sock *sk, int reason)
 static int l2cap_sock_shutdown(struct socket *sock, int how)
 {
 	struct sock *sk = sock->sk;
+=======
+static int l2cap_sock_shutdown(struct socket *sock, int how)
+{
+	struct sock *sk = sock->sk;
+	struct l2cap_chan *chan;
+	struct l2cap_conn *conn;
+>>>>>>> remotes/linux2/linux-3.4.y
 	int err = 0;
 
 	BT_DBG("sock %p, sk %p", sock, sk);
@@ -1162,6 +1611,7 @@ static int l2cap_sock_shutdown(struct socket *sock, int how)
 	if (!sk)
 		return 0;
 
+<<<<<<< HEAD
 	lock_sock(sk);
 	if (!sk->sk_shutdown) {
 
@@ -1173,6 +1623,26 @@ static int l2cap_sock_shutdown(struct socket *sock, int how)
 		sk->sk_shutdown = SHUTDOWN_MASK;
 		l2cap_sock_clear_timer(sk);
 		__l2cap_sock_close(sk, 0);
+=======
+	chan = l2cap_pi(sk)->chan;
+	conn = chan->conn;
+
+	if (conn)
+		mutex_lock(&conn->chan_lock);
+
+	l2cap_chan_lock(chan);
+	lock_sock(sk);
+
+	if (!sk->sk_shutdown) {
+		if (chan->mode == L2CAP_MODE_ERTM)
+			err = __l2cap_wait_ack(sk);
+
+		sk->sk_shutdown = SHUTDOWN_MASK;
+
+		release_sock(sk);
+		l2cap_chan_close(chan, 0);
+		lock_sock(sk);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		if (sock_flag(sk, SOCK_LINGER) && sk->sk_lingertime)
 			err = bt_sock_wait_state(sk, BT_CLOSED,
@@ -1183,13 +1653,24 @@ static int l2cap_sock_shutdown(struct socket *sock, int how)
 		err = -sk->sk_err;
 
 	release_sock(sk);
+<<<<<<< HEAD
+=======
+	l2cap_chan_unlock(chan);
+
+	if (conn)
+		mutex_unlock(&conn->chan_lock);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return err;
 }
 
 static int l2cap_sock_release(struct socket *sock)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 	struct sock *sk2 = NULL;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	int err;
 
 	BT_DBG("sock %p, sk %p", sock, sk);
@@ -1197,6 +1678,7 @@ static int l2cap_sock_release(struct socket *sock)
 	if (!sk)
 		return 0;
 
+<<<<<<< HEAD
 	/* If this is an ATT socket, find it's matching server/client */
 	if (l2cap_pi(sk)->scid == L2CAP_CID_LE_DATA)
 		sk2 = l2cap_find_sock_by_fixed_cid_and_dir(L2CAP_CID_LE_DATA,
@@ -1208,6 +1690,8 @@ static int l2cap_sock_release(struct socket *sock)
 	if (sk2)
 		l2cap_sock_set_timer(sk2, 1);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	err = l2cap_sock_shutdown(sock, 2);
 
 	sock_orphan(sk);
@@ -1215,6 +1699,7 @@ static int l2cap_sock_release(struct socket *sock)
 	return err;
 }
 
+<<<<<<< HEAD
 static void l2cap_sock_destruct(struct sock *sk)
 {
 	BT_DBG("sk %p", sk);
@@ -1296,6 +1781,168 @@ void l2cap_sock_init(struct sock *sk, struct sock *parent)
 
 	skb_queue_head_init(TX_QUEUE(sk));
 	skb_queue_head_init(SREJ_QUEUE(sk));
+=======
+static struct l2cap_chan *l2cap_sock_new_connection_cb(void *data)
+{
+	struct sock *sk, *parent = data;
+
+	sk = l2cap_sock_alloc(sock_net(parent), NULL, BTPROTO_L2CAP,
+								GFP_ATOMIC);
+	if (!sk)
+		return NULL;
+
+	bt_sock_reclassify_lock(sk, BTPROTO_L2CAP);
+
+	l2cap_sock_init(sk, parent);
+
+	return l2cap_pi(sk)->chan;
+}
+
+static int l2cap_sock_recv_cb(void *data, struct sk_buff *skb)
+{
+	int err;
+	struct sock *sk = data;
+	struct l2cap_pinfo *pi = l2cap_pi(sk);
+
+	lock_sock(sk);
+
+	if (pi->rx_busy_skb) {
+		err = -ENOMEM;
+		goto done;
+	}
+
+	err = sock_queue_rcv_skb(sk, skb);
+
+	/* For ERTM, handle one skb that doesn't fit into the recv
+	 * buffer.  This is important to do because the data frames
+	 * have already been acked, so the skb cannot be discarded.
+	 *
+	 * Notify the l2cap core that the buffer is full, so the
+	 * LOCAL_BUSY state is entered and no more frames are
+	 * acked and reassembled until there is buffer space
+	 * available.
+	 */
+	if (err < 0 && pi->chan->mode == L2CAP_MODE_ERTM) {
+		pi->rx_busy_skb = skb;
+		l2cap_chan_busy(pi->chan, 1);
+		err = 0;
+	}
+
+done:
+	release_sock(sk);
+
+	return err;
+}
+
+static void l2cap_sock_close_cb(void *data)
+{
+	struct sock *sk = data;
+
+	l2cap_sock_kill(sk);
+}
+
+static void l2cap_sock_state_change_cb(void *data, int state)
+{
+	struct sock *sk = data;
+
+	sk->sk_state = state;
+}
+
+static struct sk_buff *l2cap_sock_alloc_skb_cb(struct l2cap_chan *chan,
+					       unsigned long len, int nb,
+					       int *err)
+{
+	struct sock *sk = chan->sk;
+
+	return bt_skb_send_alloc(sk, len, nb, err);
+}
+
+static struct l2cap_ops l2cap_chan_ops = {
+	.name		= "L2CAP Socket Interface",
+	.new_connection	= l2cap_sock_new_connection_cb,
+	.recv		= l2cap_sock_recv_cb,
+	.close		= l2cap_sock_close_cb,
+	.state_change	= l2cap_sock_state_change_cb,
+	.alloc_skb	= l2cap_sock_alloc_skb_cb,
+};
+
+static void l2cap_sock_destruct(struct sock *sk)
+{
+	BT_DBG("sk %p", sk);
+
+	if (l2cap_pi(sk)->rx_busy_skb) {
+		kfree_skb(l2cap_pi(sk)->rx_busy_skb);
+		l2cap_pi(sk)->rx_busy_skb = NULL;
+	}
+
+	skb_queue_purge(&sk->sk_receive_queue);
+	skb_queue_purge(&sk->sk_write_queue);
+}
+
+static void l2cap_sock_init(struct sock *sk, struct sock *parent)
+{
+	struct l2cap_pinfo *pi = l2cap_pi(sk);
+	struct l2cap_chan *chan = pi->chan;
+
+	BT_DBG("sk %p", sk);
+
+	if (parent) {
+		struct l2cap_chan *pchan = l2cap_pi(parent)->chan;
+
+		sk->sk_type = parent->sk_type;
+		bt_sk(sk)->defer_setup = bt_sk(parent)->defer_setup;
+
+		chan->chan_type = pchan->chan_type;
+		chan->imtu = pchan->imtu;
+		chan->omtu = pchan->omtu;
+		chan->conf_state = pchan->conf_state;
+		chan->mode = pchan->mode;
+		chan->fcs  = pchan->fcs;
+		chan->max_tx = pchan->max_tx;
+		chan->tx_win = pchan->tx_win;
+		chan->tx_win_max = pchan->tx_win_max;
+		chan->sec_level = pchan->sec_level;
+		chan->flags = pchan->flags;
+
+		security_sk_clone(parent, sk);
+	} else {
+
+		switch (sk->sk_type) {
+		case SOCK_RAW:
+			chan->chan_type = L2CAP_CHAN_RAW;
+			break;
+		case SOCK_DGRAM:
+			chan->chan_type = L2CAP_CHAN_CONN_LESS;
+			break;
+		case SOCK_SEQPACKET:
+		case SOCK_STREAM:
+			chan->chan_type = L2CAP_CHAN_CONN_ORIENTED;
+			break;
+		}
+
+		chan->imtu = L2CAP_DEFAULT_MTU;
+		chan->omtu = 0;
+		if (!disable_ertm && sk->sk_type == SOCK_STREAM) {
+			chan->mode = L2CAP_MODE_ERTM;
+			set_bit(CONF_STATE2_DEVICE, &chan->conf_state);
+		} else {
+			chan->mode = L2CAP_MODE_BASIC;
+		}
+		chan->max_tx = L2CAP_DEFAULT_MAX_TX;
+		chan->fcs  = L2CAP_FCS_CRC16;
+		chan->tx_win = L2CAP_DEFAULT_TX_WINDOW;
+		chan->tx_win_max = L2CAP_DEFAULT_TX_WINDOW;
+		chan->sec_level = BT_SECURITY_LOW;
+		chan->flags = 0;
+		set_bit(FLAG_FORCE_ACTIVE, &chan->flags);
+	}
+
+	/* Default config options */
+	chan->flush_to = L2CAP_DEFAULT_FLUSH_TO;
+
+	chan->data = sk;
+	chan->ops = &l2cap_chan_ops;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static struct proto l2cap_proto = {
@@ -1304,9 +1951,16 @@ static struct proto l2cap_proto = {
 	.obj_size	= sizeof(struct l2cap_pinfo)
 };
 
+<<<<<<< HEAD
 struct sock *l2cap_sock_alloc(struct net *net, struct socket *sock, int proto, gfp_t prio)
 {
 	struct sock *sk;
+=======
+static struct sock *l2cap_sock_alloc(struct net *net, struct socket *sock, int proto, gfp_t prio)
+{
+	struct sock *sk;
+	struct l2cap_chan *chan;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	sk = sk_alloc(net, PF_BLUETOOTH, prio, &l2cap_proto);
 	if (!sk)
@@ -1316,16 +1970,31 @@ struct sock *l2cap_sock_alloc(struct net *net, struct socket *sock, int proto, g
 	INIT_LIST_HEAD(&bt_sk(sk)->accept_q);
 
 	sk->sk_destruct = l2cap_sock_destruct;
+<<<<<<< HEAD
 	sk->sk_sndtimeo = msecs_to_jiffies(L2CAP_CONN_TIMEOUT);
+=======
+	sk->sk_sndtimeo = L2CAP_CONN_TIMEOUT;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	sock_reset_flag(sk, SOCK_ZAPPED);
 
 	sk->sk_protocol = proto;
 	sk->sk_state = BT_OPEN;
 
+<<<<<<< HEAD
 	setup_timer(&sk->sk_timer, l2cap_sock_timeout, (unsigned long) sk);
 
 	bt_sock_link(&l2cap_sk_list, sk);
+=======
+	chan = l2cap_chan_create(sk);
+	if (!chan) {
+		l2cap_sock_kill(sk);
+		return NULL;
+	}
+
+	l2cap_pi(sk)->chan = chan;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return sk;
 }
 
@@ -1355,7 +2024,11 @@ static int l2cap_sock_create(struct net *net, struct socket *sock, int protocol,
 	return 0;
 }
 
+<<<<<<< HEAD
 const struct proto_ops l2cap_sock_ops = {
+=======
+static const struct proto_ops l2cap_sock_ops = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.family		= PF_BLUETOOTH,
 	.owner		= THIS_MODULE,
 	.release	= l2cap_sock_release,

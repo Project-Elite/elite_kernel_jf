@@ -1317,6 +1317,14 @@ static void jbd2_mark_journal_empty(journal_t *journal)
 
 	BUG_ON(!mutex_is_locked(&journal->j_checkpoint_mutex));
 	read_lock(&journal->j_state_lock);
+<<<<<<< HEAD
+=======
+	/* Is it already empty? */
+	if (sb->s_start == 0) {
+		read_unlock(&journal->j_state_lock);
+		return;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 	jbd_debug(1, "JBD2: Marking journal as empty (seq %d)\n",
 		  journal->j_tail_sequence);
 
@@ -1340,7 +1348,11 @@ static void jbd2_mark_journal_empty(journal_t *journal)
  * Update a journal's errno.  Write updated superblock to disk waiting for IO
  * to complete.
  */
+<<<<<<< HEAD
 static void jbd2_journal_update_sb_errno(journal_t *journal)
+=======
+void jbd2_journal_update_sb_errno(journal_t *journal)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	journal_superblock_t *sb = journal->j_superblock;
 
@@ -1352,6 +1364,10 @@ static void jbd2_journal_update_sb_errno(journal_t *journal)
 
 	jbd2_write_superblock(journal, WRITE_SYNC);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(jbd2_journal_update_sb_errno);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Read the superblock for a given journal, performing initial
@@ -1413,6 +1429,7 @@ static int journal_get_superblock(journal_t *journal)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (be32_to_cpu(sb->s_first) == 0 ||
 	    be32_to_cpu(sb->s_first) >= journal->j_maxlen) {
 		printk(KERN_WARNING
@@ -1421,6 +1438,8 @@ static int journal_get_superblock(journal_t *journal)
 		goto out;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 
 out:

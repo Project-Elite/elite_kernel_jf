@@ -343,8 +343,12 @@ void fuse_conn_kill(struct fuse_conn *fc)
 	spin_unlock(&fc->lock);
 	/* Flush all readers on this fs */
 	kill_fasync(&fc->fasync, SIGIO, POLL_IN);
+<<<<<<< HEAD
 	wake_up_all(&fc->waitq[0]);
 	wake_up_all(&fc->waitq[1]);
+=======
+	wake_up_all(&fc->waitq);
+>>>>>>> remotes/linux2/linux-3.4.y
 	wake_up_all(&fc->blocked_waitq);
 	wake_up_all(&fc->reserved_req_waitq);
 	mutex_lock(&fuse_mutex);
@@ -420,7 +424,10 @@ enum {
 	OPT_ALLOW_OTHER,
 	OPT_MAX_READ,
 	OPT_BLKSIZE,
+<<<<<<< HEAD
 	OPT_HANDLE_RT_CLASS,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	OPT_ERR
 };
 
@@ -433,7 +440,10 @@ static const match_table_t tokens = {
 	{OPT_ALLOW_OTHER,		"allow_other"},
 	{OPT_MAX_READ,			"max_read=%u"},
 	{OPT_BLKSIZE,			"blksize=%u"},
+<<<<<<< HEAD
 	{OPT_HANDLE_RT_CLASS,		"handle_rt_class"},
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	{OPT_ERR,			NULL}
 };
 
@@ -469,10 +479,13 @@ static int parse_fuse_opt(char *opt, struct fuse_mount_data *d, int is_bdev)
 			d->rootmode_present = 1;
 			break;
 
+<<<<<<< HEAD
 		case OPT_HANDLE_RT_CLASS:
 			d->flags |= FUSE_HANDLE_RT_CLASS;
 			break;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		case OPT_USER_ID:
 			if (match_int(&args[0], &value))
 				return 0;
@@ -544,6 +557,7 @@ void fuse_conn_init(struct fuse_conn *fc)
 	mutex_init(&fc->inst_mutex);
 	init_rwsem(&fc->killsb);
 	atomic_set(&fc->count, 1);
+<<<<<<< HEAD
 	init_waitqueue_head(&fc->waitq[0]);
 	init_waitqueue_head(&fc->waitq[1]);
 	init_waitqueue_head(&fc->blocked_waitq);
@@ -554,6 +568,15 @@ void fuse_conn_init(struct fuse_conn *fc)
 	INIT_LIST_HEAD(&fc->io);
 	INIT_LIST_HEAD(&fc->interrupts[0]);
 	INIT_LIST_HEAD(&fc->interrupts[1]);
+=======
+	init_waitqueue_head(&fc->waitq);
+	init_waitqueue_head(&fc->blocked_waitq);
+	init_waitqueue_head(&fc->reserved_req_waitq);
+	INIT_LIST_HEAD(&fc->pending);
+	INIT_LIST_HEAD(&fc->processing);
+	INIT_LIST_HEAD(&fc->io);
+	INIT_LIST_HEAD(&fc->interrupts);
+>>>>>>> remotes/linux2/linux-3.4.y
 	INIT_LIST_HEAD(&fc->bg_queue);
 	INIT_LIST_HEAD(&fc->entry);
 	fc->forget_list_tail = &fc->forget_list_head;

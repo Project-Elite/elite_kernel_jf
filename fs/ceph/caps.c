@@ -1349,11 +1349,23 @@ int __ceph_mark_dirty_caps(struct ceph_inode_info *ci, int mask)
 		if (!ci->i_head_snapc)
 			ci->i_head_snapc = ceph_get_snap_context(
 				ci->i_snap_realm->cached_context);
+<<<<<<< HEAD
 		dout(" inode %p now dirty snapc %p\n", &ci->vfs_inode,
 			ci->i_head_snapc);
 		BUG_ON(!list_empty(&ci->i_dirty_item));
 		spin_lock(&mdsc->cap_dirty_lock);
 		list_add(&ci->i_dirty_item, &mdsc->cap_dirty);
+=======
+		dout(" inode %p now dirty snapc %p auth cap %p\n",
+		     &ci->vfs_inode, ci->i_head_snapc, ci->i_auth_cap);
+		BUG_ON(!list_empty(&ci->i_dirty_item));
+		spin_lock(&mdsc->cap_dirty_lock);
+		if (ci->i_auth_cap)
+			list_add(&ci->i_dirty_item, &mdsc->cap_dirty);
+		else
+			list_add(&ci->i_dirty_item,
+				 &mdsc->cap_dirty_migrating);
+>>>>>>> remotes/linux2/linux-3.4.y
 		spin_unlock(&mdsc->cap_dirty_lock);
 		if (ci->i_flushing_caps == 0) {
 			ihold(inode);
@@ -2388,7 +2400,11 @@ static void handle_cap_grant(struct inode *inode, struct ceph_mds_caps *grant,
 			    &atime);
 
 	/* max size increase? */
+<<<<<<< HEAD
 	if (max_size != ci->i_max_size) {
+=======
+	if (ci->i_auth_cap == cap && max_size != ci->i_max_size) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		dout("max_size %lld -> %llu\n", ci->i_max_size, max_size);
 		ci->i_max_size = max_size;
 		if (max_size >= ci->i_wanted_max_size) {
@@ -2745,6 +2761,10 @@ static void handle_cap_import(struct ceph_mds_client *mdsc,
 
 	/* make sure we re-request max_size, if necessary */
 	spin_lock(&ci->i_ceph_lock);
+<<<<<<< HEAD
+=======
+	ci->i_wanted_max_size = 0;  /* reset */
+>>>>>>> remotes/linux2/linux-3.4.y
 	ci->i_requested_max_size = 0;
 	spin_unlock(&ci->i_ceph_lock);
 }
@@ -2840,8 +2860,11 @@ void ceph_handle_caps(struct ceph_mds_session *session,
 	case CEPH_CAP_OP_IMPORT:
 		handle_cap_import(mdsc, inode, h, session,
 				  snaptrace, snaptrace_len);
+<<<<<<< HEAD
 		ceph_check_caps(ceph_inode(inode), 0, session);
 		goto done_unlocked;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	/* the rest require a cap */
@@ -2858,6 +2881,10 @@ void ceph_handle_caps(struct ceph_mds_session *session,
 	switch (op) {
 	case CEPH_CAP_OP_REVOKE:
 	case CEPH_CAP_OP_GRANT:
+<<<<<<< HEAD
+=======
+	case CEPH_CAP_OP_IMPORT:
+>>>>>>> remotes/linux2/linux-3.4.y
 		handle_cap_grant(inode, h, session, cap, msg->middle);
 		goto done_unlocked;
 

@@ -19,7 +19,10 @@ header-y += netfilter_ipv4/
 header-y += netfilter_ipv6/
 header-y += usb/
 header-y += wimax/
+<<<<<<< HEAD
 header-y += mfd/
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 objhdr-y += version.h
 
@@ -47,7 +50,10 @@ header-y += agpgart.h
 header-y += aio_abi.h
 header-y += apm_bios.h
 header-y += arcfb.h
+<<<<<<< HEAD
 header-y += ashmem.h
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 header-y += atalk.h
 header-y += atm.h
 header-y += atm_eni.h
@@ -99,7 +105,10 @@ header-y += comstats.h
 header-y += connector.h
 header-y += const.h
 header-y += cramfs_fs.h
+<<<<<<< HEAD
 header-y += csdio.h
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 header-y += cuda.h
 header-y += cyclades.h
 header-y += cycx_cfm.h
@@ -186,8 +195,11 @@ header-y += if_plip.h
 header-y += if_ppp.h
 header-y += if_pppol2tp.h
 header-y += if_pppox.h
+<<<<<<< HEAD
 header-y += if_pppolac.h
 header-y += if_pppopns.h
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 header-y += if_slip.h
 header-y += if_strip.h
 header-y += if_team.h
@@ -206,7 +218,10 @@ header-y += unix_diag.h
 header-y += inotify.h
 header-y += input.h
 header-y += ioctl.h
+<<<<<<< HEAD
 header-y += ion.h
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 header-y += ip.h
 header-y += ip6_tunnel.h
 header-y += ip_vs.h
@@ -239,7 +254,10 @@ header-y += keyctl.h
 header-y += l2tp.h
 header-y += limits.h
 header-y += llc.h
+<<<<<<< HEAD
 header-y += l2tp.h
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 header-y += loop.h
 header-y += lp.h
 header-y += magic.h
@@ -259,9 +277,12 @@ header-y += mroute.h
 header-y += mroute6.h
 header-y += msdos_fs.h
 header-y += msg.h
+<<<<<<< HEAD
 header-y += msm_adc.h
 header-y += msm_ion.h
 header-y += epm_adc.h
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 header-y += mtio.h
 header-y += n_r3964.h
 header-y += nbd.h
@@ -282,6 +303,10 @@ header-y += netfilter_ipv4.h
 header-y += netfilter_ipv6.h
 header-y += netlink.h
 header-y += netrom.h
+<<<<<<< HEAD
+=======
+header-y += nfc.h
+>>>>>>> remotes/linux2/linux-3.4.y
 header-y += nfs.h
 header-y += nfs2.h
 header-y += nfs3.h
@@ -380,12 +405,18 @@ header-y += tiocl.h
 header-y += tipc.h
 header-y += tipc_config.h
 header-y += toshiba.h
+<<<<<<< HEAD
 header-y += tspp.h
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 header-y += tty.h
 header-y += types.h
 header-y += udf_fs_i.h
 header-y += udp.h
+<<<<<<< HEAD
 header-y += uhid.h
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 header-y += uinput.h
 header-y += uio.h
 header-y += ultrasound.h
@@ -419,6 +450,7 @@ header-y += wireless.h
 header-y += x25.h
 header-y += xattr.h
 header-y += xfrm.h
+<<<<<<< HEAD
 header-y += msm_adsp.h
 header-y += msm_mdp.h
 header-y += msm_kgsl.h
@@ -447,3 +479,5 @@ header-y += idle_stats_device.h
 header-y += genlock.h
 header-y += msm_audio_amrwb.h
 header-y += msm_audio_amrwbplus.h
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

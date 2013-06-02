@@ -1610,8 +1610,14 @@ static int sctp_cmd_interpreter(sctp_event_t event_type,
 					asoc->outqueue.outstanding_bytes;
 			sackh.num_gap_ack_blocks = 0;
 			sackh.num_dup_tsns = 0;
+<<<<<<< HEAD
 			sctp_add_cmd_sf(commands, SCTP_CMD_PROCESS_SACK,
 					SCTP_SACKH(&sackh));
+=======
+			chunk->subh.sack_hdr = &sackh;
+			sctp_add_cmd_sf(commands, SCTP_CMD_PROCESS_SACK,
+					SCTP_CHUNK(chunk));
+>>>>>>> remotes/linux2/linux-3.4.y
 			break;
 
 		case SCTP_CMD_DISCARD_PACKET:

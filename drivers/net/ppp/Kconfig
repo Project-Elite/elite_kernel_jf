@@ -148,6 +148,7 @@ config PPPOL2TP
 	  used by ISPs and enterprises to tunnel PPP traffic over UDP
 	  tunnels. L2TP is replacing PPTP for VPN uses.
 
+<<<<<<< HEAD
 config PPPOLAC
 	tristate "PPP on L2TP Access Concentrator"
 	depends on PPP && INET
@@ -165,6 +166,8 @@ config PPPOPNS
 	  networks. This driver handles PPTP data packets between a RAW socket
 	  and a PPP channel. It is fairly simple and easy to use.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config PPP_ASYNC
 	tristate "PPP support for async serial ports"
 	depends on PPP

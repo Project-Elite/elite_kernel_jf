@@ -49,6 +49,7 @@ DMA_ATTR_NON_CONSISTENT lets the platform to choose to return either
 consistent or non-consistent memory as it sees fit.  By using this API,
 you are guaranteeing to the platform that you have all the correct and
 necessary sync points for this memory in the driver.
+<<<<<<< HEAD
 
 DMA_ATTR_NO_KERNEL_MAPPING
 --------------------------
@@ -76,3 +77,5 @@ of mapping (no unaligned accesses, no re-ordering, no write merging, no
 buffering, no pre-fetching). This has severe performance penalties and
 should not be used for general purpose DMA allocations. It should only
 be used if one of the restrictions on strongly ordered memory is required.
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

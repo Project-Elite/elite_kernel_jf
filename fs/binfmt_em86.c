@@ -42,7 +42,10 @@ static int load_em86(struct linux_binprm *bprm,struct pt_regs *regs)
 			return -ENOEXEC;
 	}
 
+<<<<<<< HEAD
 	bprm->recursion_depth++; /* Well, the bang-shell is implicit... */
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	allow_write_access(bprm->file);
 	fput(bprm->file);
 	bprm->file = NULL;

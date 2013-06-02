@@ -51,10 +51,13 @@ config AD525X_DPOT_SPI
 	  To compile this driver as a module, choose M here: the
 	  module will be called ad525x_dpot-spi.
 
+<<<<<<< HEAD
 config ANDROID_PMEM
 	bool "Android pmem allocator"
 	default y
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config ATMEL_PWM
 	tristate "Atmel AT32/AT91 PWM support"
 	depends on HAVE_CLK
@@ -379,6 +382,7 @@ config SENSORS_APDS990X
 	   To compile this driver as a module, choose M here: the
 	   module will be called apds990x. If unsure, say N here.
 
+<<<<<<< HEAD
 config SAMSUNG_JACK
 	bool "3.5 PI Jack driver for Samsung devices"
 	depends on INPUT
@@ -395,6 +399,8 @@ config SAMSUNG_JACK_GNDLDET
 	depends on INPUT
 	default n
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config HMC6352
 	tristate "Honeywell HMC6352 compass"
 	depends on I2C
@@ -402,6 +408,7 @@ config HMC6352
 	  This driver provides support for the Honeywell HMC6352 compass,
 	  providing configuration and heading data via sysfs.
 
+<<<<<<< HEAD
 config SENSORS_AK8975
 	tristate "AK8975 compass support"
 	default n
@@ -410,6 +417,8 @@ config SENSORS_AK8975
 	  If you say yes here you get support for Asahi Kasei's
 	  orientation sensor AK8975.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config EP93XX_PWM
 	tristate "EP93xx PWM support"
 	depends on ARCH_EP93XX
@@ -453,10 +462,13 @@ config TI_DAC7512
 	  This driver can also be built as a module. If so, the module
 	  will be called ti_dac7512.
 
+<<<<<<< HEAD
 config UID_STAT
 	bool "UID based statistics tracking exported to /proc/uid_stat"
 	default n
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config VMWARE_BALLOON
 	tristate "VMware Balloon Driver"
 	depends on X86
@@ -530,6 +542,7 @@ config MAX8997_MUIC
 	  Maxim MAX8997 PMIC.
 	  The MAX8997 MUIC is a USB port accessory detector and switch.
 
+<<<<<<< HEAD
 config WL127X_RFKILL
 	tristate "Bluetooth power control driver for TI wl127x"
 	depends on RFKILL
@@ -722,6 +735,8 @@ config SEC_TORCH_FLASH
 	help
 	  This driver provides torch flash function.	  
 	  
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"
 source "drivers/misc/cb710/Kconfig"
@@ -730,6 +745,9 @@ source "drivers/misc/ti-st/Kconfig"
 source "drivers/misc/lis3lv02d/Kconfig"
 source "drivers/misc/carma/Kconfig"
 source "drivers/misc/altera-stapl/Kconfig"
+<<<<<<< HEAD
 source "drivers/misc/slimport_anx7808/Kconfig"
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 endmenu

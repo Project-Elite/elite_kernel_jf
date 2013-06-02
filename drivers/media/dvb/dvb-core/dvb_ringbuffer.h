@@ -5,8 +5,11 @@
  * Copyright (C) 2003 Oliver Endriss
  * Copyright (C) 2004 Andrew de Quincey
  *
+<<<<<<< HEAD
  * Copyright (c) 2012, The Linux Foundation. All rights reserved.
  *
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  * based on code originally found in av7110.c & dvb_ci.c:
  * Copyright (C) 1999-2003 Ralph Metzler & Marcus Metzler
  *                         for convergence integrated media GmbH
@@ -111,10 +114,13 @@ extern void dvb_ringbuffer_flush_spinlock_wakeup(struct dvb_ringbuffer *rbuf);
 #define DVB_RINGBUFFER_SKIP(rbuf,num)	\
 			(rbuf)->pread=((rbuf)->pread+(num))%(rbuf)->size
 
+<<<<<<< HEAD
 /* advance write ptr by <num> bytes */
 #define DVB_RINGBUFFER_PUSH(rbuf, num)	\
 			((rbuf)->pwrite = (((rbuf)->pwrite+(num))%(rbuf)->size))
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
 ** read <len> bytes from ring buffer into <buf>
 ** <usermem> specifies whether <buf> resides in user space
@@ -140,8 +146,11 @@ extern void dvb_ringbuffer_read(struct dvb_ringbuffer *rbuf,
 extern ssize_t dvb_ringbuffer_write(struct dvb_ringbuffer *rbuf, const u8 *buf,
 				    size_t len);
 
+<<<<<<< HEAD
 extern ssize_t dvb_ringbuffer_write_user(struct dvb_ringbuffer *rbuf,
 					const u8 *buf, size_t len);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /**
  * Write a packet into the ringbuffer.
@@ -191,6 +200,7 @@ extern void dvb_ringbuffer_pkt_dispose(struct dvb_ringbuffer *rbuf, size_t idx);
 extern ssize_t dvb_ringbuffer_pkt_next(struct dvb_ringbuffer *rbuf, size_t idx, size_t* pktlen);
 
 
+<<<<<<< HEAD
 /**
  * Start a new packet that will be written directly by the user to the packet buffer.
  * The function only writes the header of the packet into the packet buffer,
@@ -217,4 +227,6 @@ extern ssize_t dvb_ringbuffer_pkt_start(struct dvb_ringbuffer *rbuf,
 extern int dvb_ringbuffer_pkt_close(struct dvb_ringbuffer *rbuf, ssize_t idx);
 
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif /* _DVB_RINGBUFFER_H_ */

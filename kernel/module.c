@@ -61,6 +61,7 @@
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/module.h>
+<<<<<<< HEAD
 #ifdef	TIMA_LKM_SET_PAGE_ATTRIB
 #define TIMA_PAC_CMD_ID 0x3f80d221
 #endif
@@ -130,6 +131,8 @@ typedef struct lkmauth_rsp_s
   }  __attribute__ ((packed)) result;
 } __attribute__ ((packed)) lkmauth_rsp_t;
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #ifndef ARCH_SHF_SMALL
 #define ARCH_SHF_SMALL 0
@@ -140,15 +143,21 @@ typedef struct lkmauth_rsp_s
  * to ensure complete separation of code and data, but
  * only when CONFIG_DEBUG_SET_MODULE_RONX=y
  */
+<<<<<<< HEAD
 #ifdef	TIMA_LKM_SET_PAGE_ATTRIB
 # define debug_align(X) ALIGN(X, PAGE_SIZE)
 #else
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_DEBUG_SET_MODULE_RONX
 # define debug_align(X) ALIGN(X, PAGE_SIZE)
 #else
 # define debug_align(X) (X)
 #endif
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Given BASE and SIZE this macro calculates the number of pages the
@@ -2346,12 +2355,26 @@ static void layout_symtab(struct module *mod, struct load_info *info)
 	src = (void *)info->hdr + symsect->sh_offset;
 	nsrc = symsect->sh_size / sizeof(*src);
 
+<<<<<<< HEAD
 	/* Compute total space required for the core symbols' strtab. */
 	for (ndst = i = strtab_size = 1; i < nsrc; ++i, ++src)
 		if (is_core_symbol(src, info->sechdrs, info->hdr->e_shnum)) {
 			strtab_size += strlen(&info->strtab[src->st_name]) + 1;
 			ndst++;
 		}
+=======
+	/* strtab always starts with a nul, so offset 0 is the empty string. */
+	strtab_size = 1;
+
+	/* Compute total space required for the core symbols' strtab. */
+	for (ndst = i = 0; i < nsrc; i++) {
+		if (i == 0 ||
+		    is_core_symbol(src+i, info->sechdrs, info->hdr->e_shnum)) {
+			strtab_size += strlen(&info->strtab[src[i].st_name])+1;
+			ndst++;
+		}
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Append room for core symbols at end of core part. */
 	info->symoffs = ALIGN(mod->core_size, symsect->sh_addralign ?: 1);
@@ -2385,6 +2408,7 @@ static void add_kallsyms(struct module *mod, const struct load_info *info)
 	mod->core_symtab = dst = mod->module_core + info->symoffs;
 	mod->core_strtab = s = mod->module_core + info->stroffs;
 	src = mod->symtab;
+<<<<<<< HEAD
 	*dst = *src;
 	*s++ = 0;
 	for (ndst = i = 1; i < mod->num_symtab; ++i, ++src) {
@@ -2394,6 +2418,17 @@ static void add_kallsyms(struct module *mod, const struct load_info *info)
 		dst[ndst] = *src;
 		dst[ndst++].st_name = s - mod->core_strtab;
 		s += strlcpy(s, &mod->strtab[src->st_name], KSYM_NAME_LEN) + 1;
+=======
+	*s++ = 0;
+	for (ndst = i = 0; i < mod->num_symtab; i++) {
+		if (i == 0 ||
+		    is_core_symbol(src+i, info->sechdrs, info->hdr->e_shnum)) {
+			dst[ndst] = src[i];
+			dst[ndst++].st_name = s - mod->core_strtab;
+			s += strlcpy(s, &mod->strtab[src[i].st_name],
+				     KSYM_NAME_LEN) + 1;
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 	mod->core_num_syms = ndst;
 }
@@ -2407,6 +2442,7 @@ static void add_kallsyms(struct module *mod, const struct load_info *info)
 }
 #endif /* CONFIG_KALLSYMS */
 
+<<<<<<< HEAD
 #ifdef	TIMA_LKM_AUTH_ENABLED
 static int lkmauth(Elf_Ehdr *hdr, int len)
 {
@@ -2529,6 +2565,8 @@ static int lkmauth(Elf_Ehdr *hdr, int len)
 }
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static void dynamic_debug_setup(struct _ddebug *debug, unsigned int num)
 {
 	if (!debug)
@@ -2629,6 +2667,7 @@ static int copy_and_check(struct load_info *info,
 		goto free_hdr;
 	}
 
+<<<<<<< HEAD
 #ifdef TIMA_LKM_AUTH_ENABLED
 //	if (len > 500000) {
 //		pr_err("Skipped module greater than 50000 in size\n");
@@ -2639,6 +2678,8 @@ static int copy_and_check(struct load_info *info,
 	}
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	info->hdr = hdr;
 	info->len = len;
 	return 0;
@@ -2934,6 +2975,13 @@ static int check_module_license_and_versions(struct module *mod)
 	if (strcmp(mod->name, "driverloader") == 0)
 		add_taint_module(mod, TAINT_PROPRIETARY_MODULE);
 
+<<<<<<< HEAD
+=======
+	/* lve claims to be GPL but upstream won't provide source */
+	if (strcmp(mod->name, "lve") == 0)
+		add_taint_module(mod, TAINT_PROPRIETARY_MODULE);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_MODVERSIONS
 	if ((mod->num_syms && !mod->crcs)
 	    || (mod->num_gpl_syms && !mod->gpl_crcs)
@@ -3209,6 +3257,7 @@ static void do_mod_ctors(struct module *mod)
 		mod->ctors[i]();
 #endif
 }
+<<<<<<< HEAD
 #ifdef	TIMA_LKM_SET_PAGE_ATTRIB
 void tima_mod_send_smc_instruction(unsigned int    *vatext,unsigned int    *vadata,unsigned int text_count,unsigned int data_count)
 {
@@ -3277,6 +3326,9 @@ void tima_mod_page_change_access(struct module *mod)
 }
 
 #endif
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /* This is where the real work happens */
 SYSCALL_DEFINE3(init_module, void __user *, umod,
 		unsigned long, len, const char __user *, uargs)
@@ -3296,10 +3348,13 @@ SYSCALL_DEFINE3(init_module, void __user *, umod,
 	blocking_notifier_call_chain(&module_notify_list,
 			MODULE_STATE_COMING, mod);
 
+<<<<<<< HEAD
 #ifdef	TIMA_LKM_SET_PAGE_ATTRIB
     tima_mod_page_change_access(mod);
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Set RO and NX regions for core */
 	set_section_ro_nx(mod->module_core,
 				mod->core_text_size,

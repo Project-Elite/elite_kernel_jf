@@ -432,6 +432,7 @@ config RADIO_ZOLTRIX_PORT
 
 endif # V4L_RADIO_ISA_DRIVERS
 
+<<<<<<< HEAD
 config RADIO_TAVARUA
 	tristate "Qualcomm Tavaraua I2C FM support"
 	depends on I2C && VIDEO_V4L2 && MARIMBA_CORE
@@ -466,4 +467,6 @@ config RADIO_IRIS_TRANSPORT
           To compile this driver as a module, choose M here: the
           module will be called radio-iris-transport.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 endif # RADIO_ADAPTERS

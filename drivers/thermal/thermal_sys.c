@@ -186,12 +186,15 @@ trip_point_type_show(struct device *dev, struct device_attribute *attr,
 		return sprintf(buf, "critical\n");
 	case THERMAL_TRIP_HOT:
 		return sprintf(buf, "hot\n");
+<<<<<<< HEAD
 	case THERMAL_TRIP_CONFIGURABLE_HI:
 		return sprintf(buf, "configurable_hi\n");
 	case THERMAL_TRIP_CONFIGURABLE_LOW:
 		return sprintf(buf, "configurable_low\n");
 	case THERMAL_TRIP_CRITICAL_LOW:
 		return sprintf(buf, "critical_low\n");
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	case THERMAL_TRIP_PASSIVE:
 		return sprintf(buf, "passive\n");
 	case THERMAL_TRIP_ACTIVE:
@@ -202,6 +205,7 @@ trip_point_type_show(struct device *dev, struct device_attribute *attr,
 }
 
 static ssize_t
+<<<<<<< HEAD
 trip_point_type_activate(struct device *dev, struct device_attribute *attr,
 		const char *buf, size_t count)
 {
@@ -230,6 +234,8 @@ trip_point_type_activate(struct device *dev, struct device_attribute *attr,
 }
 
 static ssize_t
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 trip_point_temp_show(struct device *dev, struct device_attribute *attr,
 		     char *buf)
 {
@@ -252,6 +258,7 @@ trip_point_temp_show(struct device *dev, struct device_attribute *attr,
 }
 
 static ssize_t
+<<<<<<< HEAD
 trip_point_temp_set(struct device *dev, struct device_attribute *attr,
 		     const char *buf, size_t count)
 {
@@ -276,6 +283,8 @@ trip_point_temp_set(struct device *dev, struct device_attribute *attr,
 }
 
 static ssize_t
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 passive_store(struct device *dev, struct device_attribute *attr,
 		    const char *buf, size_t count)
 {
@@ -342,6 +351,7 @@ static DEVICE_ATTR(mode, 0644, mode_show, mode_store);
 static DEVICE_ATTR(passive, S_IRUGO | S_IWUSR, passive_show, passive_store);
 
 static struct device_attribute trip_point_attrs[] = {
+<<<<<<< HEAD
 	__ATTR(trip_point_0_type, 0644, trip_point_type_show,
 					trip_point_type_activate),
 	__ATTR(trip_point_0_temp, 0644, trip_point_temp_show,
@@ -390,6 +400,32 @@ static struct device_attribute trip_point_attrs[] = {
 					trip_point_type_activate),
 	__ATTR(trip_point_11_temp, 0644, trip_point_temp_show,
 					trip_point_temp_set),
+=======
+	__ATTR(trip_point_0_type, 0444, trip_point_type_show, NULL),
+	__ATTR(trip_point_0_temp, 0444, trip_point_temp_show, NULL),
+	__ATTR(trip_point_1_type, 0444, trip_point_type_show, NULL),
+	__ATTR(trip_point_1_temp, 0444, trip_point_temp_show, NULL),
+	__ATTR(trip_point_2_type, 0444, trip_point_type_show, NULL),
+	__ATTR(trip_point_2_temp, 0444, trip_point_temp_show, NULL),
+	__ATTR(trip_point_3_type, 0444, trip_point_type_show, NULL),
+	__ATTR(trip_point_3_temp, 0444, trip_point_temp_show, NULL),
+	__ATTR(trip_point_4_type, 0444, trip_point_type_show, NULL),
+	__ATTR(trip_point_4_temp, 0444, trip_point_temp_show, NULL),
+	__ATTR(trip_point_5_type, 0444, trip_point_type_show, NULL),
+	__ATTR(trip_point_5_temp, 0444, trip_point_temp_show, NULL),
+	__ATTR(trip_point_6_type, 0444, trip_point_type_show, NULL),
+	__ATTR(trip_point_6_temp, 0444, trip_point_temp_show, NULL),
+	__ATTR(trip_point_7_type, 0444, trip_point_type_show, NULL),
+	__ATTR(trip_point_7_temp, 0444, trip_point_temp_show, NULL),
+	__ATTR(trip_point_8_type, 0444, trip_point_type_show, NULL),
+	__ATTR(trip_point_8_temp, 0444, trip_point_temp_show, NULL),
+	__ATTR(trip_point_9_type, 0444, trip_point_type_show, NULL),
+	__ATTR(trip_point_9_temp, 0444, trip_point_temp_show, NULL),
+	__ATTR(trip_point_10_type, 0444, trip_point_type_show, NULL),
+	__ATTR(trip_point_10_temp, 0444, trip_point_temp_show, NULL),
+	__ATTR(trip_point_11_type, 0444, trip_point_type_show, NULL),
+	__ATTR(trip_point_11_temp, 0444, trip_point_temp_show, NULL),
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /* sys I/F for cooling device */
@@ -1131,6 +1167,7 @@ void thermal_zone_device_update(struct thermal_zone_device *tz)
 				if (tz->ops->notify)
 					tz->ops->notify(tz, count, trip_type);
 			break;
+<<<<<<< HEAD
 		case THERMAL_TRIP_CONFIGURABLE_HI:
 			if (temp >= trip_temp)
 				if (tz->ops->notify)
@@ -1154,6 +1191,8 @@ void thermal_zone_device_update(struct thermal_zone_device *tz)
 				}
 			}
 			break;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		case THERMAL_TRIP_ACTIVE:
 			list_for_each_entry(instance, &tz->cooling_devices,
 					    node) {
@@ -1488,6 +1527,10 @@ static int __init thermal_init(void)
 		idr_destroy(&thermal_cdev_idr);
 		mutex_destroy(&thermal_idr_lock);
 		mutex_destroy(&thermal_list_lock);
+<<<<<<< HEAD
+=======
+		return result;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 	result = genetlink_init();
 	return result;

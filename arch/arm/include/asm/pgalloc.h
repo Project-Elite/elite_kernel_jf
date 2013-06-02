@@ -130,6 +130,7 @@ static inline void __pmd_populate(pmd_t *pmdp, phys_addr_t pte,
 				  pmdval_t prot)
 {
 	pmdval_t pmdval = (pte + PTE_HWTABLE_OFF) | prot;
+<<<<<<< HEAD
 #ifdef	TIMA_KERNEL_L1_MANAGE
 	unsigned long cmd_id = 0x3f809221;
 	unsigned long tima_wr_out, pmd_base;
@@ -177,10 +178,13 @@ static inline void __pmd_populate(pmd_t *pmdp, phys_addr_t pte,
 			tima_send_cmd(pmdp[1], 0x3f810221);
 		}
 #else
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	pmdp[0] = __pmd(pmdval);
 #ifndef CONFIG_ARM_LPAE
 	pmdp[1] = __pmd(pmdval + 256 * sizeof(pte_t));
 #endif
+<<<<<<< HEAD
 #endif
 	flush_pmd_entry(pmdp);
 
@@ -191,6 +195,9 @@ static inline void __pmd_populate(pmd_t *pmdp, phys_addr_t pte,
         tima_verify_state(pmd_base + 0x2000, 0, 1, 2);
         tima_verify_state(pmd_base + 0x3000, 0, 1, 2);
 #endif
+=======
+	flush_pmd_entry(pmdp);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*

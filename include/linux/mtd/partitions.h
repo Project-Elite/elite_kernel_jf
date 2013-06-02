@@ -64,8 +64,11 @@ struct mtd_part_parser_data {
 };
 
 
+<<<<<<< HEAD
 void part_fill_badblockstats(struct mtd_info *mtd);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Functions dealing with the various ways of partitioning the space
  */

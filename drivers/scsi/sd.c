@@ -53,9 +53,12 @@
 #include <linux/pm_runtime.h>
 #include <asm/uaccess.h>
 #include <asm/unaligned.h>
+<<<<<<< HEAD
 #ifdef CONFIG_USB_STORAGE_DETECT
 #include <linux/kthread.h>
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <scsi/scsi.h>
 #include <scsi/scsi_cmnd.h>
@@ -143,6 +146,10 @@ sd_store_cache_type(struct device *dev, struct device_attribute *attr,
 	char *buffer_data;
 	struct scsi_mode_data data;
 	struct scsi_sense_hdr sshdr;
+<<<<<<< HEAD
+=======
+	const char *temp = "temporary ";
+>>>>>>> remotes/linux2/linux-3.4.y
 	int len;
 
 	if (sdp->type != TYPE_DISK)
@@ -151,6 +158,16 @@ sd_store_cache_type(struct device *dev, struct device_attribute *attr,
 		 * it's not worth the risk */
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (strncmp(buf, temp, sizeof(temp) - 1) == 0) {
+		buf += sizeof(temp) - 1;
+		sdkp->cache_override = 1;
+	} else {
+		sdkp->cache_override = 0;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	for (i = 0; i < ARRAY_SIZE(sd_cache_types); i++) {
 		len = strlen(sd_cache_types[i]);
 		if (strncmp(sd_cache_types[i], buf, len) == 0 &&
@@ -163,6 +180,16 @@ sd_store_cache_type(struct device *dev, struct device_attribute *attr,
 		return -EINVAL;
 	rcd = ct & 0x01 ? 1 : 0;
 	wce = ct & 0x02 ? 1 : 0;
+<<<<<<< HEAD
+=======
+
+	if (sdkp->cache_override) {
+		sdkp->WCE = wce;
+		sdkp->RCD = rcd;
+		return count;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (scsi_mode_sense(sdp, 0x08, 8, buffer, sizeof(buffer), SD_TIMEOUT,
 			    SD_MAX_RETRIES, &data, NULL))
 		return -EINVAL;
@@ -1901,6 +1928,11 @@ static int sd_try_rc16_first(struct scsi_device *sdp)
 {
 	if (sdp->host->max_cmd_len < 16)
 		return 0;
+<<<<<<< HEAD
+=======
+	if (sdp->try_rc_10_first)
+		return 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (sdp->scsi_level > SCSI_SPC_2)
 		return 1;
 	if (scsi_device_protection(sdp))
@@ -2127,6 +2159,13 @@ sd_read_cache_type(struct scsi_disk *sdkp, unsigned char *buffer)
 	int old_rcd = sdkp->RCD;
 	int old_dpofua = sdkp->DPOFUA;
 
+<<<<<<< HEAD
+=======
+
+	if (sdkp->cache_override)
+		return;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	first_len = 4;
 	if (sdp->skip_ms_page_8) {
 		if (sdp->type == TYPE_RBC)
@@ -2479,10 +2518,13 @@ static int sd_revalidate_disk(struct gendisk *disk)
 	 * react badly if we do.
 	 */
 	if (sdkp->media_present) {
+<<<<<<< HEAD
 #ifdef CONFIG_USB_STORAGE_DETECT
 		disk->media_present = 1;
 		sd_printk(KERN_INFO, sdkp, "%s\n", __func__);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		sd_read_capacity(sdkp, buffer);
 
 		if (sd_try_extended_inquiry(sdp)) {
@@ -2583,6 +2625,7 @@ static int sd_format_disk_name(char *prefix, int index, char *buf, int buflen)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_STORAGE_DETECT
 static void sd_media_state_emit(struct scsi_disk *sdkp)
 {
@@ -2684,6 +2727,8 @@ static int sd_media_scan_thread(void *__sdkp)
 }
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * The asynchronous part of sd_probe
  */
@@ -2713,6 +2758,10 @@ static void sd_probe_async(void *data, async_cookie_t cookie)
 	sdkp->capacity = 0;
 	sdkp->media_present = 1;
 	sdkp->write_prot = 0;
+<<<<<<< HEAD
+=======
+	sdkp->cache_override = 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 	sdkp->WCE = 0;
 	sdkp->RCD = 0;
 	sdkp->ATO = 0;
@@ -2730,6 +2779,7 @@ static void sd_probe_async(void *data, async_cookie_t cookie)
 		gd->flags |= GENHD_FL_REMOVABLE;
 		gd->events |= DISK_EVENT_MEDIA_CHANGE;
 	}
+<<<<<<< HEAD
 #ifdef CONFIG_USB_STORAGE_DETECT
 	if (sdp->host->by_usb)
 		gd->interfaces = GENHD_IF_USB;
@@ -2740,6 +2790,10 @@ static void sd_probe_async(void *data, async_cookie_t cookie)
 #ifdef CONFIG_USB_STORAGE_DETECT
 	sdkp->prv_media_present = sdkp->media_present;
 #endif
+=======
+
+	add_disk(gd);
+>>>>>>> remotes/linux2/linux-3.4.y
 	sd_dif_config_host(sdkp);
 
 	sd_revalidate_disk(gd);
@@ -2748,12 +2802,15 @@ static void sd_probe_async(void *data, async_cookie_t cookie)
 		  sdp->removable ? "removable " : "");
 	scsi_autopm_put_device(sdp);
 	put_device(&sdkp->dev);
+<<<<<<< HEAD
 #ifdef CONFIG_USB_STORAGE_DETECT
 	if (sdp->host->by_usb) {
 		if (!IS_ERR(sdkp->th))
 			wake_up_process(sdkp->th);
 	}
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /**
@@ -2843,6 +2900,7 @@ static int sd_probe(struct device *dev)
 	get_device(dev);
 	dev_set_drvdata(dev, sdkp);
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_STORAGE_DETECT
 	if (sdp->host->by_usb) {
 		init_waitqueue_head(&sdkp->delay_wait);
@@ -2858,6 +2916,8 @@ static int sd_probe(struct device *dev)
 	}
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	get_device(&sdkp->dev);	/* prevent release before async_schedule */
 	async_schedule(sd_probe_async, sdkp);
 
@@ -2891,6 +2951,7 @@ static int sd_remove(struct device *dev)
 	struct scsi_disk *sdkp;
 
 	sdkp = dev_get_drvdata(dev);
+<<<<<<< HEAD
 
 #ifdef CONFIG_USB_STORAGE_DETECT
 	sdkp->disk->media_present = 0;
@@ -2903,6 +2964,8 @@ static int sd_remove(struct device *dev)
 	}
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	scsi_autopm_get_device(sdkp->device);
 
 	async_synchronize_full();
@@ -3066,10 +3129,13 @@ static int __init init_sd(void)
 	if (err)
 		goto err_out;
 
+<<<<<<< HEAD
 	err = scsi_register_driver(&sd_template.gendrv);
 	if (err)
 		goto err_out_class;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	sd_cdb_cache = kmem_cache_create("sd_ext_cdb", SD_EXT_CDB_SIZE,
 					 0, 0, NULL);
 	if (!sd_cdb_cache) {
@@ -3083,8 +3149,20 @@ static int __init init_sd(void)
 		goto err_out_cache;
 	}
 
+<<<<<<< HEAD
 	return 0;
 
+=======
+	err = scsi_register_driver(&sd_template.gendrv);
+	if (err)
+		goto err_out_driver;
+
+	return 0;
+
+err_out_driver:
+	mempool_destroy(sd_cdb_pool);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 err_out_cache:
 	kmem_cache_destroy(sd_cdb_cache);
 
@@ -3107,10 +3185,17 @@ static void __exit exit_sd(void)
 
 	SCSI_LOG_HLQUEUE(3, printk("exit_sd: exiting sd driver\n"));
 
+<<<<<<< HEAD
 	mempool_destroy(sd_cdb_pool);
 	kmem_cache_destroy(sd_cdb_cache);
 
 	scsi_unregister_driver(&sd_template.gendrv);
+=======
+	scsi_unregister_driver(&sd_template.gendrv);
+	mempool_destroy(sd_cdb_pool);
+	kmem_cache_destroy(sd_cdb_cache);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	class_unregister(&sd_disk_class);
 
 	for (i = 0; i < SD_MAJORS; i++)

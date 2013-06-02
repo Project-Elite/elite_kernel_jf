@@ -1076,6 +1076,12 @@ void __init memblock_x86_fill(void)
 		memblock_add(ei->addr, ei->size);
 	}
 
+<<<<<<< HEAD
+=======
+	/* throw away partial pages */
+	memblock_trim_memory(PAGE_SIZE);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	memblock_dump_all();
 }
 

@@ -20,7 +20,10 @@ ifneq ($(CONFIG_USB_XHCI_PLATFORM), )
 endif
 
 obj-$(CONFIG_USB_WHCI_HCD)	+= whci/
+<<<<<<< HEAD
 obj-$(CONFIG_USB_PEHCI_HCD)	+= pehci/
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 obj-$(CONFIG_PCI)		+= pci-quirks.o
 

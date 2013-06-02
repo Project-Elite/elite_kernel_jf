@@ -613,9 +613,12 @@ static char * const migratetype_names[MIGRATE_TYPES] = {
 	"Reclaimable",
 	"Movable",
 	"Reserve",
+<<<<<<< HEAD
 #ifdef CONFIG_CMA
 	"CMA",
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	"Isolate",
 };
 
@@ -722,7 +725,10 @@ const char * const vmstat_text[] = {
 	"numa_other",
 #endif
 	"nr_anon_transparent_hugepages",
+<<<<<<< HEAD
 	"nr_free_cma",
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	"nr_dirty_threshold",
 	"nr_dirty_background_threshold",
 

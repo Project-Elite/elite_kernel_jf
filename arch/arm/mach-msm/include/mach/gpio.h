@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Copyright (C) 2007 Google, Inc.
  * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
@@ -251,3 +252,6 @@ int __init msm_gpio_of_init(struct device_node *node,
 #endif
 
 #endif /* __ASM_ARCH_MSM_GPIO_H */
+=======
+/* empty */
+>>>>>>> remotes/linux2/linux-3.4.y

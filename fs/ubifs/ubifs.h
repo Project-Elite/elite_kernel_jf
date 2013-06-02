@@ -1184,6 +1184,11 @@ struct ubifs_debug_info;
  * @freeable_list: list of freeable non-index LEBs (free + dirty == @leb_size)
  * @frdi_idx_list: list of freeable index LEBs (free + dirty == @leb_size)
  * @freeable_cnt: number of freeable LEBs in @freeable_list
+<<<<<<< HEAD
+=======
+ * @in_a_category_cnt: count of lprops which are in a certain category, which
+ *                     basically meants that they were loaded from the flash
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * @ltab_lnum: LEB number of LPT's own lprops table
  * @ltab_offs: offset of LPT's own lprops table
@@ -1413,6 +1418,10 @@ struct ubifs_info {
 	struct list_head freeable_list;
 	struct list_head frdi_idx_list;
 	int freeable_cnt;
+<<<<<<< HEAD
+=======
+	int in_a_category_cnt;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	int ltab_lnum;
 	int ltab_offs;

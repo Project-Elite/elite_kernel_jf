@@ -247,12 +247,20 @@ struct dip_infoframe {
 			uint16_t bottom_bar_start;
 			uint16_t left_bar_end;
 			uint16_t right_bar_start;
+<<<<<<< HEAD
 		} avi;
+=======
+		} __attribute__ ((packed)) avi;
+>>>>>>> remotes/linux2/linux-3.4.y
 		struct {
 			uint8_t vn[8];
 			uint8_t pd[16];
 			uint8_t sdi;
+<<<<<<< HEAD
 		} spd;
+=======
+		} __attribute__ ((packed)) spd;
+>>>>>>> remotes/linux2/linux-3.4.y
 		uint8_t payload[27];
 	} __attribute__ ((packed)) body;
 } __attribute__((packed));
@@ -288,6 +296,11 @@ struct intel_fbc_work {
 	int interval;
 };
 
+<<<<<<< HEAD
+=======
+int intel_connector_update_modes(struct drm_connector *connector,
+				struct edid *edid);
+>>>>>>> remotes/linux2/linux-3.4.y
 int intel_ddc_get_modes(struct drm_connector *c, struct i2c_adapter *adapter);
 extern bool intel_ddc_probe(struct intel_encoder *intel_encoder, int ddc_bus);
 

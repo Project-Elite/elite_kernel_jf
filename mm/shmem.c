@@ -595,7 +595,11 @@ static void shmem_evict_inode(struct inode *inode)
 		kfree(xattr->name);
 		kfree(xattr);
 	}
+<<<<<<< HEAD
 	BUG_ON(inode->i_blocks);
+=======
+	WARN_ON(inode->i_blocks);
+>>>>>>> remotes/linux2/linux-3.4.y
 	shmem_free_inode(inode->i_sb);
 	end_writeback(inode);
 }
@@ -713,6 +717,7 @@ static int shmem_writepage(struct page *page, struct writeback_control *wbc)
 	info = SHMEM_I(inode);
 	if (info->flags & VM_LOCKED)
 		goto redirty;
+<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 	/*
 	 * Modification for compcache
@@ -724,6 +729,10 @@ static int shmem_writepage(struct page *page, struct writeback_control *wbc)
 	if (!total_swap_pages)
 		goto redirty;
 #endif
+=======
+	if (!total_swap_pages)
+		goto redirty;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * shmem_backing_dev_info's capabilities prevent regular writeback or
@@ -807,24 +816,44 @@ static struct mempolicy *shmem_get_sbmpol(struct shmem_sb_info *sbinfo)
 static struct page *shmem_swapin(swp_entry_t swap, gfp_t gfp,
 			struct shmem_inode_info *info, pgoff_t index)
 {
+<<<<<<< HEAD
 	struct mempolicy mpol, *spol;
 	struct vm_area_struct pvma;
 
 	spol = mpol_cond_copy(&mpol,
 			mpol_shared_policy_lookup(&info->policy, index));
+=======
+	struct vm_area_struct pvma;
+	struct page *page;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Create a pseudo vma that just contains the policy */
 	pvma.vm_start = 0;
 	pvma.vm_pgoff = index;
 	pvma.vm_ops = NULL;
+<<<<<<< HEAD
 	pvma.vm_policy = spol;
 	return swapin_readahead(swap, gfp, &pvma, 0);
+=======
+	pvma.vm_policy = mpol_shared_policy_lookup(&info->policy, index);
+
+	page = swapin_readahead(swap, gfp, &pvma, 0);
+
+	/* Drop reference taken by mpol_shared_policy_lookup() */
+	mpol_cond_put(pvma.vm_policy);
+
+	return page;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static struct page *shmem_alloc_page(gfp_t gfp,
 			struct shmem_inode_info *info, pgoff_t index)
 {
 	struct vm_area_struct pvma;
+<<<<<<< HEAD
+=======
+	struct page *page;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Create a pseudo vma that just contains the policy */
 	pvma.vm_start = 0;
@@ -832,10 +861,19 @@ static struct page *shmem_alloc_page(gfp_t gfp,
 	pvma.vm_ops = NULL;
 	pvma.vm_policy = mpol_shared_policy_lookup(&info->policy, index);
 
+<<<<<<< HEAD
 	/*
 	 * alloc_page_vma() will drop the shared policy reference
 	 */
 	return alloc_page_vma(gfp, &pvma, 0);
+=======
+	page = alloc_page_vma(gfp, &pvma, 0);
+
+	/* Drop reference taken by mpol_shared_policy_lookup() */
+	mpol_cond_put(pvma.vm_policy);
+
+	return page;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 #else /* !CONFIG_NUMA */
 #ifdef CONFIG_TMPFS
@@ -1374,6 +1412,10 @@ static ssize_t shmem_file_splice_read(struct file *in, loff_t *ppos,
 	struct splice_pipe_desc spd = {
 		.pages = pages,
 		.partial = partial,
+<<<<<<< HEAD
+=======
+		.nr_pages_max = PIPE_DEF_BUFFERS,
+>>>>>>> remotes/linux2/linux-3.4.y
 		.flags = flags,
 		.ops = &page_cache_pipe_buf_ops,
 		.spd_release = spd_release_page,
@@ -1462,7 +1504,11 @@ static ssize_t shmem_file_splice_read(struct file *in, loff_t *ppos,
 	if (spd.nr_pages)
 		error = splice_to_pipe(pipe, &spd);
 
+<<<<<<< HEAD
 	splice_shrink_spd(pipe, &spd);
+=======
+	splice_shrink_spd(&spd);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (error > 0) {
 		*ppos += error;
@@ -2026,12 +2072,22 @@ static struct dentry *shmem_fh_to_dentry(struct super_block *sb,
 {
 	struct inode *inode;
 	struct dentry *dentry = NULL;
+<<<<<<< HEAD
 	u64 inum = fid->raw[2];
 	inum = (inum << 32) | fid->raw[1];
+=======
+	u64 inum;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (fh_len < 3)
 		return NULL;
 
+<<<<<<< HEAD
+=======
+	inum = fid->raw[2];
+	inum = (inum << 32) | fid->raw[1];
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	inode = ilookup5(sb, (unsigned long)(inum + fid->raw[0]),
 			shmem_match, fid->raw);
 	if (inode) {
@@ -2177,6 +2233,10 @@ static int shmem_remount_fs(struct super_block *sb, int *flags, char *data)
 	unsigned long inodes;
 	int error = -EINVAL;
 
+<<<<<<< HEAD
+=======
+	config.mpol = NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (shmem_parse_options(data, &config, true))
 		return error;
 
@@ -2201,8 +2261,18 @@ static int shmem_remount_fs(struct super_block *sb, int *flags, char *data)
 	sbinfo->max_inodes  = config.max_inodes;
 	sbinfo->free_inodes = config.max_inodes - inodes;
 
+<<<<<<< HEAD
 	mpol_put(sbinfo->mpol);
 	sbinfo->mpol        = config.mpol;	/* transfers initial ref */
+=======
+	/*
+	 * Preserve previous mempolicy unless mpol remount option was specified.
+	 */
+	if (config.mpol) {
+		mpol_put(sbinfo->mpol);
+		sbinfo->mpol = config.mpol;	/* transfers initial ref */
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 out:
 	spin_unlock(&sbinfo->stat_lock);
 	return error;
@@ -2615,6 +2685,7 @@ put_memory:
 }
 EXPORT_SYMBOL_GPL(shmem_file_setup);
 
+<<<<<<< HEAD
 void shmem_set_file(struct vm_area_struct *vma, struct file *file)
 {
 	if (vma->vm_file)
@@ -2624,6 +2695,8 @@ void shmem_set_file(struct vm_area_struct *vma, struct file *file)
 	vma->vm_flags |= VM_CAN_NONLINEAR;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  * shmem_zero_setup - setup a shared anonymous mapping
  * @vma: the vma to be mmapped is prepared by do_mmap_pgoff
@@ -2637,7 +2710,15 @@ int shmem_zero_setup(struct vm_area_struct *vma)
 	if (IS_ERR(file))
 		return PTR_ERR(file);
 
+<<<<<<< HEAD
 	shmem_set_file(vma, file);
+=======
+	if (vma->vm_file)
+		fput(vma->vm_file);
+	vma->vm_file = file;
+	vma->vm_ops = &shmem_vm_ops;
+	vma->vm_flags |= VM_CAN_NONLINEAR;
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 

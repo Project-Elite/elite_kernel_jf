@@ -48,14 +48,23 @@ static inline void esdhc_set_clock(struct sdhci_host *host, unsigned int clock)
 	int div = 1;
 	u32 temp;
 
+<<<<<<< HEAD
+=======
+	if (clock == 0)
+		goto out;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	temp = sdhci_readl(host, ESDHC_SYSTEM_CONTROL);
 	temp &= ~(ESDHC_CLOCK_IPGEN | ESDHC_CLOCK_HCKEN | ESDHC_CLOCK_PEREN
 		| ESDHC_CLOCK_MASK);
 	sdhci_writel(host, temp, ESDHC_SYSTEM_CONTROL);
 
+<<<<<<< HEAD
 	if (clock == 0)
 		goto out;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	while (host->max_clk / pre_div / 16 > clock && pre_div < 256)
 		pre_div *= 2;
 

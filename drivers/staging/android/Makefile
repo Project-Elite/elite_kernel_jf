@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 ccflags-y += -I$(src)			# needed for trace events
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 obj-$(CONFIG_ANDROID_BINDER_IPC)	+= binder.o
 obj-$(CONFIG_ASHMEM)			+= ashmem.o
 obj-$(CONFIG_ANDROID_LOGGER)		+= logger.o
@@ -9,7 +12,12 @@ obj-$(CONFIG_ANDROID_TIMED_OUTPUT)	+= timed_output.o
 obj-$(CONFIG_ANDROID_TIMED_GPIO)	+= timed_gpio.o
 obj-$(CONFIG_ANDROID_LOW_MEMORY_KILLER)	+= lowmemorykiller.o
 obj-$(CONFIG_ANDROID_SWITCH)		+= switch/
+<<<<<<< HEAD
 obj-$(CONFIG_ANDROID_INTF_ALARM_DEV)	+= alarm-dev.o
 obj-$(CONFIG_PERSISTENT_TRACER)		+= trace_persistent.o
 
 CFLAGS_REMOVE_trace_persistent.o = -pg
+=======
+obj-$(CONFIG_ANDROID_INTF_ALARM)	+= alarm.o
+obj-$(CONFIG_ANDROID_INTF_ALARM_DEV)	+= alarm-dev.o
+>>>>>>> remotes/linux2/linux-3.4.y

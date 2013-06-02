@@ -240,6 +240,10 @@ int br_add_bridge(struct net *net, const char *name)
 		return -ENOMEM;
 
 	dev_net_set(dev, net);
+<<<<<<< HEAD
+=======
+	dev->rtnl_link_ops = &br_link_ops;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	res = register_netdev(dev);
 	if (res)

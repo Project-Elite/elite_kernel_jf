@@ -40,6 +40,10 @@
 #include <linux/init.h>
 #include <linux/miscdevice.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/slab.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <asm/uaccess.h>
 
 
@@ -52,8 +56,17 @@ static struct hwrng *current_rng;
 static LIST_HEAD(rng_list);
 static DEFINE_MUTEX(rng_mutex);
 static int data_avail;
+<<<<<<< HEAD
 static u8 rng_buffer[SMP_CACHE_BYTES < 32 ? 32 : SMP_CACHE_BYTES]
 	__cacheline_aligned;
+=======
+static u8 *rng_buffer;
+
+static size_t rng_buffer_size(void)
+{
+	return SMP_CACHE_BYTES < 32 ? 32 : SMP_CACHE_BYTES;
+}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static inline int hwrng_init(struct hwrng *rng)
 {
@@ -116,7 +129,11 @@ static ssize_t rng_dev_read(struct file *filp, char __user *buf,
 
 		if (!data_avail) {
 			bytes_read = rng_get_data(current_rng, rng_buffer,
+<<<<<<< HEAD
 				sizeof(rng_buffer),
+=======
+				rng_buffer_size(),
+>>>>>>> remotes/linux2/linux-3.4.y
 				!(filp->f_flags & O_NONBLOCK));
 			if (bytes_read < 0) {
 				err = bytes_read;
@@ -307,6 +324,17 @@ int hwrng_register(struct hwrng *rng)
 
 	mutex_lock(&rng_mutex);
 
+<<<<<<< HEAD
+=======
+	/* kmalloc makes this safe for virt_to_page() in virtio_rng.c */
+	err = -ENOMEM;
+	if (!rng_buffer) {
+		rng_buffer = kmalloc(rng_buffer_size(), GFP_KERNEL);
+		if (!rng_buffer)
+			goto out_unlock;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Must not register two RNGs with the same name. */
 	err = -EEXIST;
 	list_for_each_entry(tmp, &rng_list, list) {

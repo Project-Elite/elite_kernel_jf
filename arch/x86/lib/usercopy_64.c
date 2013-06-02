@@ -120,10 +120,17 @@ copy_user_handle_tail(char *to, char *from, unsigned len, unsigned zerorest)
 	char c;
 	unsigned zero_len;
 
+<<<<<<< HEAD
 	for (; len; --len) {
 		if (__get_user_nocheck(c, from++, sizeof(char)))
 			break;
 		if (__put_user_nocheck(c, to++, sizeof(char)))
+=======
+	for (; len; --len, to++) {
+		if (__get_user_nocheck(c, from++, sizeof(char)))
+			break;
+		if (__put_user_nocheck(c, to, sizeof(char)))
+>>>>>>> remotes/linux2/linux-3.4.y
 			break;
 	}
 

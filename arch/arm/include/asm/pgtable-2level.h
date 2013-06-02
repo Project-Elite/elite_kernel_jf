@@ -68,11 +68,14 @@
  * until either the TLB entry is evicted under pressure, or a context
  * switch which changes the user space mapping occurs.
  */
+<<<<<<< HEAD
 #ifdef TIMA_ENABLED
 #include <asm/tlbflush.h>
 #include <asm/cp15.h>
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #define PTRS_PER_PTE		512
 #define PTRS_PER_PMD		1
 #define PTRS_PER_PGD		2048
@@ -165,6 +168,7 @@ static inline pmd_t *pmd_offset(pud_t *pud, unsigned long addr)
 
 #define pmd_bad(pmd)		(pmd_val(pmd) & 2)
 
+<<<<<<< HEAD
 #ifdef  TIMA_COPY_PMD_MANAGE
 #if __GNUC__ >= 4 && __GNUC_MINOR__ >= 6
         asm(".arch_extension sec");
@@ -220,12 +224,15 @@ static inline void copy_pmd(pmd_t *pmdpd, pmd_t *pmdps)
 		tima_verify_state(pmd_base + 0x3000, pmdps[0], 1, 0);
 }
 #else
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #define copy_pmd(pmdpd,pmdps)		\
 	do {				\
 		pmdpd[0] = pmdps[0];	\
 		pmdpd[1] = pmdps[1];	\
 		flush_pmd_entry(pmdpd);	\
 	} while (0)
+<<<<<<< HEAD
 #endif
 
 #ifdef  TIMA_PMD_CLEAR_MANAGE
@@ -270,13 +277,19 @@ static inline void pmd_clear(pmd_t *pmdp)
 		clean_pmd_entry(pmdp);
 }
 #else
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 #define pmd_clear(pmdp)			\
 	do {				\
 		pmdp[0] = __pmd(0);	\
 		pmdp[1] = __pmd(0);	\
 		clean_pmd_entry(pmdp);	\
 	} while (0)
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* we don't need complex calculations here as the pmd is folded into the pgd */
 #define pmd_addr_end(addr,end) (end)

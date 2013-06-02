@@ -262,6 +262,7 @@ int request_resource(struct resource *root, struct resource *new)
 EXPORT_SYMBOL(request_resource);
 
 /**
+<<<<<<< HEAD
  * locate_resource - locate an already reserved I/O or memory resource
  * @root: root resource descriptor
  * @search: resource descriptor to be located
@@ -280,6 +281,8 @@ struct resource *locate_resource(struct resource *root, struct resource *search)
 EXPORT_SYMBOL(locate_resource);
 
 /**
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  * release_resource - release a previously reserved resource
  * @old: resource pointer
  */
@@ -357,18 +360,26 @@ int walk_system_ram_range(unsigned long start_pfn, unsigned long nr_pages,
 	while ((res.start < res.end) &&
 		(find_next_system_ram(&res, "System RAM") >= 0)) {
 		pfn = (res.start + PAGE_SIZE - 1) >> PAGE_SHIFT;
+<<<<<<< HEAD
 		if (res.end + 1 <= 0)
 			end_pfn = res.end >> PAGE_SHIFT;
 		else
 			end_pfn = (res.end + 1) >> PAGE_SHIFT;
+=======
+		end_pfn = (res.end + 1) >> PAGE_SHIFT;
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (end_pfn > pfn)
 			ret = (*func)(pfn, end_pfn - pfn, arg);
 		if (ret)
 			break;
+<<<<<<< HEAD
 		if (res.end + 1 > res.start)
 			res.start = res.end + 1;
 		else
 			res.start = res.end;
+=======
+		res.start = res.end + 1;
+>>>>>>> remotes/linux2/linux-3.4.y
 		res.end = orig_end;
 	}
 	return ret;
@@ -782,6 +793,10 @@ static void __init __reserve_region_with_split(struct resource *root,
 	struct resource *parent = root;
 	struct resource *conflict;
 	struct resource *res = kzalloc(sizeof(*res), GFP_ATOMIC);
+<<<<<<< HEAD
+=======
+	struct resource *next_res = NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!res)
 		return;
@@ -791,6 +806,7 @@ static void __init __reserve_region_with_split(struct resource *root,
 	res->end = end;
 	res->flags = IORESOURCE_BUSY;
 
+<<<<<<< HEAD
 	conflict = __request_resource(parent, res);
 	if (!conflict)
 		return;
@@ -806,6 +822,48 @@ static void __init __reserve_region_with_split(struct resource *root,
 		__reserve_region_with_split(root, start, conflict->start-1, name);
 	if (conflict->end < end)
 		__reserve_region_with_split(root, conflict->end+1, end, name);
+=======
+	while (1) {
+
+		conflict = __request_resource(parent, res);
+		if (!conflict) {
+			if (!next_res)
+				break;
+			res = next_res;
+			next_res = NULL;
+			continue;
+		}
+
+		/* conflict covered whole area */
+		if (conflict->start <= res->start &&
+				conflict->end >= res->end) {
+			kfree(res);
+			WARN_ON(next_res);
+			break;
+		}
+
+		/* failed, split and try again */
+		if (conflict->start > res->start) {
+			end = res->end;
+			res->end = conflict->start - 1;
+			if (conflict->end < end) {
+				next_res = kzalloc(sizeof(*next_res),
+						GFP_ATOMIC);
+				if (!next_res) {
+					kfree(res);
+					break;
+				}
+				next_res->name = name;
+				next_res->start = conflict->end + 1;
+				next_res->end = end;
+				next_res->flags = IORESOURCE_BUSY;
+			}
+		} else {
+			res->start = conflict->end + 1;
+		}
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 void __init reserve_region_with_split(struct resource *root,

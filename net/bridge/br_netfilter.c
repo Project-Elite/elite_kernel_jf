@@ -254,6 +254,12 @@ static int br_parse_ip_options(struct sk_buff *skb)
 	struct net_device *dev = skb->dev;
 	u32 len;
 
+<<<<<<< HEAD
+=======
+	if (!pskb_may_pull(skb, sizeof(struct iphdr)))
+		goto inhdr_error;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	iph = ip_hdr(skb);
 	opt = &(IPCB(skb)->opt);
 

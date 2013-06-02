@@ -618,6 +618,11 @@ int recv_tt_query(struct sk_buff *skb, struct hard_iface *recv_if)
 			 * changes */
 			if (skb_linearize(skb) < 0)
 				goto out;
+<<<<<<< HEAD
+=======
+			/* skb_linearize() possibly changed skb->data */
+			tt_query = (struct tt_query_packet *)skb->data;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 			tt_len = tt_query->tt_data * sizeof(struct tt_change);
 

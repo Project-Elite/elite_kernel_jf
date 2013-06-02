@@ -208,7 +208,10 @@ enum
 	LINUX_MIB_TCPDSACKOFOSENT,		/* TCPDSACKOfoSent */
 	LINUX_MIB_TCPDSACKRECV,			/* TCPDSACKRecv */
 	LINUX_MIB_TCPDSACKOFORECV,		/* TCPDSACKOfoRecv */
+<<<<<<< HEAD
 	LINUX_MIB_TCPABORTONSYN,		/* TCPAbortOnSyn */
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	LINUX_MIB_TCPABORTONDATA,		/* TCPAbortOnData */
 	LINUX_MIB_TCPABORTONCLOSE,		/* TCPAbortOnClose */
 	LINUX_MIB_TCPABORTONMEMORY,		/* TCPAbortOnMemory */
@@ -234,6 +237,11 @@ enum
 	LINUX_MIB_TCPREQQFULLDROP,		/* TCPReqQFullDrop */
 	LINUX_MIB_TCPRETRANSFAIL,		/* TCPRetransFail */
 	LINUX_MIB_TCPRCVCOALESCE,			/* TCPRcvCoalesce */
+<<<<<<< HEAD
+=======
+	LINUX_MIB_TCPCHALLENGEACK,		/* TCPChallengeACK */
+	LINUX_MIB_TCPSYNCHALLENGE,		/* TCPSYNChallenge */
+>>>>>>> remotes/linux2/linux-3.4.y
 	__LINUX_MIB_MAX
 };
 

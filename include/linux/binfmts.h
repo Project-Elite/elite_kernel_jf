@@ -68,8 +68,11 @@ struct linux_binprm {
 #define BINPRM_FLAGS_EXECFD_BIT 1
 #define BINPRM_FLAGS_EXECFD (1 << BINPRM_FLAGS_EXECFD_BIT)
 
+<<<<<<< HEAD
 #define BINPRM_MAX_RECURSION 4
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* Function parameter for binfmt->coredump */
 struct coredump_params {
 	long signr;
@@ -128,6 +131,10 @@ extern int setup_arg_pages(struct linux_binprm * bprm,
 			   unsigned long stack_top,
 			   int executable_stack);
 extern int bprm_mm_init(struct linux_binprm *bprm);
+<<<<<<< HEAD
+=======
+extern int bprm_change_interp(char *interp, struct linux_binprm *bprm);
+>>>>>>> remotes/linux2/linux-3.4.y
 extern int copy_strings_kernel(int argc, const char *const *argv,
 			       struct linux_binprm *bprm);
 extern int prepare_bprm_creds(struct linux_binprm *bprm);

@@ -42,7 +42,10 @@ bool pciehp_debug;
 bool pciehp_poll_mode;
 int pciehp_poll_time;
 bool pciehp_force;
+<<<<<<< HEAD
 struct workqueue_struct *pciehp_wq;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #define DRIVER_VERSION	"0.4"
 #define DRIVER_AUTHOR	"Dan Zink <dan.zink@compaq.com>, Greg Kroah-Hartman <greg@kroah.com>, Dely Sy <dely.l.sy@intel.com>"
@@ -340,18 +343,27 @@ static int __init pcied_init(void)
 {
 	int retval = 0;
 
+<<<<<<< HEAD
 	pciehp_wq = alloc_workqueue("pciehp", 0, 0);
 	if (!pciehp_wq)
 		return -ENOMEM;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	pciehp_firmware_init();
 	retval = pcie_port_service_register(&hpdriver_portdrv);
  	dbg("pcie_port_service_register = %d\n", retval);
   	info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
+<<<<<<< HEAD
  	if (retval) {
 		destroy_workqueue(pciehp_wq);
 		dbg("Failure to register service\n");
 	}
+=======
+	if (retval)
+		dbg("Failure to register service\n");
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return retval;
 }
 
@@ -359,7 +371,10 @@ static void __exit pcied_cleanup(void)
 {
 	dbg("unload_pciehpd()\n");
 	pcie_port_service_unregister(&hpdriver_portdrv);
+<<<<<<< HEAD
 	destroy_workqueue(pciehp_wq);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	info(DRIVER_DESC " version: " DRIVER_VERSION " unloaded\n");
 }
 

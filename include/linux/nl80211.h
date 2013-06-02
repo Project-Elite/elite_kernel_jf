@@ -1129,6 +1129,7 @@ enum nl80211_commands {
  *	%NL80211_CMD_SET_BEACON to provide extra IEs (e.g., WPS/P2P IE) into
  *	(Re)Association Response frames when the driver (or firmware) replies to
  *	(Re)Association Request frames.
+<<<<<<< HEAD
  * @NL80211_ATTR_STA_WME: Nested attribute containing the wme configuration
  *      of the station, see &enum nl80211_sta_wme_attr.
  * @NL80211_ATTR_SUPPORT_AP_UAPSD: the device supports uapsd when working
@@ -1178,6 +1179,8 @@ enum nl80211_commands {
  *      requests while operating in AP-mode.
  *      This attribute holds a bitmap of the supported protocols for
  *      offloading (see &enum nl80211_probe_resp_offload_support_attr).
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * @NL80211_ATTR_STA_WME: Nested attribute containing the wme configuration
  *	of the station, see &enum nl80211_sta_wme_attr.
@@ -1559,7 +1562,11 @@ enum nl80211_attrs {
 #define NL80211_TKIP_DATA_OFFSET_RX_MIC_KEY	24
 #define NL80211_HT_CAPABILITY_LEN		26
 
+<<<<<<< HEAD
 #define NL80211_MAX_NR_CIPHER_SUITES		6
+=======
+#define NL80211_MAX_NR_CIPHER_SUITES		5
+>>>>>>> remotes/linux2/linux-3.4.y
 #define NL80211_MAX_NR_AKM_SUITES		2
 
 /**
@@ -2424,7 +2431,10 @@ enum nl80211_mfp {
 enum nl80211_wpa_versions {
 	NL80211_WPA_VERSION_1 = 1 << 0,
 	NL80211_WPA_VERSION_2 = 1 << 1,
+<<<<<<< HEAD
 	NL80211_WAPI_VERSION_1 = 1 << 2,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /**

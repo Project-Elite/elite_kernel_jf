@@ -749,6 +749,7 @@ void update_vsyscall(struct timespec *wall_time, struct timespec *wtm,
 
 void update_vsyscall_tz(void)
 {
+<<<<<<< HEAD
 	/* Make userspace gettimeofday spin until we're done. */
 	++vdso_data->tb_update_count;
 	smp_mb();
@@ -756,6 +757,10 @@ void update_vsyscall_tz(void)
 	vdso_data->tz_dsttime = sys_tz.tz_dsttime;
 	smp_mb();
 	++vdso_data->tb_update_count;
+=======
+	vdso_data->tz_minuteswest = sys_tz.tz_minuteswest;
+	vdso_data->tz_dsttime = sys_tz.tz_dsttime;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void __init clocksource_init(void)
@@ -777,6 +782,7 @@ static void __init clocksource_init(void)
 	       clock->name, clock->mult, clock->shift);
 }
 
+<<<<<<< HEAD
 void decrementer_check_overflow(void)
 {
 	u64 now = get_tb_or_rtc();
@@ -786,6 +792,8 @@ void decrementer_check_overflow(void)
 		set_dec(1);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static int decrementer_set_next_event(unsigned long evt,
 				      struct clock_event_device *dev)
 {

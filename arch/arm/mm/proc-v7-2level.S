@@ -27,12 +27,15 @@
 #define TTB_FLAGS_SMP	TTB_IRGN_WBWA|TTB_S|TTB_NOS|TTB_RGN_OC_WBWA
 #define PMD_FLAGS_SMP	PMD_SECT_WBWA|PMD_SECT_S
 
+<<<<<<< HEAD
 #ifdef        TIMA_ENABLED
 #if __GNUC__ >= 4 && __GNUC_MINOR__ >= 6
         .arch_extension sec
 #endif
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  *	cpu_v7_switch_mm(pgd_phys, tsk)
  *
@@ -55,6 +58,7 @@ ENTRY(cpu_v7_switch_mm)
 #ifdef CONFIG_ARM_ERRATA_754322
 	dsb
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_PID_IN_CONTEXTIDR
 	mrc     p15, 0, r2, c13, c0, 1          @ read current context ID
 	bic     r2, r2, #0xff                   @ extract the PID
@@ -79,6 +83,11 @@ ENTRY(cpu_v7_switch_mm)
         ldmfd   sp!, {r2, r11}
 #endif
 
+=======
+	mcr	p15, 0, r2, c13, c0, 1		@ set reserved context ID
+	isb
+1:	mcr	p15, 0, r0, c2, c0, 0		@ set TTB 0
+>>>>>>> remotes/linux2/linux-3.4.y
 	isb
 #ifdef CONFIG_ARM_ERRATA_754322
 	dsb
@@ -101,11 +110,15 @@ ENDPROC(cpu_v7_switch_mm)
  */
 ENTRY(cpu_v7_set_pte_ext)
 #ifdef CONFIG_MMU
+<<<<<<< HEAD
 #ifdef TIMA_L2_MANAGE
         stmfd   sp!, {r1}
 #else
 	str	r1, [r0]			@ linux version
 #endif
+=======
+	str	r1, [r0]			@ linux version
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	bic	r3, r1, #0x000003f0
 	bic	r3, r3, #PTE_TYPE_MASK
@@ -134,6 +147,7 @@ ENTRY(cpu_v7_set_pte_ext)
 	tstne	r1, #L_PTE_PRESENT
 	moveq	r3, #0
 
+<<<<<<< HEAD
 #ifdef TIMA_L2_MANAGE
 	pop	{r1}
 	stmfd   sp!,{r0-r3, r11}
@@ -178,6 +192,12 @@ TIMA_CMP_LOOP2:
  THUMB(	str	r3, [r0] )
  	mcr     p15, 0, r0, c7, c10, 1          @ flush_pte
 #endif
+=======
+ ARM(	str	r3, [r0, #2048]! )
+ THUMB(	add	r0, r0, #2048 )
+ THUMB(	str	r3, [r0] )
+	mcr	p15, 0, r0, c7, c10, 1		@ flush_pte
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif
 	mov	pc, lr
 ENDPROC(cpu_v7_set_pte_ext)
@@ -211,11 +231,15 @@ ENDPROC(cpu_v7_set_pte_ext)
 	 *   NOS = PRRR[24+n] = 1	- not outer shareable
 	 */
 .equ	PRRR,	0xff0a81a8
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM_SCORPIONMP
 .equ	NMRR,	0x40e080e0
 #else
 .equ	NMRR,	0x40e040e0
 #endif
+=======
+.equ	NMRR,	0x40e040e0
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Macro for setting up the TTBRx and TTBCR registers.

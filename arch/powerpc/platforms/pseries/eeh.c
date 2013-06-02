@@ -1029,7 +1029,11 @@ static void eeh_add_device_early(struct device_node *dn)
 {
 	struct pci_controller *phb;
 
+<<<<<<< HEAD
 	if (!dn || !of_node_to_eeh_dev(dn))
+=======
+	if (!of_node_to_eeh_dev(dn))
+>>>>>>> remotes/linux2/linux-3.4.y
 		return;
 	phb = of_node_to_eeh_dev(dn)->phb;
 

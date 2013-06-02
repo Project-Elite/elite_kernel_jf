@@ -117,6 +117,10 @@
 
 #define CHIP_VER_B			BIT(4)
 #define CHIP_92C_BITMASK		BIT(0)
+<<<<<<< HEAD
+=======
+#define CHIP_UNKNOWN			BIT(7)
+>>>>>>> remotes/linux2/linux-3.4.y
 #define CHIP_92C_1T2R			0x03
 #define CHIP_92C			0x01
 #define CHIP_88C			0x00

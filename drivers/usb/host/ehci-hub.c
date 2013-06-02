@@ -254,11 +254,14 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
 		if (t1 & PORT_OWNER)
 			set_bit(port, &ehci->owned_ports);
 		else if ((t1 & PORT_PE) && !(t1 & PORT_SUSPEND)) {
+<<<<<<< HEAD
 			/*clear RS bit before setting SUSP bit
 			* and wait for HCH to get set*/
 			if (ehci->susp_sof_bug)
 				ehci_halt(ehci);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			t2 |= PORT_SUSPEND;
 			set_bit(port, &ehci->bus_suspended);
 		}
@@ -309,10 +312,15 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
 	if (ehci->bus_suspended)
 		udelay(150);
 
+<<<<<<< HEAD
 	/*if this bit is set, controller is already haled*/
 	if (!ehci->susp_sof_bug)
 		ehci_halt(ehci); /* turn off now-idle HC */
 
+=======
+	/* turn off now-idle HC */
+	ehci_halt (ehci);
+>>>>>>> remotes/linux2/linux-3.4.y
 	ehci->rh_state = EHCI_RH_SUSPENDED;
 
 	if (ehci->reclaim)
@@ -326,7 +334,10 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
 	ehci_readl(ehci, &ehci->regs->intr_enable);
 
 	ehci->next_statechange = jiffies + msecs_to_jiffies(10);
+<<<<<<< HEAD
 	ehci->last_susp_resume = ktime_get();
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	spin_unlock_irq (&ehci->lock);
 
 	/* ehci_work() may have re-enabled the watchdog timer, which we do not
@@ -381,9 +392,12 @@ static int ehci_bus_resume (struct usb_hcd *hcd)
 	ehci_writel(ehci, ehci->periodic_dma, &ehci->regs->frame_list);
 	ehci_writel(ehci, (u32) ehci->async->qh_dma, &ehci->regs->async_next);
 
+<<<<<<< HEAD
 	/*CMD_RUN will be set after, PORT_RESUME gets cleared*/
 	if (ehci->resume_sof_bug)
 		ehci->command &= ~CMD_RUN;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* restore CMD_RUN, framelist size, and irq threshold */
 	ehci_writel(ehci, ehci->command, &ehci->regs->command);
 	ehci->rh_state = EHCI_RH_RUNNING;
@@ -426,6 +440,7 @@ static int ehci_bus_resume (struct usb_hcd *hcd)
 		ehci_writel(ehci, temp, &ehci->regs->port_status [i]);
 	}
 
+<<<<<<< HEAD
 	if (ehci->resume_sof_bug && resume_needed) {
 		/* root hub has only one port.
 		 * PORT_RESUME gets cleared automatically. */
@@ -437,6 +452,8 @@ static int ehci_bus_resume (struct usb_hcd *hcd)
 		goto skip_clear_resume;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* msleep for 20ms only if code is trying to resume port */
 	if (resume_needed) {
 		spin_unlock_irq(&ehci->lock);
@@ -453,8 +470,11 @@ static int ehci_bus_resume (struct usb_hcd *hcd)
 			ehci_vdbg (ehci, "resumed port %d\n", i + 1);
 		}
 	}
+<<<<<<< HEAD
 
 skip_clear_resume:
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	(void) ehci_readl(ehci, &ehci->regs->command);
 
 	/* maybe re-activate the schedule(s) */
@@ -579,10 +599,13 @@ ehci_hub_status_data (struct usb_hcd *hcd, char *buf)
 	unsigned long	flags;
 	u32		ppcd = 0;
 
+<<<<<<< HEAD
 	/* if !USB_SUSPEND, root hub timers won't get shut down ... */
 	if (ehci->rh_state != EHCI_RH_RUNNING)
 		return 0;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* init status to no-changes */
 	buf [0] = 0;
 	ports = HCS_N_PORTS (ehci->hcs_params);
@@ -640,7 +663,15 @@ ehci_hub_status_data (struct usb_hcd *hcd, char *buf)
 			status = STS_PCD;
 		}
 	}
+<<<<<<< HEAD
 	/* FIXME autosuspend idle root hubs */
+=======
+
+	/* If a resume is in progress, make sure it can finish */
+	if (ehci->resuming_ports)
+		mod_timer(&hcd->rh_timer, jiffies + msecs_to_jiffies(25));
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	spin_unlock_irqrestore (&ehci->lock, flags);
 	return status ? retval : 0;
 }
@@ -681,6 +712,7 @@ ehci_hub_descriptor (
 }
 
 /*-------------------------------------------------------------------------*/
+<<<<<<< HEAD
 #ifdef CONFIG_USB_EHCI_EHSET
 
 #define EHSET_TEST_SINGLE_STEP_SET_FEATURE 0x06
@@ -826,6 +858,8 @@ cleanup:
 }
 #endif
 /*-------------------------------------------------------------------------*/
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static int ehci_hub_control (
 	struct usb_hcd	*hcd,
@@ -840,7 +874,11 @@ static int ehci_hub_control (
 	u32 __iomem	*status_reg = &ehci->regs->port_status[
 				(wIndex & 0xff) - 1];
 	u32 __iomem	*hostpc_reg = NULL;
+<<<<<<< HEAD
 	u32		temp, temp1, status, cmd = 0;
+=======
+	u32		temp, temp1, status;
+>>>>>>> remotes/linux2/linux-3.4.y
 	unsigned long	flags;
 	int		retval = 0;
 	unsigned	selector;
@@ -1151,6 +1189,7 @@ static int ehci_hub_control (
 			if ((temp & PORT_PE) == 0
 					|| (temp & PORT_RESET) != 0)
 				goto error;
+<<<<<<< HEAD
 			/*port gets suspended as part of bus suspend routine*/
 			if (!ehci->susp_sof_bug)
 				ehci_writel(ehci, temp | PORT_SUSPEND,
@@ -1163,17 +1202,24 @@ static int ehci_hub_control (
 				break;
 			}
 #endif
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 			/* After above check the port must be connected.
 			 * Set appropriate bit thus could put phy into low power
 			 * mode if we have hostpc feature
 			 */
 			temp &= ~PORT_WKCONN_E;
 			temp |= PORT_WKDISC_E | PORT_WKOC_E;
+<<<<<<< HEAD
 			if (ehci->susp_sof_bug)
 				ehci_writel(ehci, temp, status_reg);
 			else
 				ehci_writel(ehci, temp | PORT_SUSPEND,
 						status_reg);
+=======
+			ehci_writel(ehci, temp | PORT_SUSPEND, status_reg);
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (hostpc_reg) {
 				spin_unlock_irqrestore(&ehci->lock, flags);
 				msleep(5);/* 5ms for HCD enter low pwr mode */
@@ -1219,6 +1265,7 @@ static int ehci_hub_control (
 				ehci->reset_done [wIndex] = jiffies
 						+ msecs_to_jiffies (50);
 			}
+<<<<<<< HEAD
 
 			if (ehci->reset_sof_bug && (temp & PORT_RESET)) {
 				cmd = ehci_readl(ehci, &ehci->regs->command);
@@ -1255,6 +1302,9 @@ static int ehci_hub_control (
 				cmd |= CMD_RUN;
 				ehci_writel(ehci, cmd, &ehci->regs->command);
 			}
+=======
+			ehci_writel(ehci, temp, status_reg);
+>>>>>>> remotes/linux2/linux-3.4.y
 			break;
 
 		/* For downstream facing ports (these):  one hub port is put
@@ -1264,6 +1314,7 @@ static int ehci_hub_control (
 		 * about the EHCI-specific stuff.
 		 */
 		case USB_PORT_FEAT_TEST:
+<<<<<<< HEAD
 			if (selector && selector <= 5) {
 				ehci_quiesce(ehci);
 
@@ -1296,6 +1347,28 @@ static int ehci_hub_control (
 			else
 				goto error;
 			break;
+=======
+			if (!selector || selector > 5)
+				goto error;
+			ehci_quiesce(ehci);
+
+			/* Put all enabled ports into suspend */
+			while (ports--) {
+				u32 __iomem *sreg =
+						&ehci->regs->port_status[ports];
+
+				temp = ehci_readl(ehci, sreg) & ~PORT_RWC_BITS;
+				if (temp & PORT_PE)
+					ehci_writel(ehci, temp | PORT_SUSPEND,
+							sreg);
+			}
+			ehci_halt(ehci);
+			temp = ehci_readl(ehci, status_reg);
+			temp |= selector << 16;
+			ehci_writel(ehci, temp, status_reg);
+			break;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 		default:
 			goto error;
 		}

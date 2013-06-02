@@ -187,7 +187,11 @@ enum port {
 };
 
 struct cx25821_board {
+<<<<<<< HEAD
 	char *name;
+=======
+	const char *name;
+>>>>>>> remotes/linux2/linux-3.4.y
 	enum port porta;
 	enum port portb;
 	enum port portc;

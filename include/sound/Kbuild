@@ -8,6 +8,9 @@ header-y += sb16_csp.h
 header-y += sfnt_info.h
 header-y += compress_params.h
 header-y += compress_offload.h
+<<<<<<< HEAD
 header-y += tlv.h
 header-y += compress_params.h
 header-y += compress_offload.h
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

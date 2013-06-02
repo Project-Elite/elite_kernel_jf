@@ -436,7 +436,11 @@ char *symbol_string(char *buf, char *end, void *ptr,
 	else if (ext != 'f' && ext != 's')
 		sprint_symbol(sym, value);
 	else
+<<<<<<< HEAD
 		sprint_symbol_no_offset(sym, value);
+=======
+		kallsyms_lookup(value, NULL, NULL, NULL, sym);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return string(buf, end, sym, spec);
 #else

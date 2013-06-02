@@ -48,6 +48,10 @@
 #define AR9300_DEVID_AR9580	0x0033
 #define AR9300_DEVID_AR9462	0x0034
 #define AR9300_DEVID_AR9330	0x0035
+<<<<<<< HEAD
+=======
+#define AR9485_DEVID_AR1111	0x0037
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #define AR5416_AR9100_DEVID	0x000b
 
@@ -1013,6 +1017,10 @@ int ar9003_paprd_setup_gain_table(struct ath_hw *ah, int chain);
 int ar9003_paprd_init_table(struct ath_hw *ah);
 bool ar9003_paprd_is_done(struct ath_hw *ah);
 void ar9003_hw_set_paprd_txdesc(struct ath_hw *ah, void *ds, u8 chains);
+<<<<<<< HEAD
+=======
+void ar9003_hw_set_chain_masks(struct ath_hw *ah, u8 rx, u8 tx);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* Hardware family op attach helpers */
 void ar5008_hw_attach_phy_ops(struct ath_hw *ah);

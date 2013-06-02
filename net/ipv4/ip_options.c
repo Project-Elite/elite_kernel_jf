@@ -360,7 +360,10 @@ int ip_options_compile(struct net *net,
 				}
 				switch (optptr[3]&0xF) {
 				      case IPOPT_TS_TSONLY:
+<<<<<<< HEAD
 					opt->ts = optptr - iph;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 					if (skb)
 						timeptr = &optptr[optptr[2]-1];
 					opt->ts_needtime = 1;
@@ -371,7 +374,10 @@ int ip_options_compile(struct net *net,
 						pp_ptr = optptr + 2;
 						goto error;
 					}
+<<<<<<< HEAD
 					opt->ts = optptr - iph;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 					if (rt)  {
 						memcpy(&optptr[optptr[2]-1], &rt->rt_spec_dst, 4);
 						timeptr = &optptr[optptr[2]+3];
@@ -385,7 +391,10 @@ int ip_options_compile(struct net *net,
 						pp_ptr = optptr + 2;
 						goto error;
 					}
+<<<<<<< HEAD
 					opt->ts = optptr - iph;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 					{
 						__be32 addr;
 						memcpy(&addr, &optptr[optptr[2]-1], 4);
@@ -418,12 +427,19 @@ int ip_options_compile(struct net *net,
 					pp_ptr = optptr + 3;
 					goto error;
 				}
+<<<<<<< HEAD
 				opt->ts = optptr - iph;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 				if (skb) {
 					optptr[3] = (optptr[3]&0xF)|((overflow+1)<<4);
 					opt->is_changed = 1;
 				}
 			}
+<<<<<<< HEAD
+=======
+			opt->ts = optptr - iph;
+>>>>>>> remotes/linux2/linux-3.4.y
 			break;
 		      case IPOPT_RA:
 			if (optlen < 4) {

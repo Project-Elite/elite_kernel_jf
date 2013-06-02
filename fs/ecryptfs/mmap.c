@@ -66,6 +66,7 @@ static int ecryptfs_writepage(struct page *page, struct writeback_control *wbc)
 {
 	int rc;
 
+<<<<<<< HEAD
     // WTL_EDM_START
     /* MDM 3.1 START */
     struct inode *inode;
@@ -95,6 +96,8 @@ static int ecryptfs_writepage(struct page *page, struct writeback_control *wbc)
     /* MDM 3.1 END */
     // WTL_EDM_END
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	rc = ecryptfs_encrypt_page(page);
 	if (rc) {
 		ecryptfs_printk(KERN_WARNING, "Error encrypting "
@@ -547,7 +550,11 @@ static int ecryptfs_write_end(struct file *file,
 			"[0x%.16llx]\n",
 			(unsigned long long)i_size_read(ecryptfs_inode));
 	}
+<<<<<<< HEAD
 		rc = ecryptfs_write_inode_size_to_metadata(ecryptfs_inode);
+=======
+	rc = ecryptfs_write_inode_size_to_metadata(ecryptfs_inode);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (rc)
 		printk(KERN_ERR "Error writing inode size to metadata; "
 		       "rc = [%d]\n", rc);

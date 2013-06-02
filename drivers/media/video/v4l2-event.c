@@ -227,11 +227,14 @@ int v4l2_event_subscribe(struct v4l2_fh *fh,
 			return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (!fh->vdev) {
 		pr_err("%s: fh->vdev is NULL\n", __func__);
 		return -EIO;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	sev = kzalloc(sizeof(*sev) + sizeof(struct v4l2_kevent) * elems, GFP_KERNEL);
 	if (!sev)
 		return -ENOMEM;

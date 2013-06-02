@@ -37,6 +37,10 @@ static struct vfsmount *nfs_do_submount(struct dentry *dentry,
  * @dentry - pointer to dentry
  * @buffer - result buffer
  * @buflen - length of buffer
+<<<<<<< HEAD
+=======
+ * @flags - options (see below)
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * Helper function for constructing the server pathname
  * by arbitrary hashed dentry.
@@ -44,8 +48,19 @@ static struct vfsmount *nfs_do_submount(struct dentry *dentry,
  * This is mainly for use in figuring out the path on the
  * server side when automounting on top of an existing partition
  * and in generating /proc/mounts and friends.
+<<<<<<< HEAD
  */
 char *nfs_path(char **p, struct dentry *dentry, char *buffer, ssize_t buflen)
+=======
+ *
+ * Supported flags:
+ * NFS_PATH_CANONICAL: ensure there is exactly one slash after
+ *		       the original device (export) name
+ *		       (if unset, the original name is returned verbatim)
+ */
+char *nfs_path(char **p, struct dentry *dentry, char *buffer, ssize_t buflen,
+	       unsigned flags)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	char *end;
 	int namelen;
@@ -78,7 +93,11 @@ rename_retry:
 		rcu_read_unlock();
 		goto rename_retry;
 	}
+<<<<<<< HEAD
 	if (*end != '/') {
+=======
+	if ((flags & NFS_PATH_CANONICAL) && *end != '/') {
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (--buflen < 0) {
 			spin_unlock(&dentry->d_lock);
 			rcu_read_unlock();
@@ -95,9 +114,17 @@ rename_retry:
 		return end;
 	}
 	namelen = strlen(base);
+<<<<<<< HEAD
 	/* Strip off excess slashes in base string */
 	while (namelen > 0 && base[namelen - 1] == '/')
 		namelen--;
+=======
+	if (flags & NFS_PATH_CANONICAL) {
+		/* Strip off excess slashes in base string */
+		while (namelen > 0 && base[namelen - 1] == '/')
+			namelen--;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 	buflen -= namelen;
 	if (buflen < 0) {
 		spin_unlock(&dentry->d_lock);
@@ -244,11 +271,39 @@ out_nofree:
 	return mnt;
 }
 
+<<<<<<< HEAD
 const struct inode_operations nfs_mountpoint_inode_operations = {
 	.getattr	= nfs_getattr,
 };
 
 const struct inode_operations nfs_referral_inode_operations = {
+=======
+static int
+nfs_namespace_getattr(struct vfsmount *mnt, struct dentry *dentry, struct kstat *stat)
+{
+	if (NFS_FH(dentry->d_inode)->size != 0)
+		return nfs_getattr(mnt, dentry, stat);
+	generic_fillattr(dentry->d_inode, stat);
+	return 0;
+}
+
+static int
+nfs_namespace_setattr(struct dentry *dentry, struct iattr *attr)
+{
+	if (NFS_FH(dentry->d_inode)->size != 0)
+		return nfs_setattr(dentry, attr);
+	return -EACCES;
+}
+
+const struct inode_operations nfs_mountpoint_inode_operations = {
+	.getattr	= nfs_getattr,
+	.setattr	= nfs_setattr,
+};
+
+const struct inode_operations nfs_referral_inode_operations = {
+	.getattr	= nfs_namespace_getattr,
+	.setattr	= nfs_namespace_setattr,
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static void nfs_expire_automounts(struct work_struct *work)

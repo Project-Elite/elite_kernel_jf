@@ -578,7 +578,11 @@ void dmaengine_get(void)
 				list_del_rcu(&device->global_node);
 				break;
 			} else if (err)
+<<<<<<< HEAD
 				pr_err("%s: failed to get %s: (%d)\n",
+=======
+				pr_debug("%s: failed to get %s: (%d)\n",
+>>>>>>> remotes/linux2/linux-3.4.y
 					__func__, dma_chan_name(chan), err);
 		}
 	}

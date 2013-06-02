@@ -3451,7 +3451,12 @@ out:
 }
 
 static const struct ibnl_client_cbs cma_cb_table[] = {
+<<<<<<< HEAD
 	[RDMA_NL_RDMA_CM_ID_STATS] = { .dump = cma_get_id_stats },
+=======
+	[RDMA_NL_RDMA_CM_ID_STATS] = { .dump = cma_get_id_stats,
+				       .module = THIS_MODULE },
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static int __init cma_init(void)

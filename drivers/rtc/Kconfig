@@ -94,6 +94,7 @@ config RTC_INTF_DEV
 
 	  If unsure, say Y.
 
+<<<<<<< HEAD
 config RTC_INTF_ALARM
 	bool "Android alarm driver"
 	depends on RTC_CLASS
@@ -111,6 +112,8 @@ config RTC_INTF_ALARM_DEV
 	help
 	  Exports the alarm interface to user-space.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config RTC_INTF_DEV_UIE_EMUL
 	bool "RTC UIE emulation on dev interface"
 	depends on RTC_INTF_DEV
@@ -123,6 +126,7 @@ config RTC_INTF_DEV_UIE_EMUL
 	  clock several times per second, please enable this option
 	  only if you know that you really need it.
 
+<<<<<<< HEAD
 config RTC_INTF_ALARM
 	bool "Android alarm driver"
 	depends on RTC_CLASS
@@ -141,6 +145,8 @@ config RTC_INTF_ALARM_DEV
 	  Exports the alarm interface to user-space.
 
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config RTC_DRV_TEST
 	tristate "Test driver/device"
 	help
@@ -763,6 +769,7 @@ config RTC_DRV_NUC900
 
 comment "on-CPU RTC drivers"
 
+<<<<<<< HEAD
 config RTC_DRV_MSM
 	tristate "RTC on Qualcomm Chipsets"
 	depends on ARCH_MSM
@@ -794,6 +801,8 @@ config RTC_DRV_MSM7X00A
 	help
 	  RTC driver for Qualcomm MSM7K chipsets
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config RTC_DRV_DAVINCI
 	tristate "TI DaVinci RTC"
 	depends on ARCH_DAVINCI_DM365
@@ -804,6 +813,7 @@ config RTC_DRV_DAVINCI
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-davinci.
 
+<<<<<<< HEAD
 config RTC_DRV_MSM7X00A
 	tristate "MSM7X00A"
 	depends on ARCH_MSM
@@ -811,6 +821,8 @@ config RTC_DRV_MSM7X00A
 	help
 	  RTC driver for Qualcomm MSM7K chipsets
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config RTC_DRV_OMAP
 	tristate "TI OMAP1"
 	depends on ARCH_OMAP15XX || ARCH_OMAP16XX || ARCH_OMAP730 || ARCH_DAVINCI_DA8XX
@@ -1150,6 +1162,7 @@ config RTC_DRV_PUV3
 	  This drive can also be built as a module. If so, the module
 	  will be called rtc-puv3.
 
+<<<<<<< HEAD
 config RTC_DRV_PM8XXX
 	tristate "Qualcomm PMIC8XXX RTC"
 	depends on MFD_PM8XXX
@@ -1159,6 +1172,8 @@ config RTC_DRV_PM8XXX
 	  To compile this driver as a module, choose M here: the
 	  module will be called rtc-pm8xxx.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config RTC_DRV_LOONGSON1
 	tristate "loongson1 RTC support"
 	depends on MACH_LOONGSON1
@@ -1169,6 +1184,7 @@ config RTC_DRV_LOONGSON1
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-ls1x.
 
+<<<<<<< HEAD
 config RTC_DRV_QPNP
 	tristate "Qualcomm QPNP PMIC RTC"
 	depends on SPMI && OF_SPMI && MSM_QPNP_INT
@@ -1178,4 +1194,6 @@ config RTC_DRV_QPNP
 	  To compile this driver as a module, choose M here: the
 	  module will be called qpnp-rtc.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 endif # RTC_CLASS

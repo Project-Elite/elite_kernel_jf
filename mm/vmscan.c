@@ -120,10 +120,13 @@ struct mem_cgroup_zone {
 	struct zone *zone;
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 atomic_t kswapd_thread_on = ATOMIC_INIT(1);
 #endif /* CONFIG_ZRAM_FOR_ANDROID */
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #define lru_to_page(_head) (list_entry((_head)->prev, struct page, lru))
 
 #ifdef ARCH_HAS_PREFETCH
@@ -1987,10 +1990,17 @@ static void get_scan_count(struct mem_cgroup_zone *mz, struct scan_control *sc,
 	 * proportional to the fraction of recently scanned pages on
 	 * each list that were recently referenced and in active use.
 	 */
+<<<<<<< HEAD
 	ap = (anon_prio + 1) * (reclaim_stat->recent_scanned[0] + 1);
 	ap /= reclaim_stat->recent_rotated[0] + 1;
 
 	fp = (file_prio + 1) * (reclaim_stat->recent_scanned[1] + 1);
+=======
+	ap = anon_prio * (reclaim_stat->recent_scanned[0] + 1);
+	ap /= reclaim_stat->recent_rotated[0] + 1;
+
+	fp = file_prio * (reclaim_stat->recent_scanned[1] + 1);
+>>>>>>> remotes/linux2/linux-3.4.y
 	fp /= reclaim_stat->recent_rotated[1] + 1;
 	spin_unlock_irq(&mz->zone->lru_lock);
 
@@ -2003,7 +2013,11 @@ out:
 		unsigned long scan;
 
 		scan = zone_nr_lru_pages(mz, lru);
+<<<<<<< HEAD
 		if (priority || noswap) {
+=======
+		if (priority || noswap || !vmscan_swappiness(mz, sc)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			scan >>= priority;
 			if (!scan && force_scan)
 				scan = SWAP_CLUSTER_MAX;
@@ -2235,11 +2249,15 @@ static bool shrink_zones(int priority, struct zonelist *zonelist,
 {
 	struct zoneref *z;
 	struct zone *zone;
+<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 	unsigned long nr_soft_reclaimed = 0;
 #else
 	unsigned long nr_soft_reclaimed;
 #endif
+=======
+	unsigned long nr_soft_reclaimed;
+>>>>>>> remotes/linux2/linux-3.4.y
 	unsigned long nr_soft_scanned;
 	bool aborted_reclaim = false;
 
@@ -2286,11 +2304,17 @@ static bool shrink_zones(int priority, struct zonelist *zonelist,
 			 * and balancing, not for a memcg's limit.
 			 */
 			nr_soft_scanned = 0;
+<<<<<<< HEAD
 #ifndef CONFIG_ZRAM_FOR_ANDROID
 			nr_soft_reclaimed = mem_cgroup_soft_limit_reclaim(zone,
 						sc->order, sc->gfp_mask,
 						&nr_soft_scanned);
 #endif
+=======
+			nr_soft_reclaimed = mem_cgroup_soft_limit_reclaim(zone,
+						sc->order, sc->gfp_mask,
+						&nr_soft_scanned);
+>>>>>>> remotes/linux2/linux-3.4.y
 			sc->nr_reclaimed += nr_soft_reclaimed;
 			sc->nr_scanned += nr_soft_scanned;
 			/* need some check for avoid more shrink_zone() */
@@ -2450,11 +2474,15 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
 		.may_writepage = !laptop_mode,
 		.nr_to_reclaim = SWAP_CLUSTER_MAX,
 		.may_unmap = 1,
+<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 		.may_swap = 0,
 #else
 		.may_swap = 1,
 #endif /* CONFIG_ZRAM_FOR_ANDROID */
+=======
+		.may_swap = 1,
+>>>>>>> remotes/linux2/linux-3.4.y
 		.order = order,
 		.target_mem_cgroup = NULL,
 		.nodemask = nodemask,
@@ -2691,20 +2719,28 @@ static unsigned long balance_pgdat(pg_data_t *pgdat, int order,
 	int end_zone = 0;	/* Inclusive.  0 = ZONE_DMA */
 	unsigned long total_scanned;
 	struct reclaim_state *reclaim_state = current->reclaim_state;
+<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 	unsigned long nr_soft_reclaimed = 0;
 #else
 	unsigned long nr_soft_reclaimed;
 #endif
+=======
+	unsigned long nr_soft_reclaimed;
+>>>>>>> remotes/linux2/linux-3.4.y
 	unsigned long nr_soft_scanned;
 	struct scan_control sc = {
 		.gfp_mask = GFP_KERNEL,
 		.may_unmap = 1,
+<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 		.may_swap = 0,
 #else
 		.may_swap = 1,
 #endif /* CONFIG_ZRAM_FOR_ANDROID */
+=======
+		.may_swap = 1,
+>>>>>>> remotes/linux2/linux-3.4.y
 		/*
 		 * kswapd doesn't want to be bailed out while reclaim. because
 		 * we want to put equal scanning pressure on each zone.
@@ -2807,11 +2843,17 @@ loop_again:
 			/*
 			 * Call soft limit reclaim before calling shrink_zone.
 			 */
+<<<<<<< HEAD
 #ifndef CONFIG_ZRAM_FOR_ANDROID
 			nr_soft_reclaimed = mem_cgroup_soft_limit_reclaim(zone,
 							order, sc.gfp_mask,
 							&nr_soft_scanned);
 #endif
+=======
+			nr_soft_reclaimed = mem_cgroup_soft_limit_reclaim(zone,
+							order, sc.gfp_mask,
+							&nr_soft_scanned);
+>>>>>>> remotes/linux2/linux-3.4.y
 			sc.nr_reclaimed += nr_soft_reclaimed;
 			total_scanned += nr_soft_scanned;
 
@@ -3036,6 +3078,7 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int order, int classzone_idx)
 		 * per-cpu vmstat threshold while kswapd is awake and restore
 		 * them before going back to sleep.
 		 */
+<<<<<<< HEAD
 
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 		atomic_set(&kswapd_thread_on,0);
@@ -3043,6 +3086,13 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int order, int classzone_idx)
 
 		set_pgdat_percpu_threshold(pgdat, calculate_normal_threshold);
 		schedule();
+=======
+		set_pgdat_percpu_threshold(pgdat, calculate_normal_threshold);
+
+		if (!kthread_should_stop())
+			schedule();
+
+>>>>>>> remotes/linux2/linux-3.4.y
 		set_pgdat_percpu_threshold(pgdat, calculate_pressure_threshold);
 	} else {
 		if (remaining)
@@ -3143,10 +3193,13 @@ static int kswapd(void *p)
 		if (kthread_should_stop())
 			break;
 
+<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 		atomic_set(&kswapd_thread_on, 1);
 #endif /* CONFIG_ZRAM_FOR_ANDROID */
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		/*
 		 * We can speed up thawing tasks if we don't call balance_pgdat
 		 * after returning from the refrigerator
@@ -3158,6 +3211,11 @@ static int kswapd(void *p)
 						&balanced_classzone_idx);
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	current->reclaim_state = NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -3312,14 +3370,26 @@ int kswapd_run(int nid)
 }
 
 /*
+<<<<<<< HEAD
  * Called by memory hotplug when all memory in a node is offlined.
+=======
+ * Called by memory hotplug when all memory in a node is offlined.  Caller must
+ * hold lock_memory_hotplug().
+>>>>>>> remotes/linux2/linux-3.4.y
  */
 void kswapd_stop(int nid)
 {
 	struct task_struct *kswapd = NODE_DATA(nid)->kswapd;
 
+<<<<<<< HEAD
 	if (kswapd)
 		kthread_stop(kswapd);
+=======
+	if (kswapd) {
+		kthread_stop(kswapd);
+		NODE_DATA(nid)->kswapd = NULL;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int __init kswapd_init(void)
@@ -3423,11 +3493,15 @@ static int __zone_reclaim(struct zone *zone, gfp_t gfp_mask, unsigned int order)
 	struct scan_control sc = {
 		.may_writepage = !!(zone_reclaim_mode & RECLAIM_WRITE),
 		.may_unmap = !!(zone_reclaim_mode & RECLAIM_SWAP),
+<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 		.may_swap = 0,
 #else
 		.may_swap = 1,
 #endif /* CONFIG_ZRAM_FOR_ANDROID */
+=======
+		.may_swap = 1,
+>>>>>>> remotes/linux2/linux-3.4.y
 		.nr_to_reclaim = max_t(unsigned long, nr_pages,
 				       SWAP_CLUSTER_MAX),
 		.gfp_mask = gfp_mask,

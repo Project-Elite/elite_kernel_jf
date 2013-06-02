@@ -8,6 +8,7 @@ The following attributes are read/write.
 
 	force_ro		Enforce read-only access even if write protect switch is off.
 
+<<<<<<< HEAD
 	num_wr_reqs_to_start_packing 	This attribute is used to determine
 	the trigger for activating the write packing, in case the write
 	packing control feature is enabled.
@@ -34,6 +35,8 @@ The following attributes are read/write.
 	required value to:
 	/sys/block/<block_dev_name>/min_sectors_to_check_bkops_status
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 SD and MMC Device Attributes
 ============================
 

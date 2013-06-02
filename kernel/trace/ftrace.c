@@ -624,7 +624,11 @@ int ftrace_profile_pages_init(struct ftrace_profile_stat *stat)
 
 	pages = DIV_ROUND_UP(functions, PROFILES_PER_PAGE);
 
+<<<<<<< HEAD
 	for (i = 0; i < pages; i++) {
+=======
+	for (i = 1; i < pages; i++) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		pg->next = (void *)get_zeroed_page(GFP_KERNEL);
 		if (!pg->next)
 			goto out_free;
@@ -642,7 +646,10 @@ int ftrace_profile_pages_init(struct ftrace_profile_stat *stat)
 		free_page(tmp);
 	}
 
+<<<<<<< HEAD
 	free_page((unsigned long)stat->pages);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	stat->pages = NULL;
 	stat->start = NULL;
 
@@ -2368,7 +2375,11 @@ static void reset_iter_read(struct ftrace_iterator *iter)
 {
 	iter->pos = 0;
 	iter->func_pos = 0;
+<<<<<<< HEAD
 	iter->flags &= ~(FTRACE_ITER_PRINTALL & FTRACE_ITER_HASH);
+=======
+	iter->flags &= ~(FTRACE_ITER_PRINTALL | FTRACE_ITER_HASH);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void *t_start(struct seq_file *m, loff_t *pos)
@@ -3034,8 +3045,13 @@ __unregister_ftrace_function_probe(char *glob, struct ftrace_probe_ops *ops,
 					continue;
 			}
 
+<<<<<<< HEAD
 			hlist_del(&entry->node);
 			call_rcu(&entry->rcu, ftrace_free_entry_rcu);
+=======
+			hlist_del_rcu(&entry->node);
+			call_rcu_sched(&entry->rcu, ftrace_free_entry_rcu);
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 	__disable_ftrace_function_probe();
@@ -3612,7 +3628,12 @@ out:
 	if (fail)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	ftrace_graph_filter_enabled = 1;
+=======
+	ftrace_graph_filter_enabled = !!(*idx);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -3841,6 +3862,7 @@ static void ftrace_init_module(struct module *mod,
 	ftrace_process_locs(mod, start, end);
 }
 
+<<<<<<< HEAD
 static int ftrace_module_notify(struct notifier_block *self,
 				unsigned long val, void *data)
 {
@@ -3856,20 +3878,62 @@ static int ftrace_module_notify(struct notifier_block *self,
 		ftrace_release_mod(mod);
 		break;
 	}
+=======
+static int ftrace_module_notify_enter(struct notifier_block *self,
+				      unsigned long val, void *data)
+{
+	struct module *mod = data;
+
+	if (val == MODULE_STATE_COMING)
+		ftrace_init_module(mod, mod->ftrace_callsites,
+				   mod->ftrace_callsites +
+				   mod->num_ftrace_callsites);
+	return 0;
+}
+
+static int ftrace_module_notify_exit(struct notifier_block *self,
+				     unsigned long val, void *data)
+{
+	struct module *mod = data;
+
+	if (val == MODULE_STATE_GOING)
+		ftrace_release_mod(mod);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
 #else
+<<<<<<< HEAD
 static int ftrace_module_notify(struct notifier_block *self,
 				unsigned long val, void *data)
+=======
+static int ftrace_module_notify_enter(struct notifier_block *self,
+				      unsigned long val, void *data)
+{
+	return 0;
+}
+static int ftrace_module_notify_exit(struct notifier_block *self,
+				     unsigned long val, void *data)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	return 0;
 }
 #endif /* CONFIG_MODULES */
 
+<<<<<<< HEAD
 struct notifier_block ftrace_module_nb = {
 	.notifier_call = ftrace_module_notify,
 	.priority = 0,
+=======
+struct notifier_block ftrace_module_enter_nb = {
+	.notifier_call = ftrace_module_notify_enter,
+	.priority = INT_MAX,	/* Run before anything that can use kprobes */
+};
+
+struct notifier_block ftrace_module_exit_nb = {
+	.notifier_call = ftrace_module_notify_exit,
+	.priority = INT_MIN,	/* Run after anything that can remove kprobes */
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 extern unsigned long __start_mcount_loc[];
@@ -3903,9 +3967,19 @@ void __init ftrace_init(void)
 				  __start_mcount_loc,
 				  __stop_mcount_loc);
 
+<<<<<<< HEAD
 	ret = register_module_notifier(&ftrace_module_nb);
 	if (ret)
 		pr_warning("Failed to register trace ftrace module notifier\n");
+=======
+	ret = register_module_notifier(&ftrace_module_enter_nb);
+	if (ret)
+		pr_warning("Failed to register trace ftrace module enter notifier\n");
+
+	ret = register_module_notifier(&ftrace_module_exit_nb);
+	if (ret)
+		pr_warning("Failed to register trace ftrace module exit notifier\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	set_ftrace_early_filters();
 
@@ -4363,12 +4437,17 @@ ftrace_enable_sysctl(struct ctl_table *table, int write,
 		ftrace_startup_sysctl();
 
 		/* we are starting ftrace again */
+<<<<<<< HEAD
 		if (ftrace_ops_list != &ftrace_list_end) {
 			if (ftrace_ops_list->next == &ftrace_list_end)
 				ftrace_trace_function = ftrace_ops_list->func;
 			else
 				ftrace_trace_function = ftrace_ops_list_func;
 		}
+=======
+		if (ftrace_ops_list != &ftrace_list_end)
+			update_ftrace_function();
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	} else {
 		/* stopping ftrace calls (just send to ftrace_stub) */

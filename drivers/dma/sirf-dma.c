@@ -109,7 +109,11 @@ static void sirfsoc_dma_execute(struct sirfsoc_dma_chan *schan)
 	sdesc = list_first_entry(&schan->queued, struct sirfsoc_dma_desc,
 		node);
 	/* Move the first queued descriptor to active list */
+<<<<<<< HEAD
 	list_move_tail(&schan->queued, &schan->active);
+=======
+	list_move_tail(&sdesc->node, &schan->active);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Start the DMA transfer */
 	writel_relaxed(sdesc->width, sdma->base + SIRFSOC_DMA_WIDTH_0 +
@@ -428,7 +432,11 @@ static struct dma_async_tx_descriptor *sirfsoc_dma_prep_interleaved(
 	unsigned long iflags;
 	int ret;
 
+<<<<<<< HEAD
 	if ((xt->dir != DMA_MEM_TO_DEV) || (xt->dir != DMA_DEV_TO_MEM)) {
+=======
+	if ((xt->dir != DMA_MEM_TO_DEV) && (xt->dir != DMA_DEV_TO_MEM)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		ret = -EINVAL;
 		goto err_dir;
 	}

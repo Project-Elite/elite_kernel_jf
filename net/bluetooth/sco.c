@@ -1,7 +1,10 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
    Copyright (C) 2000-2001 Qualcomm Incorporated
+<<<<<<< HEAD
    Copyright (c) 2011, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -25,7 +28,10 @@
 
 /* Bluetooth SCO sockets. */
 
+<<<<<<< HEAD
 #include <linux/interrupt.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/module.h>
 
 #include <linux/types.h>
@@ -43,9 +49,15 @@
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 #include <net/sock.h>
 
 #include <asm/system.h>
+=======
+#include <linux/security.h>
+#include <net/sock.h>
+
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/uaccess.h>
 
 #include <net/bluetooth/bluetooth.h>
@@ -63,7 +75,11 @@ static struct bt_sock_list sco_sk_list = {
 static void __sco_chan_add(struct sco_conn *conn, struct sock *sk, struct sock *parent);
 static void sco_chan_del(struct sock *sk, int err);
 
+<<<<<<< HEAD
 static int  sco_conn_del(struct hci_conn *conn, int err, u8 is_process);
+=======
+static int  sco_conn_del(struct hci_conn *conn, int err);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static void sco_sock_close(struct sock *sk);
 static void sco_sock_kill(struct sock *sk);
@@ -136,7 +152,11 @@ static inline struct sock *sco_chan_get(struct sco_conn *conn)
 	return sk;
 }
 
+<<<<<<< HEAD
 static int sco_conn_del(struct hci_conn *hcon, int err, u8 is_process)
+=======
+static int sco_conn_del(struct hci_conn *hcon, int err)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct sco_conn *conn = hcon->sco_data;
 	struct sock *sk;
@@ -149,6 +169,7 @@ static int sco_conn_del(struct hci_conn *hcon, int err, u8 is_process)
 	/* Kill socket */
 	sk = sco_chan_get(conn);
 	if (sk) {
+<<<<<<< HEAD
 		if (is_process)
 			lock_sock(sk);
 		else
@@ -159,6 +180,12 @@ static int sco_conn_del(struct hci_conn *hcon, int err, u8 is_process)
 			release_sock(sk);
 		else
 			bh_unlock_sock(sk);
+=======
+		bh_lock_sock(sk);
+		sco_sock_clear_timer(sk);
+		sco_chan_del(sk, err);
+		bh_unlock_sock(sk);
+>>>>>>> remotes/linux2/linux-3.4.y
 		sco_sock_kill(sk);
 	}
 
@@ -181,11 +208,18 @@ static inline int sco_chan_add(struct sco_conn *conn, struct sock *sk, struct so
 	return err;
 }
 
+<<<<<<< HEAD
 static int sco_connect(struct sock *sk, __s8 is_wbs)
 {
 	bdaddr_t *src = &bt_sk(sk)->src;
 	bdaddr_t *dst = &bt_sk(sk)->dst;
 	__u16 pkt_type = sco_pi(sk)->pkt_type;
+=======
+static int sco_connect(struct sock *sk)
+{
+	bdaddr_t *src = &bt_sk(sk)->src;
+	bdaddr_t *dst = &bt_sk(sk)->dst;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct sco_conn *conn;
 	struct hci_conn *hcon;
 	struct hci_dev  *hdev;
@@ -197,6 +231,7 @@ static int sco_connect(struct sock *sk, __s8 is_wbs)
 	if (!hdev)
 		return -EHOSTUNREACH;
 
+<<<<<<< HEAD
 	hci_dev_lock_bh(hdev);
 
 	hdev->is_wbs = is_wbs;
@@ -214,11 +249,22 @@ static int sco_connect(struct sock *sk, __s8 is_wbs)
 
 	hcon = hci_connect(hdev, type, pkt_type, dst,
 					BT_SECURITY_LOW, HCI_AT_NO_BONDING);
+=======
+	hci_dev_lock(hdev);
+
+	if (lmp_esco_capable(hdev) && !disable_esco)
+		type = ESCO_LINK;
+	else
+		type = SCO_LINK;
+
+	hcon = hci_connect(hdev, type, dst, BT_SECURITY_LOW, HCI_AT_NO_BONDING);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (IS_ERR(hcon)) {
 		err = PTR_ERR(hcon);
 		goto done;
 	}
 
+<<<<<<< HEAD
 	if (is_wbs && (hcon->type != ESCO_LINK)) {
 		BT_ERR("WBS [ hcon->type: 0x%x, hcon->pkt_type: 0x%x ]",
 				hcon->type, hcon->pkt_type);
@@ -226,6 +272,8 @@ static int sco_connect(struct sock *sk, __s8 is_wbs)
 		goto done;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	conn = sco_conn_add(hcon, 0);
 	if (!conn) {
 		hci_conn_put(hcon);
@@ -249,7 +297,11 @@ static int sco_connect(struct sock *sk, __s8 is_wbs)
 	}
 
 done:
+<<<<<<< HEAD
 	hci_dev_unlock_bh(hdev);
+=======
+	hci_dev_unlock(hdev);
+>>>>>>> remotes/linux2/linux-3.4.y
 	hci_dev_put(hdev);
 	return err;
 }
@@ -403,6 +455,10 @@ static void __sco_sock_close(struct sock *sk)
 			sco_chan_del(sk, ECONNRESET);
 		break;
 
+<<<<<<< HEAD
+=======
+	case BT_CONNECT2:
+>>>>>>> remotes/linux2/linux-3.4.y
 	case BT_CONNECT:
 	case BT_DISCONN:
 		sco_chan_del(sk, ECONNRESET);
@@ -428,8 +484,15 @@ static void sco_sock_init(struct sock *sk, struct sock *parent)
 {
 	BT_DBG("sk %p", sk);
 
+<<<<<<< HEAD
 	if (parent)
 		sk->sk_type = parent->sk_type;
+=======
+	if (parent) {
+		sk->sk_type = parent->sk_type;
+		security_sk_clone(parent, sk);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static struct proto sco_proto = {
@@ -485,6 +548,7 @@ static int sco_sock_create(struct net *net, struct socket *sock, int protocol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
 {
 	struct sockaddr_sco sa;
@@ -493,14 +557,27 @@ static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
 	int len, err = 0;
 
 	BT_DBG("sk %p %s", sk, batostr(&sa.sco_bdaddr));
+=======
+static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+{
+	struct sockaddr_sco *sa = (struct sockaddr_sco *) addr;
+	struct sock *sk = sock->sk;
+	bdaddr_t *src = &sa->sco_bdaddr;
+	int err = 0;
+
+	BT_DBG("sk %p %s", sk, batostr(&sa->sco_bdaddr));
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!addr || addr->sa_family != AF_BLUETOOTH)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	memset(&sa, 0, sizeof(sa));
 	len = min_t(unsigned int, sizeof(sa), alen);
 	memcpy(&sa, addr, len);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	lock_sock(sk);
 
 	if (sk->sk_state != BT_OPEN) {
@@ -508,18 +585,30 @@ static int sco_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
 		goto done;
 	}
 
+<<<<<<< HEAD
 	write_lock_bh(&sco_sk_list.lock);
+=======
+	write_lock(&sco_sk_list.lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (bacmp(src, BDADDR_ANY) && __sco_get_sock_by_addr(src)) {
 		err = -EADDRINUSE;
 	} else {
 		/* Save source address */
+<<<<<<< HEAD
 		bacpy(&bt_sk(sk)->src, &sa.sco_bdaddr);
 		sco_pi(sk)->pkt_type = sa.sco_pkt_type;
 		sk->sk_state = BT_BOUND;
 	}
 
 	write_unlock_bh(&sco_sk_list.lock);
+=======
+		bacpy(&bt_sk(sk)->src, &sa->sco_bdaddr);
+		sk->sk_state = BT_BOUND;
+	}
+
+	write_unlock(&sco_sk_list.lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 done:
 	release_sock(sk);
@@ -528,6 +617,7 @@ done:
 
 static int sco_sock_connect(struct socket *sock, struct sockaddr *addr, int alen, int flags)
 {
+<<<<<<< HEAD
 	struct sock *sk = sock->sk;
 	struct sockaddr_sco sa;
 	int len, err = 0;
@@ -558,6 +648,31 @@ static int sco_sock_connect(struct socket *sock, struct sockaddr *addr, int alen
 	sco_pi(sk)->pkt_type = sa.sco_pkt_type;
 
 	err = sco_connect(sk, sa.is_wbs);
+=======
+	struct sockaddr_sco *sa = (struct sockaddr_sco *) addr;
+	struct sock *sk = sock->sk;
+	int err = 0;
+
+
+	BT_DBG("sk %p", sk);
+
+	if (alen < sizeof(struct sockaddr_sco) ||
+	    addr->sa_family != AF_BLUETOOTH)
+		return -EINVAL;
+
+	if (sk->sk_state != BT_OPEN && sk->sk_state != BT_BOUND)
+		return -EBADFD;
+
+	if (sk->sk_type != SOCK_SEQPACKET)
+		return -EINVAL;
+
+	lock_sock(sk);
+
+	/* Set destination address and psm */
+	bacpy(&bt_sk(sk)->dst, &sa->sco_bdaddr);
+
+	err = sco_connect(sk);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (err)
 		goto done;
 
@@ -601,17 +716,21 @@ static int sco_sock_accept(struct socket *sock, struct socket *newsock, int flag
 
 	lock_sock(sk);
 
+<<<<<<< HEAD
 	if (sk->sk_state != BT_LISTEN) {
 		err = -EBADFD;
 		goto done;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	timeo = sock_rcvtimeo(sk, flags & O_NONBLOCK);
 
 	BT_DBG("sk %p timeo %ld", sk, timeo);
 
 	/* Wait for an incoming connection. (wake-one). */
 	add_wait_queue_exclusive(sk_sleep(sk), &wait);
+<<<<<<< HEAD
 	while (!(ch = bt_accept_dequeue(sk, newsock))) {
 		set_current_state(TASK_INTERRUPTIBLE);
 		if (!timeo) {
@@ -625,6 +744,22 @@ static int sco_sock_accept(struct socket *sock, struct socket *newsock, int flag
 
 		if (sk->sk_state != BT_LISTEN) {
 			err = -EBADFD;
+=======
+	while (1) {
+		set_current_state(TASK_INTERRUPTIBLE);
+
+		if (sk->sk_state != BT_LISTEN) {
+			err = -EBADFD;
+			break;
+		}
+
+		ch = bt_accept_dequeue(sk, newsock);
+		if (ch)
+			break;
+
+		if (!timeo) {
+			err = -EAGAIN;
+>>>>>>> remotes/linux2/linux-3.4.y
 			break;
 		}
 
@@ -632,8 +767,17 @@ static int sco_sock_accept(struct socket *sock, struct socket *newsock, int flag
 			err = sock_intr_errno(timeo);
 			break;
 		}
+<<<<<<< HEAD
 	}
 	set_current_state(TASK_RUNNING);
+=======
+
+		release_sock(sk);
+		timeo = schedule_timeout(timeo);
+		lock_sock(sk);
+	}
+	__set_current_state(TASK_RUNNING);
+>>>>>>> remotes/linux2/linux-3.4.y
 	remove_wait_queue(sk_sleep(sk), &wait);
 
 	if (err)
@@ -662,7 +806,10 @@ static int sco_sock_getname(struct socket *sock, struct sockaddr *addr, int *len
 		bacpy(&sa->sco_bdaddr, &bt_sk(sk)->dst);
 	else
 		bacpy(&sa->sco_bdaddr, &bt_sk(sk)->src);
+<<<<<<< HEAD
 	sa->sco_pkt_type = sco_pi(sk)->pkt_type;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -812,9 +959,12 @@ static int sco_sock_shutdown(struct socket *sock, int how)
 		if (sock_flag(sk, SOCK_LINGER) && sk->sk_lingertime)
 			err = bt_sock_wait_state(sk, BT_CLOSED,
 							sk->sk_lingertime);
+<<<<<<< HEAD
 		else
 			err = bt_sock_wait_state(sk, BT_CLOSED,
 							SCO_DISCONN_TIMEOUT);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 	release_sock(sk);
 	return err;
@@ -836,11 +986,14 @@ static int sco_sock_release(struct socket *sock)
 		lock_sock(sk);
 		err = bt_sock_wait_state(sk, BT_CLOSED, sk->sk_lingertime);
 		release_sock(sk);
+<<<<<<< HEAD
 	} else {
 		lock_sock(sk);
 		err = bt_sock_wait_state(sk, BT_CLOSED,
 							SCO_DISCONN_TIMEOUT);
 		release_sock(sk);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	sock_orphan(sk);
@@ -936,15 +1089,22 @@ done:
 }
 
 /* ----- SCO interface with lower layer (HCI) ----- */
+<<<<<<< HEAD
 static int sco_connect_ind(struct hci_dev *hdev, bdaddr_t *bdaddr, __u8 type)
+=======
+int sco_connect_ind(struct hci_dev *hdev, bdaddr_t *bdaddr)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	register struct sock *sk;
 	struct hlist_node *node;
 	int lm = 0;
 
+<<<<<<< HEAD
 	if (type != SCO_LINK && type != ESCO_LINK)
 		return 0;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	BT_DBG("hdev %s, bdaddr %s", hdev->name, batostr(bdaddr));
 
 	/* Find listening sockets */
@@ -964,6 +1124,7 @@ static int sco_connect_ind(struct hci_dev *hdev, bdaddr_t *bdaddr, __u8 type)
 	return lm;
 }
 
+<<<<<<< HEAD
 static int sco_connect_cfm(struct hci_conn *hcon, __u8 status)
 {
 	BT_DBG("hcon %p bdaddr %s status %d", hcon, batostr(&hcon->dst), status);
@@ -971,6 +1132,11 @@ static int sco_connect_cfm(struct hci_conn *hcon, __u8 status)
 	if (hcon->type != SCO_LINK && hcon->type != ESCO_LINK)
 		return -EINVAL;
 
+=======
+int sco_connect_cfm(struct hci_conn *hcon, __u8 status)
+{
+	BT_DBG("hcon %p bdaddr %s status %d", hcon, batostr(&hcon->dst), status);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!status) {
 		struct sco_conn *conn;
 
@@ -978,11 +1144,16 @@ static int sco_connect_cfm(struct hci_conn *hcon, __u8 status)
 		if (conn)
 			sco_conn_ready(conn);
 	} else
+<<<<<<< HEAD
 		sco_conn_del(hcon, bt_err(status), 0);
+=======
+		sco_conn_del(hcon, bt_to_errno(status));
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int sco_disconn_cfm(struct hci_conn *hcon, __u8 reason, __u8 is_process)
 {
 	BT_DBG("hcon %p reason %d", hcon, reason);
@@ -996,6 +1167,17 @@ static int sco_disconn_cfm(struct hci_conn *hcon, __u8 reason, __u8 is_process)
 }
 
 static int sco_recv_scodata(struct hci_conn *hcon, struct sk_buff *skb)
+=======
+int sco_disconn_cfm(struct hci_conn *hcon, __u8 reason)
+{
+	BT_DBG("hcon %p reason %d", hcon, reason);
+
+	sco_conn_del(hcon, bt_to_errno(reason));
+	return 0;
+}
+
+int sco_recv_scodata(struct hci_conn *hcon, struct sk_buff *skb)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct sco_conn *conn = hcon->sco_data;
 
@@ -1019,14 +1201,22 @@ static int sco_debugfs_show(struct seq_file *f, void *p)
 	struct sock *sk;
 	struct hlist_node *node;
 
+<<<<<<< HEAD
 	read_lock_bh(&sco_sk_list.lock);
+=======
+	read_lock(&sco_sk_list.lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	sk_for_each(sk, node, &sco_sk_list.head) {
 		seq_printf(f, "%s %s %d\n", batostr(&bt_sk(sk)->src),
 				batostr(&bt_sk(sk)->dst), sk->sk_state);
 	}
 
+<<<<<<< HEAD
 	read_unlock_bh(&sco_sk_list.lock);
+=======
+	read_unlock(&sco_sk_list.lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -1071,6 +1261,7 @@ static const struct net_proto_family sco_sock_family_ops = {
 	.create	= sco_sock_create,
 };
 
+<<<<<<< HEAD
 static struct hci_proto sco_hci_proto = {
 	.name		= "SCO",
 	.id		= HCI_PROTO_SCO,
@@ -1080,6 +1271,8 @@ static struct hci_proto sco_hci_proto = {
 	.recv_scodata	= sco_recv_scodata
 };
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 int __init sco_init(void)
 {
 	int err;
@@ -1094,6 +1287,7 @@ int __init sco_init(void)
 		goto error;
 	}
 
+<<<<<<< HEAD
 	err = hci_register_proto(&sco_hci_proto);
 	if (err < 0) {
 		BT_ERR("SCO protocol registration failed");
@@ -1101,6 +1295,8 @@ int __init sco_init(void)
 		goto error;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (bt_debugfs) {
 		sco_debugfs = debugfs_create_file("sco", 0444,
 					bt_debugfs, NULL, &sco_debugfs_fops);
@@ -1124,9 +1320,12 @@ void __exit sco_exit(void)
 	if (bt_sock_unregister(BTPROTO_SCO) < 0)
 		BT_ERR("SCO socket unregistration failed");
 
+<<<<<<< HEAD
 	if (hci_unregister_proto(&sco_hci_proto) < 0)
 		BT_ERR("SCO protocol unregistration failed");
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	proto_unregister(&sco_proto);
 }
 

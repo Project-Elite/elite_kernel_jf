@@ -28,7 +28,10 @@
 #include <asm/highmem.h>
 #include <asm/system_info.h>
 #include <asm/traps.h>
+<<<<<<< HEAD
 #include <asm/mmu_writeable.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
@@ -53,9 +56,12 @@ pmd_t *top_pmd;
 #define CPOLICY_WRITEBACK	3
 #define CPOLICY_WRITEALLOC	4
 
+<<<<<<< HEAD
 #define RX_AREA_START           _text
 #define RX_AREA_END             __start_rodata
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static unsigned int cachepolicy __initdata = CPOLICY_WRITEBACK;
 static unsigned int ecc_mask __initdata = 0;
 pgprot_t pgprot_user;
@@ -261,6 +267,7 @@ static struct mem_type mem_types[] = {
 		.prot_sect = PMD_TYPE_SECT | PMD_SECT_AP_WRITE,
 		.domain    = DOMAIN_KERNEL,
 	},
+<<<<<<< HEAD
 	[MT_MEMORY_R] = {
 		.prot_sect = PMD_TYPE_SECT | PMD_SECT_XN,
 		.domain    = DOMAIN_KERNEL,
@@ -273,6 +280,8 @@ static struct mem_type mem_types[] = {
 		.prot_sect = PMD_TYPE_SECT,
 		.domain    = DOMAIN_KERNEL,
 	},
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	[MT_ROM] = {
 		.prot_sect = PMD_TYPE_SECT,
 		.domain    = DOMAIN_KERNEL,
@@ -304,11 +313,14 @@ static struct mem_type mem_types[] = {
 				PMD_SECT_UNCACHED | PMD_SECT_XN,
 		.domain    = DOMAIN_KERNEL,
 	},
+<<<<<<< HEAD
 	[MT_MEMORY_DMA_READY] = {
 		.prot_pte  = L_PTE_PRESENT | L_PTE_YOUNG | L_PTE_DIRTY,
 		.prot_l1   = PMD_TYPE_TABLE,
 		.domain    = DOMAIN_KERNEL,
 	},
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 const struct mem_type *get_mem_type(unsigned int type)
@@ -450,7 +462,10 @@ static void __init build_mem_type_table(void)
 	if (arch_is_coherent() && cpu_is_xsc3()) {
 		mem_types[MT_MEMORY].prot_sect |= PMD_SECT_S;
 		mem_types[MT_MEMORY].prot_pte |= L_PTE_SHARED;
+<<<<<<< HEAD
 		mem_types[MT_MEMORY_DMA_READY].prot_pte |= L_PTE_SHARED;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		mem_types[MT_MEMORY_NONCACHED].prot_sect |= PMD_SECT_S;
 		mem_types[MT_MEMORY_NONCACHED].prot_pte |= L_PTE_SHARED;
 	}
@@ -464,8 +479,11 @@ static void __init build_mem_type_table(void)
 		 * from SVC mode and no access from userspace.
 		 */
 		mem_types[MT_ROM].prot_sect |= PMD_SECT_APX|PMD_SECT_AP_WRITE;
+<<<<<<< HEAD
 		mem_types[MT_MEMORY_RX].prot_sect |= PMD_SECT_APX|PMD_SECT_AP_WRITE;
 		mem_types[MT_MEMORY_R].prot_sect |= PMD_SECT_APX|PMD_SECT_AP_WRITE;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		mem_types[MT_MINICLEAN].prot_sect |= PMD_SECT_APX|PMD_SECT_AP_WRITE;
 		mem_types[MT_CACHECLEAN].prot_sect |= PMD_SECT_APX|PMD_SECT_AP_WRITE;
 #endif
@@ -484,11 +502,15 @@ static void __init build_mem_type_table(void)
 			mem_types[MT_DEVICE_CACHED].prot_pte |= L_PTE_SHARED;
 			mem_types[MT_MEMORY].prot_sect |= PMD_SECT_S;
 			mem_types[MT_MEMORY].prot_pte |= L_PTE_SHARED;
+<<<<<<< HEAD
 			mem_types[MT_MEMORY_DMA_READY].prot_pte |= L_PTE_SHARED;
 			mem_types[MT_MEMORY_NONCACHED].prot_sect |= PMD_SECT_S;
 			mem_types[MT_MEMORY_R].prot_sect |= PMD_SECT_S;
 			mem_types[MT_MEMORY_RW].prot_sect |= PMD_SECT_S;
 			mem_types[MT_MEMORY_RX].prot_sect |= PMD_SECT_S;
+=======
+			mem_types[MT_MEMORY_NONCACHED].prot_sect |= PMD_SECT_S;
+>>>>>>> remotes/linux2/linux-3.4.y
 			mem_types[MT_MEMORY_NONCACHED].prot_pte |= L_PTE_SHARED;
 		}
 	}
@@ -525,7 +547,11 @@ static void __init build_mem_type_table(void)
 #endif
 
 	for (i = 0; i < 16; i++) {
+<<<<<<< HEAD
 		unsigned long v = pgprot_val(protection_map[i]);
+=======
+		pteval_t v = pgprot_val(protection_map[i]);
+>>>>>>> remotes/linux2/linux-3.4.y
 		protection_map[i] = __pgprot(v | user_pgprot);
 	}
 
@@ -540,11 +566,15 @@ static void __init build_mem_type_table(void)
 	mem_types[MT_HIGH_VECTORS].prot_l1 |= ecc_mask;
 	mem_types[MT_MEMORY].prot_sect |= ecc_mask | cp->pmd;
 	mem_types[MT_MEMORY].prot_pte |= kern_pgprot;
+<<<<<<< HEAD
 	mem_types[MT_MEMORY_DMA_READY].prot_pte |= kern_pgprot;
 	mem_types[MT_MEMORY_NONCACHED].prot_sect |= ecc_mask;
 	mem_types[MT_MEMORY_R].prot_sect |= ecc_mask | cp->pmd;
 	mem_types[MT_MEMORY_RW].prot_sect |= ecc_mask | cp->pmd;
 	mem_types[MT_MEMORY_RX].prot_sect |= ecc_mask | cp->pmd;
+=======
+	mem_types[MT_MEMORY_NONCACHED].prot_sect |= ecc_mask;
+>>>>>>> remotes/linux2/linux-3.4.y
 	mem_types[MT_ROM].prot_sect |= cp->pmd;
 
 	switch (cp->pmd) {
@@ -595,6 +625,7 @@ static void __init *early_alloc(unsigned long sz)
 	return early_alloc_aligned(sz, sz);
 }
 
+<<<<<<< HEAD
 static pte_t * __init early_pte_alloc(pmd_t *pmd)
 {
 	if (pmd_none(*pmd) || pmd_bad(*pmd))
@@ -615,33 +646,54 @@ static pte_t * __init early_pte_alloc_and_install(pmd_t *pmd,
 	if (pmd_none(*pmd)) {
 		pte_t *pte = early_pte_alloc(pmd);
 		early_pte_install(pmd, pte, prot);
+=======
+static pte_t * __init early_pte_alloc(pmd_t *pmd, unsigned long addr, unsigned long prot)
+{
+	if (pmd_none(*pmd)) {
+		pte_t *pte = early_alloc(PTE_HWTABLE_OFF + PTE_HWTABLE_SIZE);
+		__pmd_populate(pmd, __pa(pte), prot);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 	BUG_ON(pmd_bad(*pmd));
 	return pte_offset_kernel(pmd, addr);
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static void __init alloc_init_pte(pmd_t *pmd, unsigned long addr,
 				  unsigned long end, unsigned long pfn,
 				  const struct mem_type *type)
 {
+<<<<<<< HEAD
 	pte_t *start_pte = early_pte_alloc(pmd);
 	pte_t *pte = start_pte + pte_index(addr);
 
 	/* If replacing a section mapping, the whole section must be replaced */
 	BUG_ON(pmd_bad(*pmd) && ((addr | end) & ~PMD_MASK));
 
+=======
+	pte_t *pte = early_pte_alloc(pmd, addr, type->prot_l1);
+>>>>>>> remotes/linux2/linux-3.4.y
 	do {
 		set_pte_ext(pte, pfn_pte(pfn, __pgprot(type->prot_pte)), 0);
 		pfn++;
 	} while (pte++, addr += PAGE_SIZE, addr != end);
+<<<<<<< HEAD
 	early_pte_install(pmd, start_pte, type->prot_l1);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void __init alloc_init_section(pud_t *pud, unsigned long addr,
 				      unsigned long end, phys_addr_t phys,
+<<<<<<< HEAD
 				      const struct mem_type *type,
 				      bool force_pages)
+=======
+				      const struct mem_type *type)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	pmd_t *pmd = pmd_offset(pud, addr);
 
@@ -651,7 +703,11 @@ static void __init alloc_init_section(pud_t *pud, unsigned long addr,
 	 * L1 entries, whereas PGDs refer to a group of L1 entries making
 	 * up one logical pointer to an L2 table.
 	 */
+<<<<<<< HEAD
 	if (type->prot_sect && ((addr | end | phys) & ~SECTION_MASK) == 0 && !force_pages) {
+=======
+	if (((addr | end | phys) & ~SECTION_MASK) == 0) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		pmd_t *p = pmd;
 
 #ifndef CONFIG_ARM_LPAE
@@ -675,15 +731,23 @@ static void __init alloc_init_section(pud_t *pud, unsigned long addr,
 }
 
 static void __init alloc_init_pud(pgd_t *pgd, unsigned long addr,
+<<<<<<< HEAD
 	unsigned long end, unsigned long phys, const struct mem_type *type,
 	bool force_pages)
+=======
+	unsigned long end, unsigned long phys, const struct mem_type *type)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	pud_t *pud = pud_offset(pgd, addr);
 	unsigned long next;
 
 	do {
 		next = pud_addr_end(addr, end);
+<<<<<<< HEAD
 		alloc_init_section(pud, addr, next, phys, type, force_pages);
+=======
+		alloc_init_section(pud, addr, next, phys, type);
+>>>>>>> remotes/linux2/linux-3.4.y
 		phys += next - addr;
 	} while (pud++, addr = next, addr != end);
 }
@@ -757,7 +821,11 @@ static void __init create_36bit_mapping(struct map_desc *md,
  * offsets, and we take full advantage of sections and
  * supersections.
  */
+<<<<<<< HEAD
 static void __init create_mapping(struct map_desc *md, bool force_pages)
+=======
+static void __init create_mapping(struct map_desc *md)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	unsigned long addr, length, end;
 	phys_addr_t phys;
@@ -807,7 +875,11 @@ static void __init create_mapping(struct map_desc *md, bool force_pages)
 	do {
 		unsigned long next = pgd_addr_end(addr, end);
 
+<<<<<<< HEAD
 		alloc_init_pud(pgd, addr, next, phys, type, force_pages);
+=======
+		alloc_init_pud(pgd, addr, next, phys, type);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		phys += next - addr;
 		addr = next;
@@ -828,7 +900,11 @@ void __init iotable_init(struct map_desc *io_desc, int nr)
 	vm = early_alloc_aligned(sizeof(*vm) * nr, __alignof__(*vm));
 
 	for (md = io_desc; nr; md++, nr--) {
+<<<<<<< HEAD
 		create_mapping(md, false);
+=======
+		create_mapping(md);
+>>>>>>> remotes/linux2/linux-3.4.y
 		vm->addr = (void *)(md->virtual & PAGE_MASK);
 		vm->size = PAGE_ALIGN(md->length + (md->virtual & ~PAGE_MASK));
 		vm->phys_addr = __pfn_to_phys(md->pfn); 
@@ -861,7 +937,11 @@ static void __init pmd_empty_section_gap(unsigned long addr)
 	vm = early_alloc_aligned(sizeof(*vm), __alignof__(*vm));
 	vm->addr = (void *)addr;
 	vm->size = SECTION_SIZE;
+<<<<<<< HEAD
 	vm->flags = VM_IOREMAP | VM_ARM_STATIC_MAPPING;
+=======
+	vm->flags = VM_IOREMAP | VM_ARM_EMPTY_MAPPING;
+>>>>>>> remotes/linux2/linux-3.4.y
 	vm->caller = pmd_empty_section_gap;
 	vm_area_add_early(vm);
 }
@@ -874,7 +954,11 @@ static void __init fill_pmd_gaps(void)
 
 	/* we're still single threaded hence no lock needed here */
 	for (vm = vmlist; vm; vm = vm->next) {
+<<<<<<< HEAD
 		if (!(vm->flags & VM_ARM_STATIC_MAPPING))
+=======
+		if (!(vm->flags & (VM_ARM_STATIC_MAPPING | VM_ARM_EMPTY_MAPPING)))
+>>>>>>> remotes/linux2/linux-3.4.y
 			continue;
 		addr = (unsigned long)vm->addr;
 		if (addr < next)
@@ -943,12 +1027,17 @@ static int __init early_vmalloc(char *arg)
 }
 early_param("vmalloc", early_vmalloc);
 
+<<<<<<< HEAD
 phys_addr_t arm_lowmem_limit __initdata = 0;
+=======
+static phys_addr_t lowmem_limit __initdata = 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 void __init sanity_check_meminfo(void)
 {
 	int i, j, highmem = 0;
 
+<<<<<<< HEAD
 #ifdef CONFIG_DONT_MAP_HOLE_AFTER_MEMBANK0
 	find_membank0_hole();
 #endif
@@ -957,6 +1046,8 @@ void __init sanity_check_meminfo(void)
 	if (movable_reserved_size && __pa(vmalloc_min) > movable_reserved_start)
 		vmalloc_min = __va(movable_reserved_start);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	for (i = 0, j = 0; i < meminfo.nr_banks; i++) {
 		struct membank *bank = &meminfo.bank[j];
 		*bank = meminfo.bank[i];
@@ -1034,8 +1125,13 @@ void __init sanity_check_meminfo(void)
 			bank->size = newsize;
 		}
 #endif
+<<<<<<< HEAD
 		if (!bank->highmem && bank->start + bank->size > arm_lowmem_limit)
 			arm_lowmem_limit = bank->start + bank->size;
+=======
+		if (!bank->highmem && bank->start + bank->size > lowmem_limit)
+			lowmem_limit = bank->start + bank->size;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		j++;
 	}
@@ -1060,8 +1156,13 @@ void __init sanity_check_meminfo(void)
 	}
 #endif
 	meminfo.nr_banks = j;
+<<<<<<< HEAD
 	high_memory = __va(arm_lowmem_limit - 1) + 1;
 	memblock_set_current_limit(arm_lowmem_limit);
+=======
+	high_memory = __va(lowmem_limit - 1) + 1;
+	memblock_set_current_limit(lowmem_limit);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static inline void prepare_page_table(void)
@@ -1086,8 +1187,13 @@ static inline void prepare_page_table(void)
 	 * Find the end of the first block of lowmem.
 	 */
 	end = memblock.memory.regions[0].base + memblock.memory.regions[0].size;
+<<<<<<< HEAD
 	if (end >= arm_lowmem_limit)
 		end = arm_lowmem_limit;
+=======
+	if (end >= lowmem_limit)
+		end = lowmem_limit;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Clear out all the kernel space mappings, except for the first
@@ -1188,12 +1294,20 @@ static void __init devicemaps_init(struct machine_desc *mdesc)
 	map.virtual = 0xffff0000;
 	map.length = PAGE_SIZE;
 	map.type = MT_HIGH_VECTORS;
+<<<<<<< HEAD
 	create_mapping(&map, false);
+=======
+	create_mapping(&map);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!vectors_high()) {
 		map.virtual = 0;
 		map.type = MT_LOW_VECTORS;
+<<<<<<< HEAD
 		create_mapping(&map, false);
+=======
+		create_mapping(&map);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	/*
@@ -1216,11 +1330,16 @@ static void __init devicemaps_init(struct machine_desc *mdesc)
 static void __init kmap_init(void)
 {
 #ifdef CONFIG_HIGHMEM
+<<<<<<< HEAD
 	pkmap_page_table = early_pte_alloc_and_install(pmd_off_k(PKMAP_BASE),
+=======
+	pkmap_page_table = early_pte_alloc(pmd_off_k(PKMAP_BASE),
+>>>>>>> remotes/linux2/linux-3.4.y
 		PKMAP_BASE, _PAGE_KERNEL_TABLE);
 #endif
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_STRICT_MEMORY_RWX
 static struct {
 	pmd_t *pmd_to_flush;
@@ -1335,11 +1454,26 @@ static void __init map_lowmem(void)
 
 		if (end > arm_lowmem_limit)
 			end = arm_lowmem_limit;
+=======
+static void __init map_lowmem(void)
+{
+	struct memblock_region *reg;
+
+	/* Map all the lowmem memory banks. */
+	for_each_memblock(memory, reg) {
+		phys_addr_t start = reg->base;
+		phys_addr_t end = start + reg->size;
+		struct map_desc map;
+
+		if (end > lowmem_limit)
+			end = lowmem_limit;
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (start >= end)
 			break;
 
 		map.pfn = __phys_to_pfn(start);
 		map.virtual = __phys_to_virt(start);
+<<<<<<< HEAD
 #ifdef CONFIG_STRICT_MEMORY_RWX
 		if (start <= __pa(_text) && __pa(_text) < end) {
 			map.length = SECTION_SIZE;
@@ -1395,6 +1529,13 @@ static void __init map_lowmem(void)
 
 	create_mapping(&map, true);
 #endif
+=======
+		map.length = end - start;
+		map.type = MT_MEMORY;
+
+		create_mapping(&map);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -1405,12 +1546,19 @@ void __init paging_init(struct machine_desc *mdesc)
 {
 	void *zero_page;
 
+<<<<<<< HEAD
 	memblock_set_current_limit(arm_lowmem_limit);
+=======
+	memblock_set_current_limit(lowmem_limit);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	build_mem_type_table();
 	prepare_page_table();
 	map_lowmem();
+<<<<<<< HEAD
 	dma_contiguous_remap();
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	devicemaps_init(mdesc);
 	kmap_init();
 
@@ -1419,6 +1567,7 @@ void __init paging_init(struct machine_desc *mdesc)
 	/* allocate the zero page. */
 	zero_page = early_alloc(PAGE_SIZE);
 
+<<<<<<< HEAD
 #ifdef TIMA_ENABLED
 	{
 	        /**TIMA_MAGIC*/
@@ -1430,6 +1579,8 @@ void __init paging_init(struct machine_desc *mdesc)
 	}
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	bootmem_init();
 
 	empty_zero_page = virt_to_page(zero_page);

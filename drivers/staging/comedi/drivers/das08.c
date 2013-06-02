@@ -653,7 +653,11 @@ static int das08jr_ao_winsn(struct comedi_device *dev,
 	int chan;
 
 	lsb = data[0] & 0xff;
+<<<<<<< HEAD
 	msb = (data[0] >> 8) & 0xf;
+=======
+	msb = (data[0] >> 8) & 0xff;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	chan = CR_CHAN(insn->chanspec);
 

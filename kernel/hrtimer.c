@@ -61,6 +61,10 @@
 DEFINE_PER_CPU(struct hrtimer_cpu_base, hrtimer_bases) =
 {
 
+<<<<<<< HEAD
+=======
+	.lock = __RAW_SPIN_LOCK_UNLOCKED(hrtimer_bases.lock),
+>>>>>>> remotes/linux2/linux-3.4.y
 	.clock_base =
 	{
 		{
@@ -84,8 +88,11 @@ DEFINE_PER_CPU(struct hrtimer_cpu_base, hrtimer_bases) =
 	}
 };
 
+<<<<<<< HEAD
 static DEFINE_PER_CPU(int, hrtimer_base_lock_init) = {-1};
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static const int hrtimer_clock_to_base_table[MAX_CLOCKS] = {
 	[CLOCK_REALTIME]	= HRTIMER_BASE_REALTIME,
 	[CLOCK_MONOTONIC]	= HRTIMER_BASE_MONOTONIC,
@@ -299,6 +306,13 @@ ktime_t ktime_sub_ns(const ktime_t kt, u64 nsec)
 	} else {
 		unsigned long rem = do_div(nsec, NSEC_PER_SEC);
 
+<<<<<<< HEAD
+=======
+		/* Make sure nsec fits into long */
+		if (unlikely(nsec > KTIME_SEC_MAX))
+			return (ktime_t){ .tv64 = KTIME_MAX };
+
+>>>>>>> remotes/linux2/linux-3.4.y
 		tmp = ktime_set((long)nsec, rem);
 	}
 
@@ -647,6 +661,17 @@ static inline int hrtimer_enqueue_reprogram(struct hrtimer *timer,
 	return base->cpu_base->hres_active && hrtimer_reprogram(timer, base);
 }
 
+<<<<<<< HEAD
+=======
+static inline ktime_t hrtimer_update_base(struct hrtimer_cpu_base *base)
+{
+	ktime_t *offs_real = &base->clock_base[HRTIMER_BASE_REALTIME].offset;
+	ktime_t *offs_boot = &base->clock_base[HRTIMER_BASE_BOOTTIME].offset;
+
+	return ktime_get_update_offsets(offs_real, offs_boot);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Retrigger next event is called after clock was set
  *
@@ -655,11 +680,15 @@ static inline int hrtimer_enqueue_reprogram(struct hrtimer *timer,
 static void retrigger_next_event(void *arg)
 {
 	struct hrtimer_cpu_base *base = &__get_cpu_var(hrtimer_bases);
+<<<<<<< HEAD
 	struct timespec realtime_offset, xtim, wtm, sleep;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!hrtimer_hres_active())
 		return;
 
+<<<<<<< HEAD
 	/* Optimized out for !HIGH_RES */
 	get_xtime_and_monotonic_and_sleep_offset(&xtim, &wtm, &sleep);
 	set_normalized_timespec(&realtime_offset, -wtm.tv_sec, -wtm.tv_nsec);
@@ -671,6 +700,10 @@ static void retrigger_next_event(void *arg)
 	base->clock_base[HRTIMER_BASE_BOOTTIME].offset =
 		timespec_to_ktime(sleep);
 
+=======
+	raw_spin_lock(&base->lock);
+	hrtimer_update_base(base);
+>>>>>>> remotes/linux2/linux-3.4.y
 	hrtimer_force_reprogram(base, 0);
 	raw_spin_unlock(&base->lock);
 }
@@ -700,13 +733,32 @@ static int hrtimer_switch_to_hres(void)
 		base->clock_base[i].resolution = KTIME_HIGH_RES;
 
 	tick_setup_sched_timer();
+<<<<<<< HEAD
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* "Retrigger" the interrupt to get things going */
 	retrigger_next_event(NULL);
 	local_irq_restore(flags);
 	return 1;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * Called from timekeeping code to reprogramm the hrtimer interrupt
+ * device. If called from the timer interrupt context we defer it to
+ * softirq context.
+ */
+void clock_was_set_delayed(void)
+{
+	struct hrtimer_cpu_base *cpu_base = &__get_cpu_var(hrtimer_bases);
+
+	cpu_base->clock_was_set = 1;
+	__raise_softirq_irqoff(HRTIMER_SOFTIRQ);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 #else
 
 static inline int hrtimer_hres_active(void) { return 0; }
@@ -808,8 +860,11 @@ u64 hrtimer_forward(struct hrtimer *timer, ktime_t now, ktime_t interval)
 	u64 orun = 1;
 	ktime_t delta;
 
+<<<<<<< HEAD
 	WARN_ON(hrtimer_is_queued(timer));
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	delta = ktime_sub(now, hrtimer_get_expires(timer));
 
 	if (delta.tv64 < 0)
@@ -1254,11 +1309,18 @@ void hrtimer_interrupt(struct clock_event_device *dev)
 	cpu_base->nr_events++;
 	dev->next_event.tv64 = KTIME_MAX;
 
+<<<<<<< HEAD
 	entry_time = now = ktime_get();
 retry:
 	expires_next.tv64 = KTIME_MAX;
 
 	raw_spin_lock(&cpu_base->lock);
+=======
+	raw_spin_lock(&cpu_base->lock);
+	entry_time = now = hrtimer_update_base(cpu_base);
+retry:
+	expires_next.tv64 = KTIME_MAX;
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * We set expires_next to KTIME_MAX here with cpu_base->lock
 	 * held to prevent that a timer is enqueued in our queue via
@@ -1302,6 +1364,11 @@ retry:
 
 				expires = ktime_sub(hrtimer_get_expires(timer),
 						    base->offset);
+<<<<<<< HEAD
+=======
+				if (expires.tv64 < 0)
+					expires.tv64 = KTIME_MAX;
+>>>>>>> remotes/linux2/linux-3.4.y
 				if (expires.tv64 < expires_next.tv64)
 					expires_next = expires;
 				break;
@@ -1334,8 +1401,17 @@ retry:
 	 * We need to prevent that we loop forever in the hrtimer
 	 * interrupt routine. We give it 3 attempts to avoid
 	 * overreacting on some spurious event.
+<<<<<<< HEAD
 	 */
 	now = ktime_get();
+=======
+	 *
+	 * Acquire base lock for updating the offsets and retrieving
+	 * the current time.
+	 */
+	raw_spin_lock(&cpu_base->lock);
+	now = hrtimer_update_base(cpu_base);
+>>>>>>> remotes/linux2/linux-3.4.y
 	cpu_base->nr_retries++;
 	if (++retries < 3)
 		goto retry;
@@ -1347,6 +1423,10 @@ retry:
 	 */
 	cpu_base->nr_hangs++;
 	cpu_base->hang_detected = 1;
+<<<<<<< HEAD
+=======
+	raw_spin_unlock(&cpu_base->lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 	delta = ktime_sub(now, entry_time);
 	if (delta.tv64 > cpu_base->max_hang_time.tv64)
 		cpu_base->max_hang_time = delta;
@@ -1399,6 +1479,16 @@ void hrtimer_peek_ahead_timers(void)
 
 static void run_hrtimer_softirq(struct softirq_action *h)
 {
+<<<<<<< HEAD
+=======
+	struct hrtimer_cpu_base *cpu_base = &__get_cpu_var(hrtimer_bases);
+
+	if (cpu_base->clock_was_set) {
+		cpu_base->clock_was_set = 0;
+		clock_was_set();
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	hrtimer_peek_ahead_timers();
 }
 
@@ -1621,6 +1711,7 @@ SYSCALL_DEFINE2(nanosleep, struct timespec __user *, rqtp,
 static void __cpuinit init_hrtimers_cpu(int cpu)
 {
 	struct hrtimer_cpu_base *cpu_base = &per_cpu(hrtimer_bases, cpu);
+<<<<<<< HEAD
 	int *lock_init = &per_cpu(hrtimer_base_lock_init, cpu);
 	int i;
 
@@ -1630,6 +1721,10 @@ static void __cpuinit init_hrtimers_cpu(int cpu)
 		pr_info("hrtimer base lock initialized for cpu%d\n", cpu);
 	}
 
+=======
+	int i;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	for (i = 0; i < HRTIMER_MAX_CLOCK_BASES; i++) {
 		cpu_base->clock_base[i].cpu_base = cpu_base;
 		timerqueue_init_head(&cpu_base->clock_base[i].active);

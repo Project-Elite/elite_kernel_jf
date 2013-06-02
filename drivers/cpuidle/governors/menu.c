@@ -126,6 +126,17 @@ struct menu_device {
 #define LOAD_INT(x) ((x) >> FSHIFT)
 #define LOAD_FRAC(x) LOAD_INT(((x) & (FIXED_1-1)) * 100)
 
+<<<<<<< HEAD
+=======
+static int get_loadavg(void)
+{
+	unsigned long this = this_cpu_load();
+
+
+	return LOAD_INT(this) * 10 + LOAD_FRAC(this) / 10;
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static inline int which_bucket(unsigned int duration)
 {
 	int bucket = 0;
@@ -165,12 +176,16 @@ static inline int performance_multiplier(void)
 
 	/* for higher loadavg, we are more reluctant */
 
+<<<<<<< HEAD
 	/*
 	 * this doesn't work as intended - it is almost always 0, but can
 	 * sometimes, depending on workload, spike very high into the hundreds
 	 * even when the average cpu load is under 10%.
 	 */
 	/* mult += 2 * get_loadavg(); */
+=======
+	mult += 2 * get_loadavg();
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* for IO wait tasks (per cpu!) we add 5x each */
 	mult += 10 * nr_iowait_cpu(smp_processor_id());

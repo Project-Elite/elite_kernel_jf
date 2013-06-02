@@ -22,15 +22,19 @@
 #include <linux/pm_runtime.h>
 #include <linux/slab.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 #include <linux/debugfs.h>
 #include <linux/dma-mapping.h>
 #include <linux/export.h>
 #include <linux/bug.h>
 #include <linux/ratelimit.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 #include <sound/soc.h>
+<<<<<<< HEAD
 #include <sound/soc-dpcm.h>
 #include <sound/initval.h>
 
@@ -102,6 +106,10 @@ static int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
 	return 1;
 }
 
+=======
+#include <sound/initval.h>
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream,
 					struct snd_soc_dai *soc_dai)
 {
@@ -142,7 +150,11 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream,
  * like the DAC/ADC resolution to use but there isn't right now.
  */
 static int sample_sizes[] = {
+<<<<<<< HEAD
 	8, 16, 24, 32,
+=======
+	24, 32,
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static void soc_pcm_apply_msb(struct snd_pcm_substream *substream,
@@ -172,6 +184,7 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream,
 }
 
 /*
+<<<<<<< HEAD
  * stream event, send event to FE and all active BEs.
  */
 int soc_dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe,
@@ -195,6 +208,8 @@ int soc_dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe,
 }
 
 /*
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  * Called by ALSA when a PCM substream is opened, the runtime->hw record is
  * then initialized and any private data can be allocated. This also calls
  * startup for the cpu DAI, platform, machine and codec DAI.
@@ -216,15 +231,23 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
 
 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
 
+<<<<<<< HEAD
 	if (rtd->dai_link->no_host_mode == SND_SOC_DAI_LINK_NO_HOST)
 		snd_soc_set_runtime_hwparams(substream, &no_host_hardware);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* startup the audio subsystem */
 	if (cpu_dai->driver->ops->startup) {
 		ret = cpu_dai->driver->ops->startup(substream, cpu_dai);
 		if (ret < 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "asoc: can't open interface %s\n",
 				cpu_dai->name);
+=======
+			dev_err(cpu_dai->dev, "can't open interface %s: %d\n",
+				cpu_dai->name, ret);
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto out;
 		}
 	}
@@ -232,12 +255,18 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
 	if (platform->driver->ops && platform->driver->ops->open) {
 		ret = platform->driver->ops->open(substream);
 		if (ret < 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "asoc: can't open platform %s\n", platform->name);
+=======
+			dev_err(platform->dev, "can't open platform %s: %d\n",
+				platform->name, ret);
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto platform_err;
 		}
 	}
 
 	if (codec_dai->driver->ops->startup) {
+<<<<<<< HEAD
 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 			ret = codec_dai->driver->ops->startup(substream,
 								codec_dai);
@@ -256,21 +285,36 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
 					goto codec_dai_err;
 				}
 			}
+=======
+		ret = codec_dai->driver->ops->startup(substream, codec_dai);
+		if (ret < 0) {
+			dev_err(codec_dai->dev, "can't open codec %s: %d\n",
+				codec_dai->name, ret);
+			goto codec_dai_err;
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 
 	if (rtd->dai_link->ops && rtd->dai_link->ops->startup) {
 		ret = rtd->dai_link->ops->startup(substream);
 		if (ret < 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "asoc: %s startup failed\n", rtd->dai_link->name);
+=======
+			pr_err("asoc: %s startup failed: %d\n",
+			       rtd->dai_link->name, ret);
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto machine_err;
 		}
 	}
 
+<<<<<<< HEAD
 	/* DSP DAI links compat checks are different */
 	if (rtd->dai_link->dynamic || rtd->dai_link->no_pcm)
 		goto dynamic;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Check that the codec and cpu DAIs are compatible */
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		runtime->hw.rate_min =
@@ -363,7 +407,10 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
 	pr_debug("asoc: min rate %d max rate %d\n", runtime->hw.rate_min,
 		 runtime->hw.rate_max);
 
+<<<<<<< HEAD
 dynamic:
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		cpu_dai->playback_active++;
 		codec_dai->playback_active++;
@@ -423,9 +470,14 @@ static void close_delayed_work(struct work_struct *work)
 	/* are we waiting on this codec DAI stream */
 	if (codec_dai->pop_wait == 1) {
 		codec_dai->pop_wait = 0;
+<<<<<<< HEAD
 		snd_soc_dapm_stream_event(rtd,
 			codec_dai->driver->playback.stream_name,
 			SND_SOC_DAPM_STREAM_STOP);
+=======
+		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_PLAYBACK,
+					  codec_dai, SND_SOC_DAPM_STREAM_STOP);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	mutex_unlock(&rtd->pcm_mutex);
@@ -474,6 +526,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
 	if (cpu_dai->driver->ops->shutdown)
 		cpu_dai->driver->ops->shutdown(substream, cpu_dai);
 
+<<<<<<< HEAD
 	if (codec_dai->driver->ops->shutdown) {
 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 			codec_dai->driver->ops->shutdown(substream, codec_dai);
@@ -483,6 +536,10 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
 								codec_dai);
 		}
 	}
+=======
+	if (codec_dai->driver->ops->shutdown)
+		codec_dai->driver->ops->shutdown(substream, codec_dai);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (rtd->dai_link->ops && rtd->dai_link->ops->shutdown)
 		rtd->dai_link->ops->shutdown(substream);
@@ -492,6 +549,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
 	cpu_dai->runtime = NULL;
 
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+<<<<<<< HEAD
 		if (codec->ignore_pmdown_time ||
 		    rtd->dai_link->ignore_pmdown_time ||
 		    !rtd->pmdown_time) {
@@ -499,6 +557,15 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
 			snd_soc_dapm_stream_event(rtd,
 				codec_dai->driver->playback.stream_name,
 				SND_SOC_DAPM_STREAM_STOP);
+=======
+		if (!rtd->pmdown_time || codec->ignore_pmdown_time ||
+		    rtd->dai_link->ignore_pmdown_time) {
+			/* powered down playback stream now */
+			snd_soc_dapm_stream_event(rtd,
+						  SNDRV_PCM_STREAM_PLAYBACK,
+						  codec_dai,
+						  SND_SOC_DAPM_STREAM_STOP);
+>>>>>>> remotes/linux2/linux-3.4.y
 		} else {
 			/* start delayed pop wq here for playback streams */
 			codec_dai->pop_wait = 1;
@@ -507,10 +574,15 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
 		}
 	} else {
 		/* capture streams can be powered down now */
+<<<<<<< HEAD
 		if (!codec_dai->capture_active)
 			snd_soc_dapm_stream_event(rtd,
 			codec_dai->driver->capture.stream_name,
 			SND_SOC_DAPM_STREAM_STOP);
+=======
+		snd_soc_dapm_stream_event(rtd, SNDRV_PCM_STREAM_CAPTURE,
+					  codec_dai, SND_SOC_DAPM_STREAM_STOP);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	mutex_unlock(&rtd->pcm_mutex);
@@ -540,7 +612,11 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
 	if (rtd->dai_link->ops && rtd->dai_link->ops->prepare) {
 		ret = rtd->dai_link->ops->prepare(substream);
 		if (ret < 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "asoc: machine prepare error\n");
+=======
+			pr_err("asoc: machine prepare error: %d\n", ret);
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto out;
 		}
 	}
@@ -548,7 +624,12 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
 	if (platform->driver->ops && platform->driver->ops->prepare) {
 		ret = platform->driver->ops->prepare(substream);
 		if (ret < 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "asoc: platform prepare error\n");
+=======
+			dev_err(platform->dev, "platform prepare error: %d\n",
+				ret);
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto out;
 		}
 	}
@@ -556,7 +637,12 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
 	if (codec_dai->driver->ops->prepare) {
 		ret = codec_dai->driver->ops->prepare(substream, codec_dai);
 		if (ret < 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "asoc: codec DAI prepare error\n");
+=======
+			dev_err(codec_dai->dev, "DAI prepare error: %d\n",
+				ret);
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto out;
 		}
 	}
@@ -564,7 +650,12 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
 	if (cpu_dai->driver->ops->prepare) {
 		ret = cpu_dai->driver->ops->prepare(substream, cpu_dai);
 		if (ret < 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "asoc: cpu DAI prepare error\n");
+=======
+			dev_err(cpu_dai->dev, "DAI prepare error: %d\n",
+				ret);
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto out;
 		}
 	}
@@ -576,6 +667,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
 		cancel_delayed_work(&rtd->delayed_work);
 	}
 
+<<<<<<< HEAD
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 		snd_soc_dapm_stream_event(rtd,
 					  codec_dai->driver->playback.stream_name,
@@ -586,6 +678,11 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
 					  codec_dai->driver->capture.stream_name,
 					  SND_SOC_DAPM_STREAM_START);
 	}
+=======
+	snd_soc_dapm_stream_event(rtd, substream->stream, codec_dai,
+				  SND_SOC_DAPM_STREAM_START);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	snd_soc_dai_digital_mute(codec_dai, 0);
 
 out:
@@ -612,12 +709,17 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
 	if (rtd->dai_link->ops && rtd->dai_link->ops->hw_params) {
 		ret = rtd->dai_link->ops->hw_params(substream, params);
 		if (ret < 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "asoc: machine hw_params failed\n");
+=======
+			pr_err("asoc: machine hw_params failed: %d\n", ret);
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto out;
 		}
 	}
 
 	if (codec_dai->driver->ops->hw_params) {
+<<<<<<< HEAD
 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 			ret = codec_dai->driver->ops->hw_params(substream,
 							params, codec_dai);
@@ -636,14 +738,26 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
 					goto codec_err;
 				}
 			}
+=======
+		ret = codec_dai->driver->ops->hw_params(substream, params, codec_dai);
+		if (ret < 0) {
+			dev_err(codec_dai->dev, "can't set %s hw params: %d\n",
+				codec_dai->name, ret);
+			goto codec_err;
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 
 	if (cpu_dai->driver->ops->hw_params) {
 		ret = cpu_dai->driver->ops->hw_params(substream, params, cpu_dai);
 		if (ret < 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "asoc: interface %s hw params failed\n",
 				cpu_dai->name);
+=======
+			dev_err(cpu_dai->dev, "%s hw params failed: %d\n",
+				cpu_dai->name, ret);
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto interface_err;
 		}
 	}
@@ -651,8 +765,13 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
 	if (platform->driver->ops && platform->driver->ops->hw_params) {
 		ret = platform->driver->ops->hw_params(substream, params);
 		if (ret < 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "asoc: platform %s hw params failed\n",
 				platform->name);
+=======
+			dev_err(platform->dev, "%s hw params failed: %d\n",
+			       platform->name, ret);
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto platform_err;
 		}
 	}
@@ -661,6 +780,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
 	cpu_dai->rate = params_rate(params);
 	codec_dai->rate = params_rate(params);
 
+<<<<<<< HEAD
 	/* malloc a page for hostless IO.
 	 * FIXME: rework with alsa-lib changes so that this malloc is not required.
 	 */
@@ -675,6 +795,8 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
 			goto platform_err;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 out:
 	mutex_unlock(&rtd->pcm_mutex);
 	return ret;
@@ -727,9 +849,12 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
 	if (cpu_dai->driver->ops->hw_free)
 		cpu_dai->driver->ops->hw_free(substream, cpu_dai);
 
+<<<<<<< HEAD
 	if (rtd->dai_link->no_host_mode == SND_SOC_DAI_LINK_NO_HOST)
 		snd_pcm_lib_free_pages(substream);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	mutex_unlock(&rtd->pcm_mutex);
 	return 0;
 }
@@ -743,6 +868,7 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 	int ret;
 
 	if (codec_dai->driver->ops->trigger) {
+<<<<<<< HEAD
 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 			ret = codec_dai->driver->ops->trigger(substream,
 						cmd, codec_dai);
@@ -756,6 +882,11 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 					return ret;
 			}
 		}
+=======
+		ret = codec_dai->driver->ops->trigger(substream, cmd, codec_dai);
+		if (ret < 0)
+			return ret;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	if (platform->driver->ops && platform->driver->ops->trigger) {
@@ -772,6 +903,7 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 	return 0;
 }
 
+<<<<<<< HEAD
 int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream, int cmd)
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
@@ -800,6 +932,8 @@ int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream, int cmd)
 	return 0;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * soc level wrapper for pointer callback
  * If cpu_dai, codec_dai, platform driver has the delay callback, than
@@ -832,6 +966,7 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
 	return offset;
 }
 
+<<<<<<< HEAD
 static inline int be_connect(struct snd_soc_pcm_runtime *fe,
 		struct snd_soc_pcm_runtime *be, int stream)
 {
@@ -2596,15 +2731,84 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
 		if (ret < 0) {
 			pr_err("asoc: platform pcm constructor failed\n");
 			return ret;
+=======
+/* create a new pcm */
+int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+{
+	struct snd_soc_codec *codec = rtd->codec;
+	struct snd_soc_platform *platform = rtd->platform;
+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+	struct snd_pcm_ops *soc_pcm_ops = &rtd->ops;
+	struct snd_pcm *pcm;
+	char new_name[64];
+	int ret = 0, playback = 0, capture = 0;
+
+	soc_pcm_ops->open	= soc_pcm_open;
+	soc_pcm_ops->close	= soc_pcm_close;
+	soc_pcm_ops->hw_params	= soc_pcm_hw_params;
+	soc_pcm_ops->hw_free	= soc_pcm_hw_free;
+	soc_pcm_ops->prepare	= soc_pcm_prepare;
+	soc_pcm_ops->trigger	= soc_pcm_trigger;
+	soc_pcm_ops->pointer	= soc_pcm_pointer;
+
+	/* check client and interface hw capabilities */
+	snprintf(new_name, sizeof(new_name), "%s %s-%d",
+			rtd->dai_link->stream_name, codec_dai->name, num);
+
+	if (codec_dai->driver->playback.channels_min)
+		playback = 1;
+	if (codec_dai->driver->capture.channels_min)
+		capture = 1;
+
+	dev_dbg(rtd->card->dev, "registered pcm #%d %s\n",num,new_name);
+	ret = snd_pcm_new(rtd->card->snd_card, new_name,
+			num, playback, capture, &pcm);
+	if (ret < 0) {
+		printk(KERN_ERR "asoc: can't create pcm for codec %s\n", codec->name);
+		return ret;
+	}
+
+	/* DAPM dai link stream work */
+	INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
+
+	rtd->pcm = pcm;
+	pcm->private_data = rtd;
+	if (platform->driver->ops) {
+		soc_pcm_ops->mmap = platform->driver->ops->mmap;
+		soc_pcm_ops->pointer = platform->driver->ops->pointer;
+		soc_pcm_ops->ioctl = platform->driver->ops->ioctl;
+		soc_pcm_ops->copy = platform->driver->ops->copy;
+		soc_pcm_ops->silence = platform->driver->ops->silence;
+		soc_pcm_ops->ack = platform->driver->ops->ack;
+		soc_pcm_ops->page = platform->driver->ops->page;
+	}
+
+	if (playback)
+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, soc_pcm_ops);
+
+	if (capture)
+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, soc_pcm_ops);
+
+	if (platform->driver->pcm_new) {
+		ret = platform->driver->pcm_new(rtd);
+		if (ret < 0) {
+			pr_err("asoc: platform pcm constructor failed\n");
+			return ret;
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 
 	pcm->private_free = platform->driver->pcm_free;
+<<<<<<< HEAD
 out:
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	printk(KERN_INFO "asoc: %s <-> %s mapping ok\n", codec_dai->name,
 		cpu_dai->name);
 	return ret;
 }
+<<<<<<< HEAD
 
 #ifdef CONFIG_DEBUG_FS
 static char *dpcm_state_string(enum snd_soc_dpcm_state state)
@@ -2748,3 +2952,5 @@ int soc_dpcm_debugfs_add(struct snd_soc_pcm_runtime *rtd)
 	return 0;
 }
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

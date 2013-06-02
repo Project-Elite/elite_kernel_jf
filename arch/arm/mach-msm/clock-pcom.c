@@ -1,6 +1,10 @@
 /*
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2007-2010, Code Aurora Forum. All rights reserved.
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -13,6 +17,7 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/err.h>
 
@@ -21,12 +26,21 @@
 #include <mach/socinfo.h>
 #include <mach/proc_comm.h>
 
+=======
+#include <linux/err.h>
+#include <linux/ctype.h>
+#include <linux/stddef.h>
+#include <mach/clk.h>
+
+#include "proc_comm.h"
+>>>>>>> remotes/linux2/linux-3.4.y
 #include "clock.h"
 #include "clock-pcom.h"
 
 /*
  * glue for the proc_comm interface
  */
+<<<<<<< HEAD
 static int pc_clk_enable(struct clk *clk)
 {
 	int rc;
@@ -37,12 +51,18 @@ static int pc_clk_enable(struct clk *clk)
 		return 0;
 
 	rc = msm_proc_comm(PCOM_CLKCTL_RPC_ENABLE, &id, NULL);
+=======
+int pc_clk_enable(unsigned id)
+{
+	int rc = msm_proc_comm(PCOM_CLKCTL_RPC_ENABLE, &id, NULL);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (rc < 0)
 		return rc;
 	else
 		return (int)id < 0 ? -EINVAL : 0;
 }
 
+<<<<<<< HEAD
 static void pc_clk_disable(struct clk *clk)
 {
 	int id = to_pcom_clk(clk)->id;
@@ -51,6 +71,10 @@ static void pc_clk_disable(struct clk *clk)
 	if (id == P_EBI1_CLK || id == P_EBI1_FIXED_CLK)
 		return;
 
+=======
+void pc_clk_disable(unsigned id)
+{
+>>>>>>> remotes/linux2/linux-3.4.y
 	msm_proc_comm(PCOM_CLKCTL_RPC_DISABLE, &id, NULL);
 }
 
@@ -69,6 +93,7 @@ int pc_clk_reset(unsigned id, enum clk_reset_action action)
 		return (int)id < 0 ? -EINVAL : 0;
 }
 
+<<<<<<< HEAD
 static int pc_reset(struct clk *clk, enum clk_reset_action action)
 {
 	int id = to_pcom_clk(clk)->id;
@@ -76,20 +101,28 @@ static int pc_reset(struct clk *clk, enum clk_reset_action action)
 }
 
 static int _pc_clk_set_rate(struct clk *clk, unsigned long rate)
+=======
+int pc_clk_set_rate(unsigned id, unsigned rate)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	/* The rate _might_ be rounded off to the nearest KHz value by the
 	 * remote function. So a return value of 0 doesn't necessarily mean
 	 * that the exact rate was set successfully.
 	 */
+<<<<<<< HEAD
 	unsigned r = rate;
 	int id = to_pcom_clk(clk)->id;
 	int rc = msm_proc_comm(PCOM_CLKCTL_RPC_SET_RATE, &id, &r);
+=======
+	int rc = msm_proc_comm(PCOM_CLKCTL_RPC_SET_RATE, &id, &rate);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (rc < 0)
 		return rc;
 	else
 		return (int)id < 0 ? -EINVAL : 0;
 }
 
+<<<<<<< HEAD
 static int _pc_clk_set_min_rate(struct clk *clk, unsigned long rate)
 {
 	int rc;
@@ -102,10 +135,18 @@ static int _pc_clk_set_min_rate(struct clk *clk, unsigned long rate)
 		return rc;
 	else if (ignore_error)
 		return 0;
+=======
+int pc_clk_set_min_rate(unsigned id, unsigned rate)
+{
+	int rc = msm_proc_comm(PCOM_CLKCTL_RPC_MIN_RATE, &id, &rate);
+	if (rc < 0)
+		return rc;
+>>>>>>> remotes/linux2/linux-3.4.y
 	else
 		return (int)id < 0 ? -EINVAL : 0;
 }
 
+<<<<<<< HEAD
 static int pc_clk_set_rate(struct clk *clk, unsigned long rate)
 {
 	if (clk->flags & CLKFLAG_MIN)
@@ -119,15 +160,25 @@ static int pc_clk_set_max_rate(struct clk *clk, unsigned long rate)
 	int id = to_pcom_clk(clk)->id;
 	unsigned r = rate;
 	int rc = msm_proc_comm(PCOM_CLKCTL_RPC_MAX_RATE, &id, &r);
+=======
+int pc_clk_set_max_rate(unsigned id, unsigned rate)
+{
+	int rc = msm_proc_comm(PCOM_CLKCTL_RPC_MAX_RATE, &id, &rate);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (rc < 0)
 		return rc;
 	else
 		return (int)id < 0 ? -EINVAL : 0;
 }
 
+<<<<<<< HEAD
 static int pc_clk_set_flags(struct clk *clk, unsigned flags)
 {
 	int id = to_pcom_clk(clk)->id;
+=======
+int pc_clk_set_flags(unsigned id, unsigned flags)
+{
+>>>>>>> remotes/linux2/linux-3.4.y
 	int rc = msm_proc_comm(PCOM_CLKCTL_RPC_SET_FLAGS, &id, &flags);
 	if (rc < 0)
 		return rc;
@@ -135,6 +186,7 @@ static int pc_clk_set_flags(struct clk *clk, unsigned flags)
 		return (int)id < 0 ? -EINVAL : 0;
 }
 
+<<<<<<< HEAD
 static int pc_clk_set_ext_config(struct clk *clk, unsigned long config)
 {
 	int id = to_pcom_clk(clk)->id;
@@ -149,33 +201,51 @@ static int pc_clk_set_ext_config(struct clk *clk, unsigned long config)
 static unsigned long pc_clk_get_rate(struct clk *clk)
 {
 	int id = to_pcom_clk(clk)->id;
+=======
+unsigned pc_clk_get_rate(unsigned id)
+{
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (msm_proc_comm(PCOM_CLKCTL_RPC_RATE, &id, NULL))
 		return 0;
 	else
 		return id;
 }
 
+<<<<<<< HEAD
 static int pc_clk_is_enabled(struct clk *clk)
 {
 	int id = to_pcom_clk(clk)->id;
+=======
+unsigned pc_clk_is_enabled(unsigned id)
+{
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (msm_proc_comm(PCOM_CLKCTL_RPC_ENABLED, &id, NULL))
 		return 0;
 	else
 		return id;
 }
 
+<<<<<<< HEAD
 static long pc_clk_round_rate(struct clk *clk, unsigned long rate)
+=======
+long pc_clk_round_rate(unsigned id, unsigned rate)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 
 	/* Not really supported; pc_clk_set_rate() does rounding on it's own. */
 	return rate;
 }
 
+<<<<<<< HEAD
 static bool pc_clk_is_local(struct clk *clk)
+=======
+static bool pc_clk_is_local(unsigned id)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	return false;
 }
 
+<<<<<<< HEAD
 static enum handoff pc_clk_handoff(struct clk *clk)
 {
 	/*
@@ -193,12 +263,22 @@ struct clk_ops clk_ops_pcom = {
 	.disable = pc_clk_disable,
 	.reset = pc_reset,
 	.set_rate = pc_clk_set_rate,
+=======
+struct clk_ops clk_ops_pcom = {
+	.enable = pc_clk_enable,
+	.disable = pc_clk_disable,
+	.auto_off = pc_clk_disable,
+	.reset = pc_clk_reset,
+	.set_rate = pc_clk_set_rate,
+	.set_min_rate = pc_clk_set_min_rate,
+>>>>>>> remotes/linux2/linux-3.4.y
 	.set_max_rate = pc_clk_set_max_rate,
 	.set_flags = pc_clk_set_flags,
 	.get_rate = pc_clk_get_rate,
 	.is_enabled = pc_clk_is_enabled,
 	.round_rate = pc_clk_round_rate,
 	.is_local = pc_clk_is_local,
+<<<<<<< HEAD
 	.handoff = pc_clk_handoff,
 };
 
@@ -216,3 +296,6 @@ struct clk_ops clk_ops_pcom_ext_config = {
 	.handoff = pc_clk_handoff,
 };
 
+=======
+};
+>>>>>>> remotes/linux2/linux-3.4.y

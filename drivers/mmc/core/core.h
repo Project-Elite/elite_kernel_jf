@@ -32,8 +32,11 @@ void mmc_detach_bus(struct mmc_host *host);
 
 void mmc_init_erase(struct mmc_card *card);
 
+<<<<<<< HEAD
 void mmc_power_up(struct mmc_host *host);
 void mmc_power_off(struct mmc_host *host);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 void mmc_set_chip_select(struct mmc_host *host, int mode);
 void mmc_set_clock(struct mmc_host *host, unsigned int hz);
 void mmc_gate_clock(struct mmc_host *host);
@@ -53,8 +56,11 @@ static inline void mmc_delay(unsigned int ms)
 	if (ms < 1000 / HZ) {
 		cond_resched();
 		mdelay(ms);
+<<<<<<< HEAD
 	} else if (ms < jiffies_to_msecs(2)) {
 		usleep_range(ms * 1000, (ms + 1) * 1000);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	} else {
 		msleep(ms);
 	}
@@ -80,5 +86,10 @@ void mmc_remove_host_debugfs(struct mmc_host *host);
 void mmc_add_card_debugfs(struct mmc_card *card);
 void mmc_remove_card_debugfs(struct mmc_card *card);
 
+<<<<<<< HEAD
 void mmc_init_context_info(struct mmc_host *host);
 #endif
+=======
+#endif
+
+>>>>>>> remotes/linux2/linux-3.4.y

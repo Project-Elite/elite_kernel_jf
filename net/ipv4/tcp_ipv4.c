@@ -81,7 +81,10 @@
 #include <linux/stddef.h>
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
 #include <linux/inetdevice.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <linux/crypto.h>
 #include <linux/scatterlist.h>
@@ -679,10 +682,18 @@ static void tcp_v4_send_reset(struct sock *sk, struct sk_buff *skb)
 	arg.csumoffset = offsetof(struct tcphdr, check) / 2;
 	arg.flags = (sk && inet_sk(sk)->transparent) ? IP_REPLY_ARG_NOSRCCHECK : 0;
 	/* When socket is gone, all binding information is lost.
+<<<<<<< HEAD
 	 * routing might fail in this case. using iif for oif to
 	 * make sure we can deliver it
 	 */
 	arg.bound_dev_if = sk ? sk->sk_bound_dev_if : inet_iif(skb);
+=======
+	 * routing might fail in this case. No choice here, if we choose to force
+	 * input interface, we will misroute in case of asymmetric route.
+	 */
+	if (sk)
+		arg.bound_dev_if = sk->sk_bound_dev_if;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	net = dev_net(skb_dst(skb)->dev);
 	arg.tos = ip_hdr(skb)->tos;
@@ -1524,10 +1535,15 @@ exit:
 	NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_LISTENDROPS);
 	return NULL;
 put_and_exit:
+<<<<<<< HEAD
 	tcp_clear_xmit_timers(newsk);
 	tcp_cleanup_congestion_control(newsk);
 	bh_unlock_sock(newsk);
 	sock_put(newsk);
+=======
+	inet_csk_prepare_forced_close(newsk);
+	tcp_done(newsk);
+>>>>>>> remotes/linux2/linux-3.4.y
 	goto exit;
 }
 EXPORT_SYMBOL(tcp_v4_syn_recv_sock);
@@ -1669,7 +1685,10 @@ int tcp_v4_rcv(struct sk_buff *skb)
 	struct sock *sk;
 	int ret;
 	struct net *net = dev_net(skb->dev);
+<<<<<<< HEAD
 	struct in_device *in_dev;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (skb->pkt_type != PACKET_HOST)
 		goto discard_it;
@@ -1760,6 +1779,7 @@ no_tcp_socket:
 bad_packet:
 		TCP_INC_STATS_BH(net, TCP_MIB_INERRS);
 	} else {
+<<<<<<< HEAD
 		in_dev = in_dev_get(skb->dev);
 		if (in_dev) {
 			if (!IN_DEV_FORWARD(in_dev))
@@ -1768,6 +1788,9 @@ bad_packet:
 		} else
 		tcp_v4_send_reset(NULL, skb);
 
+=======
+		tcp_v4_send_reset(NULL, skb);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 discard_it:
@@ -2000,6 +2023,7 @@ void tcp_v4_destroy_sock(struct sock *sk)
 }
 EXPORT_SYMBOL(tcp_v4_destroy_sock);
 
+<<<<<<< HEAD
 /*
  * tcp_v4_nuke_addr - destroy all sockets on the given local address
  */
@@ -2043,6 +2067,8 @@ restart:
 	}
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_PROC_FS
 /* Proc filesystem TCP sock list dumping. */
 

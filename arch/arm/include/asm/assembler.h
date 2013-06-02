@@ -320,4 +320,15 @@
 	.size \name , . - \name
 	.endm
 
+<<<<<<< HEAD
+=======
+	.macro check_uaccess, addr:req, size:req, limit:req, tmp:req, bad:req
+#ifndef CONFIG_CPU_USE_DOMAINS
+	adds	\tmp, \addr, #\size - 1
+	sbcccs	\tmp, \tmp, \limit
+	bcs	\bad
+#endif
+	.endm
+
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif /* __ASM_ASSEMBLER_H__ */

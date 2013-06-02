@@ -187,7 +187,11 @@ struct sk_buff *__skb_recv_datagram(struct sock *sk, unsigned flags,
 		skb_queue_walk(queue, skb) {
 			*peeked = skb->peeked;
 			if (flags & MSG_PEEK) {
+<<<<<<< HEAD
 				if (*off >= skb->len) {
+=======
+				if (*off >= skb->len && skb->len) {
+>>>>>>> remotes/linux2/linux-3.4.y
 					*off -= skb->len;
 					continue;
 				}

@@ -100,6 +100,7 @@ void blk_queue_lld_busy(struct request_queue *q, lld_busy_fn *fn)
 EXPORT_SYMBOL_GPL(blk_queue_lld_busy);
 
 /**
+<<<<<<< HEAD
  * blk_urgent_request() - Set an urgent_request handler function for queue
  * @q:		queue
  * @fn:		handler for urgent requests
@@ -112,6 +113,8 @@ void blk_urgent_request(struct request_queue *q, request_fn_proc *fn)
 EXPORT_SYMBOL(blk_urgent_request);
 
 /**
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  * blk_set_default_limits - reset limits to default values
  * @lim:  the queue_limits structure to reset
  *

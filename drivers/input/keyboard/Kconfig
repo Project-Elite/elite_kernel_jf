@@ -411,6 +411,7 @@ config KEYBOARD_OPENCORES
 	  To compile this driver as a module, choose M here; the
 	  module will be called opencores-kbd.
 
+<<<<<<< HEAD
 config KEYBOARD_PM8058
 	bool "Qualcomm PM8058 Matrix Keypad support"
 	depends on PM8058
@@ -418,6 +419,8 @@ config KEYBOARD_PM8058
 	  Say Y here to enable the driver for the keypad matrix interface
 	  on the Qualcomm PM8058 power management I/C device.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config KEYBOARD_PXA27x
 	tristate "PXA27x/PXA3xx keypad support"
 	depends on PXA27x || PXA3xx || ARCH_MMP
@@ -577,6 +580,7 @@ config KEYBOARD_XTKBD
 	  To compile this driver as a module, choose M here: the
 	  module will be called xtkbd.
 
+<<<<<<< HEAD
 config KEYBOARD_QCIKBD
    tristate "Quanta Computer Inc. keyboard"
    depends on I2C
@@ -601,6 +605,8 @@ config KEYBOARD_QCIKBD_LID
 	  Say Y here if you want to register lid event in Quanta keyboard
 	  driver.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config KEYBOARD_W90P910
 	tristate "W90P910 Matrix Keypad support"
 	depends on ARCH_W90X900
@@ -611,6 +617,7 @@ config KEYBOARD_W90P910
 	  To compile this driver as a module, choose M here: the
 	  module will be called w90p910_keypad.
 
+<<<<<<< HEAD
 config SENSORS_HALL
 	bool "HALL"
 	help
@@ -620,3 +627,6 @@ endif
 
 source "drivers/input/keyboard/cypress_touchkey_236/Kconfig"
 
+=======
+endif
+>>>>>>> remotes/linux2/linux-3.4.y

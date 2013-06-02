@@ -377,7 +377,11 @@ static int radeon_cs_ib_chunk(struct radeon_device *rdev,
 	if (r) {
 		DRM_ERROR("Failed to schedule IB !\n");
 	}
+<<<<<<< HEAD
 	return 0;
+=======
+	return r;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int radeon_bo_vm_update_pte(struct radeon_cs_parser *parser,

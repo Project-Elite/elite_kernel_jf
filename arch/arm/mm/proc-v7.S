@@ -16,9 +16,12 @@
 #include <asm/hwcap.h>
 #include <asm/pgtable-hwdef.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #ifdef TIMA_EMUL_ENABLED
 #include <asm/entry-macro-tima.S>
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include "proc-macros.S"
 
@@ -59,9 +62,12 @@ ENTRY(cpu_v7_reset)
 	bic	r1, r1, #0x1			@ ...............m
  THUMB(	bic	r1, r1, #1 << 30 )		@ SCTLR.TE (Thumb exceptions)
 	mcr	p15, 0, r1, c1, c0, 0		@ disable MMU
+<<<<<<< HEAD
 	mcr     p15, 0, ip, c8, c7, 0           @ invalidate I & D,flush TLB
 	mcr     p15, 0, ip, c7, c5, 6           @ flush BTC
 	dsb
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	isb
 	mov	pc, r0
 ENDPROC(cpu_v7_reset)
@@ -123,16 +129,21 @@ ENTRY(cpu_v7_do_resume)
 	mcr	p15, 0, r4, c13, c0, 0	@ FCSE/PID
 	mcr	p15, 0, r5, c13, c0, 3	@ User r/o thread ID
 	ldmia	r0, {r6 - r11}
+<<<<<<< HEAD
 #ifndef TIMA_EMUL_ENABLED
 	mcr	p15, 0, r6, c3, c0, 0	@ Domain ID
 #else
 	tima_macro_emul_crit_instn r6, 0x3f806221
 
 #endif
+=======
+	mcr	p15, 0, r6, c3, c0, 0	@ Domain ID
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifndef CONFIG_ARM_LPAE
 	ALT_SMP(orr	r1, r1, #TTB_FLAGS_SMP)
 	ALT_UP(orr	r1, r1, #TTB_FLAGS_UP)
 #endif
+<<<<<<< HEAD
 #ifndef TIMA_EMUL_ENABLED
 	mcr	p15, 0, r1, c2, c0, 0	@ TTB 0
 #else
@@ -151,6 +162,11 @@ ENTRY(cpu_v7_do_resume)
 	tima_macro_emul_crit_instn ip, 0x3f805221
 
 #endif
+=======
+	mcr	p15, 0, r1, c2, c0, 0	@ TTB 0
+	mcr	p15, 0, r7, c2, c0, 1	@ TTB 1
+	mcr	p15, 0, r11, c2, c0, 2	@ TTB control register
+>>>>>>> remotes/linux2/linux-3.4.y
 	mrc	p15, 0, r4, c1, c0, 1	@ Read Auxiliary control register
 	teq	r4, r9			@ Is it already set?
 	mcrne	p15, 0, r9, c1, c0, 1	@ No, so write it
@@ -281,6 +297,7 @@ __v7_setup:
 	mcr	p15, 0, r5, c10, c2, 0		@ write PRRR
 	mcr	p15, 0, r6, c10, c2, 1		@ write NMRR
 #endif
+<<<<<<< HEAD
 
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
 	mov     r0, #0x33
@@ -306,6 +323,8 @@ __v7_setup:
 	mcr     p15, 3, r0, c15, c0, 2
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifndef CONFIG_ARM_THUMBEE
 	mrc	p15, 0, r0, c0, c1, 0		@ read ID_PFR0 for ThumbEE
 	and	r0, r0, #(0xf << 12)		@ ThumbEE enabled field

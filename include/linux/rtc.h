@@ -148,10 +148,13 @@ struct rtc_class_ops {
 	int (*set_time)(struct device *, struct rtc_time *);
 	int (*read_alarm)(struct device *, struct rtc_wkalrm *);
 	int (*set_alarm)(struct device *, struct rtc_wkalrm *);
+<<<<<<< HEAD
 #ifdef CONFIG_RTC_AUTO_PWRON	
 	int (*read_bootalarm)(struct device *, struct rtc_wkalrm *);
 	int (*set_bootalarm)(struct device *, struct rtc_wkalrm *);
 #endif	
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	int (*proc)(struct device *, struct seq_file *);
 	int (*set_mmss)(struct device *, unsigned long secs);
 	int (*read_callback)(struct device *, int data);

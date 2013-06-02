@@ -12,6 +12,7 @@ config USB_OTG_UTILS
 	  Select this to make sure the build includes objects from
 	  the OTG infrastructure directory.
 
+<<<<<<< HEAD
 config USB_OTG_WAKELOCK
 	bool "Hold a wakelock when USB connected"
 	depends on WAKELOCK
@@ -20,6 +21,8 @@ config USB_OTG_WAKELOCK
 	  Select this to automatically hold a wakelock when USB is
 	  connected, preventing suspend.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 if USB || USB_GADGET
 
 #
@@ -74,6 +77,7 @@ config TWL4030_USB
 	  This transceiver supports high and full speed devices plus,
 	  in host mode, low speed.
 
+<<<<<<< HEAD
 config USB_MSM_OTG_72K
 	bool "OTG support for Legcay Qualcomm on-chip USB controller"
 	depends on ARCH_MSM
@@ -102,6 +106,8 @@ config MSM_OTG_ENABLE_A_WAIT_BCON_TIMEOUT
 	   currents in your system are minimum.
 
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config TWL6030_USB
 	tristate "TWL6030 USB Transceiver Driver"
 	depends on TWL4030_CORE
@@ -135,6 +141,7 @@ config USB_MSM_OTG
 	  This driver is not supported on boards like trout which
 	  has an external PHY.
 
+<<<<<<< HEAD
 config USB_MSM_ACA
 	bool "Support for Accessory Charger Adapter (ACA)"
 	depends on (USB_MSM_OTG || USB_MSM_OTG_72K) && ARCH_MSM
@@ -154,6 +161,8 @@ config USB_MSM_STANDARD_ACA
 	  are only possible with Standard ACA.  Select this feature if the
 	  board is intended to support only Standard ACA.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config AB8500_USB
 	tristate "AB8500 USB Transceiver Driver"
 	depends on AB8500_CORE

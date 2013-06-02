@@ -139,8 +139,11 @@ static int esp_output(struct xfrm_state *x, struct sk_buff *skb)
 
 	/* skb is pure payload to encrypt */
 
+<<<<<<< HEAD
 	err = -ENOMEM;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	esp = x->data;
 	aead = esp->aead;
 	alen = crypto_aead_authsize(aead);
@@ -176,8 +179,15 @@ static int esp_output(struct xfrm_state *x, struct sk_buff *skb)
 	}
 
 	tmp = esp_alloc_tmp(aead, nfrags + sglists, seqhilen);
+<<<<<<< HEAD
 	if (!tmp)
 		goto error;
+=======
+	if (!tmp) {
+		err = -ENOMEM;
+		goto error;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	seqhi = esp_tmp_seqhi(tmp);
 	iv = esp_tmp_iv(aead, tmp, seqhilen);

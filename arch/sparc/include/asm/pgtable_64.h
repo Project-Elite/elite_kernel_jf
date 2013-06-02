@@ -780,6 +780,10 @@ static inline int io_remap_pfn_range(struct vm_area_struct *vma,
 	return remap_pfn_range(vma, from, phys_base >> PAGE_SHIFT, size, prot);
 }
 
+<<<<<<< HEAD
+=======
+#include <asm/tlbflush.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <asm-generic/pgtable.h>
 
 /* We provide our own get_unmapped_area to cope with VA holes and

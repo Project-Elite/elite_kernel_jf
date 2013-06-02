@@ -246,6 +246,10 @@ static int pccard_init(struct pcmcia_socket *sock)
 	socket = &vrc4171_sockets[slot];
 	socket->csc_irq = search_nonuse_irq();
 	socket->io_irq = search_nonuse_irq();
+<<<<<<< HEAD
+=======
+	spin_lock_init(&socket->lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }

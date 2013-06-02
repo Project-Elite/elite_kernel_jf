@@ -1042,7 +1042,10 @@ static int pscsi_map_sg(struct se_task *task, struct scatterlist *task_sg,
 				bio = NULL;
 			}
 
+<<<<<<< HEAD
 			page++;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			len -= bytes;
 			data_len -= bytes;
 			off = 0;

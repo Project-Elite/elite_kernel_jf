@@ -19,6 +19,7 @@
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
 
+<<<<<<< HEAD
 /**
  * usb_find_descriptor_fillbuf - fill buffer with the requested descriptor
  * @buf: Buffer to be filled
@@ -53,6 +54,8 @@ usb_find_descriptor_fillbuf(void *buf, unsigned buflen,
 
 	return -ENOENT;
 }
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /**
  * usb_descriptor_fillbuf - fill buffer with descriptors

@@ -383,12 +383,15 @@ static int attempt_merge(struct request_queue *q, struct request *req,
 		return 0;
 
 	/*
+<<<<<<< HEAD
 	 * Don't merge file system requests and sanitize requests
 	 */
 	if ((req->cmd_flags & REQ_SANITIZE) != (next->cmd_flags & REQ_SANITIZE))
 		return 0;
 
 	/*
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	 * not contiguous
 	 */
 	if (blk_rq_pos(req) + blk_rq_sectors(req) != blk_rq_pos(next))

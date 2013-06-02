@@ -67,7 +67,11 @@ static int tpk_printk(const unsigned char *buf, int count)
 				tmp[tpk_curr + 1] = '\0';
 				printk(KERN_INFO "%s%s", tpk_tag, tmp);
 				tpk_curr = 0;
+<<<<<<< HEAD
 				if (buf[i + 1] == '\n')
+=======
+				if ((i + 1) < count && buf[i + 1] == '\n')
+>>>>>>> remotes/linux2/linux-3.4.y
 					i++;
 				break;
 			case '\n':

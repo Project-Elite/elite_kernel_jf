@@ -3,7 +3,11 @@
  * MSM7K, QSD io support
  *
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+>>>>>>> remotes/linux2/linux-3.4.y
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -26,6 +30,7 @@
 #include <asm/page.h>
 #include <mach/msm_iomap.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 #include <linux/dma-mapping.h>
 
 #include <mach/board.h>
@@ -35,10 +40,21 @@
 		.pfn = __phys_to_pfn(chip##_##name##_PHYS), \
 		.length = chip##_##name##_SIZE, \
 		.type = MT_DEVICE, \
+=======
+
+#include <mach/board.h>
+
+#define MSM_CHIP_DEVICE(name, chip) {			      \
+		.virtual = (unsigned long) MSM_##name##_BASE, \
+		.pfn = __phys_to_pfn(chip##_##name##_PHYS), \
+		.length = chip##_##name##_SIZE, \
+		.type = MT_DEVICE_NONSHARED, \
+>>>>>>> remotes/linux2/linux-3.4.y
 	 }
 
 #define MSM_DEVICE(name) MSM_CHIP_DEVICE(name, MSM)
 
+<<<<<<< HEAD
 /* msm_shared_ram_phys default value of 0x00100000 is the most common value
  * and should work as-is for any target without stacked memory.
  */
@@ -67,10 +83,22 @@ static struct map_desc msm_io_desc[] __initdata = {
 	MSM_CHIP_DEVICE(CLK_CTL, MSM7XXX),
 	MSM_CHIP_DEVICE(AD5, MSM7XXX),
 	MSM_CHIP_DEVICE(MDC, MSM7XXX),
+=======
+#if defined(CONFIG_ARCH_MSM7X00A) || defined(CONFIG_ARCH_MSM7X27) \
+	|| defined(CONFIG_ARCH_MSM7X25)
+static struct map_desc msm_io_desc[] __initdata = {
+	MSM_DEVICE(VIC),
+	MSM_CHIP_DEVICE(CSR, MSM7X00),
+	MSM_DEVICE(DMOV),
+	MSM_CHIP_DEVICE(GPIO1, MSM7X00),
+	MSM_CHIP_DEVICE(GPIO2, MSM7X00),
+	MSM_DEVICE(CLK_CTL),
+>>>>>>> remotes/linux2/linux-3.4.y
 #if defined(CONFIG_DEBUG_MSM_UART1) || defined(CONFIG_DEBUG_MSM_UART2) || \
 	defined(CONFIG_DEBUG_MSM_UART3)
 	MSM_DEVICE(DEBUG_UART),
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_CACHE_L2X0
 	{
 		.virtual =  (unsigned long) MSM_L2CC_BASE,
@@ -81,6 +109,14 @@ static struct map_desc msm_io_desc[] __initdata = {
 #endif
 	{
 		.virtual =  (unsigned long) MSM_SHARED_RAM_BASE,
+=======
+#ifdef CONFIG_ARCH_MSM7X30
+	MSM_DEVICE(GCC),
+#endif
+	{
+		.virtual =  (unsigned long) MSM_SHARED_RAM_BASE,
+		.pfn = __phys_to_pfn(MSM_SHARED_RAM_PHYS),
+>>>>>>> remotes/linux2/linux-3.4.y
 		.length =   MSM_SHARED_RAM_SIZE,
 		.type =     MT_DEVICE,
 	},
@@ -88,39 +124,60 @@ static struct map_desc msm_io_desc[] __initdata = {
 
 void __init msm_map_common_io(void)
 {
+<<<<<<< HEAD
 	/*Peripheral port memory remap, nothing looks to be there for
 	 * cortex a5.
 	 */
 #ifndef CONFIG_ARCH_MSM_CORTEX_A5
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Make sure the peripheral register window is closed, since
 	 * we will use PTE flags (TEX[1]=1,B=0,C=1) to determine which
 	 * pages are peripheral interface or not.
 	 */
 	asm("mcr p15, 0, %0, c15, c2, 4" : : "r" (0));
+<<<<<<< HEAD
 #endif
 	msm_map_io(msm_io_desc, ARRAY_SIZE(msm_io_desc));
+=======
+	iotable_init(msm_io_desc, ARRAY_SIZE(msm_io_desc));
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 #endif
 
 #ifdef CONFIG_ARCH_QSD8X50
 static struct map_desc qsd8x50_io_desc[] __initdata = {
 	MSM_DEVICE(VIC),
+<<<<<<< HEAD
 	MSM_DEVICE(CSR),
 	MSM_DEVICE(TMR),
 	MSM_DEVICE(GPIO1),
 	MSM_DEVICE(GPIO2),
+=======
+	MSM_CHIP_DEVICE(CSR, QSD8X50),
+	MSM_DEVICE(DMOV),
+	MSM_CHIP_DEVICE(GPIO1, QSD8X50),
+	MSM_CHIP_DEVICE(GPIO2, QSD8X50),
+>>>>>>> remotes/linux2/linux-3.4.y
 	MSM_DEVICE(CLK_CTL),
 	MSM_DEVICE(SIRC),
 	MSM_DEVICE(SCPLL),
 	MSM_DEVICE(AD5),
 	MSM_DEVICE(MDC),
+<<<<<<< HEAD
 	MSM_DEVICE(TCSR),
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #if defined(CONFIG_DEBUG_MSM_UART1) || defined(CONFIG_DEBUG_MSM_UART2) || \
 	defined(CONFIG_DEBUG_MSM_UART3)
 	MSM_DEVICE(DEBUG_UART),
 #endif
 	{
 		.virtual =  (unsigned long) MSM_SHARED_RAM_BASE,
+<<<<<<< HEAD
+=======
+		.pfn = __phys_to_pfn(MSM_SHARED_RAM_PHYS),
+>>>>>>> remotes/linux2/linux-3.4.y
 		.length =   MSM_SHARED_RAM_SIZE,
 		.type =     MT_DEVICE,
 	},
@@ -128,12 +185,17 @@ static struct map_desc qsd8x50_io_desc[] __initdata = {
 
 void __init msm_map_qsd8x50_io(void)
 {
+<<<<<<< HEAD
 	msm_map_io(qsd8x50_io_desc, ARRAY_SIZE(qsd8x50_io_desc));
+=======
+	iotable_init(qsd8x50_io_desc, ARRAY_SIZE(qsd8x50_io_desc));
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 #endif /* CONFIG_ARCH_QSD8X50 */
 
 #ifdef CONFIG_ARCH_MSM8X60
 static struct map_desc msm8x60_io_desc[] __initdata = {
+<<<<<<< HEAD
 	MSM_DEVICE(QGIC_DIST),
 	MSM_DEVICE(QGIC_CPU),
 	MSM_DEVICE(TMR),
@@ -164,12 +226,27 @@ static struct map_desc msm8x60_io_desc[] __initdata = {
 		.type =     MT_DEVICE,
 	},
 	MSM_DEVICE(QFPROM),
+=======
+	MSM_CHIP_DEVICE(QGIC_DIST, MSM8X60),
+	MSM_CHIP_DEVICE(QGIC_CPU, MSM8X60),
+	MSM_CHIP_DEVICE(TMR, MSM8X60),
+	MSM_CHIP_DEVICE(TMR0, MSM8X60),
+	MSM_DEVICE(ACC),
+	MSM_DEVICE(GCC),
+#ifdef CONFIG_DEBUG_MSM8660_UART
+	MSM_DEVICE(DEBUG_UART),
+#endif
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 void __init msm_map_msm8x60_io(void)
 {
+<<<<<<< HEAD
 	msm_map_io(msm8x60_io_desc, ARRAY_SIZE(msm8x60_io_desc));
 	init_consistent_dma_size(14*SZ_1M);
+=======
+	iotable_init(msm8x60_io_desc, ARRAY_SIZE(msm8x60_io_desc));
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 #endif /* CONFIG_ARCH_MSM8X60 */
 
@@ -177,6 +254,7 @@ void __init msm_map_msm8x60_io(void)
 static struct map_desc msm8960_io_desc[] __initdata = {
 	MSM_CHIP_DEVICE(QGIC_DIST, MSM8960),
 	MSM_CHIP_DEVICE(QGIC_CPU, MSM8960),
+<<<<<<< HEAD
 	MSM_CHIP_DEVICE(ACC0, MSM8960),
 	MSM_CHIP_DEVICE(ACC1, MSM8960),
 	MSM_CHIP_DEVICE(TMR, MSM8960),
@@ -204,10 +282,18 @@ static struct map_desc msm8960_io_desc[] __initdata = {
 	MSM_DEVICE(DEBUG_UART),
 #endif
 	MSM_CHIP_DEVICE(QFPROM, MSM8960),
+=======
+	MSM_CHIP_DEVICE(TMR, MSM8960),
+	MSM_CHIP_DEVICE(TMR0, MSM8960),
+#ifdef CONFIG_DEBUG_MSM8960_UART
+	MSM_DEVICE(DEBUG_UART),
+#endif
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 void __init msm_map_msm8960_io(void)
 {
+<<<<<<< HEAD
 	msm_map_io(msm8960_io_desc, ARRAY_SIZE(msm8960_io_desc));
 }
 #endif /* CONFIG_ARCH_MSM8960 */
@@ -364,17 +450,43 @@ static struct map_desc fsm9xxx_io_desc[] __initdata = {
 	MSM_DEVICE(GRFC),
 	MSM_DEVICE(QFP_FUSE),
 	MSM_DEVICE(HH),
+=======
+	iotable_init(msm8960_io_desc, ARRAY_SIZE(msm8960_io_desc));
+}
+#endif /* CONFIG_ARCH_MSM8960 */
+
+#ifdef CONFIG_ARCH_MSM7X30
+static struct map_desc msm7x30_io_desc[] __initdata = {
+	MSM_DEVICE(VIC),
+	MSM_CHIP_DEVICE(CSR, MSM7X30),
+	MSM_DEVICE(DMOV),
+	MSM_CHIP_DEVICE(GPIO1, MSM7X30),
+	MSM_CHIP_DEVICE(GPIO2, MSM7X30),
+	MSM_DEVICE(CLK_CTL),
+	MSM_DEVICE(CLK_CTL_SH2),
+	MSM_DEVICE(AD5),
+	MSM_DEVICE(MDC),
+	MSM_DEVICE(ACC),
+	MSM_DEVICE(SAW),
+	MSM_DEVICE(GCC),
+	MSM_DEVICE(TCSR),
+>>>>>>> remotes/linux2/linux-3.4.y
 #if defined(CONFIG_DEBUG_MSM_UART1) || defined(CONFIG_DEBUG_MSM_UART2) || \
 	defined(CONFIG_DEBUG_MSM_UART3)
 	MSM_DEVICE(DEBUG_UART),
 #endif
 	{
 		.virtual =  (unsigned long) MSM_SHARED_RAM_BASE,
+<<<<<<< HEAD
+=======
+		.pfn = __phys_to_pfn(MSM_SHARED_RAM_PHYS),
+>>>>>>> remotes/linux2/linux-3.4.y
 		.length =   MSM_SHARED_RAM_SIZE,
 		.type =     MT_DEVICE,
 	},
 };
 
+<<<<<<< HEAD
 void __init msm_map_fsm9xxx_io(void)
 {
 	msm_map_io(fsm9xxx_io_desc, ARRAY_SIZE(fsm9xxx_io_desc));
@@ -476,3 +588,25 @@ void __init msm_map_msm9625_io(void)
 	msm_map_io(msm9625_io_desc, ARRAY_SIZE(msm9625_io_desc));
 }
 #endif /* CONFIG_ARCH_MSM9625 */
+=======
+void __init msm_map_msm7x30_io(void)
+{
+	iotable_init(msm7x30_io_desc, ARRAY_SIZE(msm7x30_io_desc));
+}
+#endif /* CONFIG_ARCH_MSM7X30 */
+
+void __iomem *__msm_ioremap_caller(unsigned long phys_addr, size_t size,
+				   unsigned int mtype, void *caller)
+{
+	if (mtype == MT_DEVICE) {
+		/* The peripherals in the 88000000 - D0000000 range
+		 * are only accessible by type MT_DEVICE_NONSHARED.
+		 * Adjust mtype as necessary to make this "just work."
+		 */
+		if ((phys_addr >= 0x88000000) && (phys_addr < 0xD0000000))
+			mtype = MT_DEVICE_NONSHARED;
+	}
+
+	return __arm_ioremap_caller(phys_addr, size, mtype, caller);
+}
+>>>>>>> remotes/linux2/linux-3.4.y

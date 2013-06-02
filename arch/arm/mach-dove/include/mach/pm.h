@@ -45,7 +45,11 @@ static inline int pmu_to_irq(int pin)
 
 static inline int irq_to_pmu(int irq)
 {
+<<<<<<< HEAD
 	if (IRQ_DOVE_PMU_START < irq && irq < NR_IRQS)
+=======
+	if (IRQ_DOVE_PMU_START <= irq && irq < NR_IRQS)
+>>>>>>> remotes/linux2/linux-3.4.y
 		return irq - IRQ_DOVE_PMU_START;
 
 	return -EINVAL;

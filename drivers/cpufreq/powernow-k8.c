@@ -35,7 +35,10 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 #include <linux/cpumask.h>
+<<<<<<< HEAD
 #include <linux/sched.h>	/* for current / set_cpus_allowed() */
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/io.h>
 #include <linux/delay.h>
 
@@ -1139,16 +1142,35 @@ static int transition_frequency_pstate(struct powernow_k8_data *data,
 	return res;
 }
 
+<<<<<<< HEAD
 /* Driver entry point to switch to the target frequency */
 static int powernowk8_target(struct cpufreq_policy *pol,
 		unsigned targfreq, unsigned relation)
 {
 	cpumask_var_t oldmask;
+=======
+struct powernowk8_target_arg {
+	struct cpufreq_policy		*pol;
+	unsigned			targfreq;
+	unsigned			relation;
+};
+
+static long powernowk8_target_fn(void *arg)
+{
+	struct powernowk8_target_arg *pta = arg;
+	struct cpufreq_policy *pol = pta->pol;
+	unsigned targfreq = pta->targfreq;
+	unsigned relation = pta->relation;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct powernow_k8_data *data = per_cpu(powernow_data, pol->cpu);
 	u32 checkfid;
 	u32 checkvid;
 	unsigned int newstate;
+<<<<<<< HEAD
 	int ret = -EIO;
+=======
+	int ret;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!data)
 		return -EINVAL;
@@ -1156,6 +1178,7 @@ static int powernowk8_target(struct cpufreq_policy *pol,
 	checkfid = data->currfid;
 	checkvid = data->currvid;
 
+<<<<<<< HEAD
 	/* only run on specific CPU from here on. */
 	/* This is poor form: use a workqueue or smp_call_function_single */
 	if (!alloc_cpumask_var(&oldmask, GFP_KERNEL))
@@ -1172,13 +1195,22 @@ static int powernowk8_target(struct cpufreq_policy *pol,
 	if (pending_bit_stuck()) {
 		printk(KERN_ERR PFX "failing targ, change pending bit set\n");
 		goto err_out;
+=======
+	if (pending_bit_stuck()) {
+		printk(KERN_ERR PFX "failing targ, change pending bit set\n");
+		return -EIO;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	pr_debug("targ: cpu %d, %d kHz, min %d, max %d, relation %d\n",
 		pol->cpu, targfreq, pol->min, pol->max, relation);
 
 	if (query_current_values_with_pending_wait(data))
+<<<<<<< HEAD
 		goto err_out;
+=======
+		return -EIO;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (cpu_family != CPU_HW_PSTATE) {
 		pr_debug("targ: curr fid 0x%x, vid 0x%x\n",
@@ -1196,7 +1228,11 @@ static int powernowk8_target(struct cpufreq_policy *pol,
 
 	if (cpufreq_frequency_table_target(pol, data->powernow_table,
 				targfreq, relation, &newstate))
+<<<<<<< HEAD
 		goto err_out;
+=======
+		return -EIO;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	mutex_lock(&fidvid_mutex);
 
@@ -1209,9 +1245,14 @@ static int powernowk8_target(struct cpufreq_policy *pol,
 		ret = transition_frequency_fidvid(data, newstate);
 	if (ret) {
 		printk(KERN_ERR PFX "transition frequency failed\n");
+<<<<<<< HEAD
 		ret = 1;
 		mutex_unlock(&fidvid_mutex);
 		goto err_out;
+=======
+		mutex_unlock(&fidvid_mutex);
+		return 1;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 	mutex_unlock(&fidvid_mutex);
 
@@ -1220,12 +1261,27 @@ static int powernowk8_target(struct cpufreq_policy *pol,
 				data->powernow_table[newstate].index);
 	else
 		pol->cur = find_khz_freq_from_fid(data->currfid);
+<<<<<<< HEAD
 	ret = 0;
 
 err_out:
 	set_cpus_allowed_ptr(current, oldmask);
 	free_cpumask_var(oldmask);
 	return ret;
+=======
+
+	return 0;
+}
+
+/* Driver entry point to switch to the target frequency */
+static int powernowk8_target(struct cpufreq_policy *pol,
+		unsigned targfreq, unsigned relation)
+{
+	struct powernowk8_target_arg pta = { .pol = pol, .targfreq = targfreq,
+					     .relation = relation };
+
+	return work_on_cpu(pol->cpu, powernowk8_target_fn, &pta);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /* Driver entry point to verify the policy and range of frequencies */

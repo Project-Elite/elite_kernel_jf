@@ -152,8 +152,12 @@ static inline struct hugetlbfs_sb_info *HUGETLBFS_SB(struct super_block *sb)
 
 extern const struct file_operations hugetlbfs_file_operations;
 extern const struct vm_operations_struct hugetlb_vm_ops;
+<<<<<<< HEAD
 struct file *hugetlb_file_setup(const char *name, unsigned long addr,
 				size_t size, vm_flags_t acct,
+=======
+struct file *hugetlb_file_setup(const char *name, size_t size, vm_flags_t acct,
+>>>>>>> remotes/linux2/linux-3.4.y
 				struct user_struct **user, int creat_flags);
 
 static inline int is_file_hugepages(struct file *file)
@@ -170,8 +174,13 @@ static inline int is_file_hugepages(struct file *file)
 
 #define is_file_hugepages(file)			0
 static inline struct file *
+<<<<<<< HEAD
 hugetlb_file_setup(const char *name, unsigned long addr, size_t size,
 		vm_flags_t acctflag, struct user_struct **user, int creat_flags)
+=======
+hugetlb_file_setup(const char *name, size_t size, vm_flags_t acctflag,
+		struct user_struct **user, int creat_flags)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	return ERR_PTR(-ENOSYS);
 }
@@ -294,7 +303,11 @@ static inline unsigned hstate_index_to_shift(unsigned index)
 	return hstates[index].order + PAGE_SHIFT;
 }
 
+<<<<<<< HEAD
 #else
+=======
+#else	/* CONFIG_HUGETLB_PAGE */
+>>>>>>> remotes/linux2/linux-3.4.y
 struct hstate {};
 #define alloc_huge_page_node(h, nid) NULL
 #define alloc_bootmem_huge_page(h) NULL

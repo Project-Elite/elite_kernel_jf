@@ -28,6 +28,11 @@ void doorbell_setup_this_cpu(void)
 
 void doorbell_cause_ipi(int cpu, unsigned long data)
 {
+<<<<<<< HEAD
+=======
+	/* Order previous accesses vs. msgsnd, which is treated as a store */
+	mb();
+>>>>>>> remotes/linux2/linux-3.4.y
 	ppc_msgsnd(PPC_DBELL, 0, data);
 }
 

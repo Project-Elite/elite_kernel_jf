@@ -265,7 +265,11 @@ static void usb_gadget_remove_driver(struct usb_udc *udc)
 		udc->driver->disconnect(udc->gadget);
 		usb_gadget_disconnect(udc->gadget);
 		udc->driver->unbind(udc->gadget);
+<<<<<<< HEAD
 		usb_gadget_udc_stop(udc->gadget, udc->driver);
+=======
+		usb_gadget_udc_stop(udc->gadget, NULL);
+>>>>>>> remotes/linux2/linux-3.4.y
 	} else {
 		usb_gadget_stop(udc->gadget, udc->driver);
 	}
@@ -322,9 +326,14 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 
 	mutex_lock(&udc_lock);
 	list_for_each_entry(udc, &udc_list, list) {
+<<<<<<< HEAD
 		/* Match according to usb_core_id */
 		if (!udc->driver && udc->gadget &&
 		    udc->gadget->usb_core_id == driver->usb_core_id)
+=======
+		/* For now we take the first one */
+		if (!udc->driver)
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto found;
 	}
 

@@ -2038,7 +2038,11 @@ static int __core_scsi3_write_aptpl_to_file(
 	if (IS_ERR(file) || !file || !file->f_dentry) {
 		pr_err("filp_open(%s) for APTPL metadata"
 			" failed\n", path);
+<<<<<<< HEAD
 		return (PTR_ERR(file) < 0 ? PTR_ERR(file) : -ENOENT);
+=======
+		return IS_ERR(file) ? PTR_ERR(file) : -ENOENT;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	iov[0].iov_base = &buf[0];
@@ -3826,7 +3830,11 @@ int target_scsi3_emulate_pr_out(struct se_task *task)
 			" SPC-2 reservation is held, returning"
 			" RESERVATION_CONFLICT\n");
 		cmd->scsi_sense_reason = TCM_RESERVATION_CONFLICT;
+<<<<<<< HEAD
 		ret = EINVAL;
+=======
+		ret = -EINVAL;
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto out;
 	}
 
@@ -3836,7 +3844,12 @@ int target_scsi3_emulate_pr_out(struct se_task *task)
 	 */
 	if (!cmd->se_sess) {
 		cmd->scsi_sense_reason = TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		ret = -EINVAL;
+		goto out;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	if (cmd->data_length < 24) {

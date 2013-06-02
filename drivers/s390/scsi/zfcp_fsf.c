@@ -219,7 +219,11 @@ static void zfcp_fsf_status_read_handler(struct zfcp_fsf_req *req)
 		return;
 	}
 
+<<<<<<< HEAD
 	zfcp_dbf_hba_fsf_uss("fssrh_2", req);
+=======
+	zfcp_dbf_hba_fsf_uss("fssrh_4", req);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	switch (sr_buf->status_type) {
 	case FSF_STATUS_READ_PORT_CLOSED:
@@ -437,6 +441,37 @@ void zfcp_fsf_req_dismiss_all(struct zfcp_adapter *adapter)
 	}
 }
 
+<<<<<<< HEAD
+=======
+#define ZFCP_FSF_PORTSPEED_1GBIT	(1 <<  0)
+#define ZFCP_FSF_PORTSPEED_2GBIT	(1 <<  1)
+#define ZFCP_FSF_PORTSPEED_4GBIT	(1 <<  2)
+#define ZFCP_FSF_PORTSPEED_10GBIT	(1 <<  3)
+#define ZFCP_FSF_PORTSPEED_8GBIT	(1 <<  4)
+#define ZFCP_FSF_PORTSPEED_16GBIT	(1 <<  5)
+#define ZFCP_FSF_PORTSPEED_NOT_NEGOTIATED (1 << 15)
+
+static u32 zfcp_fsf_convert_portspeed(u32 fsf_speed)
+{
+	u32 fdmi_speed = 0;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_1GBIT)
+		fdmi_speed |= FC_PORTSPEED_1GBIT;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_2GBIT)
+		fdmi_speed |= FC_PORTSPEED_2GBIT;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_4GBIT)
+		fdmi_speed |= FC_PORTSPEED_4GBIT;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_10GBIT)
+		fdmi_speed |= FC_PORTSPEED_10GBIT;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_8GBIT)
+		fdmi_speed |= FC_PORTSPEED_8GBIT;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_16GBIT)
+		fdmi_speed |= FC_PORTSPEED_16GBIT;
+	if (fsf_speed & ZFCP_FSF_PORTSPEED_NOT_NEGOTIATED)
+		fdmi_speed |= FC_PORTSPEED_NOT_NEGOTIATED;
+	return fdmi_speed;
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static int zfcp_fsf_exchange_config_evaluate(struct zfcp_fsf_req *req)
 {
 	struct fsf_qtcb_bottom_config *bottom = &req->qtcb->bottom.config;
@@ -456,7 +491,12 @@ static int zfcp_fsf_exchange_config_evaluate(struct zfcp_fsf_req *req)
 	fc_host_port_name(shost) = nsp->fl_wwpn;
 	fc_host_node_name(shost) = nsp->fl_wwnn;
 	fc_host_port_id(shost) = ntoh24(bottom->s_id);
+<<<<<<< HEAD
 	fc_host_speed(shost) = bottom->fc_link_speed;
+=======
+	fc_host_speed(shost) =
+		zfcp_fsf_convert_portspeed(bottom->fc_link_speed);
+>>>>>>> remotes/linux2/linux-3.4.y
 	fc_host_supported_classes(shost) = FC_COS_CLASS2 | FC_COS_CLASS3;
 
 	adapter->hydra_version = bottom->adapter_type;
@@ -580,7 +620,12 @@ static void zfcp_fsf_exchange_port_evaluate(struct zfcp_fsf_req *req)
 	} else
 		fc_host_permanent_port_name(shost) = fc_host_port_name(shost);
 	fc_host_maxframe_size(shost) = bottom->maximum_frame_size;
+<<<<<<< HEAD
 	fc_host_supported_speeds(shost) = bottom->supported_speed;
+=======
+	fc_host_supported_speeds(shost) =
+		zfcp_fsf_convert_portspeed(bottom->supported_speed);
+>>>>>>> remotes/linux2/linux-3.4.y
 	memcpy(fc_host_supported_fc4s(shost), bottom->supported_fc4_types,
 	       FC_FC4_LIST_SIZE);
 	memcpy(fc_host_active_fc4s(shost), bottom->active_fc4_types,
@@ -771,12 +816,21 @@ out:
 static void zfcp_fsf_abort_fcp_command_handler(struct zfcp_fsf_req *req)
 {
 	struct scsi_device *sdev = req->data;
+<<<<<<< HEAD
 	struct zfcp_scsi_dev *zfcp_sdev = sdev_to_zfcp(sdev);
+=======
+	struct zfcp_scsi_dev *zfcp_sdev;
+>>>>>>> remotes/linux2/linux-3.4.y
 	union fsf_status_qual *fsq = &req->qtcb->header.fsf_status_qual;
 
 	if (req->status & ZFCP_STATUS_FSFREQ_ERROR)
 		return;
 
+<<<<<<< HEAD
+=======
+	zfcp_sdev = sdev_to_zfcp(sdev);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	switch (req->qtcb->header.fsf_status) {
 	case FSF_PORT_HANDLE_NOT_VALID:
 		if (fsq->word[0] == fsq->word[1]) {
@@ -885,7 +939,11 @@ static void zfcp_fsf_send_ct_handler(struct zfcp_fsf_req *req)
 
 	switch (header->fsf_status) {
         case FSF_GOOD:
+<<<<<<< HEAD
 		zfcp_dbf_san_res("fsscth1", req);
+=======
+		zfcp_dbf_san_res("fsscth2", req);
+>>>>>>> remotes/linux2/linux-3.4.y
 		ct->status = 0;
 		break;
         case FSF_SERVICE_CLASS_NOT_SUPPORTED:
@@ -1739,13 +1797,22 @@ static void zfcp_fsf_open_lun_handler(struct zfcp_fsf_req *req)
 {
 	struct zfcp_adapter *adapter = req->adapter;
 	struct scsi_device *sdev = req->data;
+<<<<<<< HEAD
 	struct zfcp_scsi_dev *zfcp_sdev = sdev_to_zfcp(sdev);
+=======
+	struct zfcp_scsi_dev *zfcp_sdev;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct fsf_qtcb_header *header = &req->qtcb->header;
 	struct fsf_qtcb_bottom_support *bottom = &req->qtcb->bottom.support;
 
 	if (req->status & ZFCP_STATUS_FSFREQ_ERROR)
 		return;
 
+<<<<<<< HEAD
+=======
+	zfcp_sdev = sdev_to_zfcp(sdev);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	atomic_clear_mask(ZFCP_STATUS_COMMON_ACCESS_DENIED |
 			  ZFCP_STATUS_COMMON_ACCESS_BOXED |
 			  ZFCP_STATUS_LUN_SHARED |
@@ -1856,11 +1923,20 @@ out:
 static void zfcp_fsf_close_lun_handler(struct zfcp_fsf_req *req)
 {
 	struct scsi_device *sdev = req->data;
+<<<<<<< HEAD
 	struct zfcp_scsi_dev *zfcp_sdev = sdev_to_zfcp(sdev);
+=======
+	struct zfcp_scsi_dev *zfcp_sdev;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (req->status & ZFCP_STATUS_FSFREQ_ERROR)
 		return;
 
+<<<<<<< HEAD
+=======
+	zfcp_sdev = sdev_to_zfcp(sdev);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	switch (req->qtcb->header.fsf_status) {
 	case FSF_PORT_HANDLE_NOT_VALID:
 		zfcp_erp_adapter_reopen(zfcp_sdev->port->adapter, 0, "fscuh_1");
@@ -1950,7 +2026,11 @@ static void zfcp_fsf_req_trace(struct zfcp_fsf_req *req, struct scsi_cmnd *scsi)
 {
 	struct fsf_qual_latency_info *lat_in;
 	struct latency_cont *lat = NULL;
+<<<<<<< HEAD
 	struct zfcp_scsi_dev *zfcp_sdev = sdev_to_zfcp(scsi->device);
+=======
+	struct zfcp_scsi_dev *zfcp_sdev;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct zfcp_blk_drv_data blktrc;
 	int ticks = req->adapter->timer_ticks;
 
@@ -1965,6 +2045,10 @@ static void zfcp_fsf_req_trace(struct zfcp_fsf_req *req, struct scsi_cmnd *scsi)
 
 	if (req->adapter->adapter_features & FSF_FEATURE_MEASUREMENT_DATA &&
 	    !(req->status & ZFCP_STATUS_FSFREQ_ERROR)) {
+<<<<<<< HEAD
+=======
+		zfcp_sdev = sdev_to_zfcp(scsi->device);
+>>>>>>> remotes/linux2/linux-3.4.y
 		blktrc.flags |= ZFCP_BLK_LAT_VALID;
 		blktrc.channel_lat = lat_in->channel_lat * ticks;
 		blktrc.fabric_lat = lat_in->fabric_lat * ticks;
@@ -2002,12 +2086,21 @@ static void zfcp_fsf_fcp_handler_common(struct zfcp_fsf_req *req)
 {
 	struct scsi_cmnd *scmnd = req->data;
 	struct scsi_device *sdev = scmnd->device;
+<<<<<<< HEAD
 	struct zfcp_scsi_dev *zfcp_sdev = sdev_to_zfcp(sdev);
+=======
+	struct zfcp_scsi_dev *zfcp_sdev;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct fsf_qtcb_header *header = &req->qtcb->header;
 
 	if (unlikely(req->status & ZFCP_STATUS_FSFREQ_ERROR))
 		return;
 
+<<<<<<< HEAD
+=======
+	zfcp_sdev = sdev_to_zfcp(sdev);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	switch (header->fsf_status) {
 	case FSF_HANDLE_MISMATCH:
 	case FSF_PORT_HANDLE_NOT_VALID:

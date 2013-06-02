@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -9,6 +13,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+<<<<<<< HEAD
+=======
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
+ *
+>>>>>>> remotes/linux2/linux-3.4.y
  */
 
 #include <linux/module.h>
@@ -25,14 +37,18 @@
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
 #include <linux/pm_runtime.h>
+<<<<<<< HEAD
 #include <linux/of.h>
 #include <linux/dma-mapping.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <linux/usb.h>
 #include <linux/usb/otg.h>
 #include <linux/usb/ulpi.h>
 #include <linux/usb/gadget.h>
 #include <linux/usb/hcd.h>
+<<<<<<< HEAD
 #include <linux/usb/quirks.h>
 #include <linux/usb/msm_hsusb.h>
 #include <linux/usb/msm_hsusb_hw.h>
@@ -56,12 +72,24 @@
 #include <linux/fastchg.h>
 #define USB_FASTCHG_LOAD 1000 /* uA */
 #endif 
+=======
+#include <linux/usb/msm_hsusb.h>
+#include <linux/usb/msm_hsusb_hw.h>
+#include <linux/regulator/consumer.h>
+
+#include <mach/clk.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #define MSM_USB_BASE	(motg->regs)
 #define DRIVER_NAME	"msm_otg"
 
+<<<<<<< HEAD
 #define ID_TIMER_FREQ		(jiffies + msecs_to_jiffies(500))
 #define ULPI_IO_TIMEOUT_USEC	(10 * 1000)
+=======
+#define ULPI_IO_TIMEOUT_USEC	(10 * 1000)
+
+>>>>>>> remotes/linux2/linux-3.4.y
 #define USB_PHY_3P3_VOL_MIN	3050000 /* uV */
 #define USB_PHY_3P3_VOL_MAX	3300000 /* uV */
 #define USB_PHY_3P3_HPM_LOAD	50000	/* uA */
@@ -72,6 +100,7 @@
 #define USB_PHY_1P8_HPM_LOAD	50000	/* uA */
 #define USB_PHY_1P8_LPM_LOAD	4000	/* uA */
 
+<<<<<<< HEAD
 #define USB_PHY_VDD_DIG_VOL_NONE	0 /*uV */
 #define USB_PHY_VDD_DIG_VOL_MIN	1045000 /* uV */
 #define USB_PHY_VDD_DIG_VOL_MAX	1320000 /* uV */
@@ -160,13 +189,67 @@ static void msm_otg_notify_work(struct work_struct *w)
 	}
 }
 #endif
+=======
+#define USB_PHY_VDD_DIG_VOL_MIN	1000000 /* uV */
+#define USB_PHY_VDD_DIG_VOL_MAX	1320000 /* uV */
+
+static struct regulator *hsusb_3p3;
+static struct regulator *hsusb_1p8;
+static struct regulator *hsusb_vddcx;
+
+static int msm_hsusb_init_vddcx(struct msm_otg *motg, int init)
+{
+	int ret = 0;
+
+	if (init) {
+		hsusb_vddcx = regulator_get(motg->phy.dev, "HSUSB_VDDCX");
+		if (IS_ERR(hsusb_vddcx)) {
+			dev_err(motg->phy.dev, "unable to get hsusb vddcx\n");
+			return PTR_ERR(hsusb_vddcx);
+		}
+
+		ret = regulator_set_voltage(hsusb_vddcx,
+				USB_PHY_VDD_DIG_VOL_MIN,
+				USB_PHY_VDD_DIG_VOL_MAX);
+		if (ret) {
+			dev_err(motg->phy.dev, "unable to set the voltage "
+					"for hsusb vddcx\n");
+			regulator_put(hsusb_vddcx);
+			return ret;
+		}
+
+		ret = regulator_enable(hsusb_vddcx);
+		if (ret) {
+			dev_err(motg->phy.dev, "unable to enable hsusb vddcx\n");
+			regulator_put(hsusb_vddcx);
+		}
+	} else {
+		ret = regulator_set_voltage(hsusb_vddcx, 0,
+			USB_PHY_VDD_DIG_VOL_MAX);
+		if (ret)
+			dev_err(motg->phy.dev, "unable to set the voltage "
+					"for hsusb vddcx\n");
+		ret = regulator_disable(hsusb_vddcx);
+		if (ret)
+			dev_err(motg->phy.dev, "unable to disable hsusb vddcx\n");
+
+		regulator_put(hsusb_vddcx);
+	}
+
+	return ret;
+}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static int msm_hsusb_ldo_init(struct msm_otg *motg, int init)
 {
 	int rc = 0;
 
 	if (init) {
+<<<<<<< HEAD
 		hsusb_3p3 = devm_regulator_get(motg->phy.dev, "HSUSB_3p3");
+=======
+		hsusb_3p3 = regulator_get(motg->phy.dev, "HSUSB_3p3");
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (IS_ERR(hsusb_3p3)) {
 			dev_err(motg->phy.dev, "unable to get hsusb 3p3\n");
 			return PTR_ERR(hsusb_3p3);
@@ -175,6 +258,7 @@ static int msm_hsusb_ldo_init(struct msm_otg *motg, int init)
 		rc = regulator_set_voltage(hsusb_3p3, USB_PHY_3P3_VOL_MIN,
 				USB_PHY_3P3_VOL_MAX);
 		if (rc) {
+<<<<<<< HEAD
 			dev_err(motg->phy.dev, "unable to set voltage level for"
 					"hsusb 3p3\n");
 			return rc;
@@ -184,18 +268,45 @@ static int msm_hsusb_ldo_init(struct msm_otg *motg, int init)
 			dev_err(motg->phy.dev, "unable to get hsusb 1p8\n");
 			rc = PTR_ERR(hsusb_1p8);
 			goto put_3p3_lpm;
+=======
+			dev_err(motg->phy.dev, "unable to set voltage level "
+					"for hsusb 3p3\n");
+			goto put_3p3;
+		}
+		rc = regulator_enable(hsusb_3p3);
+		if (rc) {
+			dev_err(motg->phy.dev, "unable to enable the hsusb 3p3\n");
+			goto put_3p3;
+		}
+		hsusb_1p8 = regulator_get(motg->phy.dev, "HSUSB_1p8");
+		if (IS_ERR(hsusb_1p8)) {
+			dev_err(motg->phy.dev, "unable to get hsusb 1p8\n");
+			rc = PTR_ERR(hsusb_1p8);
+			goto disable_3p3;
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 		rc = regulator_set_voltage(hsusb_1p8, USB_PHY_1P8_VOL_MIN,
 				USB_PHY_1P8_VOL_MAX);
 		if (rc) {
+<<<<<<< HEAD
 			dev_err(motg->phy.dev, "unable to set voltage level for"
 					"hsusb 1p8\n");
+=======
+			dev_err(motg->phy.dev, "unable to set voltage level "
+					"for hsusb 1p8\n");
+			goto put_1p8;
+		}
+		rc = regulator_enable(hsusb_1p8);
+		if (rc) {
+			dev_err(motg->phy.dev, "unable to enable the hsusb 1p8\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto put_1p8;
 		}
 
 		return 0;
 	}
 
+<<<<<<< HEAD
 put_1p8:
 	regulator_set_voltage(hsusb_1p8, 0, USB_PHY_1P8_VOL_MAX);
 put_3p3_lpm:
@@ -212,6 +323,31 @@ static int msm_hsusb_config_vddcx(int high)
 	int ret;
 
 	min_vol = vdd_val[vdd_type][!!high];
+=======
+	regulator_disable(hsusb_1p8);
+put_1p8:
+	regulator_put(hsusb_1p8);
+disable_3p3:
+	regulator_disable(hsusb_3p3);
+put_3p3:
+	regulator_put(hsusb_3p3);
+	return rc;
+}
+
+#ifdef CONFIG_PM_SLEEP
+#define USB_PHY_SUSP_DIG_VOL  500000
+static int msm_hsusb_config_vddcx(int high)
+{
+	int max_vol = USB_PHY_VDD_DIG_VOL_MAX;
+	int min_vol;
+	int ret;
+
+	if (high)
+		min_vol = USB_PHY_VDD_DIG_VOL_MIN;
+	else
+		min_vol = USB_PHY_SUSP_DIG_VOL;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	ret = regulator_set_voltage(hsusb_vddcx, min_vol, max_vol);
 	if (ret) {
 		pr_err("%s: unable to set the voltage for regulator "
@@ -219,6 +355,7 @@ static int msm_hsusb_config_vddcx(int high)
 		return ret;
 	}
 
+<<<<<<< HEAD
 	pr_info("%s: min_vol:%d max_vol:%d\n", __func__, min_vol, max_vol);
 
 	return ret;
@@ -229,11 +366,28 @@ static int msm_hsusb_ldo_enable(struct msm_otg *motg, int on)
 	int ret = 0;
 
 	if (IS_ERR(hsusb_1p8)) {
+=======
+	pr_debug("%s: min_vol:%d max_vol:%d\n", __func__, min_vol, max_vol);
+
+	return ret;
+}
+#endif
+
+static int msm_hsusb_ldo_set_mode(int on)
+{
+	int ret = 0;
+
+	if (!hsusb_1p8 || IS_ERR(hsusb_1p8)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		pr_err("%s: HSUSB_1p8 is not initialized\n", __func__);
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	if (IS_ERR(hsusb_3p3)) {
+=======
+	if (!hsusb_3p3 || IS_ERR(hsusb_3p3)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		pr_err("%s: HSUSB_3p3 is not initialized\n", __func__);
 		return -ENODEV;
 	}
@@ -242,6 +396,7 @@ static int msm_hsusb_ldo_enable(struct msm_otg *motg, int on)
 		ret = regulator_set_optimum_mode(hsusb_1p8,
 				USB_PHY_1P8_HPM_LOAD);
 		if (ret < 0) {
+<<<<<<< HEAD
 			pr_err("%s: Unable to set HPM of the regulator:"
 				"HSUSB_1p8\n", __func__);
 			return ret;
@@ -324,6 +479,38 @@ static void msm_hsusb_mhl_switch_enable(struct msm_otg *motg, bool on)
 	}
 }
 
+=======
+			pr_err("%s: Unable to set HPM of the regulator "
+				"HSUSB_1p8\n", __func__);
+			return ret;
+		}
+		ret = regulator_set_optimum_mode(hsusb_3p3,
+				USB_PHY_3P3_HPM_LOAD);
+		if (ret < 0) {
+			pr_err("%s: Unable to set HPM of the regulator "
+				"HSUSB_3p3\n", __func__);
+			regulator_set_optimum_mode(hsusb_1p8,
+				USB_PHY_1P8_LPM_LOAD);
+			return ret;
+		}
+	} else {
+		ret = regulator_set_optimum_mode(hsusb_1p8,
+				USB_PHY_1P8_LPM_LOAD);
+		if (ret < 0)
+			pr_err("%s: Unable to set LPM of the regulator "
+				"HSUSB_1p8\n", __func__);
+		ret = regulator_set_optimum_mode(hsusb_3p3,
+				USB_PHY_3P3_LPM_LOAD);
+		if (ret < 0)
+			pr_err("%s: Unable to set LPM of the regulator "
+				"HSUSB_3p3\n", __func__);
+	}
+
+	pr_debug("reg (%s)\n", on ? "HPM" : "LPM");
+	return ret < 0 ? ret : 0;
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static int ulpi_read(struct usb_phy *phy, u32 reg)
 {
 	struct msm_otg *motg = container_of(phy, struct msm_otg, phy);
@@ -400,6 +587,7 @@ static int msm_otg_link_clk_reset(struct msm_otg *motg, bool assert)
 	int ret;
 
 	if (assert) {
+<<<<<<< HEAD
 		if (!IS_ERR(motg->clk)) {
 			ret = clk_reset(motg->clk, CLK_RESET_ASSERT);
 		} else {
@@ -421,6 +609,13 @@ static int msm_otg_link_clk_reset(struct msm_otg *motg, bool assert)
 			clk_prepare_enable(motg->core_clk);
 			clk_prepare_enable(motg->pclk);
 		}
+=======
+		ret = clk_reset(motg->clk, CLK_RESET_ASSERT);
+		if (ret)
+			dev_err(motg->phy.dev, "usb hs_clk assert failed\n");
+	} else {
+		ret = clk_reset(motg->clk, CLK_RESET_DEASSERT);
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (ret)
 			dev_err(motg->phy.dev, "usb hs_clk deassert failed\n");
 	}
@@ -431,9 +626,12 @@ static int msm_otg_phy_clk_reset(struct msm_otg *motg)
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (IS_ERR(motg->phy_reset_clk))
 		return 0;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	ret = clk_reset(motg->phy_reset_clk, CLK_RESET_ASSERT);
 	if (ret) {
 		dev_err(motg->phy.dev, "usb phy clk assert failed\n");
@@ -498,6 +696,7 @@ static int msm_otg_phy_reset(struct msm_otg *motg)
 }
 
 #define LINK_RESET_TIMEOUT_USEC		(250 * 1000)
+<<<<<<< HEAD
 static int msm_otg_link_reset(struct msm_otg *motg)
 {
 	int cnt = 0;
@@ -520,14 +719,21 @@ static int msm_otg_link_reset(struct msm_otg *motg)
 	return 0;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static int msm_otg_reset(struct usb_phy *phy)
 {
 	struct msm_otg *motg = container_of(phy, struct msm_otg, phy);
 	struct msm_otg_platform_data *pdata = motg->pdata;
+<<<<<<< HEAD
+=======
+	int cnt = 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 	int ret;
 	u32 val = 0;
 	u32 ulpi_val = 0;
 
+<<<<<<< HEAD
 	/*
 	 * USB PHY and Link reset also reset the USB BAM.
 	 * Thus perform reset operation only once to avoid
@@ -542,12 +748,15 @@ static int msm_otg_reset(struct usb_phy *phy)
 
 	if (!IS_ERR(motg->clk))
 		clk_prepare_enable(motg->clk);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	ret = msm_otg_phy_reset(motg);
 	if (ret) {
 		dev_err(phy->dev, "phy_reset failed\n");
 		return ret;
 	}
 
+<<<<<<< HEAD
 	aca_id_turned_on = false;
 	ret = msm_otg_link_reset(motg);
 	if (ret) {
@@ -566,6 +775,30 @@ static int msm_otg_reset(struct usb_phy *phy)
 
 	if (pdata->otg_control == OTG_PHY_CONTROL) {
 		val = readl_relaxed(USB_OTGSC);
+=======
+	ulpi_init(motg);
+
+	writel(USBCMD_RESET, USB_USBCMD);
+	while (cnt < LINK_RESET_TIMEOUT_USEC) {
+		if (!(readl(USB_USBCMD) & USBCMD_RESET))
+			break;
+		udelay(1);
+		cnt++;
+	}
+	if (cnt >= LINK_RESET_TIMEOUT_USEC)
+		return -ETIMEDOUT;
+
+	/* select ULPI phy */
+	writel(0x80000000, USB_PORTSC);
+
+	msleep(100);
+
+	writel(0x0, USB_AHBBURST);
+	writel(0x00, USB_AHBMODE);
+
+	if (pdata->otg_control == OTG_PHY_CONTROL) {
+		val = readl(USB_OTGSC);
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (pdata->mode == USB_OTG) {
 			ulpi_val = ULPI_INT_IDGRD | ULPI_INT_SESS_VALID;
 			val |= OTGSC_IDIE | OTGSC_BSVIE;
@@ -573,6 +806,7 @@ static int msm_otg_reset(struct usb_phy *phy)
 			ulpi_val = ULPI_INT_SESS_VALID;
 			val |= OTGSC_BSVIE;
 		}
+<<<<<<< HEAD
 		writel_relaxed(val, USB_OTGSC);
 		ulpi_write(phy, ulpi_val, ULPI_USB_INT_EN_RISE);
 		ulpi_write(phy, ulpi_val, ULPI_USB_INT_EN_FALL);
@@ -581,11 +815,17 @@ static int msm_otg_reset(struct usb_phy *phy)
 			ULPI_SET(ULPI_PWR_CLK_MNG_REG));
 		/* Enable PMIC pull-up */
 		pm8xxx_usb_id_pullup(1);
+=======
+		writel(val, USB_OTGSC);
+		ulpi_write(phy, ulpi_val, ULPI_USB_INT_EN_RISE);
+		ulpi_write(phy, ulpi_val, ULPI_USB_INT_EN_FALL);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static const char *timer_string(int bit)
 {
 	switch (bit) {
@@ -807,6 +1047,8 @@ static int msm_otg_set_suspend(struct usb_phy *phy, int suspend)
 	return 0;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #define PHY_SUSPEND_TIMEOUT_USEC	(500 * 1000)
 #define PHY_RESUME_TIMEOUT_USEC	(100 * 1000)
 
@@ -817,15 +1059,19 @@ static int msm_otg_suspend(struct msm_otg *motg)
 	struct usb_bus *bus = phy->otg->host;
 	struct msm_otg_platform_data *pdata = motg->pdata;
 	int cnt = 0;
+<<<<<<< HEAD
 	bool host_bus_suspend, device_bus_suspend, dcp;
 	u32 phy_ctrl_val = 0, cmd_val;
 	unsigned ret;
 	u32 portsc;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (atomic_read(&motg->in_lpm))
 		return 0;
 
 	disable_irq(motg->irq);
+<<<<<<< HEAD
 	host_bus_suspend = !test_bit(MHL, &motg->inputs) && phy->otg->host &&
 		!test_bit(ID, &motg->inputs);
 	device_bus_suspend = phy->otg->gadget && test_bit(ID, &motg->inputs) &&
@@ -845,6 +1091,8 @@ static int msm_otg_suspend(struct msm_otg *motg)
 		return -EBUSY;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Chipidea 45-nm PHY suspend sequence:
 	 *
@@ -869,12 +1117,17 @@ static int msm_otg_suspend(struct msm_otg *motg)
 		ulpi_write(phy, 0x08, 0x09);
 	}
 
+<<<<<<< HEAD
 
 	/* Set the PHCD bit, only if it is not set by the controller.
+=======
+	/*
+>>>>>>> remotes/linux2/linux-3.4.y
 	 * PHY may take some time or even fail to enter into low power
 	 * mode (LPM). Hence poll for 500 msec and reset the PHY and link
 	 * in failure case.
 	 */
+<<<<<<< HEAD
 	portsc = readl_relaxed(USB_PORTSC);
 	if (!(portsc & PORTSC_PHCD)) {
 		writel_relaxed(portsc | PORTSC_PHCD,
@@ -885,6 +1138,14 @@ static int msm_otg_suspend(struct msm_otg *motg)
 			udelay(1);
 			cnt++;
 		}
+=======
+	writel(readl(USB_PORTSC) | PORTSC_PHCD, USB_PORTSC);
+	while (cnt < PHY_SUSPEND_TIMEOUT_USEC) {
+		if (readl(USB_PORTSC) & PORTSC_PHCD)
+			break;
+		udelay(1);
+		cnt++;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	if (cnt >= PHY_SUSPEND_TIMEOUT_USEC) {
@@ -900,6 +1161,7 @@ static int msm_otg_suspend(struct msm_otg *motg)
 	 * line must be disabled till async interrupt enable bit is cleared
 	 * in USBCMD register. Assert STP (ULPI interface STOP signal) to
 	 * block data communication from PHY.
+<<<<<<< HEAD
 	 *
 	 * PHY retention mode is disallowed while entering to LPM with wall
 	 * charger connected.  But PHY is put into suspend mode. Hence
@@ -972,15 +1234,44 @@ static int msm_otg_suspend(struct msm_otg *motg)
 			pdata->mpm_otgsessvld_int)
 			msm_mpm_set_pin_wake(pdata->mpm_otgsessvld_int, 1);
 	}
+=======
+	 */
+	writel(readl(USB_USBCMD) | ASYNC_INTR_CTRL | ULPI_STP_CTRL, USB_USBCMD);
+
+	if (motg->pdata->phy_type == SNPS_28NM_INTEGRATED_PHY &&
+			motg->pdata->otg_control == OTG_PMIC_CONTROL)
+		writel(readl(USB_PHY_CTRL) | PHY_RETEN, USB_PHY_CTRL);
+
+	clk_disable(motg->pclk);
+	clk_disable(motg->clk);
+	if (motg->core_clk)
+		clk_disable(motg->core_clk);
+
+	if (!IS_ERR(motg->pclk_src))
+		clk_disable(motg->pclk_src);
+
+	if (motg->pdata->phy_type == SNPS_28NM_INTEGRATED_PHY &&
+			motg->pdata->otg_control == OTG_PMIC_CONTROL) {
+		msm_hsusb_ldo_set_mode(0);
+		msm_hsusb_config_vddcx(0);
+	}
+
+	if (device_may_wakeup(phy->dev))
+		enable_irq_wake(motg->irq);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (bus)
 		clear_bit(HCD_FLAG_HW_ACCESSIBLE, &(bus_to_hcd(bus))->flags);
 
 	atomic_set(&motg->in_lpm, 1);
+<<<<<<< HEAD
 	/* Enable ASYNC IRQ (if present) during LPM */
 	if (motg->async_irq)
 		enable_irq(motg->async_irq);
 	enable_irq(motg->irq);
 	wake_unlock(&motg->wlock);
+=======
+	enable_irq(motg->irq);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	dev_info(phy->dev, "USB in low power mode\n");
 
@@ -991,15 +1282,21 @@ static int msm_otg_resume(struct msm_otg *motg)
 {
 	struct usb_phy *phy = &motg->phy;
 	struct usb_bus *bus = phy->otg->host;
+<<<<<<< HEAD
 	struct msm_otg_platform_data *pdata = motg->pdata;
 	int cnt = 0;
 	unsigned temp;
 	u32 phy_ctrl_val = 0;
 	unsigned ret;
+=======
+	int cnt = 0;
+	unsigned temp;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!atomic_read(&motg->in_lpm))
 		return 0;
 
+<<<<<<< HEAD
 	wake_lock(&motg->wlock);
 
 	/* Vote for TCXO when waking up the phy */
@@ -1033,6 +1330,21 @@ static int msm_otg_resume(struct msm_otg *motg)
 				~(PHY_IDHV_INTEN | PHY_OTGSESSVLDHV_INTEN);
 		writel_relaxed(phy_ctrl_val, USB_PHY_CTRL);
 		motg->lpm_flags &= ~PHY_RETENTIONED;
+=======
+	if (!IS_ERR(motg->pclk_src))
+		clk_enable(motg->pclk_src);
+
+	clk_enable(motg->pclk);
+	clk_enable(motg->clk);
+	if (motg->core_clk)
+		clk_enable(motg->core_clk);
+
+	if (motg->pdata->phy_type == SNPS_28NM_INTEGRATED_PHY &&
+			motg->pdata->otg_control == OTG_PMIC_CONTROL) {
+		msm_hsusb_ldo_set_mode(1);
+		msm_hsusb_config_vddcx(1);
+		writel(readl(USB_PHY_CTRL) & ~PHY_RETEN, USB_PHY_CTRL);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	temp = readl(USB_USBCMD);
@@ -1067,6 +1379,7 @@ static int msm_otg_resume(struct msm_otg *motg)
 	}
 
 skip_phy_resume:
+<<<<<<< HEAD
 	if (device_may_wakeup(phy->dev)) {
 		disable_irq_wake(motg->irq);
 		if (motg->async_irq)
@@ -1077,12 +1390,17 @@ skip_phy_resume:
 			pdata->mpm_otgsessvld_int)
 			msm_mpm_set_pin_wake(pdata->mpm_otgsessvld_int, 0);
 	}
+=======
+	if (device_may_wakeup(phy->dev))
+		disable_irq_wake(motg->irq);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (bus)
 		set_bit(HCD_FLAG_HW_ACCESSIBLE, &(bus_to_hcd(bus))->flags);
 
 	atomic_set(&motg->in_lpm, 0);
 
 	if (motg->async_int) {
+<<<<<<< HEAD
 		/* Match the disable_irq call from ISR */
 		enable_irq(motg->async_int);
 		motg->async_int = 0;
@@ -1092,12 +1410,20 @@ skip_phy_resume:
 	if (motg->async_irq)
 		disable_irq(motg->async_irq);
 
+=======
+		motg->async_int = 0;
+		pm_runtime_put(phy->dev);
+		enable_irq(motg->irq);
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	dev_info(phy->dev, "USB exited from low power mode\n");
 
 	return 0;
 }
 #endif
 
+<<<<<<< HEAD
 static int msm_otg_notify_host_mode(struct msm_otg *motg, bool host_mode)
 {
 	if (!psy)
@@ -1206,6 +1532,16 @@ static void msm_otg_notify_charger(struct msm_otg *motg, unsigned mA)
 
 	motg->cur_power = mA;
 #endif
+=======
+static void msm_otg_notify_charger(struct msm_otg *motg, unsigned mA)
+{
+	if (motg->cur_power == mA)
+		return;
+
+	/* TODO: Notify PMIC about available current */
+	dev_info(motg->phy.dev, "Avail curr from USB = %u\n", mA);
+	motg->cur_power = mA;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int msm_otg_set_power(struct usb_phy *phy, unsigned mA)
@@ -1225,6 +1561,7 @@ static int msm_otg_set_power(struct usb_phy *phy, unsigned mA)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void msm_otg_start_host(struct usb_otg *otg, int on)
 {
 	struct msm_otg *motg = container_of(otg->phy, struct msm_otg, phy);
@@ -1250,6 +1587,24 @@ static void msm_otg_start_host(struct usb_otg *otg, int on)
 			ulpi_write(otg->phy, OTG_COMP_DISABLE,
 				ULPI_SET(ULPI_PWR_CLK_MNG_REG));
 
+=======
+static void msm_otg_start_host(struct usb_phy *phy, int on)
+{
+	struct msm_otg *motg = container_of(phy, struct msm_otg, phy);
+	struct msm_otg_platform_data *pdata = motg->pdata;
+	struct usb_hcd *hcd;
+
+	if (!phy->otg->host)
+		return;
+
+	hcd = bus_to_hcd(phy->otg->host);
+
+	if (on) {
+		dev_dbg(phy->dev, "host on\n");
+
+		if (pdata->vbus_power)
+			pdata->vbus_power(1);
+>>>>>>> remotes/linux2/linux-3.4.y
 		/*
 		 * Some boards have a switch cotrolled by gpio
 		 * to enable/disable internal HUB. Enable internal
@@ -1257,6 +1612,7 @@ static void msm_otg_start_host(struct usb_otg *otg, int on)
 		 */
 		if (pdata->setup_gpio)
 			pdata->setup_gpio(OTG_STATE_A_HOST);
+<<<<<<< HEAD
 		usb_add_hcd(hcd, hcd->irq, IRQF_SHARED);
 	} else {
 		dev_info(otg->phy->dev, "host off\n");
@@ -1496,6 +1852,24 @@ static irqreturn_t msm_pmic_otg_power_irq(int irq, void *data)
 }
 #endif
 
+=======
+#ifdef CONFIG_USB
+		usb_add_hcd(hcd, hcd->irq, IRQF_SHARED);
+#endif
+	} else {
+		dev_dbg(phy->dev, "host off\n");
+
+#ifdef CONFIG_USB
+		usb_remove_hcd(hcd);
+#endif
+		if (pdata->setup_gpio)
+			pdata->setup_gpio(OTG_STATE_UNDEFINED);
+		if (pdata->vbus_power)
+			pdata->vbus_power(0);
+	}
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static int msm_otg_set_host(struct usb_otg *otg, struct usb_bus *host)
 {
 	struct msm_otg *motg = container_of(otg->phy, struct msm_otg, phy);
@@ -1510,6 +1884,7 @@ static int msm_otg_set_host(struct usb_otg *otg, struct usb_bus *host)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	if (!machine_is_apq8064_mako()) {
 		if (!motg->pdata->vbus_power && host) {
 			vbus_otg = devm_regulator_get(motg->phy.dev, "vbus_otg");
@@ -1529,6 +1904,15 @@ static int msm_otg_set_host(struct usb_otg *otg, struct usb_bus *host)
 			otg->host = NULL;
 			otg->phy->state = OTG_STATE_UNDEFINED;
 			queue_work(system_nrt_wq, &motg->sm_work);
+=======
+	if (!host) {
+		if (otg->phy->state == OTG_STATE_A_HOST) {
+			pm_runtime_get_sync(otg->phy->dev);
+			msm_otg_start_host(otg->phy, 0);
+			otg->host = NULL;
+			otg->phy->state = OTG_STATE_UNDEFINED;
+			schedule_work(&motg->sm_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 		} else {
 			otg->host = NULL;
 		}
@@ -1539,11 +1923,14 @@ static int msm_otg_set_host(struct usb_otg *otg, struct usb_bus *host)
 	hcd = bus_to_hcd(host);
 	hcd->power_budget = motg->pdata->power_budget;
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG
 	host->otg_port = 1;
 #endif
 	motg->usbdev_nb.notifier_call = msm_otg_usbdev_notify;
 	usb_register_notify(&motg->usbdev_nb);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	otg->host = host;
 	dev_dbg(otg->phy->dev, "host driver registered w/ tranceiver\n");
 
@@ -1553,12 +1940,17 @@ static int msm_otg_set_host(struct usb_otg *otg, struct usb_bus *host)
 	 */
 	if (motg->pdata->mode == USB_HOST || otg->gadget) {
 		pm_runtime_get_sync(otg->phy->dev);
+<<<<<<< HEAD
 		queue_work(system_nrt_wq, &motg->sm_work);
+=======
+		schedule_work(&motg->sm_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static void msm_otg_start_peripheral(struct usb_otg *otg, int on)
 {
 	int ret;
@@ -1576,6 +1968,18 @@ static void msm_otg_start_peripheral(struct usb_otg *otg, int on)
 #endif
 	if (on) {
 		dev_info(otg->phy->dev, "gadget on\n");
+=======
+static void msm_otg_start_peripheral(struct usb_phy *phy, int on)
+{
+	struct msm_otg *motg = container_of(phy, struct msm_otg, phy);
+	struct msm_otg_platform_data *pdata = motg->pdata;
+
+	if (!phy->otg->gadget)
+		return;
+
+	if (on) {
+		dev_dbg(phy->dev, "gadget on\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		/*
 		 * Some boards have a switch cotrolled by gpio
 		 * to enable/disable internal HUB. Disable internal
@@ -1583,6 +1987,7 @@ static void msm_otg_start_peripheral(struct usb_otg *otg, int on)
 		 */
 		if (pdata->setup_gpio)
 			pdata->setup_gpio(OTG_STATE_B_PERIPHERAL);
+<<<<<<< HEAD
 
 		/* Configure BUS performance parameters for MAX bandwidth */
 		if (motg->bus_perf_client && debug_bus_voting_enabled) {
@@ -1604,6 +2009,12 @@ static void msm_otg_start_peripheral(struct usb_otg *otg, int on)
 				dev_err(motg->phy.dev, "%s: Failed to devote "
 					   "for bus bw %d\n", __func__, ret);
 		}
+=======
+		usb_gadget_vbus_connect(phy->otg->gadget);
+	} else {
+		dev_dbg(phy->dev, "gadget off\n");
+		usb_gadget_vbus_disconnect(phy->otg->gadget);
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (pdata->setup_gpio)
 			pdata->setup_gpio(OTG_STATE_UNDEFINED);
 	}
@@ -1611,7 +2022,11 @@ static void msm_otg_start_peripheral(struct usb_otg *otg, int on)
 }
 
 static int msm_otg_set_peripheral(struct usb_otg *otg,
+<<<<<<< HEAD
 			struct usb_gadget *gadget)
+=======
+					struct usb_gadget *gadget)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct msm_otg *motg = container_of(otg->phy, struct msm_otg, phy);
 
@@ -1627,10 +2042,17 @@ static int msm_otg_set_peripheral(struct usb_otg *otg,
 	if (!gadget) {
 		if (otg->phy->state == OTG_STATE_B_PERIPHERAL) {
 			pm_runtime_get_sync(otg->phy->dev);
+<<<<<<< HEAD
 			msm_otg_start_peripheral(otg, 0);
 			otg->gadget = NULL;
 			otg->phy->state = OTG_STATE_UNDEFINED;
 			queue_work(system_nrt_wq, &motg->sm_work);
+=======
+			msm_otg_start_peripheral(otg->phy, 0);
+			otg->gadget = NULL;
+			otg->phy->state = OTG_STATE_UNDEFINED;
+			schedule_work(&motg->sm_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 		} else {
 			otg->gadget = NULL;
 		}
@@ -1646,12 +2068,17 @@ static int msm_otg_set_peripheral(struct usb_otg *otg,
 	 */
 	if (motg->pdata->mode == USB_PERIPHERAL || otg->host) {
 		pm_runtime_get_sync(otg->phy->dev);
+<<<<<<< HEAD
 		queue_work(system_nrt_wq, &motg->sm_work);
+=======
+		schedule_work(&motg->sm_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static bool msm_otg_read_pmic_id_state(struct msm_otg *motg)
 {
 	unsigned long flags;
@@ -2032,6 +2459,94 @@ static void msm_chg_enable_primary_det(struct msm_otg *motg)
 {
 	struct usb_phy *phy = &motg->phy;
 	u32 chg_det;
+=======
+static bool msm_chg_check_secondary_det(struct msm_otg *motg)
+{
+	struct usb_phy *phy = &motg->phy;
+	u32 chg_det;
+	bool ret = false;
+
+	switch (motg->pdata->phy_type) {
+	case CI_45NM_INTEGRATED_PHY:
+		chg_det = ulpi_read(phy, 0x34);
+		ret = chg_det & (1 << 4);
+		break;
+	case SNPS_28NM_INTEGRATED_PHY:
+		chg_det = ulpi_read(phy, 0x87);
+		ret = chg_det & 1;
+		break;
+	default:
+		break;
+	}
+	return ret;
+}
+
+static void msm_chg_enable_secondary_det(struct msm_otg *motg)
+{
+	struct usb_phy *phy = &motg->phy;
+	u32 chg_det;
+
+	switch (motg->pdata->phy_type) {
+	case CI_45NM_INTEGRATED_PHY:
+		chg_det = ulpi_read(phy, 0x34);
+		/* Turn off charger block */
+		chg_det |= ~(1 << 1);
+		ulpi_write(phy, chg_det, 0x34);
+		udelay(20);
+		/* control chg block via ULPI */
+		chg_det &= ~(1 << 3);
+		ulpi_write(phy, chg_det, 0x34);
+		/* put it in host mode for enabling D- source */
+		chg_det &= ~(1 << 2);
+		ulpi_write(phy, chg_det, 0x34);
+		/* Turn on chg detect block */
+		chg_det &= ~(1 << 1);
+		ulpi_write(phy, chg_det, 0x34);
+		udelay(20);
+		/* enable chg detection */
+		chg_det &= ~(1 << 0);
+		ulpi_write(phy, chg_det, 0x34);
+		break;
+	case SNPS_28NM_INTEGRATED_PHY:
+		/*
+		 * Configure DM as current source, DP as current sink
+		 * and enable battery charging comparators.
+		 */
+		ulpi_write(phy, 0x8, 0x85);
+		ulpi_write(phy, 0x2, 0x85);
+		ulpi_write(phy, 0x1, 0x85);
+		break;
+	default:
+		break;
+	}
+}
+
+static bool msm_chg_check_primary_det(struct msm_otg *motg)
+{
+	struct usb_phy *phy = &motg->phy;
+	u32 chg_det;
+	bool ret = false;
+
+	switch (motg->pdata->phy_type) {
+	case CI_45NM_INTEGRATED_PHY:
+		chg_det = ulpi_read(phy, 0x34);
+		ret = chg_det & (1 << 4);
+		break;
+	case SNPS_28NM_INTEGRATED_PHY:
+		chg_det = ulpi_read(phy, 0x87);
+		ret = chg_det & 1;
+		break;
+	default:
+		break;
+	}
+	return ret;
+}
+
+static void msm_chg_enable_primary_det(struct msm_otg *motg)
+{
+	struct usb_phy *phy = &motg->phy;
+	u32 chg_det;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	switch (motg->pdata->phy_type) {
 	case CI_45NM_INTEGRATED_PHY:
@@ -2137,10 +2652,15 @@ static void msm_chg_block_on(struct msm_otg *motg)
 		udelay(20);
 		break;
 	case SNPS_28NM_INTEGRATED_PHY:
+<<<<<<< HEAD
 		/* disable DP and DM pull down resistors */
 		ulpi_write(phy, 0x6, 0xC);
 		/* Clear charger detecting control bits */
 		ulpi_write(phy, 0x1F, 0x86);
+=======
+		/* Clear charger detecting control bits */
+		ulpi_write(phy, 0x3F, 0x86);
+>>>>>>> remotes/linux2/linux-3.4.y
 		/* Clear alt interrupt latch and enable bits */
 		ulpi_write(phy, 0x1F, 0x92);
 		ulpi_write(phy, 0x1F, 0x95);
@@ -2181,6 +2701,7 @@ static void msm_chg_block_off(struct msm_otg *motg)
 	ulpi_write(phy, func_ctrl, ULPI_FUNC_CTRL);
 }
 
+<<<<<<< HEAD
 static const char *chg_to_string(enum usb_chg_type chg_type)
 {
 	switch (chg_type) {
@@ -2230,10 +2751,17 @@ static void msm_ta_detect_work(struct work_struct *w)
 #define MSM_CHG_DCD_MAX_RETRIES		6 /* Tdcd_tmout = 6 * 100 msec */
 #define MSM_CHG_PRIMARY_DET_TIME	(50 * HZ/1000) /* TVDPSRC_ON */
 #define MSM_CHG_SECONDARY_DET_TIME	(50 * HZ/1000) /* TVDMSRC_ON */
+=======
+#define MSM_CHG_DCD_POLL_TIME		(100 * HZ/1000) /* 100 msec */
+#define MSM_CHG_DCD_MAX_RETRIES		6 /* Tdcd_tmout = 6 * 100 msec */
+#define MSM_CHG_PRIMARY_DET_TIME	(40 * HZ/1000) /* TVDPSRC_ON */
+#define MSM_CHG_SECONDARY_DET_TIME	(40 * HZ/1000) /* TVDMSRC_ON */
+>>>>>>> remotes/linux2/linux-3.4.y
 static void msm_chg_detect_work(struct work_struct *w)
 {
 	struct msm_otg *motg = container_of(w, struct msm_otg, chg_work.work);
 	struct usb_phy *phy = &motg->phy;
+<<<<<<< HEAD
 	bool is_dcd = false, tmout, vout, is_aca;
 	u32 line_state, dm_vlgc;
 	unsigned long delay;
@@ -2250,11 +2778,23 @@ static void msm_chg_detect_work(struct work_struct *w)
 		msm_chg_block_on(motg);
 		msm_chg_enable_dcd(motg);
 		msm_chg_enable_aca_det(motg);
+=======
+	bool is_dcd, tmout, vout;
+	unsigned long delay;
+
+	dev_dbg(phy->dev, "chg detection work\n");
+	switch (motg->chg_state) {
+	case USB_CHG_STATE_UNDEFINED:
+		pm_runtime_get_sync(phy->dev);
+		msm_chg_block_on(motg);
+		msm_chg_enable_dcd(motg);
+>>>>>>> remotes/linux2/linux-3.4.y
 		motg->chg_state = USB_CHG_STATE_WAIT_FOR_DCD;
 		motg->dcd_retries = 0;
 		delay = MSM_CHG_DCD_POLL_TIME;
 		break;
 	case USB_CHG_STATE_WAIT_FOR_DCD:
+<<<<<<< HEAD
 		if (slimport_is_connected()) {
 			msm_chg_block_off(motg);
 			motg->chg_state = USB_CHG_STATE_DETECTED;
@@ -2282,6 +2822,8 @@ static void msm_chg_detect_work(struct work_struct *w)
 				break;
 			}
 		}
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		is_dcd = msm_chg_check_dcd(motg);
 		tmout = ++motg->dcd_retries == MSM_CHG_DCD_MAX_RETRIES;
 		if (is_dcd || tmout) {
@@ -2295,6 +2837,7 @@ static void msm_chg_detect_work(struct work_struct *w)
 		break;
 	case USB_CHG_STATE_DCD_DONE:
 		vout = msm_chg_check_primary_det(motg);
+<<<<<<< HEAD
 		line_state = readl_relaxed(USB_PORTSC) & PORTSC_LS;
 		dm_vlgc = line_state & PORTSC_LS_DM;
 		if (vout && !dm_vlgc) { /* VDAT_REF < DM < VLGC */
@@ -2326,6 +2869,14 @@ static void msm_chg_detect_work(struct work_struct *w)
 			else
 				motg->chg_type = USB_SDP_CHARGER;
 
+=======
+		if (vout) {
+			msm_chg_enable_secondary_det(motg);
+			delay = MSM_CHG_SECONDARY_DET_TIME;
+			motg->chg_state = USB_CHG_STATE_PRIMARY_DONE;
+		} else {
+			motg->chg_type = USB_SDP_CHARGER;
+>>>>>>> remotes/linux2/linux-3.4.y
 			motg->chg_state = USB_CHG_STATE_DETECTED;
 			delay = 0;
 		}
@@ -2342,6 +2893,7 @@ static void msm_chg_detect_work(struct work_struct *w)
 		motg->chg_state = USB_CHG_STATE_DETECTED;
 	case USB_CHG_STATE_DETECTED:
 		msm_chg_block_off(motg);
+<<<<<<< HEAD
 		msm_chg_enable_aca_det(motg);
 		/*
 		 * Spurious interrupt is seen after enabling ACA detection
@@ -2353,12 +2905,20 @@ static void msm_chg_detect_work(struct work_struct *w)
 		dev_dbg(phy->dev, "chg_type = %s\n",
 			chg_to_string(motg->chg_type));
 		queue_work(system_nrt_wq, &motg->sm_work);
+=======
+		dev_dbg(phy->dev, "charger = %d\n", motg->chg_type);
+		schedule_work(&motg->sm_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 		return;
 	default:
 		return;
 	}
 
+<<<<<<< HEAD
 	queue_delayed_work(system_nrt_wq, &motg->chg_work, delay);
+=======
+	schedule_delayed_work(&motg->chg_work, delay);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -2375,7 +2935,21 @@ static void msm_otg_init_sm(struct msm_otg *motg)
 
 	switch (pdata->mode) {
 	case USB_OTG:
+<<<<<<< HEAD
 		if (pdata->otg_control == OTG_USER_CONTROL) {
+=======
+		if (pdata->otg_control == OTG_PHY_CONTROL) {
+			if (otgsc & OTGSC_ID)
+				set_bit(ID, &motg->inputs);
+			else
+				clear_bit(ID, &motg->inputs);
+
+			if (otgsc & OTGSC_BSV)
+				set_bit(B_SESS_VLD, &motg->inputs);
+			else
+				clear_bit(B_SESS_VLD, &motg->inputs);
+		} else if (pdata->otg_control == OTG_USER_CONTROL) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (pdata->default_mode == USB_HOST) {
 				clear_bit(ID, &motg->inputs);
 			} else if (pdata->default_mode == USB_PERIPHERAL) {
@@ -2385,6 +2959,7 @@ static void msm_otg_init_sm(struct msm_otg *motg)
 				set_bit(ID, &motg->inputs);
 				clear_bit(B_SESS_VLD, &motg->inputs);
 			}
+<<<<<<< HEAD
 		} else if (pdata->otg_control == OTG_PHY_CONTROL) {
 			if (otgsc & OTGSC_ID) {
 				set_bit(ID, &motg->inputs);
@@ -2413,6 +2988,8 @@ static void msm_otg_init_sm(struct msm_otg *motg)
 			set_bit(ID, &motg->inputs);
 			clear_bit(B_SESS_VLD, &motg->inputs);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 		break;
 	case USB_HOST:
@@ -2420,6 +2997,7 @@ static void msm_otg_init_sm(struct msm_otg *motg)
 		break;
 	case USB_PERIPHERAL:
 		set_bit(ID, &motg->inputs);
+<<<<<<< HEAD
 		if (pdata->otg_control == OTG_PHY_CONTROL) {
 			if (otgsc & OTGSC_BSV)
 				set_bit(B_SESS_VLD, &motg->inputs);
@@ -2434,6 +3012,12 @@ static void msm_otg_init_sm(struct msm_otg *motg)
 			wait_for_completion(&pmic_vbus_init);
 #endif
 		}
+=======
+		if (otgsc & OTGSC_BSV)
+			set_bit(B_SESS_VLD, &motg->inputs);
+		else
+			clear_bit(B_SESS_VLD, &motg->inputs);
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	default:
 		break;
@@ -2444,6 +3028,7 @@ static void msm_otg_sm_work(struct work_struct *w)
 {
 	struct msm_otg *motg = container_of(w, struct msm_otg, sm_work);
 	struct usb_otg *otg = motg->phy.otg;
+<<<<<<< HEAD
 	bool work = 0, srp_reqd;
 
 	pm_runtime_resume(otg->phy->dev);
@@ -2485,6 +3070,24 @@ static void msm_otg_sm_work(struct work_struct *w)
 			work = 1;
 		} else if (test_bit(B_SESS_VLD, &motg->inputs)) {
 			pr_debug("b_sess_vld\n");
+=======
+
+	switch (otg->phy->state) {
+	case OTG_STATE_UNDEFINED:
+		dev_dbg(otg->phy->dev, "OTG_STATE_UNDEFINED state\n");
+		msm_otg_reset(otg->phy);
+		msm_otg_init_sm(motg);
+		otg->phy->state = OTG_STATE_B_IDLE;
+		/* FALL THROUGH */
+	case OTG_STATE_B_IDLE:
+		dev_dbg(otg->phy->dev, "OTG_STATE_B_IDLE state\n");
+		if (!test_bit(ID, &motg->inputs) && otg->host) {
+			/* disable BSV bit */
+			writel(readl(USB_OTGSC) & ~OTGSC_BSVIE, USB_OTGSC);
+			msm_otg_start_host(otg->phy, 1);
+			otg->phy->state = OTG_STATE_A_HOST;
+		} else if (test_bit(B_SESS_VLD, &motg->inputs)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			switch (motg->chg_state) {
 			case USB_CHG_STATE_UNDEFINED:
 				msm_chg_detect_work(&motg->chg_work.work);
@@ -2492,6 +3095,7 @@ static void msm_otg_sm_work(struct work_struct *w)
 			case USB_CHG_STATE_DETECTED:
 				switch (motg->chg_type) {
 				case USB_DCP_CHARGER:
+<<<<<<< HEAD
 					/* Enable VDP_SRC */
 					ulpi_write(otg->phy, 0x2, 0x85);
 					/* fall through */
@@ -2508,10 +3112,15 @@ static void msm_otg_sm_work(struct work_struct *w)
 					 * (ID_B --> ID_C) PHY_ALT interrupt can
 					 * not be detected in LPM.
 					 */
+=======
+					msm_otg_notify_charger(motg,
+							IDEV_CHG_MAX);
+>>>>>>> remotes/linux2/linux-3.4.y
 					break;
 				case USB_CDP_CHARGER:
 					msm_otg_notify_charger(motg,
 							IDEV_CHG_MAX);
+<<<<<<< HEAD
 					msm_otg_start_peripheral(otg, 1);
 					otg->phy->state =
 						OTG_STATE_B_PERIPHERAL;
@@ -2533,6 +3142,17 @@ static void msm_otg_sm_work(struct work_struct *w)
 					}
 					schedule_delayed_work(&motg->check_ta_work,
 						MSM_CHECK_TA_DELAY);
+=======
+					msm_otg_start_peripheral(otg->phy, 1);
+					otg->phy->state
+						= OTG_STATE_B_PERIPHERAL;
+					break;
+				case USB_SDP_CHARGER:
+					msm_otg_notify_charger(motg, IUNIT);
+					msm_otg_start_peripheral(otg->phy, 1);
+					otg->phy->state
+						= OTG_STATE_B_PERIPHERAL;
+>>>>>>> remotes/linux2/linux-3.4.y
 					break;
 				default:
 					break;
@@ -2541,6 +3161,7 @@ static void msm_otg_sm_work(struct work_struct *w)
 			default:
 				break;
 			}
+<<<<<<< HEAD
 		} else if (test_bit(B_BUS_REQ, &motg->inputs)) {
 			pr_debug("b_sess_end && b_bus_req\n");
 			if (msm_otg_start_srp(otg) < 0) {
@@ -3021,18 +3642,60 @@ static void msm_otg_sm_work(struct work_struct *w)
 			motg->chg_state = USB_CHG_STATE_UNDEFINED;
 			motg->chg_type = USB_INVALID_CHARGER;
 			msm_otg_notify_charger(motg, 0);
+=======
+		} else {
+			/*
+			 * If charger detection work is pending, decrement
+			 * the pm usage counter to balance with the one that
+			 * is incremented in charger detection work.
+			 */
+			if (cancel_delayed_work_sync(&motg->chg_work)) {
+				pm_runtime_put_sync(otg->phy->dev);
+				msm_otg_reset(otg->phy);
+			}
+			msm_otg_notify_charger(motg, 0);
+			motg->chg_state = USB_CHG_STATE_UNDEFINED;
+			motg->chg_type = USB_INVALID_CHARGER;
+		}
+		pm_runtime_put_sync(otg->phy->dev);
+		break;
+	case OTG_STATE_B_PERIPHERAL:
+		dev_dbg(otg->phy->dev, "OTG_STATE_B_PERIPHERAL state\n");
+		if (!test_bit(B_SESS_VLD, &motg->inputs) ||
+				!test_bit(ID, &motg->inputs)) {
+			msm_otg_notify_charger(motg, 0);
+			msm_otg_start_peripheral(otg->phy, 0);
+			motg->chg_state = USB_CHG_STATE_UNDEFINED;
+			motg->chg_type = USB_INVALID_CHARGER;
+			otg->phy->state = OTG_STATE_B_IDLE;
+			msm_otg_reset(otg->phy);
+			schedule_work(w);
+		}
+		break;
+	case OTG_STATE_A_HOST:
+		dev_dbg(otg->phy->dev, "OTG_STATE_A_HOST state\n");
+		if (test_bit(ID, &motg->inputs)) {
+			msm_otg_start_host(otg->phy, 0);
+			otg->phy->state = OTG_STATE_B_IDLE;
+			msm_otg_reset(otg->phy);
+			schedule_work(w);
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 		break;
 	default:
 		break;
 	}
+<<<<<<< HEAD
 	if (work)
 		queue_work(system_nrt_wq, &motg->sm_work);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static irqreturn_t msm_otg_irq(int irq, void *data)
 {
 	struct msm_otg *motg = data;
+<<<<<<< HEAD
 	struct usb_otg *otg = motg->phy.otg;
 	u32 otgsc = 0, usbsts, pc;
 	bool work = 0;
@@ -3342,12 +4005,47 @@ static irqreturn_t msm_pmic_id_irq(int irq, void *data)
 		queue_delayed_work(system_nrt_wq, &motg->pmic_id_status_work,
 				msecs_to_jiffies(MSM_PMIC_ID_STATUS_DELAY));
 
+=======
+	struct usb_phy *phy = &motg->phy;
+	u32 otgsc = 0;
+
+	if (atomic_read(&motg->in_lpm)) {
+		disable_irq_nosync(irq);
+		motg->async_int = 1;
+		pm_runtime_get(phy->dev);
+		return IRQ_HANDLED;
+	}
+
+	otgsc = readl(USB_OTGSC);
+	if (!(otgsc & (OTGSC_IDIS | OTGSC_BSVIS)))
+		return IRQ_NONE;
+
+	if ((otgsc & OTGSC_IDIS) && (otgsc & OTGSC_IDIE)) {
+		if (otgsc & OTGSC_ID)
+			set_bit(ID, &motg->inputs);
+		else
+			clear_bit(ID, &motg->inputs);
+		dev_dbg(phy->dev, "ID set/clear\n");
+		pm_runtime_get_noresume(phy->dev);
+	} else if ((otgsc & OTGSC_BSVIS) && (otgsc & OTGSC_BSVIE)) {
+		if (otgsc & OTGSC_BSV)
+			set_bit(B_SESS_VLD, &motg->inputs);
+		else
+			clear_bit(B_SESS_VLD, &motg->inputs);
+		dev_dbg(phy->dev, "BSV set/clear\n");
+		pm_runtime_get_noresume(phy->dev);
+	}
+
+	writel(otgsc, USB_OTGSC);
+	schedule_work(&motg->sm_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 	return IRQ_HANDLED;
 }
 
 static int msm_otg_mode_show(struct seq_file *s, void *unused)
 {
 	struct msm_otg *motg = s->private;
+<<<<<<< HEAD
 	struct usb_phy *phy = &motg->phy;
 
 	switch (phy->state) {
@@ -3537,10 +4235,26 @@ static int msm_otg_bus_show(struct seq_file *s, void *unused)
 		seq_printf(s, "enabled\n");
 	else
 		seq_printf(s, "disabled\n");
+=======
+	struct usb_otg *otg = motg->phy.otg;
+
+	switch (otg->phy->state) {
+	case OTG_STATE_A_HOST:
+		seq_printf(s, "host\n");
+		break;
+	case OTG_STATE_B_PERIPHERAL:
+		seq_printf(s, "peripheral\n");
+		break;
+	default:
+		seq_printf(s, "none\n");
+		break;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int msm_otg_bus_open(struct inode *inode, struct file *file)
 {
 	return single_open(file, msm_otg_bus_show, inode->i_private);
@@ -3580,21 +4294,111 @@ const struct file_operations msm_otg_bus_fops = {
 	.open = msm_otg_bus_open,
 	.read = seq_read,
 	.write = msm_otg_bus_write,
+=======
+static int msm_otg_mode_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, msm_otg_mode_show, inode->i_private);
+}
+
+static ssize_t msm_otg_mode_write(struct file *file, const char __user *ubuf,
+				size_t count, loff_t *ppos)
+{
+	struct seq_file *s = file->private_data;
+	struct msm_otg *motg = s->private;
+	char buf[16];
+	struct usb_otg *otg = motg->phy.otg;
+	int status = count;
+	enum usb_mode_type req_mode;
+
+	memset(buf, 0x00, sizeof(buf));
+
+	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count))) {
+		status = -EFAULT;
+		goto out;
+	}
+
+	if (!strncmp(buf, "host", 4)) {
+		req_mode = USB_HOST;
+	} else if (!strncmp(buf, "peripheral", 10)) {
+		req_mode = USB_PERIPHERAL;
+	} else if (!strncmp(buf, "none", 4)) {
+		req_mode = USB_NONE;
+	} else {
+		status = -EINVAL;
+		goto out;
+	}
+
+	switch (req_mode) {
+	case USB_NONE:
+		switch (otg->phy->state) {
+		case OTG_STATE_A_HOST:
+		case OTG_STATE_B_PERIPHERAL:
+			set_bit(ID, &motg->inputs);
+			clear_bit(B_SESS_VLD, &motg->inputs);
+			break;
+		default:
+			goto out;
+		}
+		break;
+	case USB_PERIPHERAL:
+		switch (otg->phy->state) {
+		case OTG_STATE_B_IDLE:
+		case OTG_STATE_A_HOST:
+			set_bit(ID, &motg->inputs);
+			set_bit(B_SESS_VLD, &motg->inputs);
+			break;
+		default:
+			goto out;
+		}
+		break;
+	case USB_HOST:
+		switch (otg->phy->state) {
+		case OTG_STATE_B_IDLE:
+		case OTG_STATE_B_PERIPHERAL:
+			clear_bit(ID, &motg->inputs);
+			break;
+		default:
+			goto out;
+		}
+		break;
+	default:
+		goto out;
+	}
+
+	pm_runtime_get_sync(otg->phy->dev);
+	schedule_work(&motg->sm_work);
+out:
+	return status;
+}
+
+const struct file_operations msm_otg_mode_fops = {
+	.open = msm_otg_mode_open,
+	.read = seq_read,
+	.write = msm_otg_mode_write,
+>>>>>>> remotes/linux2/linux-3.4.y
 	.llseek = seq_lseek,
 	.release = single_release,
 };
 
 static struct dentry *msm_otg_dbg_root;
+<<<<<<< HEAD
 
 static int msm_otg_debugfs_init(struct msm_otg *motg)
 {
 	struct dentry *msm_otg_dentry;
 
+=======
+static struct dentry *msm_otg_dbg_mode;
+
+static int msm_otg_debugfs_init(struct msm_otg *motg)
+{
+>>>>>>> remotes/linux2/linux-3.4.y
 	msm_otg_dbg_root = debugfs_create_dir("msm_otg", NULL);
 
 	if (!msm_otg_dbg_root || IS_ERR(msm_otg_dbg_root))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	if (motg->pdata->mode == USB_OTG &&
 		motg->pdata->otg_control == OTG_USER_CONTROL) {
 
@@ -3643,11 +4447,22 @@ static int msm_otg_debugfs_init(struct msm_otg *motg)
 		debugfs_remove_recursive(msm_otg_dbg_root);
 		return -ENODEV;
 	}
+=======
+	msm_otg_dbg_mode = debugfs_create_file("mode", S_IRUGO | S_IWUSR,
+				msm_otg_dbg_root, motg, &msm_otg_mode_fops);
+	if (!msm_otg_dbg_mode) {
+		debugfs_remove(msm_otg_dbg_root);
+		msm_otg_dbg_root = NULL;
+		return -ENODEV;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
 static void msm_otg_debugfs_cleanup(void)
 {
+<<<<<<< HEAD
 	debugfs_remove_recursive(msm_otg_dbg_root);
 }
 
@@ -3766,6 +4581,10 @@ struct msm_otg_platform_data *msm_otg_dt_to_pdata(struct platform_device *pdev)
 				"qcom,hsusb-otg-disable-reset");
 
 	return pdata;
+=======
+	debugfs_remove(msm_otg_dbg_mode);
+	debugfs_remove(msm_otg_dbg_root);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int __init msm_otg_probe(struct platform_device *pdev)
@@ -3774,6 +4593,7 @@ static int __init msm_otg_probe(struct platform_device *pdev)
 	struct resource *res;
 	struct msm_otg *motg;
 	struct usb_phy *phy;
+<<<<<<< HEAD
 	struct msm_otg_platform_data *pdata;
 
 	dev_info(&pdev->dev, "msm_otg probe\n");
@@ -3793,6 +4613,13 @@ static int __init msm_otg_probe(struct platform_device *pdev)
 		return -ENODEV;
 	} else {
 		pdata = pdev->dev.platform_data;
+=======
+
+	dev_info(&pdev->dev, "msm_otg probe\n");
+	if (!pdev->dev.platform_data) {
+		dev_err(&pdev->dev, "No platform data given. Bailing out\n");
+		return -ENODEV;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	motg = kzalloc(sizeof(struct msm_otg), GFP_KERNEL);
@@ -3803,6 +4630,7 @@ static int __init msm_otg_probe(struct platform_device *pdev)
 
 	motg->phy.otg = kzalloc(sizeof(struct usb_otg), GFP_KERNEL);
 	if (!motg->phy.otg) {
+<<<<<<< HEAD
 		dev_err(&pdev->dev, "unable to allocate usb_otg\n");
 		ret = -ENOMEM;
 		goto free_motg;
@@ -3844,11 +4672,39 @@ static int __init msm_otg_probe(struct platform_device *pdev)
 
 	/*
 	 * USB Core is running its protocol engine based on CORE CLK,
+=======
+		dev_err(&pdev->dev, "unable to allocate msm_otg\n");
+		return -ENOMEM;
+	}
+
+	motg->pdata = pdev->dev.platform_data;
+	phy = &motg->phy;
+	phy->dev = &pdev->dev;
+
+	motg->phy_reset_clk = clk_get(&pdev->dev, "usb_phy_clk");
+	if (IS_ERR(motg->phy_reset_clk)) {
+		dev_err(&pdev->dev, "failed to get usb_phy_clk\n");
+		ret = PTR_ERR(motg->phy_reset_clk);
+		goto free_motg;
+	}
+
+	motg->clk = clk_get(&pdev->dev, "usb_hs_clk");
+	if (IS_ERR(motg->clk)) {
+		dev_err(&pdev->dev, "failed to get usb_hs_clk\n");
+		ret = PTR_ERR(motg->clk);
+		goto put_phy_reset_clk;
+	}
+	clk_set_rate(motg->clk, 60000000);
+
+	/*
+	 * If USB Core is running its protocol engine based on CORE CLK,
+>>>>>>> remotes/linux2/linux-3.4.y
 	 * CORE CLK  must be running at >55Mhz for correct HSUSB
 	 * operation and USB core cannot tolerate frequency changes on
 	 * CORE CLK. For such USB cores, vote for maximum clk frequency
 	 * on pclk source
 	 */
+<<<<<<< HEAD
 	motg->core_clk = clk_get(&pdev->dev, "core_clk");
 	if (IS_ERR(motg->core_clk)) {
 		motg->core_clk = NULL;
@@ -3865,18 +4721,55 @@ static int __init msm_otg_probe(struct platform_device *pdev)
 		goto put_core_clk;
 	}
 
+=======
+	 if (motg->pdata->pclk_src_name) {
+		motg->pclk_src = clk_get(&pdev->dev,
+			motg->pdata->pclk_src_name);
+		if (IS_ERR(motg->pclk_src))
+			goto put_clk;
+		clk_set_rate(motg->pclk_src, INT_MAX);
+		clk_enable(motg->pclk_src);
+	} else
+		motg->pclk_src = ERR_PTR(-ENOENT);
+
+
+	motg->pclk = clk_get(&pdev->dev, "usb_hs_pclk");
+	if (IS_ERR(motg->pclk)) {
+		dev_err(&pdev->dev, "failed to get usb_hs_pclk\n");
+		ret = PTR_ERR(motg->pclk);
+		goto put_pclk_src;
+	}
+
+	/*
+	 * USB core clock is not present on all MSM chips. This
+	 * clock is introduced to remove the dependency on AXI
+	 * bus frequency.
+	 */
+	motg->core_clk = clk_get(&pdev->dev, "usb_hs_core_clk");
+	if (IS_ERR(motg->core_clk))
+		motg->core_clk = NULL;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res) {
 		dev_err(&pdev->dev, "failed to get platform resource mem\n");
 		ret = -ENODEV;
+<<<<<<< HEAD
 		goto put_pclk;
+=======
+		goto put_core_clk;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	motg->regs = ioremap(res->start, resource_size(res));
 	if (!motg->regs) {
 		dev_err(&pdev->dev, "ioremap failed\n");
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto put_pclk;
+=======
+		goto put_core_clk;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 	dev_info(&pdev->dev, "OTG regs = %p\n", motg->regs);
 
@@ -3887,6 +4780,7 @@ static int __init msm_otg_probe(struct platform_device *pdev)
 		goto free_regs;
 	}
 
+<<<<<<< HEAD
 	motg->async_irq = platform_get_irq_byname(pdev, "async_irq");
 	if (motg->async_irq < 0) {
 		dev_dbg(&pdev->dev, "platform_get_irq for async_int failed\n");
@@ -3932,11 +4826,21 @@ static int __init msm_otg_probe(struct platform_device *pdev)
 	if (ret) {
 		dev_err(&pdev->dev, "unable to enable the hsusb vddcx\n");
 		goto free_config_vddcx;
+=======
+	clk_enable(motg->clk);
+	clk_enable(motg->pclk);
+
+	ret = msm_hsusb_init_vddcx(motg, 1);
+	if (ret) {
+		dev_err(&pdev->dev, "hsusb vddcx configuration failed\n");
+		goto free_regs;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	ret = msm_hsusb_ldo_init(motg, 1);
 	if (ret) {
 		dev_err(&pdev->dev, "hsusb vreg configuration failed\n");
+<<<<<<< HEAD
 		goto free_hsusb_vddcx;
 	}
 
@@ -3973,10 +4877,29 @@ static int __init msm_otg_probe(struct platform_device *pdev)
 	INIT_DELAYED_WORK(&motg->check_ta_work, msm_ta_detect_work);
 	setup_timer(&motg->id_timer, msm_otg_id_timer_func,
 				(unsigned long) motg);
+=======
+		goto vddcx_exit;
+	}
+	ret = msm_hsusb_ldo_set_mode(1);
+	if (ret) {
+		dev_err(&pdev->dev, "hsusb vreg enable failed\n");
+		goto ldo_exit;
+	}
+
+	if (motg->core_clk)
+		clk_enable(motg->core_clk);
+
+	writel(0, USB_USBINTR);
+	writel(0, USB_OTGSC);
+
+	INIT_WORK(&motg->sm_work, msm_otg_sm_work);
+	INIT_DELAYED_WORK(&motg->chg_work, msm_chg_detect_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 	ret = request_irq(motg->irq, msm_otg_irq, IRQF_SHARED,
 					"msm_otg", motg);
 	if (ret) {
 		dev_err(&pdev->dev, "request irq failed\n");
+<<<<<<< HEAD
 		goto destroy_wlock;
 	}
 
@@ -3999,18 +4922,29 @@ static int __init msm_otg_probe(struct platform_device *pdev)
 #ifdef CONFIG_USB_HOST_NOTIFY
 	phy->set_suspend = NULL;
 #endif
+=======
+		goto disable_clks;
+	}
+
+	phy->init = msm_otg_reset;
+	phy->set_power = msm_otg_set_power;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	phy->io_ops = &msm_otg_io_ops;
 
 	phy->otg->phy = &motg->phy;
 	phy->otg->set_host = msm_otg_set_host;
 	phy->otg->set_peripheral = msm_otg_set_peripheral;
+<<<<<<< HEAD
 	phy->otg->start_hnp = msm_otg_start_hnp;
 	phy->otg->start_srp = msm_otg_start_srp;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	ret = usb_set_transceiver(&motg->phy);
 	if (ret) {
 		dev_err(&pdev->dev, "usb_set_transceiver failed\n");
+<<<<<<< HEAD
 		goto free_async_irq;
 	}
 
@@ -4150,6 +5084,52 @@ put_clk:
 free_otg:
 	kfree(motg->phy.otg);
 free_motg:
+=======
+		goto free_irq;
+	}
+
+	platform_set_drvdata(pdev, motg);
+	device_init_wakeup(&pdev->dev, 1);
+
+	if (motg->pdata->mode == USB_OTG &&
+			motg->pdata->otg_control == OTG_USER_CONTROL) {
+		ret = msm_otg_debugfs_init(motg);
+		if (ret)
+			dev_dbg(&pdev->dev, "mode debugfs file is"
+					"not available\n");
+	}
+
+	pm_runtime_set_active(&pdev->dev);
+	pm_runtime_enable(&pdev->dev);
+
+	return 0;
+free_irq:
+	free_irq(motg->irq, motg);
+disable_clks:
+	clk_disable(motg->pclk);
+	clk_disable(motg->clk);
+ldo_exit:
+	msm_hsusb_ldo_init(motg, 0);
+vddcx_exit:
+	msm_hsusb_init_vddcx(motg, 0);
+free_regs:
+	iounmap(motg->regs);
+put_core_clk:
+	if (motg->core_clk)
+		clk_put(motg->core_clk);
+	clk_put(motg->pclk);
+put_pclk_src:
+	if (!IS_ERR(motg->pclk_src)) {
+		clk_disable(motg->pclk_src);
+		clk_put(motg->pclk_src);
+	}
+put_clk:
+	clk_put(motg->clk);
+put_phy_reset_clk:
+	clk_put(motg->phy_reset_clk);
+free_motg:
+	kfree(motg->phy.otg);
+>>>>>>> remotes/linux2/linux-3.4.y
 	kfree(motg);
 	return ret;
 }
@@ -4157,6 +5137,7 @@ free_motg:
 static int __devexit msm_otg_remove(struct platform_device *pdev)
 {
 	struct msm_otg *motg = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	struct usb_otg *otg = motg->phy.otg;
 	int cnt = 0;
 
@@ -4180,12 +5161,23 @@ static int __devexit msm_otg_remove(struct platform_device *pdev)
 	cancel_delayed_work_sync(&motg->chg_work);
 	cancel_delayed_work_sync(&motg->pmic_id_status_work);
 	cancel_delayed_work_sync(&motg->check_ta_work);
+=======
+	struct usb_phy *phy = &motg->phy;
+	int cnt = 0;
+
+	if (phy->otg->host || phy->otg->gadget)
+		return -EBUSY;
+
+	msm_otg_debugfs_cleanup();
+	cancel_delayed_work_sync(&motg->chg_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 	cancel_work_sync(&motg->sm_work);
 
 	pm_runtime_resume(&pdev->dev);
 
 	device_init_wakeup(&pdev->dev, 0);
 	pm_runtime_disable(&pdev->dev);
+<<<<<<< HEAD
 	wake_lock_destroy(&motg->wlock);
 
 	msm_hsusb_mhl_switch_enable(motg, 0);
@@ -4203,6 +5195,17 @@ static int __devexit msm_otg_remove(struct platform_device *pdev)
 	 */
 	ulpi_read(otg->phy, 0x14);
 	ulpi_write(otg->phy, 0x08, 0x09);
+=======
+
+	usb_set_transceiver(NULL);
+	free_irq(motg->irq, motg);
+
+	/*
+	 * Put PHY in low power mode.
+	 */
+	ulpi_read(phy, 0x14);
+	ulpi_write(phy, 0x08, 0x09);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	writel(readl(USB_PORTSC) | PORTSC_PHCD, USB_PORTSC);
 	while (cnt < PHY_SUSPEND_TIMEOUT_USEC) {
@@ -4212,6 +5215,7 @@ static int __devexit msm_otg_remove(struct platform_device *pdev)
 		cnt++;
 	}
 	if (cnt >= PHY_SUSPEND_TIMEOUT_USEC)
+<<<<<<< HEAD
 		dev_err(otg->phy->dev, "Unable to suspend PHY\n");
 
 	clk_disable_unprepare(motg->pclk);
@@ -4223,10 +5227,24 @@ static int __devexit msm_otg_remove(struct platform_device *pdev)
 	regulator_set_voltage(hsusb_vddcx,
 		vdd_val[motg->vdd_type][VDD_NONE],
 		vdd_val[motg->vdd_type][VDD_MAX]);
+=======
+		dev_err(phy->dev, "Unable to suspend PHY\n");
+
+	clk_disable(motg->pclk);
+	clk_disable(motg->clk);
+	if (motg->core_clk)
+		clk_disable(motg->core_clk);
+	if (!IS_ERR(motg->pclk_src)) {
+		clk_disable(motg->pclk_src);
+		clk_put(motg->pclk_src);
+	}
+	msm_hsusb_ldo_init(motg, 0);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	iounmap(motg->regs);
 	pm_runtime_set_suspended(&pdev->dev);
 
+<<<<<<< HEAD
 	if (!IS_ERR(motg->phy_reset_clk))
 		clk_put(motg->phy_reset_clk);
 	clk_put(motg->pclk);
@@ -4239,6 +5257,17 @@ static int __devexit msm_otg_remove(struct platform_device *pdev)
 
 	kfree(motg->phy.otg);
 	kfree(motg);
+=======
+	clk_put(motg->phy_reset_clk);
+	clk_put(motg->pclk);
+	clk_put(motg->clk);
+	if (motg->core_clk)
+		clk_put(motg->core_clk);
+
+	kfree(motg->phy.otg);
+	kfree(motg);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -4246,6 +5275,7 @@ static int __devexit msm_otg_remove(struct platform_device *pdev)
 static int msm_otg_runtime_idle(struct device *dev)
 {
 	struct msm_otg *motg = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct usb_phy *phy = &motg->phy;
 
 	dev_dbg(dev, "OTG runtime idle\n");
@@ -4254,6 +5284,22 @@ static int msm_otg_runtime_idle(struct device *dev)
 		return -EAGAIN;
 	else
 		return 0;
+=======
+	struct usb_otg *otg = motg->phy.otg;
+
+	dev_dbg(dev, "OTG runtime idle\n");
+
+	/*
+	 * It is observed some times that a spurious interrupt
+	 * comes when PHY is put into LPM immediately after PHY reset.
+	 * This 1 sec delay also prevents entering into LPM immediately
+	 * after asynchronous interrupt.
+	 */
+	if (otg->phy->state != OTG_STATE_UNDEFINED)
+		pm_schedule_suspend(dev, 1000);
+
+	return -EAGAIN;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int msm_otg_runtime_suspend(struct device *dev)
@@ -4269,7 +5315,10 @@ static int msm_otg_runtime_resume(struct device *dev)
 	struct msm_otg *motg = dev_get_drvdata(dev);
 
 	dev_dbg(dev, "OTG runtime resume\n");
+<<<<<<< HEAD
 	pm_runtime_get_noresume(dev);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return msm_otg_resume(motg);
 }
 #endif
@@ -4277,6 +5326,7 @@ static int msm_otg_runtime_resume(struct device *dev)
 #ifdef CONFIG_PM_SLEEP
 static int msm_otg_pm_suspend(struct device *dev)
 {
+<<<<<<< HEAD
 	int ret = 0;
 	struct msm_otg *motg = dev_get_drvdata(dev);
 
@@ -4288,10 +5338,17 @@ static int msm_otg_pm_suspend(struct device *dev)
 		atomic_set(&motg->pm_suspended, 0);
 
 	return ret;
+=======
+	struct msm_otg *motg = dev_get_drvdata(dev);
+
+	dev_dbg(dev, "OTG PM suspend\n");
+	return msm_otg_suspend(motg);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int msm_otg_pm_resume(struct device *dev)
 {
+<<<<<<< HEAD
 	int ret = 0;
 	struct msm_otg *motg = dev_get_drvdata(dev);
 
@@ -4314,6 +5371,26 @@ static int msm_otg_pm_resume(struct device *dev)
 	}
 
 	return ret;
+=======
+	struct msm_otg *motg = dev_get_drvdata(dev);
+	int ret;
+
+	dev_dbg(dev, "OTG PM resume\n");
+
+	ret = msm_otg_resume(motg);
+	if (ret)
+		return ret;
+
+	/*
+	 * Runtime PM Documentation recommends bringing the
+	 * device to full powered state upon resume.
+	 */
+	pm_runtime_disable(dev);
+	pm_runtime_set_active(dev);
+	pm_runtime_enable(dev);
+
+	return 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 #endif
 
@@ -4325,12 +5402,15 @@ static const struct dev_pm_ops msm_otg_dev_pm_ops = {
 };
 #endif
 
+<<<<<<< HEAD
 static struct of_device_id msm_otg_dt_match[] = {
 	{	.compatible = "qcom,hsusb-otg",
 	},
 	{}
 };
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static struct platform_driver msm_otg_driver = {
 	.remove = __devexit_p(msm_otg_remove),
 	.driver = {
@@ -4339,7 +5419,10 @@ static struct platform_driver msm_otg_driver = {
 #ifdef CONFIG_PM
 		.pm = &msm_otg_dev_pm_ops,
 #endif
+<<<<<<< HEAD
 		.of_match_table = msm_otg_dt_match,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	},
 };
 

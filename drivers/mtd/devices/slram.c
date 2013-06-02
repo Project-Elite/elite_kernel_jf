@@ -240,7 +240,11 @@ static int parse_cmdline(char *devname, char *szstart, char *szlength)
 
 	if (*(szlength) != '+') {
 		devlength = simple_strtoul(szlength, &buffer, 0);
+<<<<<<< HEAD
 		devlength = handle_unit(devlength, buffer) - devstart;
+=======
+		devlength = handle_unit(devlength, buffer);
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (devlength < devstart)
 			goto err_out;
 

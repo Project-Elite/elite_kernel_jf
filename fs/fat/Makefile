@@ -2,7 +2,10 @@
 # Makefile for the Linux fat filesystem support.
 #
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 obj-$(CONFIG_FAT_FS) += fat.o
 obj-$(CONFIG_VFAT_FS) += vfat.o
 obj-$(CONFIG_MSDOS_FS) += msdos.o

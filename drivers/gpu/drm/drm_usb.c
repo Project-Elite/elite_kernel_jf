@@ -18,7 +18,11 @@ int drm_get_usb_dev(struct usb_interface *interface,
 
 	usbdev = interface_to_usbdev(interface);
 	dev->usbdev = usbdev;
+<<<<<<< HEAD
 	dev->dev = &usbdev->dev;
+=======
+	dev->dev = &interface->dev;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	mutex_lock(&drm_global_mutex);
 

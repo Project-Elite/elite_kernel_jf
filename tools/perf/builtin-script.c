@@ -148,7 +148,11 @@ static int perf_event_attr__check_stype(struct perf_event_attr *attr,
 		return 0;
 
 	if (output[type].user_set) {
+<<<<<<< HEAD
 		evname = __event_name(attr->type, attr->config, NULL);
+=======
+		evname = __event_name(attr->type, attr->config);
+>>>>>>> remotes/linux2/linux-3.4.y
 		pr_err("Samples for '%s' event do not have %s attribute set. "
 		       "Cannot print '%s' field.\n",
 		       evname, sample_msg, output_field2str(field));
@@ -157,7 +161,11 @@ static int perf_event_attr__check_stype(struct perf_event_attr *attr,
 
 	/* user did not ask for it explicitly so remove from the default list */
 	output[type].fields &= ~field;
+<<<<<<< HEAD
 	evname = __event_name(attr->type, attr->config, NULL);
+=======
+	evname = __event_name(attr->type, attr->config);
+>>>>>>> remotes/linux2/linux-3.4.y
 	pr_debug("Samples for '%s' event do not have %s attribute set. "
 		 "Skipping '%s' field.\n",
 		 evname, sample_msg, output_field2str(field));
@@ -305,7 +313,11 @@ static void print_sample_start(struct perf_sample *sample,
 			if (event)
 				evname = event->name;
 		} else
+<<<<<<< HEAD
 			evname = __event_name(attr->type, attr->config, NULL);
+=======
+			evname = __event_name(attr->type, attr->config);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		printf("%s: ", evname ? evname : "[unknown]");
 	}

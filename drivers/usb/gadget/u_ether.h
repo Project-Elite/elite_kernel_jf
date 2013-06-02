@@ -53,9 +53,12 @@ struct gether {
 	bool				is_fixed;
 	u32				fixed_out_len;
 	u32				fixed_in_len;
+<<<<<<< HEAD
 /* Max number of SKB packets to be used to create Multi Packet RNDIS */
 #define TX_SKB_HOLD_THRESHOLD		3
 	bool				multi_pkt_xfer;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct sk_buff			*(*wrap)(struct gether *port,
 						struct sk_buff *skb);
 	int				(*unwrap)(struct gether *port,
@@ -76,9 +79,12 @@ struct gether {
 /* netdev setup/teardown as directed by the gadget driver */
 int gether_setup(struct usb_gadget *g, u8 ethaddr[ETH_ALEN]);
 void gether_cleanup(void);
+<<<<<<< HEAD
 /* variant of gether_setup that allows customizing network device name */
 int gether_setup_name(struct usb_gadget *g, u8 ethaddr[ETH_ALEN],
 		const char *netname);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* connect/disconnect is handled by individual functions */
 struct net_device *gether_connect(struct gether *);
@@ -106,8 +112,11 @@ int eem_bind_config(struct usb_configuration *c);
 #ifdef USB_ETH_RNDIS
 
 int rndis_bind_config(struct usb_configuration *c, u8 ethaddr[ETH_ALEN]);
+<<<<<<< HEAD
 int rndis_bind_config_vendor(struct usb_configuration *c, u8 ethaddr[ETH_ALEN],
 				u32 vendorID, const char *manufacturer);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #else
 
@@ -117,6 +126,7 @@ rndis_bind_config(struct usb_configuration *c, u8 ethaddr[ETH_ALEN])
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int
 rndis_bind_config_vendor(struct usb_configuration *c, u8 ethaddr[ETH_ALEN],
 				u32 vendorID, const char *manufacturer)
@@ -124,6 +134,8 @@ rndis_bind_config_vendor(struct usb_configuration *c, u8 ethaddr[ETH_ALEN],
 	return 0;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif
 
 #endif /* __U_ETHER_H */

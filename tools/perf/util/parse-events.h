@@ -23,7 +23,11 @@ extern bool have_tracepoints(struct list_head *evlist);
 
 const char *event_type(int type);
 const char *event_name(struct perf_evsel *event);
+<<<<<<< HEAD
 extern const char *__event_name(int type, u64 config, char *name);
+=======
+extern const char *__event_name(int type, u64 config);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 extern int parse_events_option(const struct option *opt, const char *str,
 			       int unset);
@@ -67,10 +71,13 @@ int parse_events_add_tracepoint(struct list_head *list, int *idx,
 int parse_events_add_raw(struct perf_evlist *evlist, unsigned long config,
 			 unsigned long config1, unsigned long config2,
 			 char *mod);
+<<<<<<< HEAD
 int parse_events_add_numeric_legacy(struct list_head *list, int *idx,
 			     const char *name, unsigned long config,
 			     struct list_head *head_config);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 int parse_events_add_numeric(struct list_head *list, int *idx,
 			     unsigned long type, unsigned long config,
 			     struct list_head *head_config);

@@ -166,6 +166,10 @@
 
 /* PLL registers bitfields */
 #define PLLP_SHIFT		0
+<<<<<<< HEAD
+=======
+#define PLLP_MASK		7
+>>>>>>> remotes/linux2/linux-3.4.y
 #define PLLQ_SHIFT		3
 #define PLLR_SHIFT		0
 #define PLLJ_SHIFT		2

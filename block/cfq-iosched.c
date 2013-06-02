@@ -2089,7 +2089,10 @@ static void cfq_dispatch_insert(struct request_queue *q, struct request *rq)
 	cfq_remove_request(rq);
 	cfqq->dispatched++;
 	(RQ_CFQG(rq))->dispatched++;
+<<<<<<< HEAD
 	rq->ioprio = IOPRIO_PRIO_VALUE(cfqq->ioprio_class, cfqq->ioprio);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	elv_dispatch_sort(q, rq);
 
 	cfqd->rq_in_flight[cfq_cfqq_sync(cfqq)]++;
@@ -2306,9 +2309,12 @@ static void cfq_choose_cfqg(struct cfq_data *cfqd)
 {
 	struct cfq_group *cfqg = cfq_get_next_cfqg(cfqd);
 
+<<<<<<< HEAD
 	if (!cfqg)
 		return;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	cfqd->serving_group = cfqg;
 
 	/* Restore the workload type data */

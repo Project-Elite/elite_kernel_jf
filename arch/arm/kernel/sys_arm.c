@@ -59,6 +59,7 @@ asmlinkage int sys_vfork(struct pt_regs *regs)
 	return do_fork(CLONE_VFORK | CLONE_VM | SIGCHLD, regs->ARM_sp, regs, 0, NULL, NULL);
 }
 
+<<<<<<< HEAD
 /* Samsung Rooting Restriction Feature */
 #if defined CONFIG_SEC_RESTRICT_FORK
 #if defined CONFIG_SEC_RESTRICT_ROOTING_LOG
@@ -189,6 +190,8 @@ out:
 }
 #endif	/* End of CONFIG_SEC_RESTRICT_FORK */
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* sys_execve() executes a new program.
  * This is called indirectly via a small wrapper
  */
@@ -203,6 +206,7 @@ asmlinkage int sys_execve(const char __user *filenamei,
 	error = PTR_ERR(filename);
 	if (IS_ERR(filename))
 		goto out;
+<<<<<<< HEAD
 
 #if defined CONFIG_SEC_RESTRICT_FORK
 	if(CHECK_ROOT_UID(current))
@@ -217,6 +221,8 @@ asmlinkage int sys_execve(const char __user *filenamei,
 		}
 #endif	// End of CONFIG_SEC_RESTRICT_FORK
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	error = do_execve(filename, argv, envp, regs);
 	putname(filename);
 out:

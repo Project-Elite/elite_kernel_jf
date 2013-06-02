@@ -3747,13 +3747,20 @@ static struct DeviceCtlBlk *device_alloc(struct AdapterCtlBlk *acb,
 	dcb->max_command = 1;
 	dcb->target_id = target;
 	dcb->target_lun = lun;
+<<<<<<< HEAD
+=======
+	dcb->dev_mode = eeprom->target[target].cfg0;
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifndef DC395x_NO_DISCONNECT
 	dcb->identify_msg =
 	    IDENTIFY(dcb->dev_mode & NTC_DO_DISCONNECT, lun);
 #else
 	dcb->identify_msg = IDENTIFY(0, lun);
 #endif
+<<<<<<< HEAD
 	dcb->dev_mode = eeprom->target[target].cfg0;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	dcb->inquiry7 = 0;
 	dcb->sync_mode = 0;
 	dcb->min_nego_period = clock_period[period_index];

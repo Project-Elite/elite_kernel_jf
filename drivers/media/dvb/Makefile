@@ -19,5 +19,8 @@ obj-y        := dvb-core/	\
 		ddbridge/
 
 obj-$(CONFIG_DVB_FIREDTV)	+= firewire/
+<<<<<<< HEAD
 obj-$(CONFIG_DVB_MPQ)		+= mpq/
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

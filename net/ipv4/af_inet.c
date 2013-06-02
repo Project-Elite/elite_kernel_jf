@@ -119,6 +119,7 @@
 #include <linux/mroute.h>
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_ANDROID_PARANOID_NETWORK
 #include <linux/android_aid.h>
 
@@ -132,6 +133,8 @@ static inline int current_has_network(void)
 	return 1;
 }
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* The inetsw table contains everything that inet_create needs to
  * build a new socket.
@@ -240,8 +243,17 @@ EXPORT_SYMBOL(inet_listen);
 u32 inet_ehash_secret __read_mostly;
 EXPORT_SYMBOL(inet_ehash_secret);
 
+<<<<<<< HEAD
 /*
  * inet_ehash_secret must be set exactly once
+=======
+u32 ipv6_hash_secret __read_mostly;
+EXPORT_SYMBOL(ipv6_hash_secret);
+
+/*
+ * inet_ehash_secret must be set exactly once, and to a non nul value
+ * ipv6_hash_secret must be set exactly once.
+>>>>>>> remotes/linux2/linux-3.4.y
  */
 void build_ehash_secret(void)
 {
@@ -251,7 +263,12 @@ void build_ehash_secret(void)
 		get_random_bytes(&rnd, sizeof(rnd));
 	} while (rnd == 0);
 
+<<<<<<< HEAD
 	cmpxchg(&inet_ehash_secret, 0, rnd);
+=======
+	if (cmpxchg(&inet_ehash_secret, 0, rnd) == 0)
+		get_random_bytes(&ipv6_hash_secret, sizeof(ipv6_hash_secret));
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL(build_ehash_secret);
 
@@ -272,7 +289,10 @@ static inline int inet_netns_ok(struct net *net, int protocol)
 	return ipprot->netns_ok;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  *	Create an inet socket.
  */
@@ -289,9 +309,12 @@ static int inet_create(struct net *net, struct socket *sock, int protocol,
 	int try_loading_module = 0;
 	int err;
 
+<<<<<<< HEAD
 	if (!current_has_network())
 		return -EACCES;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (unlikely(!inet_ehash_secret))
 		if (sock->type != SOCK_RAW && sock->type != SOCK_DGRAM)
 			build_ehash_secret();
@@ -898,7 +921,10 @@ int inet_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 	case SIOCSIFPFLAGS:
 	case SIOCGIFPFLAGS:
 	case SIOCSIFFLAGS:
+<<<<<<< HEAD
 	case SIOCKILLADDR:
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		err = devinet_ioctl(net, cmd, (void __user *)arg);
 		break;
 	default:

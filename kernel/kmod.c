@@ -541,6 +541,14 @@ int call_usermodehelper_exec(struct subprocess_info *sub_info, int wait)
 	int retval = 0;
 
 	helper_lock();
+<<<<<<< HEAD
+=======
+	if (!sub_info->path) {
+		retval = -EINVAL;
+		goto out;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (sub_info->path[0] == '\0')
 		goto out;
 

@@ -1389,8 +1389,11 @@ static void set_data_timeout(struct omap_hsmmc_host *host,
 			dto -= 13;
 		else
 			dto = 0;
+<<<<<<< HEAD
 		/* Use the maximum timeout value allowed in the standard of 14
 		   or 0xE */
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (dto > 14)
 			dto = 14;
 	}
@@ -2099,8 +2102,12 @@ static int omap_hsmmc_suspend(struct device *dev)
 	if (ret) {
 		host->suspended = 0;
 		if (host->pdata->resume) {
+<<<<<<< HEAD
 			ret = host->pdata->resume(dev, host->slot_id);
 			if (ret)
+=======
+			if (host->pdata->resume(dev, host->slot_id))
+>>>>>>> remotes/linux2/linux-3.4.y
 				dev_dbg(dev, "Unmask interrupt failed\n");
 		}
 		goto err;

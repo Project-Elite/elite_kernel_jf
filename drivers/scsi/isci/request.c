@@ -1970,7 +1970,11 @@ sci_io_request_frame_handler(struct isci_request *ireq,
 								      frame_index,
 								      (void **)&frame_buffer);
 
+<<<<<<< HEAD
 			sci_controller_copy_sata_response(&ireq->stp.req,
+=======
+			sci_controller_copy_sata_response(&ireq->stp.rsp,
+>>>>>>> remotes/linux2/linux-3.4.y
 							       frame_header,
 							       frame_buffer);
 

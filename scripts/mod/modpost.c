@@ -37,8 +37,11 @@ static int all_versions = 0;
 static int external_module = 0;
 /* Warn about section mismatch in vmlinux if set to 1 */
 static int vmlinux_section_warnings = 1;
+<<<<<<< HEAD
 /* Exit with an error when there is a section mismatch if set to 1 */
 static int section_error_on_mismatch;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* Only warn about unresolved symbols */
 static int warn_unresolved = 0;
 /* How a symbol is exported */
@@ -2115,7 +2118,11 @@ int main(int argc, char **argv)
 	struct ext_sym_list *extsym_iter;
 	struct ext_sym_list *extsym_start = NULL;
 
+<<<<<<< HEAD
 	while ((opt = getopt(argc, argv, "i:I:e:cmsSo:awM:K:E")) != -1) {
+=======
+	while ((opt = getopt(argc, argv, "i:I:e:cmsSo:awM:K:")) != -1) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		switch (opt) {
 		case 'i':
 			kernel_read = optarg;
@@ -2153,9 +2160,12 @@ int main(int argc, char **argv)
 		case 'w':
 			warn_unresolved = 1;
 			break;
+<<<<<<< HEAD
 		case 'E':
 			section_error_on_mismatch = 1;
 			break;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		default:
 			exit(1);
 		}
@@ -2205,6 +2215,7 @@ int main(int argc, char **argv)
 
 	if (dump_write)
 		write_dump(dump_write);
+<<<<<<< HEAD
 
 	if (sec_mismatch_count && !sec_mismatch_verbose) {
 		merror(
@@ -2222,6 +2233,13 @@ int main(int argc, char **argv)
 		"build with:\n'make CONFIG_NO_ERROR_ON_MISMATCH=y'\n"
 		"(NOTE: This is not recommended)\n");
 	}
+=======
+	if (sec_mismatch_count && !sec_mismatch_verbose)
+		warn("modpost: Found %d section mismatch(es).\n"
+		     "To see full details build your kernel with:\n"
+		     "'make CONFIG_DEBUG_SECTION_MISMATCH=y'\n",
+		     sec_mismatch_count);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return err;
 }

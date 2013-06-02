@@ -407,6 +407,10 @@ static void acpi_processor_notify(struct acpi_device *device, u32 event)
 		acpi_bus_generate_proc_event(device, event, 0);
 		acpi_bus_generate_netlink_event(device->pnp.device_class,
 						  dev_name(&device->dev), event, 0);
+<<<<<<< HEAD
+=======
+		break;
+>>>>>>> remotes/linux2/linux-3.4.y
 	default:
 		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
 				  "Unsupported event [0x%x]\n", event));
@@ -442,7 +446,11 @@ static int acpi_cpu_soft_notify(struct notifier_block *nfb,
 		/* Normal CPU soft online event */
 		} else {
 			acpi_processor_ppc_has_changed(pr, 0);
+<<<<<<< HEAD
 			acpi_processor_cst_has_changed(pr);
+=======
+			acpi_processor_hotplug(pr);
+>>>>>>> remotes/linux2/linux-3.4.y
 			acpi_processor_reevaluate_tstate(pr, action);
 			acpi_processor_tstate_has_changed(pr);
 		}

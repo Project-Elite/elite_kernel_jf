@@ -20,7 +20,11 @@
 #define PSW32_MASK_CC		0x00003000UL
 #define PSW32_MASK_PM		0x00000f00UL
 
+<<<<<<< HEAD
 #define PSW32_MASK_USER		0x00003F00UL
+=======
+#define PSW32_MASK_USER		0x0000FF00UL
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #define PSW32_ADDR_AMODE	0x80000000UL
 #define PSW32_ADDR_INSN		0x7FFFFFFFUL

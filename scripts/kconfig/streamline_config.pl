@@ -463,6 +463,11 @@ while(<CIN>) {
 	if (defined($configs{$1})) {
 	    if ($localyesconfig) {
 	        $setconfigs{$1} = 'y';
+<<<<<<< HEAD
+=======
+		print "$1=y\n";
+		next;
+>>>>>>> remotes/linux2/linux-3.4.y
 	    } else {
 	        $setconfigs{$1} = $2;
 	    }

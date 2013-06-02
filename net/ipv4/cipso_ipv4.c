@@ -1725,8 +1725,15 @@ int cipso_v4_validate(const struct sk_buff *skb, unsigned char **option)
 		case CIPSO_V4_TAG_LOCAL:
 			/* This is a non-standard tag that we only allow for
 			 * local connections, so if the incoming interface is
+<<<<<<< HEAD
 			 * not the loopback device drop the packet. */
 			if (!(skb->dev->flags & IFF_LOOPBACK)) {
+=======
+			 * not the loopback device drop the packet. Further,
+			 * there is no legitimate reason for setting this from
+			 * userspace so reject it if skb is NULL. */
+			if (skb == NULL || !(skb->dev->flags & IFF_LOOPBACK)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 				err_offset = opt_iter;
 				goto validate_return_locked;
 			}

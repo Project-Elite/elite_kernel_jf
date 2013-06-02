@@ -35,8 +35,11 @@
 #ifndef __LINUX_REGULATOR_CONSUMER_H_
 #define __LINUX_REGULATOR_CONSUMER_H_
 
+<<<<<<< HEAD
 #include <linux/compiler.h>
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 struct device;
 struct notifier_block;
 
@@ -117,10 +120,13 @@ struct regulator;
  *            using the bulk regulator APIs.
  * @consumer: The regulator consumer for the supply.  This will be managed
  *            by the bulk API.
+<<<<<<< HEAD
  * @min_uV:   The minimum requested voltage for the regulator (in microvolts),
  *            or 0 to not set a voltage.
  * @max_uV:   The maximum requested voltage for the regulator (in microvolts),
  *            or 0 to use @min_uV.
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * The regulator APIs provide a series of regulator_bulk_() API calls as
  * a convenience to consumers which require multiple supplies.  This
@@ -129,8 +135,11 @@ struct regulator;
 struct regulator_bulk_data {
 	const char *supply;
 	struct regulator *consumer;
+<<<<<<< HEAD
 	int min_uV;
 	int max_uV;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* private: Internal use */
 	int ret;
@@ -161,8 +170,11 @@ int devm_regulator_bulk_get(struct device *dev, int num_consumers,
 			    struct regulator_bulk_data *consumers);
 int regulator_bulk_enable(int num_consumers,
 			  struct regulator_bulk_data *consumers);
+<<<<<<< HEAD
 int regulator_bulk_set_voltage(int num_consumers,
 			  struct regulator_bulk_data *consumers);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 int regulator_bulk_disable(int num_consumers,
 			   struct regulator_bulk_data *consumers);
 int regulator_bulk_force_disable(int num_consumers,
@@ -293,11 +305,14 @@ static inline void regulator_bulk_free(int num_consumers,
 {
 }
 
+<<<<<<< HEAD
 static inline int regulator_count_voltages(struct regulator *regulator)
 {
 	return 0;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static inline int regulator_set_voltage(struct regulator *regulator,
 					int min_uV, int max_uV)
 {
@@ -361,5 +376,8 @@ static inline void regulator_set_drvdata(struct regulator *regulator,
 
 #endif
 
+<<<<<<< HEAD
 void regulator_showall_enabled(void);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif

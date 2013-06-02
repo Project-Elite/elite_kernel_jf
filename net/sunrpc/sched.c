@@ -143,6 +143,11 @@ static void __rpc_add_wait_queue(struct rpc_wait_queue *queue,
 		list_add_tail(&task->u.tk_wait.list, &queue->tasks[0]);
 	task->tk_waitqueue = queue;
 	queue->qlen++;
+<<<<<<< HEAD
+=======
+	/* barrier matches the read in rpc_wake_up_task_queue_locked() */
+	smp_wmb();
+>>>>>>> remotes/linux2/linux-3.4.y
 	rpc_set_queued(task);
 
 	dprintk("RPC: %5u added to queue %p \"%s\"\n",
@@ -399,8 +404,16 @@ static void __rpc_do_wake_up_task(struct rpc_wait_queue *queue, struct rpc_task 
  */
 static void rpc_wake_up_task_queue_locked(struct rpc_wait_queue *queue, struct rpc_task *task)
 {
+<<<<<<< HEAD
 	if (RPC_IS_QUEUED(task) && task->tk_waitqueue == queue)
 		__rpc_do_wake_up_task(queue, task);
+=======
+	if (RPC_IS_QUEUED(task)) {
+		smp_rmb();
+		if (task->tk_waitqueue == queue)
+			__rpc_do_wake_up_task(queue, task);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -790,7 +803,13 @@ void rpc_execute(struct rpc_task *task)
 
 static void rpc_async_schedule(struct work_struct *work)
 {
+<<<<<<< HEAD
 	__rpc_execute(container_of(work, struct rpc_task, u.tk_work));
+=======
+	current->flags |= PF_FSTRANS;
+	__rpc_execute(container_of(work, struct rpc_task, u.tk_work));
+	current->flags &= ~PF_FSTRANS;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /**
@@ -913,6 +932,7 @@ struct rpc_task *rpc_new_task(const struct rpc_task_setup *setup_data)
 	return task;
 }
 
+<<<<<<< HEAD
 static void rpc_free_task(struct rpc_task *task)
 {
 	const struct rpc_call_ops *tk_ops = task->tk_ops;
@@ -923,6 +943,37 @@ static void rpc_free_task(struct rpc_task *task)
 		mempool_free(task, rpc_task_mempool);
 	}
 	rpc_release_calldata(tk_ops, calldata);
+=======
+/*
+ * rpc_free_task - release rpc task and perform cleanups
+ *
+ * Note that we free up the rpc_task _after_ rpc_release_calldata()
+ * in order to work around a workqueue dependency issue.
+ *
+ * Tejun Heo states:
+ * "Workqueue currently considers two work items to be the same if they're
+ * on the same address and won't execute them concurrently - ie. it
+ * makes a work item which is queued again while being executed wait
+ * for the previous execution to complete.
+ *
+ * If a work function frees the work item, and then waits for an event
+ * which should be performed by another work item and *that* work item
+ * recycles the freed work item, it can create a false dependency loop.
+ * There really is no reliable way to detect this short of verifying
+ * every memory free."
+ *
+ */
+static void rpc_free_task(struct rpc_task *task)
+{
+	unsigned short tk_flags = task->tk_flags;
+
+	rpc_release_calldata(task->tk_ops, task->tk_calldata);
+
+	if (tk_flags & RPC_TASK_DYNAMIC) {
+		dprintk("RPC: %5u freeing task\n", task->tk_pid);
+		mempool_free(task, rpc_task_mempool);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void rpc_async_release(struct work_struct *work)
@@ -932,8 +983,12 @@ static void rpc_async_release(struct work_struct *work)
 
 static void rpc_release_resources_task(struct rpc_task *task)
 {
+<<<<<<< HEAD
 	if (task->tk_rqstp)
 		xprt_release(task);
+=======
+	xprt_release(task);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (task->tk_msg.rpc_cred) {
 		put_rpccred(task->tk_msg.rpc_cred);
 		task->tk_msg.rpc_cred = NULL;

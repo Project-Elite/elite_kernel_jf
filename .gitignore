@@ -28,6 +28,7 @@ modules.builtin
 *.gz
 *.bz2
 *.lzma
+<<<<<<< HEAD
 *.lzo
 *.patch
 *.gcno
@@ -80,6 +81,12 @@ scripts/genksyms/*
 scripts/kconfig/*
 scripts/selinux/*
 security/selinux/*
+=======
+*.xz
+*.lzo
+*.patch
+*.gcno
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #
 # Top-level generic files
@@ -94,6 +101,14 @@ security/selinux/*
 /Module.symvers
 
 #
+<<<<<<< HEAD
+=======
+# Debian directory (make deb-pkg)
+#
+/debian/
+
+#
+>>>>>>> remotes/linux2/linux-3.4.y
 # git files that we don't want to ignore even it they are dot-files
 #
 !.gitignore
@@ -102,6 +117,7 @@ security/selinux/*
 #
 # Generated include files
 #
+<<<<<<< HEAD
 include/asm
 include/asm-arm
 include/config
@@ -111,6 +127,12 @@ include/linux/version.h
 include/linux/utsrelease.h
 include/linux/bounds.h
 include/generated
+=======
+include/config
+include/linux/version.h
+include/generated
+arch/*/include/generated
+>>>>>>> remotes/linux2/linux-3.4.y
 
 # stgit generated dirs
 patches-*
@@ -129,10 +151,13 @@ GRTAGS
 GSYMS
 GTAGS
 
+<<<<<<< HEAD
 # files for XZ compression
 arch/arm/boot/compressed/ashldi3.S
 arch/arm/boot/compressed/piggy.xzkern
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 *.orig
 *~
 \#*#

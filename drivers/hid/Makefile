@@ -8,7 +8,10 @@ ifdef CONFIG_DEBUG_FS
 endif
 
 obj-$(CONFIG_HID)		+= hid.o
+<<<<<<< HEAD
 obj-$(CONFIG_UHID)		+= uhid.o
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 hid-$(CONFIG_HIDRAW)		+= hidraw.o
 

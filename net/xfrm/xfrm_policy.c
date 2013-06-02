@@ -1761,7 +1761,11 @@ static struct dst_entry *make_blackhole(struct net *net, u16 family,
 
 	if (!afinfo) {
 		dst_release(dst_orig);
+<<<<<<< HEAD
 		ret = ERR_PTR(-EINVAL);
+=======
+		return ERR_PTR(-EINVAL);
+>>>>>>> remotes/linux2/linux-3.4.y
 	} else {
 		ret = afinfo->blackhole_route(net, dst_orig);
 	}

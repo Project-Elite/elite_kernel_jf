@@ -23,6 +23,12 @@ static inline bool guest_cpuid_has_xsave(struct kvm_vcpu *vcpu)
 {
 	struct kvm_cpuid_entry2 *best;
 
+<<<<<<< HEAD
+=======
+	if (!static_cpu_has(X86_FEATURE_XSAVE))
+		return 0;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	best = kvm_find_cpuid_entry(vcpu, 1, 0);
 	return best && (best->ecx & bit(X86_FEATURE_XSAVE));
 }

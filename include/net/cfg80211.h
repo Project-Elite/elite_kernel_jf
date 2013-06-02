@@ -669,7 +669,13 @@ struct station_info {
 
 	const u8 *assoc_req_ies;
 	size_t assoc_req_ies_len;
+<<<<<<< HEAD
 	u32 beacon_loss_count;
+=======
+
+	u32 beacon_loss_count;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Note: Add a new enum station_info_flags value for each new field and
 	 * use it to check which fields are initialized.
@@ -2478,6 +2484,18 @@ unsigned int ieee80211_get_hdrlen_from_skb(const struct sk_buff *skb);
 unsigned int __attribute_const__ ieee80211_hdrlen(__le16 fc);
 
 /**
+<<<<<<< HEAD
+=======
+ * ieee80211_get_mesh_hdrlen - get mesh extension header length
+ * @meshhdr: the mesh extension header, only the flags field
+ *	(first byte) will be accessed
+ * Returns the length of the extension header, which is always at
+ * least 6 bytes and at most 18 if address 5 and 6 are present.
+ */
+unsigned int ieee80211_get_mesh_hdrlen(struct ieee80211s_hdr *meshhdr);
+
+/**
+>>>>>>> remotes/linux2/linux-3.4.y
  * DOC: Data path helpers
  *
  * In addition to generic utilities, cfg80211 also offers

@@ -13,7 +13,10 @@
  */
 
 #include <linux/ftrace.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/uaccess.h>
 
 #include <asm/cacheflush.h>
@@ -64,6 +67,7 @@ static unsigned long adjust_address(struct dyn_ftrace *rec, unsigned long addr)
 }
 #endif
 
+<<<<<<< HEAD
 int ftrace_arch_code_modify_prepare(void)
 {
 	set_kernel_text_rw();
@@ -78,6 +82,8 @@ int ftrace_arch_code_modify_post_process(void)
 	return 0;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static unsigned long ftrace_call_replace(unsigned long pc, unsigned long addr)
 {
 	return arm_gen_branch_link(pc, addr);

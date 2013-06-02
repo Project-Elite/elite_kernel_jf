@@ -193,7 +193,10 @@ int __init numa_add_memblk(int nid, u64 start, u64 end)
 static void __init setup_node_data(int nid, u64 start, u64 end)
 {
 	const size_t nd_size = roundup(sizeof(pg_data_t), PAGE_SIZE);
+<<<<<<< HEAD
 	bool remapped = false;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	u64 nd_pa;
 	void *nd;
 	int tnid;
@@ -205,15 +208,19 @@ static void __init setup_node_data(int nid, u64 start, u64 end)
 	if (end && (end - start) < NODE_MIN_SIZE)
 		return;
 
+<<<<<<< HEAD
 	/* initialize remap allocator before aligning to ZONE_ALIGN */
 	init_alloc_remap(nid, start, end);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	start = roundup(start, ZONE_ALIGN);
 
 	printk(KERN_INFO "Initmem setup node %d %016Lx-%016Lx\n",
 	       nid, start, end);
 
 	/*
+<<<<<<< HEAD
 	 * Allocate node data.  Try remap allocator first, node-local
 	 * memory and then any node.  Never allocate in DMA zone.
 	 */
@@ -236,6 +243,24 @@ static void __init setup_node_data(int nid, u64 start, u64 end)
 	       nd_pa, nd_pa + nd_size - 1, remapped ? " (remapped)" : "");
 	tnid = early_pfn_to_nid(nd_pa >> PAGE_SHIFT);
 	if (!remapped && tnid != nid)
+=======
+	 * Allocate node data.  Try node-local memory and then any node.
+	 * Never allocate in DMA zone.
+	 */
+	nd_pa = memblock_alloc_nid(nd_size, SMP_CACHE_BYTES, nid);
+	if (!nd_pa) {
+		pr_err("Cannot find %zu bytes in node %d\n",
+		       nd_size, nid);
+		return;
+	}
+	nd = __va(nd_pa);
+
+	/* report and initialize */
+	printk(KERN_INFO "  NODE_DATA [mem %#010Lx-%#010Lx]\n",
+	       nd_pa, nd_pa + nd_size - 1);
+	tnid = early_pfn_to_nid(nd_pa >> PAGE_SHIFT);
+	if (tnid != nid)
+>>>>>>> remotes/linux2/linux-3.4.y
 		printk(KERN_INFO "    NODE_DATA(%d) on node %d\n", nid, tnid);
 
 	node_data[nid] = nd;

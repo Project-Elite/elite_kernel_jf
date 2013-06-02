@@ -224,6 +224,10 @@ static const struct intel_device_info intel_sandybridge_d_info = {
 	.has_bsd_ring = 1,
 	.has_blt_ring = 1,
 	.has_llc = 1,
+<<<<<<< HEAD
+=======
+	.has_force_wake = 1,
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static const struct intel_device_info intel_sandybridge_m_info = {
@@ -233,6 +237,10 @@ static const struct intel_device_info intel_sandybridge_m_info = {
 	.has_bsd_ring = 1,
 	.has_blt_ring = 1,
 	.has_llc = 1,
+<<<<<<< HEAD
+=======
+	.has_force_wake = 1,
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static const struct intel_device_info intel_ivybridge_d_info = {
@@ -241,6 +249,10 @@ static const struct intel_device_info intel_ivybridge_d_info = {
 	.has_bsd_ring = 1,
 	.has_blt_ring = 1,
 	.has_llc = 1,
+<<<<<<< HEAD
+=======
+	.has_force_wake = 1,
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static const struct intel_device_info intel_ivybridge_m_info = {
@@ -250,6 +262,10 @@ static const struct intel_device_info intel_ivybridge_m_info = {
 	.has_bsd_ring = 1,
 	.has_blt_ring = 1,
 	.has_llc = 1,
+<<<<<<< HEAD
+=======
+	.has_force_wake = 1,
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static const struct pci_device_id pciidlist[] = {		/* aka */
@@ -993,6 +1009,15 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL and additional rights");
 
+<<<<<<< HEAD
+=======
+/* We give fast paths for the really cool registers */
+#define NEEDS_FORCE_WAKE(dev_priv, reg) \
+	((HAS_FORCE_WAKE((dev_priv)->dev)) && \
+        ((reg) < 0x40000) &&            \
+        ((reg) != FORCEWAKE))
+
+>>>>>>> remotes/linux2/linux-3.4.y
 #define __i915_read(x, y) \
 u##x i915_read##x(struct drm_i915_private *dev_priv, u32 reg) { \
 	u##x val = 0; \

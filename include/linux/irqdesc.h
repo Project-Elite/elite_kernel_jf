@@ -39,7 +39,10 @@ struct module;
  */
 struct irq_desc {
 	struct irq_data		irq_data;
+<<<<<<< HEAD
 	struct timer_rand_state *timer_rand_state;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int __percpu	*kstat_irqs;
 	irq_flow_handler_t	handle_irq;
 #ifdef CONFIG_IRQ_PREFLOW_FASTEOI
@@ -154,6 +157,7 @@ static inline int irq_balancing_disabled(unsigned int irq)
 	return desc->status_use_accessors & IRQ_NO_BALANCING_MASK;
 }
 
+<<<<<<< HEAD
 static inline int irq_is_per_cpu(unsigned int irq)
 {
 	struct irq_desc *desc;
@@ -162,6 +166,8 @@ static inline int irq_is_per_cpu(unsigned int irq)
 	return desc->status_use_accessors & IRQ_PER_CPU;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static inline void
 irq_set_lockdep_class(unsigned int irq, struct lock_class_key *class)
 {

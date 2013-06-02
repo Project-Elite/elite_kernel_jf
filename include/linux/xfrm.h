@@ -84,6 +84,11 @@ struct xfrm_replay_state {
 	__u32	bitmap;
 };
 
+<<<<<<< HEAD
+=======
+#define XFRMA_REPLAY_ESN_MAX	4096
+
+>>>>>>> remotes/linux2/linux-3.4.y
 struct xfrm_replay_state_esn {
 	unsigned int	bmp_len;
 	__u32		oseq;

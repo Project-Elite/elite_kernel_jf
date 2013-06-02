@@ -509,6 +509,11 @@ static void __init sclp_add_standby_memory(void)
 	add_memory_merged(0);
 }
 
+<<<<<<< HEAD
+=======
+#define MEM_SCT_SIZE (1UL << SECTION_SIZE_BITS)
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static void __init insert_increment(u16 rn, int standby, int assigned)
 {
 	struct memory_increment *incr, *new_incr;
@@ -521,7 +526,11 @@ static void __init insert_increment(u16 rn, int standby, int assigned)
 	new_incr->rn = rn;
 	new_incr->standby = standby;
 	if (!standby)
+<<<<<<< HEAD
 		new_incr->usecount = 1;
+=======
+		new_incr->usecount = rzm > MEM_SCT_SIZE ? rzm/MEM_SCT_SIZE : 1;
+>>>>>>> remotes/linux2/linux-3.4.y
 	last_rn = 0;
 	prev = &sclp_mem_list;
 	list_for_each_entry(incr, &sclp_mem_list, list) {

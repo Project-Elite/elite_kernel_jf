@@ -44,11 +44,14 @@
     doing the mount will be allowed to access the filesystem */
 #define FUSE_ALLOW_OTHER         (1 << 1)
 
+<<<<<<< HEAD
 /** If the FUSE_HANDLE_RT_CLASS flag is given,
     then fuse handle RT class I/O in different request queue  */
 #define FUSE_HANDLE_RT_CLASS   (1 << 2)
 
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /** List of active connections */
 extern struct list_head fuse_conn_list;
 
@@ -353,10 +356,17 @@ struct fuse_conn {
 	unsigned max_write;
 
 	/** Readers of the connection are waiting on this */
+<<<<<<< HEAD
 	wait_queue_head_t waitq[2];
 
 	/** The list of pending requests */
 	struct list_head pending[2];
+=======
+	wait_queue_head_t waitq;
+
+	/** The list of pending requests */
+	struct list_head pending;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/** The list of requests being processed */
 	struct list_head processing;
@@ -386,7 +396,11 @@ struct fuse_conn {
 	struct list_head bg_queue;
 
 	/** Pending interrupts */
+<<<<<<< HEAD
 	struct list_head interrupts[2];
+=======
+	struct list_head interrupts;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/** Queue of pending forgets */
 	struct fuse_forget_link forget_list_head;

@@ -364,7 +364,11 @@ static struct block_device *ext3_blkdev_get(dev_t dev, struct super_block *sb)
 	return bdev;
 
 fail:
+<<<<<<< HEAD
 	ext3_msg(sb, "error: failed to open journal device %s: %ld",
+=======
+	ext3_msg(sb, KERN_ERR, "error: failed to open journal device %s: %ld",
+>>>>>>> remotes/linux2/linux-3.4.y
 		__bdevname(dev, b), PTR_ERR(bdev));
 
 	return NULL;
@@ -891,7 +895,11 @@ static ext3_fsblk_t get_sb_block(void **data, struct super_block *sb)
 	/*todo: use simple_strtoll with >32bit ext3 */
 	sb_block = simple_strtoul(options, &options, 0);
 	if (*options && *options != ',') {
+<<<<<<< HEAD
 		ext3_msg(sb, "error: invalid sb specification: %s",
+=======
+		ext3_msg(sb, KERN_ERR, "error: invalid sb specification: %s",
+>>>>>>> remotes/linux2/linux-3.4.y
 		       (char *) *data);
 		return 1;
 	}

@@ -8,7 +8,11 @@
 
 #include <asm/param.h>	/* HZ */
 
+<<<<<<< HEAD
 extern void __delay(unsigned long loops);
+=======
+extern void __delay(int loops);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * This function intentionally does not exist; if you see references to
@@ -40,8 +44,11 @@ extern void __const_udelay(unsigned long);
 			__const_udelay((n) * ((2199023U*HZ)>>11))) :	\
 	  __udelay(n))
 
+<<<<<<< HEAD
 extern void set_delay_fn(void (*fn)(unsigned long));
 extern void read_current_timer_delay_loop(unsigned long loops);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif /* defined(_ARM_DELAY_H) */
 

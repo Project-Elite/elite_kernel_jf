@@ -102,12 +102,23 @@ static int snd_compr_open(struct inode *inode, struct file *f)
 
 	if (dirn != compr->direction) {
 		pr_err("this device doesn't support this direction\n");
+<<<<<<< HEAD
+=======
+		snd_card_unref(compr->card);
+>>>>>>> remotes/linux2/linux-3.4.y
 		return -EINVAL;
 	}
 
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!data)
 		return -ENOMEM;
+=======
+	if (!data) {
+		snd_card_unref(compr->card);
+		return -ENOMEM;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 	data->stream.ops = compr->ops;
 	data->stream.direction = dirn;
 	data->stream.private_data = compr->private_data;
@@ -115,6 +126,10 @@ static int snd_compr_open(struct inode *inode, struct file *f)
 	runtime = kzalloc(sizeof(*runtime), GFP_KERNEL);
 	if (!runtime) {
 		kfree(data);
+<<<<<<< HEAD
+=======
+		snd_card_unref(compr->card);
+>>>>>>> remotes/linux2/linux-3.4.y
 		return -ENOMEM;
 	}
 	runtime->state = SNDRV_PCM_STATE_OPEN;
@@ -128,7 +143,12 @@ static int snd_compr_open(struct inode *inode, struct file *f)
 		kfree(runtime);
 		kfree(data);
 	}
+<<<<<<< HEAD
 	return ret;
+=======
+	snd_card_unref(compr->card);
+	return 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int snd_compr_free(struct inode *inode, struct file *f)

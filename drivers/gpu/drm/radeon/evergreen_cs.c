@@ -2670,7 +2670,15 @@ static bool evergreen_vm_reg_valid(u32 reg)
 
 	/* check config regs */
 	switch (reg) {
+<<<<<<< HEAD
 	case GRBM_GFX_INDEX:
+=======
+	case WAIT_UNTIL:
+	case GRBM_GFX_INDEX:
+	case CP_STRMOUT_CNTL:
+	case CP_COHER_CNTL:
+	case CP_COHER_SIZE:
+>>>>>>> remotes/linux2/linux-3.4.y
 	case VGT_VTX_VECT_EJECT_REG:
 	case VGT_CACHE_INVALIDATION:
 	case VGT_GS_VERTEX_REUSE:
@@ -2775,6 +2783,10 @@ static bool evergreen_vm_reg_valid(u32 reg)
 	case CAYMAN_SQ_EX_ALLOC_TABLE_SLOTS:
 		return true;
 	default:
+<<<<<<< HEAD
+=======
+		DRM_ERROR("Invalid register 0x%x in CS\n", reg);
+>>>>>>> remotes/linux2/linux-3.4.y
 		return false;
 	}
 }

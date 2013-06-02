@@ -537,6 +537,14 @@ tcp_thin_dupack - BOOLEAN
 	Documentation/networking/tcp-thin.txt
 	Default: 0
 
+<<<<<<< HEAD
+=======
+tcp_challenge_ack_limit - INTEGER
+	Limits number of Challenge ACK sent per second, as recommended
+	in RFC 5961 (Improving TCP's Robustness to Blind In-Window Attacks)
+	Default: 100
+
+>>>>>>> remotes/linux2/linux-3.4.y
 UDP variables:
 
 udp_mem - vector of 3 INTEGERs: min, pressure, max
@@ -1039,6 +1047,7 @@ conf/all/forwarding - BOOLEAN
 
 	This referred to as global forwarding.
 
+<<<<<<< HEAD
 proxy_ndp - INTEGER
 	Do proxy ndp.
 
@@ -1048,6 +1057,11 @@ proxy_ndp - INTEGER
 		2 NDP packets are sent to userspace, where a userspace proxy
                   can be implemented
 
+=======
+proxy_ndp - BOOLEAN
+	Do proxy ndp.
+
+>>>>>>> remotes/linux2/linux-3.4.y
 conf/interface/*:
 	Change special settings per interface.
 

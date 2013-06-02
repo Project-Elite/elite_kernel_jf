@@ -2897,9 +2897,13 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
 	if (le16_to_cpu(p->features) & 1)
 		*busw = NAND_BUSWIDTH_16;
 
+<<<<<<< HEAD
 	chip->options &= ~NAND_CHIPOPTIONS_MSK;
 	chip->options |= (NAND_NO_READRDY |
 			NAND_NO_AUTOINCR) & NAND_CHIPOPTIONS_MSK;
+=======
+	chip->options |= NAND_NO_READRDY | NAND_NO_AUTOINCR;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	pr_info("ONFI flash detected\n");
 	return 1;
@@ -3064,9 +3068,14 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
 			mtd->erasesize <<= ((id_data[3] & 0x03) << 1);
 		}
 	}
+<<<<<<< HEAD
 	/* Get chip options, preserve non chip based options */
 	chip->options &= ~NAND_CHIPOPTIONS_MSK;
 	chip->options |= type->options & NAND_CHIPOPTIONS_MSK;
+=======
+	/* Get chip options */
+	chip->options |= type->options;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Check if chip is not a Samsung device. Do not clear the
@@ -3219,6 +3228,7 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
 }
 EXPORT_SYMBOL(nand_scan_ident);
 
+<<<<<<< HEAD
 static void nand_panic_wait(struct mtd_info *mtd)
 {
 	struct nand_chip *chip = mtd->priv;
@@ -3257,6 +3267,8 @@ static int nand_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
 	return ret;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /**
  * nand_scan_tail - [NAND Interface] Scan for the NAND device

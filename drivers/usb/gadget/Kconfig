@@ -83,7 +83,11 @@ config USB_GADGET_DEBUG_FS
 config USB_GADGET_VBUS_DRAW
 	int "Maximum VBUS Power usage (2-500 mA)"
 	range 2 500
+<<<<<<< HEAD
 	default 500
+=======
+	default 2
+>>>>>>> remotes/linux2/linux-3.4.y
 	help
 	   Some devices need to draw power from USB when they are
 	   configured, perhaps to operate circuitry or to recharge
@@ -123,7 +127,17 @@ config USB_GADGET_STORAGE_NUM_BUFFERS
 #   - discrete ones (including all PCI-only controllers)
 #   - debug/dummy gadget+hcd is last.
 #
+<<<<<<< HEAD
 menu "USB Peripheral Controller"
+=======
+choice
+	prompt "USB Peripheral Controller"
+	help
+	   A USB device uses a controller to talk to its host.
+	   Systems should have only one such upstream link.
+	   Many controller drivers are platform-specific; these
+	   often need board-specific hooks.
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #
 # Integrated controllers
@@ -488,6 +502,7 @@ config USB_CI13XXX_MSM
 	  dynamically linked module called "ci13xxx_msm" and force all
 	  gadget drivers to also be dynamically linked.
 
+<<<<<<< HEAD
 config USB_CI13XXX_MSM_HSIC
 	tristate "MIPS HSIC CI13xxx for MSM"
 	depends on ARCH_MSM
@@ -526,10 +541,13 @@ config USB_DWC3_OMAP
 	  the OMAP5 series of processors. More information about the OMAP5
 	  version of this controller, refer to http://www.ti.com/omap5.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #
 # LAST -- dummy/emulated controller
 #
 
+<<<<<<< HEAD
 config USB_MSM_72K
 	tristate "MSM 72K Device Controller"
 	depends on ARCH_MSM
@@ -541,6 +559,8 @@ config USB_MSM_72K
 	   dynamically linked module called "msm72k" and force all
 	   gadget drivers to also be dynamically linked.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config USB_DUMMY_HCD
 	tristate "Dummy HCD (DEVELOPMENT)"
 	depends on USB=y || (USB=m && USB_GADGET=m)
@@ -568,7 +588,11 @@ config USB_DUMMY_HCD
 # NOTE:  Please keep dummy_hcd LAST so that "real hardware" appears
 # first and will be selected by default.
 
+<<<<<<< HEAD
 endmenu
+=======
+endchoice
+>>>>>>> remotes/linux2/linux-3.4.y
 
 # Selected by UDC drivers that support high-speed operation.
 config USB_GADGET_DUALSPEED
@@ -576,6 +600,7 @@ config USB_GADGET_DUALSPEED
 
 # Selected by UDC drivers that support super-speed opperation
 config USB_GADGET_SUPERSPEED
+<<<<<<< HEAD
 	bool "Operate as superspeed"
 	depends on USB_GADGET
 	depends on USB_GADGET_DUALSPEED
@@ -585,6 +610,10 @@ config USB_GADGET_SUPERSPEED
 	 (for example DesignWare USB3.0 controller), use this flag to
 	 indicate if the device should operate in superspeed(=y)
 	 or not.
+=======
+	bool
+	depends on USB_GADGET_DUALSPEED
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #
 # USB Gadget Drivers
@@ -848,6 +877,7 @@ config USB_MASS_STORAGE
 	  Say "y" to link the driver statically, or "m" to build
 	  a dynamically linked module called "g_mass_storage".
 
+<<<<<<< HEAD
 config USB_GADGET_TARGET
 	tristate "USB Gadget Target Fabric Module"
 	depends on TARGET_CORE
@@ -858,6 +888,8 @@ config USB_GADGET_TARGET
 	  alternative interface 1. Both protocols can work on USB2.0 and USB3.0.
 	  UAS utilizes the USB 3.0 feature called streams support.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config USB_G_SERIAL
 	tristate "Serial Gadget (with CDC ACM and CDC OBEX support)"
 	help
@@ -906,6 +938,7 @@ config USB_G_PRINTER
 	  For more information, see Documentation/usb/gadget_printer.txt
 	  which includes sample code for accessing the device file.
 
+<<<<<<< HEAD
 config USB_G_ANDROID
 	boolean "Android Composite Gadget"
 	help
@@ -942,6 +975,8 @@ config USB_ANDROID_SAMSUNG_MTP
 		If you enable this option,
 		google mtp will be changed to samsung mtp.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config USB_CDC_COMPOSITE
 	tristate "CDC Composite Device (Ethernet and ACM)"
 	depends on NET
@@ -1073,6 +1108,7 @@ config USB_G_WEBCAM
 
 endchoice
 
+<<<<<<< HEAD
 config USB_CSW_HACK
 	boolean "USB Mass storage csw hack Feature"
 	default y
@@ -1166,4 +1202,6 @@ config USB_ANDROID_CDC_ECM
 	help
 	  Android Gadget USB support CDC ECM instead of RNDIS
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 endif # USB_GADGET

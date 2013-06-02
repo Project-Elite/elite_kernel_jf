@@ -514,6 +514,7 @@ static void mct_u232_dtr_rts(struct usb_serial_port *port, int on)
 	unsigned int control_state;
 	struct mct_u232_private *priv = usb_get_serial_port_data(port);
 
+<<<<<<< HEAD
 	mutex_lock(&port->serial->disc_mutex);
 	if (!port->serial->disconnected) {
 		/* drop DTR and RTS */
@@ -527,18 +528,40 @@ static void mct_u232_dtr_rts(struct usb_serial_port *port, int on)
 		mct_u232_set_modem_ctrl(port->serial, control_state);
 	}
 	mutex_unlock(&port->serial->disc_mutex);
+=======
+	spin_lock_irq(&priv->lock);
+	if (on)
+		priv->control_state |= TIOCM_DTR | TIOCM_RTS;
+	else
+		priv->control_state &= ~(TIOCM_DTR | TIOCM_RTS);
+	control_state = priv->control_state;
+	spin_unlock_irq(&priv->lock);
+
+	mct_u232_set_modem_ctrl(port->serial, control_state);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void mct_u232_close(struct usb_serial_port *port)
 {
 	dbg("%s port %d", __func__, port->number);
 
+<<<<<<< HEAD
 	if (port->serial->dev) {
 		/* shutdown our urbs */
 		usb_kill_urb(port->write_urb);
 		usb_kill_urb(port->read_urb);
 		usb_kill_urb(port->interrupt_in_urb);
 	}
+=======
+	/*
+	 * Must kill the read urb as it is actually an interrupt urb, which
+	 * generic close thus fails to kill.
+	 */
+	usb_kill_urb(port->read_urb);
+	usb_kill_urb(port->interrupt_in_urb);
+
+	usb_serial_generic_close(port);
+>>>>>>> remotes/linux2/linux-3.4.y
 } /* mct_u232_close */
 
 

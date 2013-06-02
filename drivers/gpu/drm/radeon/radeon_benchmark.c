@@ -141,6 +141,7 @@ static void radeon_benchmark_move(struct radeon_device *rdev, unsigned size,
 						     sdomain, ddomain, "dma");
 	}
 
+<<<<<<< HEAD
 	time = radeon_benchmark_do_move(rdev, size, saddr, daddr,
 					RADEON_BENCHMARK_COPY_BLIT, n);
 	if (time < 0)
@@ -148,6 +149,17 @@ static void radeon_benchmark_move(struct radeon_device *rdev, unsigned size,
 	if (time > 0)
 		radeon_benchmark_log_results(n, size, time,
 					     sdomain, ddomain, "blit");
+=======
+	if (rdev->asic->copy.blit) {
+		time = radeon_benchmark_do_move(rdev, size, saddr, daddr,
+						RADEON_BENCHMARK_COPY_BLIT, n);
+		if (time < 0)
+			goto out_cleanup;
+		if (time > 0)
+			radeon_benchmark_log_results(n, size, time,
+						     sdomain, ddomain, "blit");
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 out_cleanup:
 	if (sobj) {

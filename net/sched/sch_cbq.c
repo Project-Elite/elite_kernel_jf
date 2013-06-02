@@ -250,10 +250,18 @@ cbq_classify(struct sk_buff *skb, struct Qdisc *sch, int *qerr)
 			else if ((cl = defmap[res.classid & TC_PRIO_MAX]) == NULL)
 				cl = defmap[TC_PRIO_BESTEFFORT];
 
+<<<<<<< HEAD
 			if (cl == NULL || cl->level >= head->level)
 				goto fallback;
 		}
 
+=======
+			if (cl == NULL)
+				goto fallback;
+		}
+		if (cl->level >= head->level)
+			goto fallback;
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_NET_CLS_ACT
 		switch (result) {
 		case TC_ACT_QUEUED:
@@ -962,8 +970,16 @@ cbq_dequeue(struct Qdisc *sch)
 		cbq_update(q);
 		if ((incr -= incr2) < 0)
 			incr = 0;
+<<<<<<< HEAD
 	}
 	q->now += incr;
+=======
+		q->now += incr;
+	} else {
+		if (now > q->now)
+			q->now = now;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 	q->now_rt = now;
 
 	for (;;) {

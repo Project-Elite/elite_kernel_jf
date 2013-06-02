@@ -50,10 +50,13 @@ source "drivers/i2c/Kconfig"
 
 source "drivers/spi/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/spmi/Kconfig"
 
 source "drivers/slimbus/Kconfig"
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 source "drivers/hsi/Kconfig"
 
 source "drivers/pps/Kconfig"
@@ -100,8 +103,11 @@ source "drivers/memstick/Kconfig"
 
 source "drivers/leds/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/switch/Kconfig"
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 source "drivers/accessibility/Kconfig"
 
 source "drivers/infiniband/Kconfig"
@@ -146,6 +152,7 @@ source "drivers/virt/Kconfig"
 
 source "drivers/devfreq/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/gud/Kconfig"
 
 source "drivers/coresight/Kconfig"
@@ -163,4 +170,6 @@ source "drivers/irda/Kconfig"
 source "drivers/interceptor/Kconfig" 
 
 source "drivers/felica/Kconfig"
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 endmenu

@@ -296,10 +296,13 @@
 
 #include "gadget_chips.h"
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 #define _SUPPORT_MAC_   /* support to recognize CDFS on OSX (MAC PC) */
 #define VENDER_CMD_VERSION_INFO	0xfa  /* Image version info */
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*------------------------------------------------------------------------*/
 
@@ -314,10 +317,14 @@ static const char fsg_string_interface[] = "Mass Storage";
 
 #include "storage_common.c"
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_CSW_HACK
 static int write_error_after_csw_sent;
 static int csw_hack_sent;
 #endif
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /*-------------------------------------------------------------------------*/
 
 struct fsg_dev;
@@ -411,6 +418,7 @@ struct fsg_common {
 	 */
 	char inquiry_string[8 + 16 + 4 + 1];
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	char vendor_string[8 + 1];
 	char product_string[16 + 1];
@@ -418,6 +426,8 @@ struct fsg_common {
 	char version_string[100 + 1];
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct kref		ref;
 };
 
@@ -463,6 +473,7 @@ struct fsg_dev {
 	struct usb_ep		*bulk_out;
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 static int send_message(struct fsg_common *common, char *msg)
 {
@@ -541,6 +552,8 @@ static int get_version_info(struct fsg_common *common, struct fsg_buffhd *bh)
 }
 #endif /* CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE */
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static inline int __fsg_is_set(struct fsg_common *common,
 			       const char *func, unsigned line)
 {
@@ -559,7 +572,10 @@ static inline struct fsg_dev *fsg_from_func(struct usb_function *f)
 }
 
 typedef void (*fsg_routine_t)(struct fsg_dev *);
+<<<<<<< HEAD
 static int send_status(struct fsg_common *common);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static int exception_in_progress(struct fsg_common *common)
 {
@@ -826,6 +842,7 @@ static int sleep_thread(struct fsg_common *common)
 	return rc;
 }
 
+<<<<<<< HEAD
 #ifdef _SUPPORT_MAC_
 static void _lba_to_msf(u8 *buf, int lba)
 {
@@ -1063,6 +1080,8 @@ static int do_read_cd(struct fsg_common *common)
 	return -EIO;		/* No default reply */
 }
 #endif /* _SUPPORT_MAC_ */
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*-------------------------------------------------------------------------*/
 
@@ -1076,9 +1095,12 @@ static int do_read(struct fsg_common *common)
 	loff_t			file_offset, file_offset_tmp;
 	unsigned int		amount;
 	ssize_t			nread;
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MSC_PROFILING
 	ktime_t			start, diff;
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Get the starting Logical Block Address and check that it's
@@ -1146,20 +1168,27 @@ static int do_read(struct fsg_common *common)
 
 		/* Perform the read */
 		file_offset_tmp = file_offset;
+<<<<<<< HEAD
 
 #ifdef CONFIG_USB_MSC_PROFILING
 		start = ktime_get();
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		nread = vfs_read(curlun->filp,
 				 (char __user *)bh->buf,
 				 amount, &file_offset_tmp);
 		VLDBG(curlun, "file read %u @ %llu -> %d\n", amount,
+<<<<<<< HEAD
 		     (unsigned long long) file_offset, (int) nread);
 #ifdef CONFIG_USB_MSC_PROFILING
 		diff = ktime_sub(ktime_get(), start);
 		curlun->perf.rbytes += nread;
 		curlun->perf.rtime = ktime_add(curlun->perf.rtime, diff);
 #endif
+=======
+		      (unsigned long long)file_offset, (int)nread);
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (signal_pending(current))
 			return -EINTR;
 
@@ -1221,6 +1250,7 @@ static int do_write(struct fsg_common *common)
 	ssize_t			nwritten;
 	int			rc;
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_CSW_HACK
 	int			i;
 #endif
@@ -1228,6 +1258,8 @@ static int do_write(struct fsg_common *common)
 #ifdef CONFIG_USB_MSC_PROFILING
 	ktime_t			start, diff;
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (curlun->ro) {
 		curlun->sense_data = SS_WRITE_PROTECTED;
 		return -EINVAL;
@@ -1320,6 +1352,7 @@ static int do_write(struct fsg_common *common)
 		bh = common->next_buffhd_to_drain;
 		if (bh->state == BUF_STATE_EMPTY && !get_some_more)
 			break;			/* We stopped early */
+<<<<<<< HEAD
 #ifdef CONFIG_USB_CSW_HACK
 		/*
 		 * If the csw packet is already submmitted to the hardware,
@@ -1331,6 +1364,9 @@ static int do_write(struct fsg_common *common)
 #else
 		if (bh->state == BUF_STATE_FULL) {
 #endif
+=======
+		if (bh->state == BUF_STATE_FULL) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			smp_rmb();
 			common->next_buffhd_to_drain = bh->next;
 			bh->state = BUF_STATE_EMPTY;
@@ -1365,20 +1401,26 @@ static int do_write(struct fsg_common *common)
 
 			/* Perform the write */
 			file_offset_tmp = file_offset;
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MSC_PROFILING
 			start = ktime_get();
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			nwritten = vfs_write(curlun->filp,
 					     (char __user *)bh->buf,
 					     amount, &file_offset_tmp);
 			VLDBG(curlun, "file write %u @ %llu -> %d\n", amount,
 			      (unsigned long long)file_offset, (int)nwritten);
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MSC_PROFILING
 			diff = ktime_sub(ktime_get(), start);
 			curlun->perf.wbytes += nwritten;
 			curlun->perf.wtime =
 					ktime_add(curlun->perf.wtime, diff);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (signal_pending(current))
 				return -EINTR;		/* Interrupted! */
 
@@ -1401,6 +1443,7 @@ static int do_write(struct fsg_common *common)
 				curlun->sense_data_info =
 					file_offset >> curlun->blkbits;
 				curlun->info_valid = 1;
+<<<<<<< HEAD
 #ifdef CONFIG_USB_CSW_HACK
 				write_error_after_csw_sent = 1;
 				goto write_error;
@@ -1432,6 +1475,11 @@ write_error:
 			}
 #endif
 
+=======
+				break;
+			}
+
+>>>>>>> remotes/linux2/linux-3.4.y
  empty_write:
 			/* Did the host decide to stop early? */
 			if (bh->outreq->actual < bh->bulk_out_intended_length) {
@@ -1585,9 +1633,12 @@ static int do_inquiry(struct fsg_common *common, struct fsg_buffhd *bh)
 {
 	struct fsg_lun *curlun = common->curlun;
 	u8	*buf = (u8 *) bh->buf;
+<<<<<<< HEAD
 #if defined(CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE)
 	static char new_product_name[16 + 1];
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!curlun) {		/* Unsupported LUNs are okay */
 		common->bad_lun_okay = 1;
@@ -1605,6 +1656,7 @@ static int do_inquiry(struct fsg_common *common, struct fsg_buffhd *bh)
 	buf[5] = 0;		/* No special options */
 	buf[6] = 0;
 	buf[7] = 0;
+<<<<<<< HEAD
 
 #if defined(CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE)
 	strncpy(new_product_name, common->product_string, 16);
@@ -1623,6 +1675,8 @@ static int do_inquiry(struct fsg_common *common, struct fsg_buffhd *bh)
 		new_product_name, 1);
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	memcpy(buf + 8, common->inquiry_string, sizeof common->inquiry_string);
 	return 36;
 }
@@ -1727,9 +1781,12 @@ static int do_read_toc(struct fsg_common *common, struct fsg_buffhd *bh)
 	int		msf = common->cmnd[1] & 0x02;
 	int		start_track = common->cmnd[6];
 	u8		*buf = (u8 *)bh->buf;
+<<<<<<< HEAD
 #ifdef _SUPPORT_MAC_
 	int format = (common->cmnd[9] & 0xC0) >> 6;
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if ((common->cmnd[1] & ~0x02) != 0 ||	/* Mask away MSF */
 			start_track > 1) {
@@ -1737,11 +1794,14 @@ static int do_read_toc(struct fsg_common *common, struct fsg_buffhd *bh)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 #ifdef _SUPPORT_MAC_
 	if (format == 2)
 		return _read_toc_raw(common, bh);
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	memset(buf, 0, 20);
 	buf[1] = (20-2);		/* TOC data length */
 	buf[2] = 1;			/* First track number */
@@ -1803,10 +1863,13 @@ static int do_mode_sense(struct fsg_common *common, struct fsg_buffhd *bh)
 	 * The mode pages, in numerical order.  The only page we support
 	 * is the Caching page.
 	 */
+<<<<<<< HEAD
 	/*
 	* When our device works like CD-ROM device, we need to support
 	* Page code 0x2a
 	*/
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (page_code == 0x08 || all_pages) {
 		valid_page = 1;
 		buf[0] = 0x08;		/* Page code */
@@ -1827,6 +1890,7 @@ static int do_mode_sense(struct fsg_common *common, struct fsg_buffhd *bh)
 		}
 		buf += 12;
 	}
+<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	else if (page_code == 0x2A) {
 		valid_page = 1;
@@ -1840,6 +1904,8 @@ static int do_mode_sense(struct fsg_common *common, struct fsg_buffhd *bh)
 		buf += 28;
 	 }
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Check that a valid page was requested and the mode data length
@@ -1883,11 +1949,14 @@ static int do_start_stop(struct fsg_common *common)
 	 * available for use as soon as it is loaded.
 	 */
 	if (start) {
+<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 		if (loej)
 			send_message(common, "Load AT");
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (!fsg_lun_is_open(curlun)) {
 			curlun->sense_data = SS_MEDIUM_NOT_PRESENT;
 			return -EINVAL;
@@ -1921,10 +1990,13 @@ static int do_start_stop(struct fsg_common *common)
 	up_write(&common->filesem);
 	down_read(&common->filesem);
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	send_message(common, "Load User");
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return common->ops && common->ops->post_eject
 		? min(0, common->ops->post_eject(common, curlun,
 						 curlun - common->luns))
@@ -1948,7 +2020,12 @@ static int do_prevent_allow(struct fsg_common *common)
 		curlun->sense_data = SS_INVALID_FIELD_IN_CDB;
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	if (!curlun->nofua && curlun->prevent_medium_removal && !prevent)
+=======
+
+	if (curlun->prevent_medium_removal && !prevent)
+>>>>>>> remotes/linux2/linux-3.4.y
 		fsg_lun_fsync_sub(curlun);
 	curlun->prevent_medium_removal = prevent;
 	return 0;
@@ -2228,6 +2305,7 @@ static int send_status(struct fsg_common *common)
 	csw->Signature = cpu_to_le32(US_BULK_CS_SIGN);
 	csw->Tag = common->tag;
 	csw->Residue = cpu_to_le32(common->residue);
+<<<<<<< HEAD
 #ifdef CONFIG_USB_CSW_HACK
 	/* Since csw is being sent early, before
 	 * writing on to storage media, need to set
@@ -2241,6 +2319,8 @@ static int send_status(struct fsg_common *common)
 #else
 	csw->Residue = cpu_to_le32(common->residue);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	csw->Status = status;
 
 	bh->inreq->length = US_BULK_CS_WRAP_LEN;
@@ -2539,11 +2619,15 @@ static int do_scsi_command(struct fsg_common *common)
 		common->data_size_from_cmnd =
 			get_unaligned_be16(&common->cmnd[7]);
 		reply = check_command(common, 10, DATA_DIR_TO_HOST,
+<<<<<<< HEAD
 #ifdef _SUPPORT_MAC_
 				      (0xf<<6) | (1<<1), 1,
 #else
 				      (7<<6) | (1<<1), 1,
 #endif
+=======
+				      (7<<6) | (1<<1), 1,
+>>>>>>> remotes/linux2/linux-3.4.y
 				      "READ TOC");
 		if (reply == 0)
 			reply = do_read_toc(common, bh);
@@ -2639,6 +2723,7 @@ static int do_scsi_command(struct fsg_common *common)
 			reply = do_write(common);
 		break;
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	case RELEASE:	/* SUA Timer Stop : 0x17 */
 		reply = do_timer_stop(common);
@@ -2668,6 +2753,8 @@ static int do_scsi_command(struct fsg_common *common)
 #endif /* _SUPPORT_MAC_ */
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Some mandatory commands that we recognize but don't implement.
 	 * They don't mean much in this setting.  It's left as an exercise
@@ -2675,10 +2762,15 @@ static int do_scsi_command(struct fsg_common *common)
 	 * of Posix locks.
 	 */
 	case FORMAT_UNIT:
+<<<<<<< HEAD
 #ifndef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	case RELEASE:
 	case RESERVE:
 #endif
+=======
+	case RELEASE:
+	case RESERVE:
+>>>>>>> remotes/linux2/linux-3.4.y
 	case SEND_DIAGNOSTIC:
 		/* Fall through */
 
@@ -2864,6 +2956,18 @@ reset:
 			}
 		}
 
+<<<<<<< HEAD
+=======
+		/* Disable the endpoints */
+		if (fsg->bulk_in_enabled) {
+			usb_ep_disable(fsg->bulk_in);
+			fsg->bulk_in_enabled = 0;
+		}
+		if (fsg->bulk_out_enabled) {
+			usb_ep_disable(fsg->bulk_out);
+			fsg->bulk_out_enabled = 0;
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		common->fsg = NULL;
 		wake_up(&common->fsg_wait);
@@ -2876,6 +2980,31 @@ reset:
 	common->fsg = new_fsg;
 	fsg = common->fsg;
 
+<<<<<<< HEAD
+=======
+	/* Enable the endpoints */
+	rc = config_ep_by_speed(common->gadget, &(fsg->function), fsg->bulk_in);
+	if (rc)
+		goto reset;
+	rc = usb_ep_enable(fsg->bulk_in);
+	if (rc)
+		goto reset;
+	fsg->bulk_in->driver_data = common;
+	fsg->bulk_in_enabled = 1;
+
+	rc = config_ep_by_speed(common->gadget, &(fsg->function),
+				fsg->bulk_out);
+	if (rc)
+		goto reset;
+	rc = usb_ep_enable(fsg->bulk_out);
+	if (rc)
+		goto reset;
+	fsg->bulk_out->driver_data = common;
+	fsg->bulk_out_enabled = 1;
+	common->bulk_out_maxpacket = usb_endpoint_maxp(fsg->bulk_out->desc);
+	clear_bit(IGNORE_BULK_OUT, &fsg->atomic_bitflags);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Allocate the requests */
 	for (i = 0; i < fsg_num_buffers; ++i) {
 		struct fsg_buffhd	*bh = &common->buffhds[i];
@@ -2904,6 +3033,7 @@ reset:
 static int fsg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 {
 	struct fsg_dev *fsg = fsg_from_func(f);
+<<<<<<< HEAD
 	struct fsg_common *common = fsg->common;
 	int rc;
 
@@ -2936,11 +3066,17 @@ reset_bulk_int:
 	usb_ep_disable(fsg->bulk_in);
 	fsg->bulk_in_enabled = 0;
 	return rc;
+=======
+	fsg->common->new_fsg = fsg;
+	raise_exception(fsg->common, FSG_STATE_CONFIG_CHANGE);
+	return USB_GADGET_DELAYED_STATUS;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void fsg_disable(struct usb_function *f)
 {
 	struct fsg_dev *fsg = fsg_from_func(f);
+<<<<<<< HEAD
 
 	/* Disable the endpoints */
 	if (fsg->bulk_in_enabled) {
@@ -2953,6 +3089,8 @@ static void fsg_disable(struct usb_function *f)
 		fsg->bulk_out_enabled = 0;
 		fsg->bulk_out->driver_data = NULL;
 	}
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	fsg->common->new_fsg = NULL;
 	raise_exception(fsg->common, FSG_STATE_CONFIG_CHANGE);
 }
@@ -3159,6 +3297,7 @@ static int fsg_main_thread(void *common_)
 			common->state = FSG_STATE_STATUS_PHASE;
 		spin_unlock_irq(&common->lock);
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_CSW_HACK
 		/* Since status is already sent for write scsi command,
 		 * need to skip sending status once again if it is a
@@ -3169,6 +3308,8 @@ static int fsg_main_thread(void *common_)
 			continue;
 		}
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (send_status(common))
 			continue;
 
@@ -3209,9 +3350,13 @@ static int fsg_main_thread(void *common_)
 static DEVICE_ATTR(ro, 0644, fsg_show_ro, fsg_store_ro);
 static DEVICE_ATTR(nofua, 0644, fsg_show_nofua, fsg_store_nofua);
 static DEVICE_ATTR(file, 0644, fsg_show_file, fsg_store_file);
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MSC_PROFILING
 static DEVICE_ATTR(perf, 0644, fsg_show_perf, fsg_store_perf);
 #endif
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /****************************** FSG COMMON ******************************/
 
@@ -3281,6 +3426,18 @@ static struct fsg_common *fsg_common_init(struct fsg_common *common,
 	common->ep0req = cdev->req;
 	common->cdev = cdev;
 
+<<<<<<< HEAD
+=======
+	/* Maybe allocate device-global string IDs, and patch descriptors */
+	if (fsg_strings[FSG_STRING_INTERFACE].id == 0) {
+		rc = usb_string_id(cdev);
+		if (unlikely(rc < 0))
+			goto error_release;
+		fsg_strings[FSG_STRING_INTERFACE].id = rc;
+		fsg_intf_desc.iInterface = rc;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Create the LUNs, open their backing files, and register the
 	 * LUN devices in sysfs.
@@ -3296,6 +3453,7 @@ static struct fsg_common *fsg_common_init(struct fsg_common *common,
 
 	for (i = 0, lcfg = cfg->luns; i < nluns; ++i, ++curlun, ++lcfg) {
 		curlun->cdrom = !!lcfg->cdrom;
+<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 		curlun->ro = lcfg->ro;
 #else
@@ -3307,6 +3465,11 @@ static struct fsg_common *fsg_common_init(struct fsg_common *common,
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 		curlun->nofua = lcfg->nofua;
 #endif
+=======
+		curlun->ro = lcfg->cdrom || lcfg->ro;
+		curlun->initially_ro = curlun->ro;
+		curlun->removable = lcfg->removable;
+>>>>>>> remotes/linux2/linux-3.4.y
 		curlun->dev.release = fsg_lun_release;
 		curlun->dev.parent = &gadget->dev;
 		/* curlun->dev.driver = &fsg_driver.driver; XXX */
@@ -3334,17 +3497,25 @@ static struct fsg_common *fsg_common_init(struct fsg_common *common,
 		rc = device_create_file(&curlun->dev, &dev_attr_nofua);
 		if (rc)
 			goto error_luns;
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MSC_PROFILING
 		rc = device_create_file(&curlun->dev, &dev_attr_perf);
 		if (rc)
 			dev_err(&gadget->dev, "failed to create sysfs entry:"
 				"(dev_attr_perf) error: %d\n", rc);
 #endif
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (lcfg->filename) {
 			rc = fsg_lun_open(curlun, lcfg->filename);
 			if (rc)
 				goto error_luns;
+<<<<<<< HEAD
 		} else if (!curlun->removable && !curlun->cdrom) {
+=======
+		} else if (!curlun->removable) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			ERROR(common, "no file given for LUN%d\n", i);
 			rc = -EINVAL;
 			goto error_luns;
@@ -3389,6 +3560,7 @@ buffhds_first_it:
 				     : "File-CD Gadget"),
 		 i);
 
+<<<<<<< HEAD
 #ifdef	CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	/* Default INQUIRY strings */
 	strncpy(common->vendor_string, "SAMSUNG",
@@ -3398,6 +3570,8 @@ buffhds_first_it:
 	common->product_string[16] = '\0';
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Some peripheral controllers are known not to be able to
 	 * halt bulk endpoints correctly.  If one of them is present,
@@ -3477,9 +3651,12 @@ static void fsg_common_release(struct kref *ref)
 
 		/* In error recovery common->nluns may be zero. */
 		for (; i; --i, ++lun) {
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MSC_PROFILING
 			device_remove_file(&lun->dev, &dev_attr_perf);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			device_remove_file(&lun->dev, &dev_attr_nofua);
 			device_remove_file(&lun->dev, &dev_attr_ro);
 			device_remove_file(&lun->dev, &dev_attr_file);
@@ -3617,6 +3794,7 @@ static int fsg_bind_config(struct usb_composite_dev *cdev,
 	struct fsg_dev *fsg;
 	int rc;
 
+<<<<<<< HEAD
 	/* Maybe allocate device-global string IDs, and patch descriptors */
 	if (fsg_strings[FSG_STRING_INTERFACE].id == 0) {
 		rc = usb_string_id(cdev);
@@ -3626,11 +3804,17 @@ static int fsg_bind_config(struct usb_composite_dev *cdev,
 		fsg_intf_desc.iInterface = rc;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	fsg = kzalloc(sizeof *fsg, GFP_KERNEL);
 	if (unlikely(!fsg))
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	fsg->function.name        = "mass_storage";
+=======
+	fsg->function.name        = FSG_DRIVER_DESC;
+>>>>>>> remotes/linux2/linux-3.4.y
 	fsg->function.strings     = fsg_strings_array;
 	fsg->function.bind        = fsg_bind;
 	fsg->function.unbind      = fsg_unbind;
@@ -3755,3 +3939,7 @@ fsg_common_from_params(struct fsg_common *common,
 	fsg_config_from_params(&cfg, params);
 	return fsg_common_init(common, cdev, &cfg);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y

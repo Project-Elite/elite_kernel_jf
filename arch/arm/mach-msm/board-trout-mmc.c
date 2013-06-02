@@ -14,13 +14,22 @@
 #include <asm/io.h>
 
 #include <mach/vreg.h>
+<<<<<<< HEAD
 #include <mach/proc_comm.h>
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <mach/mmc.h>
 
 #include "devices.h"
 
 #include "board-trout.h"
 
+<<<<<<< HEAD
+=======
+#include "proc_comm.h"
+
+>>>>>>> remotes/linux2/linux-3.4.y
 #define DEBUG_SDSLOT_VDD 1
 
 /* ---- COMMON ---- */

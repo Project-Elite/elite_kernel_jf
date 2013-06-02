@@ -24,7 +24,11 @@
 
 int rtc_hctosys_ret = -ENODEV;
 
+<<<<<<< HEAD
 int rtc_hctosys(void)
+=======
+static int __init rtc_hctosys(void)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	int err = -ENODEV;
 	struct rtc_time tm;

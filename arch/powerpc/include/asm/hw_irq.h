@@ -85,8 +85,13 @@ static inline bool arch_irqs_disabled(void)
 }
 
 #ifdef CONFIG_PPC_BOOK3E
+<<<<<<< HEAD
 #define __hard_irq_enable()	asm volatile("wrteei 1" : : : "memory");
 #define __hard_irq_disable()	asm volatile("wrteei 0" : : : "memory");
+=======
+#define __hard_irq_enable()	asm volatile("wrteei 1" : : : "memory")
+#define __hard_irq_disable()	asm volatile("wrteei 0" : : : "memory")
+>>>>>>> remotes/linux2/linux-3.4.y
 #else
 #define __hard_irq_enable()	__mtmsrd(local_paca->kernel_msr | MSR_EE, 1)
 #define __hard_irq_disable()	__mtmsrd(local_paca->kernel_msr, 1)
@@ -102,6 +107,14 @@ static inline void hard_irq_disable(void)
 /* include/linux/interrupt.h needs hard_irq_disable to be a macro */
 #define hard_irq_disable	hard_irq_disable
 
+<<<<<<< HEAD
+=======
+static inline bool lazy_irq_pending(void)
+{
+	return !!(get_paca()->irq_happened & ~PACA_IRQ_HARD_DIS);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * This is called by asynchronous interrupts to conditionally
  * re-enable hard interrupts when soft-disabled after having
@@ -119,6 +132,11 @@ static inline bool arch_irq_disabled_regs(struct pt_regs *regs)
 	return !regs->softe;
 }
 
+<<<<<<< HEAD
+=======
+extern bool prep_irq_for_idle(void);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 #else /* CONFIG_PPC64 */
 
 #define SET_MSR_EE(x)	mtmsr(x)

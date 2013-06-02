@@ -744,7 +744,11 @@ int radeon_ttm_init(struct radeon_device *rdev)
 		return r;
 	}
 	DRM_INFO("radeon: %uM of VRAM memory ready\n",
+<<<<<<< HEAD
 		 (unsigned)rdev->mc.real_vram_size / (1024 * 1024));
+=======
+		 (unsigned) (rdev->mc.real_vram_size / (1024 * 1024)));
+>>>>>>> remotes/linux2/linux-3.4.y
 	r = ttm_bo_init_mm(&rdev->mman.bdev, TTM_PL_TT,
 				rdev->mc.gtt_size >> PAGE_SHIFT);
 	if (r) {

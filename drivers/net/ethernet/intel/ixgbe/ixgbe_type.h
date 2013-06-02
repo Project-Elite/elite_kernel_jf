@@ -67,6 +67,10 @@
 #define IXGBE_DEV_ID_82599_LS            0x154F
 #define IXGBE_DEV_ID_X540T               0x1528
 #define IXGBE_DEV_ID_82599_SFP_SF_QP     0x154A
+<<<<<<< HEAD
+=======
+#define IXGBE_DEV_ID_X540T1              0x1560
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* VF Device IDs */
 #define IXGBE_DEV_ID_82599_VF           0x10ED

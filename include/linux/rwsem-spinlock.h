@@ -27,6 +27,7 @@ struct rw_semaphore {
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
 	struct lockdep_map dep_map;
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_SEC_FORKHANG_DEBUG
 	/* FIX ME - This is just for the temporary debug, never add this to final version.
 	 * If activity == -1 owner is who posses the lock 
@@ -37,6 +38,8 @@ struct rw_semaphore {
 	char			owner_comm[16];
 	void *			caller;
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 #define RWSEM_UNLOCKED_VALUE		0x00000000

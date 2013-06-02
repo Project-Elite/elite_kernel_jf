@@ -231,8 +231,11 @@ void __sync_icache_dcache(pte_t pteval)
 	struct page *page;
 	struct address_space *mapping;
 
+<<<<<<< HEAD
 	if (!pte_present_user(pteval))
 		return;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (cache_is_vipt_nonaliasing() && !pte_exec(pteval))
 		/* only flush non-aliasing VIPT caches for exec mappings */
 		return;

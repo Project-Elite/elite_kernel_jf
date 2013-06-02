@@ -144,7 +144,12 @@ void ext4_evict_inode(struct inode *inode)
 		 * don't use page cache.
 		 */
 		if (ext4_should_journal_data(inode) &&
+<<<<<<< HEAD
 		    (S_ISLNK(inode->i_mode) || S_ISREG(inode->i_mode))) {
+=======
+		    (S_ISLNK(inode->i_mode) || S_ISREG(inode->i_mode)) &&
+		    inode->i_ino != EXT4_JOURNAL_INO) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
 			tid_t commit_tid = EXT4_I(inode)->i_datasync_tid;
 
@@ -279,6 +284,18 @@ void ext4_da_update_reserve_space(struct inode *inode,
 		used = ei->i_reserved_data_blocks;
 	}
 
+<<<<<<< HEAD
+=======
+	if (unlikely(ei->i_allocated_meta_blocks > ei->i_reserved_meta_blocks)) {
+		ext4_msg(inode->i_sb, KERN_NOTICE, "%s: ino %lu, allocated %d "
+			 "with only %d reserved metadata blocks\n", __func__,
+			 inode->i_ino, ei->i_allocated_meta_blocks,
+			 ei->i_reserved_meta_blocks);
+		WARN_ON(1);
+		ei->i_allocated_meta_blocks = ei->i_reserved_meta_blocks;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Update per-inode reservations */
 	ei->i_reserved_data_blocks -= used;
 	ei->i_reserved_meta_blocks -= ei->i_allocated_meta_blocks;
@@ -327,10 +344,13 @@ static int __check_block_validity(struct inode *inode, const char *func,
 {
 	if (!ext4_data_block_valid(EXT4_SB(inode->i_sb), map->m_pblk,
 				   map->m_len)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "printing inode..\n");
 		print_block_data(inode->i_sb, 0, (unsigned char *)inode,
 				0, EXT4_INODE_SIZE(inode->i_sb));
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		ext4_error_inode(inode, func, line, map->m_pblk,
 				 "lblock %lu mapped to illegal pblock "
 				 "(length %d)", (unsigned long) map->m_lblk,
@@ -1108,6 +1128,20 @@ static int ext4_da_reserve_space(struct inode *inode, ext4_lblk_t lblock)
 	struct ext4_inode_info *ei = EXT4_I(inode);
 	unsigned int md_needed;
 	int ret;
+<<<<<<< HEAD
+=======
+	ext4_lblk_t save_last_lblock;
+	int save_len;
+
+	/*
+	 * We will charge metadata quota at writeout time; this saves
+	 * us from metadata over-estimation, though we may go over by
+	 * a small amount in the end.  Here we just reserve for data.
+	 */
+	ret = dquot_reserve_block(inode, EXT4_C2B(sbi, 1));
+	if (ret)
+		return ret;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * recalculate the amount of metadata blocks to reserve
@@ -1116,6 +1150,7 @@ static int ext4_da_reserve_space(struct inode *inode, ext4_lblk_t lblock)
 	 */
 repeat:
 	spin_lock(&ei->i_block_reservation_lock);
+<<<<<<< HEAD
 	md_needed = EXT4_NUM_B2C(sbi,
 				 ext4_calc_metadata_amount(inode, lblock));
 	trace_ext4_da_reserve_space(inode, md_needed);
@@ -1130,18 +1165,43 @@ repeat:
 	if (ret)
 		return ret;
 	/*
+=======
+	/*
+	 * ext4_calc_metadata_amount() has side effects, which we have
+	 * to be prepared undo if we fail to claim space.
+	 */
+	save_len = ei->i_da_metadata_calc_len;
+	save_last_lblock = ei->i_da_metadata_calc_last_lblock;
+	md_needed = EXT4_NUM_B2C(sbi,
+				 ext4_calc_metadata_amount(inode, lblock));
+	trace_ext4_da_reserve_space(inode, md_needed);
+
+	/*
+>>>>>>> remotes/linux2/linux-3.4.y
 	 * We do still charge estimated metadata to the sb though;
 	 * we cannot afford to run out of free blocks.
 	 */
 	if (ext4_claim_free_clusters(sbi, md_needed + 1, 0)) {
+<<<<<<< HEAD
 		dquot_release_reservation_block(inode, EXT4_C2B(sbi, 1));
+=======
+		ei->i_da_metadata_calc_len = save_len;
+		ei->i_da_metadata_calc_last_lblock = save_last_lblock;
+		spin_unlock(&ei->i_block_reservation_lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (ext4_should_retry_alloc(inode->i_sb, &retries)) {
 			yield();
 			goto repeat;
 		}
+<<<<<<< HEAD
 		return -ENOSPC;
 	}
 	spin_lock(&ei->i_block_reservation_lock);
+=======
+		dquot_release_reservation_block(inode, EXT4_C2B(sbi, 1));
+		return -ENOSPC;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 	ei->i_reserved_data_blocks++;
 	ei->i_reserved_meta_blocks += md_needed;
 	spin_unlock(&ei->i_block_reservation_lock);
@@ -1409,6 +1469,11 @@ static void ext4_da_block_invalidatepages(struct mpage_da_data *mpd)
 
 	index = mpd->first_page;
 	end   = mpd->next_page - 1;
+<<<<<<< HEAD
+=======
+
+	pagevec_init(&pvec, 0);
+>>>>>>> remotes/linux2/linux-3.4.y
 	while (index <= end) {
 		nr_pages = pagevec_lookup(&pvec, mapping, index, PAGEVEC_SIZE);
 		if (nr_pages == 0)
@@ -2371,6 +2436,19 @@ static int ext4_nonda_switch(struct super_block *sb)
 	free_blocks  = EXT4_C2B(sbi,
 		percpu_counter_read_positive(&sbi->s_freeclusters_counter));
 	dirty_blocks = percpu_counter_read_positive(&sbi->s_dirtyclusters_counter);
+<<<<<<< HEAD
+=======
+	/*
+	 * Start pushing delalloc when 1/2 of free blocks are dirty.
+	 */
+	if (dirty_blocks && (free_blocks < 2 * dirty_blocks) &&
+	    !writeback_in_progress(sb->s_bdi) &&
+	    down_read_trylock(&sb->s_umount)) {
+		writeback_inodes_sb(sb, WB_REASON_FS_FREE_SPACE);
+		up_read(&sb->s_umount);
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (2 * free_blocks < 3 * dirty_blocks ||
 		free_blocks < (dirty_blocks + EXT4_FREECLUSTERS_WATERMARK)) {
 		/*
@@ -2379,6 +2457,7 @@ static int ext4_nonda_switch(struct super_block *sb)
 		 */
 		return 1;
 	}
+<<<<<<< HEAD
 	/*
 	 * Even if we don't switch but are nearing capacity,
 	 * start pushing delalloc when 1/2 of free blocks are dirty.
@@ -2386,6 +2465,8 @@ static int ext4_nonda_switch(struct super_block *sb)
 	if (free_blocks < 2 * dirty_blocks)
 		writeback_inodes_sb_if_idle(sb, WB_REASON_FS_FREE_SPACE);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -3815,6 +3896,7 @@ struct inode *ext4_iget(struct super_block *sb, unsigned long ino)
 	return inode;
 
 bad_inode:
+<<<<<<< HEAD
 	/* for debugging, woojoong.lee */
 	printk(KERN_ERR "iloc info, offset : %lu,"
 			, iloc.offset);
@@ -3825,6 +3907,8 @@ bad_inode:
 			, EXT4_SB(sb)->s_inode_size);
 	print_bh(sb, iloc.bh, 0, EXT4_BLOCK_SIZE(sb));
 	/* end */
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	brelse(iloc.bh);
 	iget_failed(inode);
 	return ERR_PTR(ret);

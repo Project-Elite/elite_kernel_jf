@@ -822,17 +822,24 @@ static int comedi_auto_config(struct device *hardware_device,
 	int minor;
 	struct comedi_device_file_info *dev_file_info;
 	int retval;
+<<<<<<< HEAD
 	unsigned *private_data = NULL;
 
 	if (!comedi_autoconfig) {
 		dev_set_drvdata(hardware_device, NULL);
 		return 0;
 	}
+=======
+
+	if (!comedi_autoconfig)
+		return 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	minor = comedi_alloc_board_minor(hardware_device);
 	if (minor < 0)
 		return minor;
 
+<<<<<<< HEAD
 	private_data = kmalloc(sizeof(unsigned), GFP_KERNEL);
 	if (private_data == NULL) {
 		retval = -ENOMEM;
@@ -841,6 +848,8 @@ static int comedi_auto_config(struct device *hardware_device,
 	*private_data = minor;
 	dev_set_drvdata(hardware_device, private_data);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	dev_file_info = comedi_get_device_file_info(minor);
 
 	memset(&it, 0, sizeof(it));
@@ -853,16 +862,22 @@ static int comedi_auto_config(struct device *hardware_device,
 	retval = comedi_device_attach(dev_file_info->device, &it);
 	mutex_unlock(&dev_file_info->device->mutex);
 
+<<<<<<< HEAD
 cleanup:
 	if (retval < 0) {
 		kfree(private_data);
 		comedi_free_board_minor(minor);
 	}
+=======
+	if (retval < 0)
+		comedi_free_board_minor(minor);
+>>>>>>> remotes/linux2/linux-3.4.y
 	return retval;
 }
 
 static void comedi_auto_unconfig(struct device *hardware_device)
 {
+<<<<<<< HEAD
 	unsigned *minor = (unsigned *)dev_get_drvdata(hardware_device);
 	if (minor == NULL)
 		return;
@@ -872,6 +887,17 @@ static void comedi_auto_unconfig(struct device *hardware_device)
 	comedi_free_board_minor(*minor);
 	dev_set_drvdata(hardware_device, NULL);
 	kfree(minor);
+=======
+	int minor;
+
+	if (hardware_device == NULL)
+		return;
+	minor = comedi_find_board_minor(hardware_device);
+	if (minor < 0)
+		return;
+	BUG_ON(minor >= COMEDI_NUM_BOARD_MINORS);
+	comedi_free_board_minor(minor);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 int comedi_pci_auto_config(struct pci_dev *pcidev, const char *board_name)

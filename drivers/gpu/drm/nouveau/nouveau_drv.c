@@ -186,11 +186,21 @@ nouveau_pci_suspend(struct pci_dev *pdev, pm_message_t pm_state)
 	if (dev->switch_power_state == DRM_SWITCH_POWER_OFF)
 		return 0;
 
+<<<<<<< HEAD
 	NV_INFO(dev, "Disabling display...\n");
 	nouveau_display_fini(dev);
 
 	NV_INFO(dev, "Disabling fbcon...\n");
 	nouveau_fbcon_set_suspend(dev, 1);
+=======
+	if (dev->mode_config.num_crtc) {
+		NV_INFO(dev, "Disabling display...\n");
+		nouveau_display_fini(dev);
+
+		NV_INFO(dev, "Disabling fbcon...\n");
+		nouveau_fbcon_set_suspend(dev, 1);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	NV_INFO(dev, "Unpinning framebuffer(s)...\n");
 	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
@@ -363,10 +373,19 @@ nouveau_pci_resume(struct pci_dev *pdev)
 			NV_ERROR(dev, "Could not pin/map cursor.\n");
 	}
 
+<<<<<<< HEAD
 	nouveau_fbcon_set_suspend(dev, 0);
 	nouveau_fbcon_zfill_all(dev);
 
 	nouveau_display_init(dev);
+=======
+	if (dev->mode_config.num_crtc) {
+		nouveau_fbcon_set_suspend(dev, 0);
+		nouveau_fbcon_zfill_all(dev);
+
+		nouveau_display_init(dev);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Force CLUT to get re-loaded during modeset */
 	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
@@ -468,9 +487,13 @@ static int __init nouveau_init(void)
 #ifdef CONFIG_VGA_CONSOLE
 		if (vgacon_text_force())
 			nouveau_modeset = 0;
+<<<<<<< HEAD
 		else
 #endif
 			nouveau_modeset = 1;
+=======
+#endif
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	if (!nouveau_modeset)

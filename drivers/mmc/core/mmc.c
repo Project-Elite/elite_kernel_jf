@@ -235,6 +235,7 @@ static int mmc_get_ext_csd(struct mmc_card *card, u8 **new_ext_csd)
 	return err;
 }
 
+<<<<<<< HEAD
 static void mmc_select_card_type(struct mmc_card *card)
 {
 	struct mmc_host *host = card->host;
@@ -265,6 +266,8 @@ static void mmc_select_card_type(struct mmc_card *card)
 	card->ext_csd.card_type = card_type;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Decode extended CSD.
  */
@@ -292,9 +295,14 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 	}
 
 	card->ext_csd.rev = ext_csd[EXT_CSD_REV];
+<<<<<<< HEAD
 	if (card->ext_csd.rev > 7)
 	{
 			printk(KERN_ERR "%s: unrecognised EXT_CSD revision %d\n",
+=======
+	if (card->ext_csd.rev > 6) {
+		pr_err("%s: unrecognised EXT_CSD revision %d\n",
+>>>>>>> remotes/linux2/linux-3.4.y
 			mmc_hostname(card->host), card->ext_csd.rev);
 		err = -EINVAL;
 		goto out;
@@ -315,9 +323,62 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 		if (card->ext_csd.sectors > (2u * 1024 * 1024 * 1024) / 512)
 			mmc_card_set_blockaddr(card);
 	}
+<<<<<<< HEAD
 
 	card->ext_csd.raw_card_type = ext_csd[EXT_CSD_CARD_TYPE];
 	mmc_select_card_type(card);
+=======
+	card->ext_csd.raw_card_type = ext_csd[EXT_CSD_CARD_TYPE];
+	switch (ext_csd[EXT_CSD_CARD_TYPE] & EXT_CSD_CARD_TYPE_MASK) {
+	case EXT_CSD_CARD_TYPE_SDR_ALL:
+	case EXT_CSD_CARD_TYPE_SDR_ALL_DDR_1_8V:
+	case EXT_CSD_CARD_TYPE_SDR_ALL_DDR_1_2V:
+	case EXT_CSD_CARD_TYPE_SDR_ALL_DDR_52:
+		card->ext_csd.hs_max_dtr = 200000000;
+		card->ext_csd.card_type = EXT_CSD_CARD_TYPE_SDR_200;
+		break;
+	case EXT_CSD_CARD_TYPE_SDR_1_2V_ALL:
+	case EXT_CSD_CARD_TYPE_SDR_1_2V_DDR_1_8V:
+	case EXT_CSD_CARD_TYPE_SDR_1_2V_DDR_1_2V:
+	case EXT_CSD_CARD_TYPE_SDR_1_2V_DDR_52:
+		card->ext_csd.hs_max_dtr = 200000000;
+		card->ext_csd.card_type = EXT_CSD_CARD_TYPE_SDR_1_2V;
+		break;
+	case EXT_CSD_CARD_TYPE_SDR_1_8V_ALL:
+	case EXT_CSD_CARD_TYPE_SDR_1_8V_DDR_1_8V:
+	case EXT_CSD_CARD_TYPE_SDR_1_8V_DDR_1_2V:
+	case EXT_CSD_CARD_TYPE_SDR_1_8V_DDR_52:
+		card->ext_csd.hs_max_dtr = 200000000;
+		card->ext_csd.card_type = EXT_CSD_CARD_TYPE_SDR_1_8V;
+		break;
+	case EXT_CSD_CARD_TYPE_DDR_52 | EXT_CSD_CARD_TYPE_52 |
+	     EXT_CSD_CARD_TYPE_26:
+		card->ext_csd.hs_max_dtr = 52000000;
+		card->ext_csd.card_type = EXT_CSD_CARD_TYPE_DDR_52;
+		break;
+	case EXT_CSD_CARD_TYPE_DDR_1_2V | EXT_CSD_CARD_TYPE_52 |
+	     EXT_CSD_CARD_TYPE_26:
+		card->ext_csd.hs_max_dtr = 52000000;
+		card->ext_csd.card_type = EXT_CSD_CARD_TYPE_DDR_1_2V;
+		break;
+	case EXT_CSD_CARD_TYPE_DDR_1_8V | EXT_CSD_CARD_TYPE_52 |
+	     EXT_CSD_CARD_TYPE_26:
+		card->ext_csd.hs_max_dtr = 52000000;
+		card->ext_csd.card_type = EXT_CSD_CARD_TYPE_DDR_1_8V;
+		break;
+	case EXT_CSD_CARD_TYPE_52 | EXT_CSD_CARD_TYPE_26:
+		card->ext_csd.hs_max_dtr = 52000000;
+		break;
+	case EXT_CSD_CARD_TYPE_26:
+		card->ext_csd.hs_max_dtr = 26000000;
+		break;
+	default:
+		/* MMC v4 spec says this cannot happen */
+		pr_warning("%s: card is mmc v4 but doesn't "
+			"support any high-speed modes.\n",
+			mmc_hostname(card->host));
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	card->ext_csd.raw_s_a_timeout = ext_csd[EXT_CSD_S_A_TIMEOUT];
 	card->ext_csd.raw_erase_timeout_mult =
@@ -369,13 +430,20 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 		ext_csd[EXT_CSD_SEC_FEATURE_SUPPORT];
 	card->ext_csd.raw_trim_mult =
 		ext_csd[EXT_CSD_TRIM_MULT];
+<<<<<<< HEAD
+=======
+	card->ext_csd.raw_partition_support = ext_csd[EXT_CSD_PARTITION_SUPPORT];
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (card->ext_csd.rev >= 4) {
 		/*
 		 * Enhanced area feature support -- check whether the eMMC
 		 * card has the Enhanced area enabled.  If so, export enhanced
 		 * area offset and size to user by adding sysfs interface.
 		 */
+<<<<<<< HEAD
 		card->ext_csd.raw_partition_support = ext_csd[EXT_CSD_PARTITION_SUPPORT];
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		if ((ext_csd[EXT_CSD_PARTITION_SUPPORT] & 0x2) &&
 		    (ext_csd[EXT_CSD_PARTITION_ATTRIBUTE] & 0x1)) {
 			hc_erase_grp_sz =
@@ -464,6 +532,7 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 	}
 
 	if (card->ext_csd.rev >= 5) {
+<<<<<<< HEAD
 		/* check whether the eMMC card supports BKOPS */
 		if (ext_csd[EXT_CSD_BKOPS_SUPPORT] & 0x1) {
 			card->ext_csd.bkops = 1;
@@ -486,6 +555,8 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 					mmc_hostname(card->host));
 		}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		/* check whether the eMMC card supports HPI */
 		if (ext_csd[EXT_CSD_HPI_FEATURES] & 0x1) {
 			card->ext_csd.hpi = 1;
@@ -539,6 +610,7 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 		} else {
 			card->ext_csd.data_tag_unit_size = 0;
 		}
+<<<<<<< HEAD
 
 		card->ext_csd.max_packed_writes =
 			ext_csd[EXT_CSD_MAX_PACKED_WRITES];
@@ -555,6 +627,8 @@ static int mmc_read_ext_csd(struct mmc_card *card, u8 *ext_csd)
 		/* enable discard feature if emmc is 4.41+ moviNand (EXT_CSD_VENDOR_SPECIFIC_FIELD:64)*/
 		if ((ext_csd[64] & 0x1) && (card->cid.manfid == 0x15))
 			card->ext_csd.feature_support |= MMC_DISCARD_FEATURE;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 out:
@@ -645,6 +719,7 @@ MMC_DEV_ATTR(serial, "0x%08x\n", card->cid.serial);
 MMC_DEV_ATTR(enhanced_area_offset, "%llu\n",
 		card->ext_csd.enhanced_area_offset);
 MMC_DEV_ATTR(enhanced_area_size, "%u\n", card->ext_csd.enhanced_area_size);
+<<<<<<< HEAD
 MMC_DEV_ATTR(caps, "0x%08x\n", (unsigned int)(card->host->caps));
 MMC_DEV_ATTR(caps2, "0x%08x\n", card->host->caps2);
 MMC_DEV_ATTR(erase_type, "MMC_CAP_ERASE %s, type %s, SECURE %s, Sanitize %s\n",
@@ -654,6 +729,8 @@ MMC_DEV_ATTR(erase_type, "MMC_CAP_ERASE %s, type %s, SECURE %s, Sanitize %s\n",
 			mmc_can_secure_erase_trim(card) ?    // 이 부분의 조건을 확인해주세요.
 			"supportable" : "disabled",
 			mmc_can_sanitize(card) ? "enabled" : "disabled");
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static struct attribute *mmc_std_attrs[] = {
 	&dev_attr_cid.attr,
@@ -669,9 +746,12 @@ static struct attribute *mmc_std_attrs[] = {
 	&dev_attr_serial.attr,
 	&dev_attr_enhanced_area_offset.attr,
 	&dev_attr_enhanced_area_size.attr,
+<<<<<<< HEAD
 	&dev_attr_caps.attr,
 	&dev_attr_caps2.attr,
 	&dev_attr_erase_type.attr,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	NULL,
 };
 
@@ -985,9 +1065,12 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 
 		/* Erase size depends on CSD and Extended CSD */
 		mmc_set_erase_size(card);
+<<<<<<< HEAD
 
 		if (card->ext_csd.sectors && (rocr & MMC_CARD_SECTOR_ADDR))
 			mmc_card_set_blockaddr(card);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	/*
@@ -1053,7 +1136,11 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 		 * so check for success and update the flag
 		 */
 		if (!err)
+<<<<<<< HEAD
 			card->ext_csd.power_off_notification = EXT_CSD_POWER_ON;
+=======
+			card->poweroff_notify_state = MMC_POWERED_ON;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	/*
@@ -1304,6 +1391,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 		}
 	}
 
+<<<<<<< HEAD
 	if ((host->caps2 & MMC_CAP2_PACKED_WR &&
 			card->ext_csd.max_packed_writes > 0) ||
 	    (host->caps2 & MMC_CAP2_PACKED_RD &&
@@ -1377,6 +1465,8 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
 		}
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!oldcard)
 		host->card = card;
 
@@ -1392,6 +1482,7 @@ err:
 	return err;
 }
 
+<<<<<<< HEAD
 static int mmc_can_poweroff_notify(const struct mmc_card *card)
 {
 	return card &&
@@ -1421,6 +1512,8 @@ static int mmc_poweroff_notify(struct mmc_card *card, unsigned int notify_type)
 	return err;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Host is being removed. Free up the current card.
  */
@@ -1430,10 +1523,14 @@ static void mmc_remove(struct mmc_host *host)
 	BUG_ON(!host->card);
 
 	mmc_remove_card(host->card);
+<<<<<<< HEAD
 
 	mmc_claim_host(host);
 	host->card = NULL;
 	mmc_release_host(host);
+=======
+	host->card = NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -1484,11 +1581,19 @@ static int mmc_suspend(struct mmc_host *host)
 	BUG_ON(!host->card);
 
 	mmc_claim_host(host);
+<<<<<<< HEAD
 	if (mmc_can_poweroff_notify(host->card))
 		err = mmc_poweroff_notify(host->card, EXT_CSD_POWER_OFF_SHORT);
 	else if (mmc_card_can_sleep(host))
 		err = mmc_card_sleep(host);
 	else if (!mmc_host_is_spi(host))
+=======
+	if (mmc_card_can_sleep(host)) {
+		err = mmc_card_sleep(host);
+		if (!err)
+			mmc_card_set_sleep(host->card);
+	} else if (!mmc_host_is_spi(host))
+>>>>>>> remotes/linux2/linux-3.4.y
 		mmc_deselect_cards(host);
 	host->card->state &= ~(MMC_STATE_HIGHSPEED | MMC_STATE_HIGHSPEED_200);
 	mmc_release_host(host);
@@ -1510,7 +1615,15 @@ static int mmc_resume(struct mmc_host *host)
 	BUG_ON(!host->card);
 
 	mmc_claim_host(host);
+<<<<<<< HEAD
 	err = mmc_init_card(host, host->ocr, host->card);
+=======
+	if (mmc_card_is_sleep(host->card)) {
+		err = mmc_card_awake(host);
+		mmc_card_clr_sleep(host->card);
+	} else
+		err = mmc_init_card(host, host->ocr, host->card);
+>>>>>>> remotes/linux2/linux-3.4.y
 	mmc_release_host(host);
 
 	return err;
@@ -1521,6 +1634,10 @@ static int mmc_power_restore(struct mmc_host *host)
 	int ret;
 
 	host->card->state &= ~(MMC_STATE_HIGHSPEED | MMC_STATE_HIGHSPEED_200);
+<<<<<<< HEAD
+=======
+	mmc_card_clr_sleep(host->card);
+>>>>>>> remotes/linux2/linux-3.4.y
 	mmc_claim_host(host);
 	ret = mmc_init_card(host, host->ocr, host->card);
 	mmc_release_host(host);
@@ -1536,7 +1653,11 @@ static int mmc_sleep(struct mmc_host *host)
 	if (card && card->ext_csd.rev >= 3) {
 		err = mmc_card_sleepawake(host, 1);
 		if (err < 0)
+<<<<<<< HEAD
 			pr_warn("%s: Error %d while putting card into sleep",
+=======
+			pr_debug("%s: Error %d while putting card into sleep",
+>>>>>>> remotes/linux2/linux-3.4.y
 				 mmc_hostname(host), err);
 	}
 

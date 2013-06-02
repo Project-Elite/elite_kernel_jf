@@ -1286,7 +1286,11 @@ int dev_ethtool(struct net *net, struct ifreq *ifr)
 	void __user *useraddr = ifr->ifr_data;
 	u32 ethcmd;
 	int rc;
+<<<<<<< HEAD
 	u32 old_features;
+=======
+	netdev_features_t old_features;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!dev || !netif_device_present(dev))
 		return -ENODEV;

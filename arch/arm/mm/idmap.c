@@ -37,6 +37,7 @@ static void idmap_add_pmd(pud_t *pud, unsigned long addr, unsigned long end,
 static void idmap_add_pmd(pud_t *pud, unsigned long addr, unsigned long end,
 	unsigned long prot)
 {
+<<<<<<< HEAD
 #ifdef	TIMA_KERNEL_L1_MANAGE
 	unsigned long cmd_id = 0x3f809221;
 	unsigned long tima_wr_out;
@@ -93,6 +94,14 @@ static void idmap_add_pmd(pud_t *pud, unsigned long addr, unsigned long end,
 	addr += SECTION_SIZE;
 	pmd[1] = __pmd(addr);
 #endif
+=======
+	pmd_t *pmd = pmd_offset(pud, addr);
+
+	addr = (addr & PMD_MASK) | prot;
+	pmd[0] = __pmd(addr);
+	addr += SECTION_SIZE;
+	pmd[1] = __pmd(addr);
+>>>>>>> remotes/linux2/linux-3.4.y
 	flush_pmd_entry(pmd);
 }
 #endif	/* CONFIG_ARM_LPAE */

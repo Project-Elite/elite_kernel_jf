@@ -99,7 +99,11 @@ unsigned long __init find_ibft_region(unsigned long *sizep)
 	/* iBFT 1.03 section 1.4.3.1 mandates that UEFI machines will
 	 * only use ACPI for this */
 
+<<<<<<< HEAD
 	if (!efi_enabled)
+=======
+	if (!efi_enabled(EFI_BOOT))
+>>>>>>> remotes/linux2/linux-3.4.y
 		find_ibft_in_mem();
 
 	if (ibft_addr) {

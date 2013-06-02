@@ -17,7 +17,11 @@ struct arm_vmregion {
 	struct list_head	vm_list;
 	unsigned long		vm_start;
 	unsigned long		vm_end;
+<<<<<<< HEAD
 	void			*priv;
+=======
+	struct page		*vm_pages;
+>>>>>>> remotes/linux2/linux-3.4.y
 	int			vm_active;
 	const void		*caller;
 };

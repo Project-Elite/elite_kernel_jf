@@ -349,6 +349,7 @@ extern int func_ptr_is_kernel_text(void *ptr);
 struct pid;
 extern struct pid *session_of_pgrp(struct pid *pgrp);
 
+<<<<<<< HEAD
 #ifdef CONFIG_LGE_CRASH_HANDLER
 extern void set_crash_store_enable(void);
 extern void set_crash_store_disable(void);
@@ -360,6 +361,8 @@ extern void lge_save_ctx(struct pt_regs*, unsigned int, unsigned int,
 #endif
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 unsigned long int_sqrt(unsigned long);
 
 extern void bust_spinlocks(int yes);
@@ -716,6 +719,7 @@ static inline void ftrace_dump(enum ftrace_dump_mode oops_dump_mode) { }
 
 extern int do_sysinfo(struct sysinfo *info);
 
+<<<<<<< HEAD
 /* To identify board information in panic logs, set this */
 extern char *mach_panic_string;
 
@@ -724,4 +728,8 @@ extern char *mach_panic_string;
 /* To identify board information in panic logs, set this */
 extern char *mach_panic_string;
 
+=======
+#endif /* __KERNEL__ */
+
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif

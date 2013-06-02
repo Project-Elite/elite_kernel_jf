@@ -89,11 +89,18 @@ xfs_destroy_ioend(
 	}
 
 	if (ioend->io_iocb) {
+<<<<<<< HEAD
+=======
+		inode_dio_done(ioend->io_inode);
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (ioend->io_isasync) {
 			aio_complete(ioend->io_iocb, ioend->io_error ?
 					ioend->io_error : ioend->io_result, 0);
 		}
+<<<<<<< HEAD
 		inode_dio_done(ioend->io_inode);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	mempool_free(ioend, xfs_ioend_pool);

@@ -124,7 +124,11 @@ static struct usb_cdc_ncm_ntb_parameters ntb_parameters = {
 #define LOG2_STATUS_INTERVAL_MSEC	5	/* 1 << 5 == 32 msec */
 #define NCM_STATUS_BYTECOUNT		16	/* 8 byte header + data */
 
+<<<<<<< HEAD
 static struct usb_interface_assoc_descriptor ncm_iad_desc = {
+=======
+static struct usb_interface_assoc_descriptor ncm_iad_desc __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		sizeof ncm_iad_desc,
 	.bDescriptorType =	USB_DT_INTERFACE_ASSOCIATION,
 
@@ -138,7 +142,11 @@ static struct usb_interface_assoc_descriptor ncm_iad_desc = {
 
 /* interface descriptor: */
 
+<<<<<<< HEAD
 static struct usb_interface_descriptor ncm_control_intf = {
+=======
+static struct usb_interface_descriptor ncm_control_intf __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		sizeof ncm_control_intf,
 	.bDescriptorType =	USB_DT_INTERFACE,
 
@@ -150,7 +158,11 @@ static struct usb_interface_descriptor ncm_control_intf = {
 	/* .iInterface = DYNAMIC */
 };
 
+<<<<<<< HEAD
 static struct usb_cdc_header_desc ncm_header_desc = {
+=======
+static struct usb_cdc_header_desc ncm_header_desc __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		sizeof ncm_header_desc,
 	.bDescriptorType =	USB_DT_CS_INTERFACE,
 	.bDescriptorSubType =	USB_CDC_HEADER_TYPE,
@@ -158,7 +170,11 @@ static struct usb_cdc_header_desc ncm_header_desc = {
 	.bcdCDC =		cpu_to_le16(0x0110),
 };
 
+<<<<<<< HEAD
 static struct usb_cdc_union_desc ncm_union_desc = {
+=======
+static struct usb_cdc_union_desc ncm_union_desc __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		sizeof(ncm_union_desc),
 	.bDescriptorType =	USB_DT_CS_INTERFACE,
 	.bDescriptorSubType =	USB_CDC_UNION_TYPE,
@@ -166,7 +182,11 @@ static struct usb_cdc_union_desc ncm_union_desc = {
 	/* .bSlaveInterface0 =	DYNAMIC */
 };
 
+<<<<<<< HEAD
 static struct usb_cdc_ether_desc ecm_desc = {
+=======
+static struct usb_cdc_ether_desc ecm_desc __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		sizeof ecm_desc,
 	.bDescriptorType =	USB_DT_CS_INTERFACE,
 	.bDescriptorSubType =	USB_CDC_ETHERNET_TYPE,
@@ -181,7 +201,11 @@ static struct usb_cdc_ether_desc ecm_desc = {
 
 #define NCAPS	(USB_CDC_NCM_NCAP_ETH_FILTER | USB_CDC_NCM_NCAP_CRC_MODE)
 
+<<<<<<< HEAD
 static struct usb_cdc_ncm_desc ncm_desc = {
+=======
+static struct usb_cdc_ncm_desc ncm_desc __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		sizeof ncm_desc,
 	.bDescriptorType =	USB_DT_CS_INTERFACE,
 	.bDescriptorSubType =	USB_CDC_NCM_TYPE,
@@ -193,7 +217,11 @@ static struct usb_cdc_ncm_desc ncm_desc = {
 
 /* the default data interface has no endpoints ... */
 
+<<<<<<< HEAD
 static struct usb_interface_descriptor ncm_data_nop_intf = {
+=======
+static struct usb_interface_descriptor ncm_data_nop_intf __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		sizeof ncm_data_nop_intf,
 	.bDescriptorType =	USB_DT_INTERFACE,
 
@@ -208,7 +236,11 @@ static struct usb_interface_descriptor ncm_data_nop_intf = {
 
 /* ... but the "real" data interface has two bulk endpoints */
 
+<<<<<<< HEAD
 static struct usb_interface_descriptor ncm_data_intf = {
+=======
+static struct usb_interface_descriptor ncm_data_intf __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		sizeof ncm_data_intf,
 	.bDescriptorType =	USB_DT_INTERFACE,
 
@@ -223,7 +255,11 @@ static struct usb_interface_descriptor ncm_data_intf = {
 
 /* full speed support: */
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor fs_ncm_notify_desc = {
+=======
+static struct usb_endpoint_descriptor fs_ncm_notify_desc __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -233,7 +269,11 @@ static struct usb_endpoint_descriptor fs_ncm_notify_desc = {
 	.bInterval =		1 << LOG2_STATUS_INTERVAL_MSEC,
 };
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor fs_ncm_in_desc = {
+=======
+static struct usb_endpoint_descriptor fs_ncm_in_desc __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -241,7 +281,11 @@ static struct usb_endpoint_descriptor fs_ncm_in_desc = {
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
 };
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor fs_ncm_out_desc = {
+=======
+static struct usb_endpoint_descriptor fs_ncm_out_desc __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -249,7 +293,11 @@ static struct usb_endpoint_descriptor fs_ncm_out_desc = {
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
 };
 
+<<<<<<< HEAD
 static struct usb_descriptor_header *ncm_fs_function[] = {
+=======
+static struct usb_descriptor_header *ncm_fs_function[] __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	(struct usb_descriptor_header *) &ncm_iad_desc,
 	/* CDC NCM control descriptors */
 	(struct usb_descriptor_header *) &ncm_control_intf,
@@ -268,7 +316,11 @@ static struct usb_descriptor_header *ncm_fs_function[] = {
 
 /* high speed support: */
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor hs_ncm_notify_desc = {
+=======
+static struct usb_endpoint_descriptor hs_ncm_notify_desc __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -277,7 +329,11 @@ static struct usb_endpoint_descriptor hs_ncm_notify_desc = {
 	.wMaxPacketSize =	cpu_to_le16(NCM_STATUS_BYTECOUNT),
 	.bInterval =		LOG2_STATUS_INTERVAL_MSEC + 4,
 };
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor hs_ncm_in_desc = {
+=======
+static struct usb_endpoint_descriptor hs_ncm_in_desc __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -286,7 +342,11 @@ static struct usb_endpoint_descriptor hs_ncm_in_desc = {
 	.wMaxPacketSize =	cpu_to_le16(512),
 };
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor hs_ncm_out_desc = {
+=======
+static struct usb_endpoint_descriptor hs_ncm_out_desc __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -295,7 +355,11 @@ static struct usb_endpoint_descriptor hs_ncm_out_desc = {
 	.wMaxPacketSize =	cpu_to_le16(512),
 };
 
+<<<<<<< HEAD
 static struct usb_descriptor_header *ncm_hs_function[] = {
+=======
+static struct usb_descriptor_header *ncm_hs_function[] __initdata = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	(struct usb_descriptor_header *) &ncm_iad_desc,
 	/* CDC NCM control descriptors */
 	(struct usb_descriptor_header *) &ncm_control_intf,
@@ -798,6 +862,7 @@ static int ncm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		if (alt > 1)
 			goto fail;
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 		if (alt == 0) {
 #endif
@@ -811,6 +876,13 @@ static int ncm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 		}
 #endif
+=======
+		if (ncm->port.in_ep->driver_data) {
+			DBG(cdev, "reset ncm\n");
+			gether_disconnect(&ncm->port);
+			ncm_reset_values(ncm);
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		/*
 		 * CDC Network only sends data in non-default altsettings.
@@ -846,6 +918,7 @@ static int ncm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 				return PTR_ERR(net);
 		}
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 		/*
 		 * we don't need below code, because devguru host driver can't
@@ -857,6 +930,11 @@ static int ncm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		ncm_notify(ncm);
 		spin_unlock(&ncm->lock);
 #endif
+=======
+		spin_lock(&ncm->lock);
+		ncm_notify(ncm);
+		spin_unlock(&ncm->lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 	} else
 		goto fail;
 
@@ -1164,7 +1242,12 @@ static void ncm_close(struct gether *geth)
 
 /* ethernet function driver setup/binding */
 
+<<<<<<< HEAD
 static int ncm_bind(struct usb_configuration *c, struct usb_function *f)
+=======
+static int __init
+ncm_bind(struct usb_configuration *c, struct usb_function *f)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct usb_composite_dev *cdev = c->cdev;
 	struct f_ncm		*ncm = func_to_ncm(f);
@@ -1274,9 +1357,15 @@ fail:
 	/* we might as well release our claims on endpoints */
 	if (ncm->notify)
 		ncm->notify->driver_data = NULL;
+<<<<<<< HEAD
 	if (ncm->port.out_ep->desc)
 		ncm->port.out_ep->driver_data = NULL;
 	if (ncm->port.in_ep->desc)
+=======
+	if (ncm->port.out_ep)
+		ncm->port.out_ep->driver_data = NULL;
+	if (ncm->port.in_ep)
+>>>>>>> remotes/linux2/linux-3.4.y
 		ncm->port.in_ep->driver_data = NULL;
 
 	ERROR(cdev, "%s: can't bind, err %d\n", f->name, status);
@@ -1314,7 +1403,11 @@ ncm_unbind(struct usb_configuration *c, struct usb_function *f)
  * Caller must have called @gether_setup().  Caller is also responsible
  * for calling @gether_cleanup() before module unload.
  */
+<<<<<<< HEAD
 int ncm_bind_config(struct usb_configuration *c, u8 ethaddr[ETH_ALEN])
+=======
+int __init ncm_bind_config(struct usb_configuration *c, u8 ethaddr[ETH_ALEN])
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct f_ncm	*ncm;
 	int		status;
@@ -1359,30 +1452,41 @@ int ncm_bind_config(struct usb_configuration *c, u8 ethaddr[ETH_ALEN])
 	ncm = kzalloc(sizeof *ncm, GFP_KERNEL);
 	if (!ncm)
 		return -ENOMEM;
+<<<<<<< HEAD
 	printk(KERN_DEBUG "usb: %s before MAC:%02X:%02X:%02X:%02X:%02X:%02X\n",
 			__func__, ethaddr[0], ethaddr[1],
 			ethaddr[2], ethaddr[3], ethaddr[4],
 			ethaddr[5]);
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* export host's Ethernet address in CDC format */
 	snprintf(ncm->ethaddr, sizeof ncm->ethaddr,
 		"%02X%02X%02X%02X%02X%02X",
 		ethaddr[0], ethaddr[1], ethaddr[2],
 		ethaddr[3], ethaddr[4], ethaddr[5]);
+<<<<<<< HEAD
 	printk(KERN_DEBUG "usb: %s after MAC:%02X:%02X:%02X:%02X:%02X:%02X\n",
 			__func__, ncm->ethaddr[0], ncm->ethaddr[1],
 			ncm->ethaddr[2], ncm->ethaddr[3], ncm->ethaddr[4],
 			ncm->ethaddr[5]);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	ncm_string_defs[1].s = ncm->ethaddr;
 
 	spin_lock_init(&ncm->lock);
 	ncm_reset_values(ncm);
 	ncm->port.is_fixed = true;
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	ncm->port.func.name = "ncm";
 #else
 	ncm->port.func.name = "cdc_network";
 #endif
+=======
+	ncm->port.func.name = "cdc_network";
+>>>>>>> remotes/linux2/linux-3.4.y
 	ncm->port.func.strings = ncm_strings;
 	/* descriptors are per-instance copies */
 	ncm->port.func.bind = ncm_bind;

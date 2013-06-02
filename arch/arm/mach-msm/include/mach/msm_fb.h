@@ -21,10 +21,13 @@
 
 struct mddi_info;
 
+<<<<<<< HEAD
 /* output interface format */
 #define MSM_MDP_OUT_IF_FMT_RGB565 0
 #define MSM_MDP_OUT_IF_FMT_RGB666 1
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 struct msm_fb_data {
 	int xres;	/* x resolution in pixels */
 	int yres;	/* y resolution in pixels */
@@ -38,12 +41,18 @@ struct msmfb_callback {
 };
 
 enum {
+<<<<<<< HEAD
 	MSM_MDDI_PMDH_INTERFACE = 0,
 	MSM_MDDI_EMDH_INTERFACE,
 	MSM_EBI2_INTERFACE,
 	MSM_LCDC_INTERFACE,
 
 	MSM_MDP_NUM_INTERFACES = MSM_LCDC_INTERFACE + 1,
+=======
+	MSM_MDDI_PMDH_INTERFACE,
+	MSM_MDDI_EMDH_INTERFACE,
+	MSM_EBI2_INTERFACE,
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 #define MSMFB_CAP_PARTIAL_UPDATES	(1 << 0)
@@ -92,8 +101,11 @@ struct msm_mddi_platform_data {
 	/* fixup the mfr name, product id */
 	void (*fixup)(uint16_t *mfr_name, uint16_t *product_id);
 
+<<<<<<< HEAD
 	int vsync_irq;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct resource *fb_resource; /*optional*/
 	/* number of clients in the list that follows */
 	int num_clients;
@@ -119,6 +131,7 @@ struct msm_mddi_platform_data {
 	} client_platform_data[];
 };
 
+<<<<<<< HEAD
 struct msm_lcdc_timing {
 	unsigned int clk_rate;		/* dclk freq */
 	unsigned int hsync_pulse_width;	/* in dclks */
@@ -150,10 +163,13 @@ struct msm_lcdc_platform_data {
 	struct resource			*fb_resource;
 };
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 struct mdp_blit_req;
 struct fb_info;
 struct mdp_device {
 	struct device dev;
+<<<<<<< HEAD
 	void (*dma)(struct mdp_device *mdp, uint32_t addr,
 		    uint32_t stride, uint32_t w, uint32_t h, uint32_t x,
 		    uint32_t y, struct msmfb_callback *callback, int interface);
@@ -163,6 +179,15 @@ struct mdp_device {
 	void (*set_grp_disp)(struct mdp_device *mdp, uint32_t disp_id);
 	int (*check_output_format)(struct mdp_device *mdp, int bpp);
 	int (*set_output_format)(struct mdp_device *mdp, int bpp);
+=======
+	void (*dma)(struct mdp_device *mpd, uint32_t addr,
+		    uint32_t stride, uint32_t w, uint32_t h, uint32_t x,
+		    uint32_t y, struct msmfb_callback *callback, int interface);
+	void (*dma_wait)(struct mdp_device *mdp);
+	int (*blit)(struct mdp_device *mdp, struct fb_info *fb,
+		    struct mdp_blit_req *req);
+	void (*set_grp_disp)(struct mdp_device *mdp, uint32_t disp_id);
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 struct class_interface;
@@ -182,6 +207,7 @@ struct msm_mddi_bridge_platform_data {
 	int (*unblank)(struct msm_mddi_bridge_platform_data *,
 		       struct msm_mddi_client_data *);
 	struct msm_fb_data fb_data;
+<<<<<<< HEAD
 
 	/* board file will identify what capabilities the panel supports */
 	uint32_t panel_caps;
@@ -194,5 +220,10 @@ int msm_fb_v4l2_update(void *par,
 	unsigned long srcp0_addr, unsigned long srcp0_size,
 	unsigned long srcp1_addr, unsigned long srcp1_size,
 	unsigned long srcp2_addr, unsigned long srcp2_size);
+=======
+};
+
+
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #endif

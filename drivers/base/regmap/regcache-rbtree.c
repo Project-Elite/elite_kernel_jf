@@ -392,7 +392,11 @@ static int regcache_rbtree_sync(struct regmap *map, unsigned int min,
 			base = 0;
 
 		if (max < rbnode->base_reg + rbnode->blklen)
+<<<<<<< HEAD
 			end = rbnode->base_reg + rbnode->blklen - max;
+=======
+			end = max - rbnode->base_reg + 1;
+>>>>>>> remotes/linux2/linux-3.4.y
 		else
 			end = rbnode->blklen;
 

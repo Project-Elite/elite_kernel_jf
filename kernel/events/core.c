@@ -2929,12 +2929,21 @@ EXPORT_SYMBOL_GPL(perf_event_release_kernel);
 /*
  * Called when the last reference to the file is gone.
  */
+<<<<<<< HEAD
 static int perf_release(struct inode *inode, struct file *file)
 {
 	struct perf_event *event = file->private_data;
 	struct task_struct *owner;
 
 	file->private_data = NULL;
+=======
+static void put_event(struct perf_event *event)
+{
+	struct task_struct *owner;
+
+	if (!atomic_long_dec_and_test(&event->refcount))
+		return;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	rcu_read_lock();
 	owner = ACCESS_ONCE(event->owner);
@@ -2969,7 +2978,17 @@ static int perf_release(struct inode *inode, struct file *file)
 		put_task_struct(owner);
 	}
 
+<<<<<<< HEAD
 	return perf_event_release_kernel(event);
+=======
+	perf_event_release_kernel(event);
+}
+
+static int perf_release(struct inode *inode, struct file *file)
+{
+	put_event(file->private_data);
+	return 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 u64 perf_event_read_value(struct perf_event *event, u64 *enabled, u64 *running)
@@ -3222,7 +3241,11 @@ unlock:
 
 static const struct file_operations perf_fops;
 
+<<<<<<< HEAD
 static struct perf_event *perf_fget_light(int fd, int *fput_needed)
+=======
+static struct file *perf_fget_light(int fd, int *fput_needed)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct file *file;
 
@@ -3236,7 +3259,11 @@ static struct perf_event *perf_fget_light(int fd, int *fput_needed)
 		return ERR_PTR(-EBADF);
 	}
 
+<<<<<<< HEAD
 	return file->private_data;
+=======
+	return file;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int perf_event_set_output(struct perf_event *event,
@@ -3268,19 +3295,34 @@ static long perf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
 	case PERF_EVENT_IOC_SET_OUTPUT:
 	{
+<<<<<<< HEAD
+=======
+		struct file *output_file = NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 		struct perf_event *output_event = NULL;
 		int fput_needed = 0;
 		int ret;
 
 		if (arg != -1) {
+<<<<<<< HEAD
 			output_event = perf_fget_light(arg, &fput_needed);
 			if (IS_ERR(output_event))
 				return PTR_ERR(output_event);
+=======
+			output_file = perf_fget_light(arg, &fput_needed);
+			if (IS_ERR(output_file))
+				return PTR_ERR(output_file);
+			output_event = output_file->private_data;
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 
 		ret = perf_event_set_output(event, output_event);
 		if (output_event)
+<<<<<<< HEAD
 			fput_light(output_event->filp, fput_needed);
+=======
+			fput_light(output_file, fput_needed);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		return ret;
 	}
@@ -5118,7 +5160,11 @@ static void sw_perf_event_destroy(struct perf_event *event)
 
 static int perf_swevent_init(struct perf_event *event)
 {
+<<<<<<< HEAD
 	int event_id = event->attr.config;
+=======
+	u64 event_id = event->attr.config;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (event->attr.type != PERF_TYPE_SOFTWARE)
 		return -ENOENT;
@@ -5920,6 +5966,10 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
 
 	mutex_init(&event->mmap_mutex);
 
+<<<<<<< HEAD
+=======
+	atomic_long_set(&event->refcount, 1);
+>>>>>>> remotes/linux2/linux-3.4.y
 	event->cpu		= cpu;
 	event->attr		= *attr;
 	event->group_leader	= group_leader;
@@ -6230,12 +6280,21 @@ SYSCALL_DEFINE5(perf_event_open,
 		return event_fd;
 
 	if (group_fd != -1) {
+<<<<<<< HEAD
 		group_leader = perf_fget_light(group_fd, &fput_needed);
 		if (IS_ERR(group_leader)) {
 			err = PTR_ERR(group_leader);
 			goto err_fd;
 		}
 		group_file = group_leader->filp;
+=======
+		group_file = perf_fget_light(group_fd, &fput_needed);
+		if (IS_ERR(group_file)) {
+			err = PTR_ERR(group_file);
+			goto err_fd;
+		}
+		group_leader = group_file->private_data;
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (flags & PERF_FLAG_FD_OUTPUT)
 			output_event = group_leader;
 		if (flags & PERF_FLAG_FD_NO_GROUP)
@@ -6370,7 +6429,10 @@ SYSCALL_DEFINE5(perf_event_open,
 		put_ctx(gctx);
 	}
 
+<<<<<<< HEAD
 	event->filp = event_file;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	WARN_ON_ONCE(ctx->parent_ctx);
 	mutex_lock(&ctx->mutex);
 
@@ -6460,7 +6522,10 @@ perf_event_create_kernel_counter(struct perf_event_attr *attr, int cpu,
 		goto err_free;
 	}
 
+<<<<<<< HEAD
 	event->filp = NULL;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	WARN_ON_ONCE(ctx->parent_ctx);
 	mutex_lock(&ctx->mutex);
 	perf_install_in_context(ctx, event, cpu);
@@ -6509,7 +6574,11 @@ static void sync_child_event(struct perf_event *child_event,
 	 * Release the parent event, if this was the last
 	 * reference to it.
 	 */
+<<<<<<< HEAD
 	fput(parent_event->filp);
+=======
+	put_event(parent_event);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void
@@ -6585,9 +6654,14 @@ static void perf_event_exit_task_context(struct task_struct *child, int ctxn)
 	 *
 	 *   __perf_event_exit_task()
 	 *     sync_child_event()
+<<<<<<< HEAD
 	 *       fput(parent_event->filp)
 	 *         perf_release()
 	 *           mutex_lock(&ctx->mutex)
+=======
+	 *       put_event()
+	 *         mutex_lock(&ctx->mutex)
+>>>>>>> remotes/linux2/linux-3.4.y
 	 *
 	 * But since its the parent context it won't be the same instance.
 	 */
@@ -6655,7 +6729,11 @@ static void perf_free_event(struct perf_event *event,
 	list_del_init(&event->child_list);
 	mutex_unlock(&parent->child_mutex);
 
+<<<<<<< HEAD
 	fput(parent->filp);
+=======
+	put_event(parent);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	perf_group_detach(event);
 	list_del_event(event, ctx);
@@ -6735,6 +6813,15 @@ inherit_event(struct perf_event *parent_event,
 				           NULL, NULL);
 	if (IS_ERR(child_event))
 		return child_event;
+<<<<<<< HEAD
+=======
+
+	if (!atomic_long_inc_not_zero(&parent_event->refcount)) {
+		free_event(child_event);
+		return NULL;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	get_ctx(child_ctx);
 
 	/*
@@ -6776,6 +6863,7 @@ inherit_event(struct perf_event *parent_event,
 	raw_spin_unlock_irqrestore(&child_ctx->lock, flags);
 
 	/*
+<<<<<<< HEAD
 	 * Get a reference to the parent filp - we will fput it
 	 * when the child event exits. This is safe to do because
 	 * we are in the parent and we know that the filp still
@@ -6784,6 +6872,8 @@ inherit_event(struct perf_event *parent_event,
 	atomic_long_inc(&parent_event->filp->f_count);
 
 	/*
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	 * Link this into the parent event's child list
 	 */
 	WARN_ON_ONCE(parent_event->ctx->parent_ctx);

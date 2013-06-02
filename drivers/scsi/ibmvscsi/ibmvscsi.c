@@ -1541,6 +1541,12 @@ static int ibmvscsi_do_host_config(struct ibmvscsi_host_data *hostdata,
 
 	host_config = &evt_struct->iu.mad.host_config;
 
+<<<<<<< HEAD
+=======
+	/* The transport length field is only 16-bit */
+	length = min(0xffff, length);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Set up a lun reset SRP command */
 	memset(host_config, 0x00, sizeof(*host_config));
 	host_config->common.type = VIOSRP_HOST_CONFIG_TYPE;

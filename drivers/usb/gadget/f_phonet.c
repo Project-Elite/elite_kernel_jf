@@ -531,7 +531,11 @@ int pn_bind(struct usb_configuration *c, struct usb_function *f)
 
 		req = usb_ep_alloc_request(fp->out_ep, GFP_KERNEL);
 		if (!req)
+<<<<<<< HEAD
 			goto err;
+=======
+			goto err_req;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		req->complete = pn_rx_complete;
 		fp->out_reqv[i] = req;
@@ -540,14 +544,26 @@ int pn_bind(struct usb_configuration *c, struct usb_function *f)
 	/* Outgoing USB requests */
 	fp->in_req = usb_ep_alloc_request(fp->in_ep, GFP_KERNEL);
 	if (!fp->in_req)
+<<<<<<< HEAD
 		goto err;
+=======
+		goto err_req;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	INFO(cdev, "USB CDC Phonet function\n");
 	INFO(cdev, "using %s, OUT %s, IN %s\n", cdev->gadget->name,
 		fp->out_ep->name, fp->in_ep->name);
 	return 0;
 
+<<<<<<< HEAD
 err:
+=======
+err_req:
+	for (i = 0; i < phonet_rxq_size && fp->out_reqv[i]; i++)
+		usb_ep_free_request(fp->out_ep, fp->out_reqv[i]);
+err:
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (fp->out_ep)
 		fp->out_ep->driver_data = NULL;
 	if (fp->in_ep)

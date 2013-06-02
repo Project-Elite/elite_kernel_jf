@@ -71,6 +71,10 @@ struct gfn_to_hva_cache {
 	u64 generation;
 	gpa_t gpa;
 	unsigned long hva;
+<<<<<<< HEAD
+=======
+	unsigned long len;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct kvm_memory_slot *memslot;
 };
 

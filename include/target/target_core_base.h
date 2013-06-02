@@ -229,12 +229,19 @@ enum tcm_sense_reason_table {
 	TCM_CHECK_CONDITION_UNIT_ATTENTION	= 0x0e,
 	TCM_CHECK_CONDITION_NOT_READY		= 0x0f,
 	TCM_RESERVATION_CONFLICT		= 0x10,
+<<<<<<< HEAD
+=======
+	TCM_ADDRESS_OUT_OF_RANGE		= 0x11,
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 enum target_sc_flags_table {
 	TARGET_SCF_BIDI_OP		= 0x01,
 	TARGET_SCF_ACK_KREF		= 0x02,
+<<<<<<< HEAD
 	TARGET_SCF_UNKNOWN_SIZE		= 0x04,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /* fabric independent task management function values */
@@ -539,7 +546,10 @@ struct se_cmd {
 	/* Used to signal cmd->se_tfo->check_release_cmd() usage per cmd */
 	unsigned		check_release:1;
 	unsigned		cmd_wait_set:1;
+<<<<<<< HEAD
 	unsigned		unknown_data_length:1;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* See se_cmd_flags_table */
 	u32			se_cmd_flags;
 	u32			se_ordered_id;
@@ -780,6 +790,11 @@ struct se_subsystem_dev {
 };
 
 struct se_device {
+<<<<<<< HEAD
+=======
+#define SE_DEV_LINK_MAGIC			0xfeeddeef
+	u32			dev_link_magic;
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* RELATIVE TARGET PORT IDENTIFER Counter */
 	u16			dev_rpti_counter;
 	/* Used for SAM Task Attribute ordering */
@@ -870,6 +885,11 @@ struct se_port_stat_grps {
 };
 
 struct se_lun {
+<<<<<<< HEAD
+=======
+#define SE_LUN_LINK_MAGIC			0xffff7771
+	u32			lun_link_magic;
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* See transport_lun_status_table */
 	enum transport_lun_status_table lun_status;
 	u32			lun_access;

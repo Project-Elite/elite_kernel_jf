@@ -142,6 +142,10 @@ int genl_register_mc_group(struct genl_family *family,
 	int err = 0;
 
 	BUG_ON(grp->name[0] == '\0');
+<<<<<<< HEAD
+=======
+	BUG_ON(memchr(grp->name, '\0', GENL_NAMSIZ) == NULL);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	genl_lock();
 

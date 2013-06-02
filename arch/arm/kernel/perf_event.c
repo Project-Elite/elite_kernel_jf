@@ -20,7 +20,10 @@
 #include <linux/platform_device.h>
 #include <linux/spinlock.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
 #include <linux/irq.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <asm/cputype.h>
 #include <asm/irq.h>
@@ -28,8 +31,11 @@
 #include <asm/pmu.h>
 #include <asm/stacktrace.h>
 
+<<<<<<< HEAD
 #include <linux/cpu_pm.h>
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * ARMv6 supports a maximum of 3 events, starting from index 0. If we add
  * another platform that supports more, we need to increase this to be the
@@ -81,7 +87,11 @@ EXPORT_SYMBOL_GPL(perf_num_counters);
 #define CACHE_OP_UNSUPPORTED		0xFFFF
 
 static int
+<<<<<<< HEAD
 armpmu_map_cache_event(unsigned (*cache_map)
+=======
+armpmu_map_cache_event(const unsigned (*cache_map)
+>>>>>>> remotes/linux2/linux-3.4.y
 				      [PERF_COUNT_HW_CACHE_MAX]
 				      [PERF_COUNT_HW_CACHE_OP_MAX]
 				      [PERF_COUNT_HW_CACHE_RESULT_MAX],
@@ -124,7 +134,11 @@ armpmu_map_raw_event(u32 raw_event_mask, u64 config)
 
 static int map_cpu_event(struct perf_event *event,
 			 const unsigned (*event_map)[PERF_COUNT_HW_MAX],
+<<<<<<< HEAD
 			 unsigned (*cache_map)
+=======
+			 const unsigned (*cache_map)
+>>>>>>> remotes/linux2/linux-3.4.y
 					[PERF_COUNT_HW_CACHE_MAX]
 					[PERF_COUNT_HW_CACHE_OP_MAX]
 					[PERF_COUNT_HW_CACHE_RESULT_MAX],
@@ -256,7 +270,11 @@ armpmu_start(struct perf_event *event, int flags)
 	 * happened since disabling.
 	 */
 	armpmu_event_set_period(event, hwc, hwc->idx);
+<<<<<<< HEAD
 	armpmu->enable(hwc, hwc->idx, event->cpu);
+=======
+	armpmu->enable(hwc, hwc->idx);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void
@@ -273,10 +291,13 @@ armpmu_del(struct perf_event *event, int flags)
 	hw_events->events[idx] = NULL;
 	clear_bit(idx, hw_events->used_mask);
 
+<<<<<<< HEAD
 	/* Clear event constraints. */
 	if (armpmu->clear_event_constraints)
 		armpmu->clear_event_constraints(event);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	perf_event_update_userpage(event);
 }
 
@@ -290,6 +311,7 @@ armpmu_add(struct perf_event *event, int flags)
 	int err = 0;
 
 	perf_pmu_disable(event->pmu);
+<<<<<<< HEAD
 	/*
 	 * Tests if event is constrained. If not sets it so that next
 	 * collision can be detected.
@@ -301,6 +323,8 @@ armpmu_add(struct perf_event *event, int flags)
 			event->state = PERF_EVENT_STATE_OFF;
 			goto out;
 		}
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* If we don't have a space for the counter then finish early. */
 	idx = armpmu->get_event_idx(hw_events, hwc);
@@ -337,7 +361,14 @@ validate_event(struct pmu_hw_events *hw_events,
 	struct hw_perf_event fake_event = event->hw;
 	struct pmu *leader_pmu = event->group_leader->pmu;
 
+<<<<<<< HEAD
 	if (event->pmu != leader_pmu || event->state <= PERF_EVENT_STATE_OFF)
+=======
+	if (event->pmu != leader_pmu || event->state < PERF_EVENT_STATE_OFF)
+		return 1;
+
+	if (event->state == PERF_EVENT_STATE_OFF && !event->attr.enable_on_exec)
+>>>>>>> remotes/linux2/linux-3.4.y
 		return 1;
 
 	return armpmu->get_event_idx(hw_events, &fake_event) >= 0;
@@ -380,6 +411,7 @@ static irqreturn_t armpmu_platform_irq(int irq, void *dev)
 	return plat->handle_irq(irq, dev, armpmu->handle_irq);
 }
 
+<<<<<<< HEAD
 int
 armpmu_generic_request_irq(int irq, irq_handler_t *handle_irq)
 {
@@ -395,11 +427,18 @@ armpmu_generic_free_irq(int irq)
                 free_irq(irq, NULL);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static void
 armpmu_release_hardware(struct arm_pmu *armpmu)
 {
 	int i, irq, irqs;
 	struct platform_device *pmu_device = armpmu->plat_device;
+<<<<<<< HEAD
+=======
+	struct arm_pmu_platdata *plat =
+		dev_get_platdata(&pmu_device->dev);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	irqs = min(pmu_device->num_resources, num_possible_cpus());
 
@@ -407,7 +446,15 @@ armpmu_release_hardware(struct arm_pmu *armpmu)
 		if (!cpumask_test_and_clear_cpu(i, &armpmu->active_irqs))
 			continue;
 		irq = platform_get_irq(pmu_device, i);
+<<<<<<< HEAD
 		armpmu->free_pmu_irq(irq);
+=======
+		if (irq >= 0) {
+			if (plat && plat->disable_irq)
+				plat->disable_irq(irq);
+			free_irq(irq, armpmu);
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	release_pmu(armpmu->type);
@@ -459,6 +506,7 @@ armpmu_reserve_hardware(struct arm_pmu *armpmu)
 			continue;
 		}
 
+<<<<<<< HEAD
 		err = armpmu->request_pmu_irq(irq, &handle_irq);
 
                 if (err) {
@@ -468,6 +516,18 @@ armpmu_reserve_hardware(struct arm_pmu *armpmu)
 			armpmu_release_hardware(cpu_pmu);
                         return err;
                 }
+=======
+		err = request_irq(irq, handle_irq,
+				  IRQF_DISABLED | IRQF_NOBALANCING,
+				  "arm-pmu", armpmu);
+		if (err) {
+			pr_err("unable to request IRQ%d for ARM PMU counters\n",
+				irq);
+			armpmu_release_hardware(armpmu);
+			return err;
+		} else if (plat && plat->enable_irq)
+			plat->enable_irq(irq);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		cpumask_set_cpu(i, &armpmu->active_irqs);
 	}
@@ -532,7 +592,10 @@ __hw_perf_event_init(struct perf_event *event)
 		return -EPERM;
 	}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Store the event encoding into the config_base field.
 	 */
@@ -600,6 +663,7 @@ static void armpmu_enable(struct pmu *pmu)
 	struct arm_pmu *armpmu = to_arm_pmu(pmu);
 	struct pmu_hw_events *hw_events = armpmu->get_hw_events();
 	int enabled = bitmap_weight(hw_events->used_mask, armpmu->num_events);
+<<<<<<< HEAD
 	int idx;
 
 	if (armpmu->from_idle) {
@@ -615,6 +679,8 @@ static void armpmu_enable(struct pmu *pmu)
 		/* Reset bit so we don't needlessly re-enable counters.*/
 		armpmu->from_idle = 0;
 	}
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (enabled)
 		armpmu->start();
@@ -626,11 +692,16 @@ static void armpmu_disable(struct pmu *pmu)
 	armpmu->stop();
 }
 
+<<<<<<< HEAD
 static void armpmu_init(struct arm_pmu *armpmu)
+=======
+static void __init armpmu_init(struct arm_pmu *armpmu)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	atomic_set(&armpmu->active_events, 0);
 	mutex_init(&armpmu->reserve_mutex);
 
+<<<<<<< HEAD
 	armpmu->pmu.pmu_enable = armpmu_enable;
 	armpmu->pmu.pmu_disable = armpmu_disable;
 	armpmu->pmu.event_init = armpmu_event_init;
@@ -642,6 +713,21 @@ static void armpmu_init(struct arm_pmu *armpmu)
 }
 
 int armpmu_register(struct arm_pmu *armpmu, char *name, int type)
+=======
+	armpmu->pmu = (struct pmu) {
+		.pmu_enable	= armpmu_enable,
+		.pmu_disable	= armpmu_disable,
+		.event_init	= armpmu_event_init,
+		.add		= armpmu_add,
+		.del		= armpmu_del,
+		.start		= armpmu_start,
+		.stop		= armpmu_stop,
+		.read		= armpmu_read,
+	};
+}
+
+int __init armpmu_register(struct arm_pmu *armpmu, char *name, int type)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	armpmu_init(armpmu);
 	return perf_pmu_register(&armpmu->pmu, name, type);
@@ -651,8 +737,11 @@ int armpmu_register(struct arm_pmu *armpmu, char *name, int type)
 #include "perf_event_xscale.c"
 #include "perf_event_v6.c"
 #include "perf_event_v7.c"
+<<<<<<< HEAD
 #include "perf_event_msm_krait.c"
 #include "perf_event_msm.c"
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Ensure the PMU has sane values out of reset.
@@ -679,7 +768,11 @@ static struct of_device_id armpmu_of_device_ids[] = {
 };
 
 static struct platform_device_id armpmu_plat_device_ids[] = {
+<<<<<<< HEAD
 	{.name = "cpu-arm-pmu"},
+=======
+	{.name = "arm-pmu"},
+>>>>>>> remotes/linux2/linux-3.4.y
 	{},
 };
 
@@ -694,7 +787,11 @@ static int __devinit armpmu_device_probe(struct platform_device *pdev)
 
 static struct platform_driver armpmu_driver = {
 	.driver		= {
+<<<<<<< HEAD
 		.name	= "cpu-arm-pmu",
+=======
+		.name	= "arm-pmu",
+>>>>>>> remotes/linux2/linux-3.4.y
 		.of_match_table = armpmu_of_device_ids,
 	},
 	.probe		= armpmu_device_probe,
@@ -731,7 +828,10 @@ static void __init cpu_pmu_init(struct arm_pmu *armpmu)
  * UNKNOWN at reset, the PMU must be explicitly reset to avoid reading
  * junk values out of them.
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static int __cpuinit pmu_cpu_notify(struct notifier_block *b,
 					unsigned long action, void *hcpu)
 {
@@ -744,6 +844,7 @@ static int __cpuinit pmu_cpu_notify(struct notifier_block *b,
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static void armpmu_update_counters(void)
 {
 	struct pmu_hw_events *hw_events;
@@ -782,10 +883,13 @@ static int cpu_has_active_perf(void)
 	return 0;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static struct notifier_block __cpuinitdata pmu_cpu_notifier = {
 	.notifier_call = pmu_cpu_notify,
 };
 
+<<<<<<< HEAD
 /*TODO: Unify with pending patch from ARM */
 static int perf_cpu_pm_notifier(struct notifier_block *self, unsigned long cmd,
 		void *v)
@@ -819,6 +923,8 @@ static struct notifier_block perf_cpu_pm_notifier_block = {
 	.notifier_call = perf_cpu_pm_notifier,
 };
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * CPU PMU identification and registration.
  */
@@ -867,6 +973,7 @@ init_hw_perf_events(void)
 			cpu_pmu = xscale2pmu_init();
 			break;
 		}
+<<<<<<< HEAD
 	/* Qualcomm CPUs */
 	} else if (0x51 == implementor) {
 		switch (part_number) {
@@ -887,13 +994,20 @@ init_hw_perf_events(void)
 	}
 
 
+=======
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (cpu_pmu) {
 		pr_info("enabled with %s PMU driver, %d counters available\n",
 			cpu_pmu->name, cpu_pmu->num_events);
 		cpu_pmu_init(cpu_pmu);
 		register_cpu_notifier(&pmu_cpu_notifier);
 		armpmu_register(cpu_pmu, "cpu", PERF_TYPE_RAW);
+<<<<<<< HEAD
 		cpu_pm_register_notifier(&perf_cpu_pm_notifier_block);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	} else {
 		pr_info("no hardware support available\n");
 	}

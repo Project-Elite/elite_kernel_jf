@@ -16,7 +16,12 @@ struct ceph_crypto_key {
 
 static inline void ceph_crypto_key_destroy(struct ceph_crypto_key *key)
 {
+<<<<<<< HEAD
 	kfree(key->key);
+=======
+	if (key)
+		kfree(key->key);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 extern int ceph_crypto_key_clone(struct ceph_crypto_key *dst,

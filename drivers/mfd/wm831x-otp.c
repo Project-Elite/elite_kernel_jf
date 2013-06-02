@@ -18,6 +18,10 @@
 #include <linux/bcd.h>
 #include <linux/delay.h>
 #include <linux/mfd/core.h>
+<<<<<<< HEAD
+=======
+#include <linux/random.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <linux/mfd/wm831x/core.h>
 #include <linux/mfd/wm831x/otp.h>
@@ -66,6 +70,10 @@ static DEVICE_ATTR(unique_id, 0444, wm831x_unique_id_show, NULL);
 
 int wm831x_otp_init(struct wm831x *wm831x)
 {
+<<<<<<< HEAD
+=======
+	char uuid[WM831X_UNIQUE_ID_LEN];
+>>>>>>> remotes/linux2/linux-3.4.y
 	int ret;
 
 	ret = device_create_file(wm831x->dev, &dev_attr_unique_id);
@@ -73,6 +81,15 @@ int wm831x_otp_init(struct wm831x *wm831x)
 		dev_err(wm831x->dev, "Unique ID attribute not created: %d\n",
 			ret);
 
+<<<<<<< HEAD
+=======
+	ret = wm831x_unique_id_read(wm831x, uuid);
+	if (ret == 0)
+		add_device_randomness(uuid, sizeof(uuid));
+	else
+		dev_err(wm831x->dev, "Failed to read UUID: %d\n", ret);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return ret;
 }
 

@@ -68,7 +68,10 @@ struct usb_ep;
  *	Note that for writes (IN transfers) some data bytes may still
  *	reside in a device-side FIFO when the request is reported as
  *	complete.
+<<<<<<< HEAD
  *@udc_priv: Vendor private data in usage by the UDC.
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * These are allocated/freed through the endpoint they're used with.  The
  * hardware's driver can add extra per-request data to the memory it returns,
@@ -109,7 +112,10 @@ struct usb_request {
 
 	int			status;
 	unsigned		actual;
+<<<<<<< HEAD
 	unsigned		udc_priv;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /*-------------------------------------------------------------------------*/
@@ -129,6 +135,10 @@ struct usb_ep_ops {
 	struct usb_request *(*alloc_request) (struct usb_ep *ep,
 		gfp_t gfp_flags);
 	void (*free_request) (struct usb_ep *ep, struct usb_request *req);
+<<<<<<< HEAD
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	int (*queue) (struct usb_ep *ep, struct usb_request *req,
 		gfp_t gfp_flags);
 	int (*dequeue) (struct usb_ep *ep, struct usb_request *req);
@@ -500,6 +510,7 @@ struct usb_gadget_ops {
  *	only supports HNP on a different root port.
  * @b_hnp_enable: OTG device feature flag, indicating that the A-Host
  *	enabled HNP support.
+<<<<<<< HEAD
  * @host_request: A flag set by user when wishes to take up host role.
  * @otg_srp_reqd: OTG test mode feature to initiate SRP after the end of
  * current session.
@@ -508,6 +519,11 @@ struct usb_gadget_ops {
  * @dev: Driver model state for this abstract device.
  * @usb_core_id: Identifies the usb core controlled by this usb_gadget.
  *		 Used in case of more then one core operates concurrently.
+=======
+ * @name: Identifies the controller hardware type.  Used in diagnostics
+ *	and sometimes configuration.
+ * @dev: Driver model state for this abstract device.
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * Gadgets have a mostly-portable "gadget driver" implementing device
  * functions, handling all usb configurations and interfaces.  Gadget
@@ -540,11 +556,16 @@ struct usb_gadget {
 	unsigned			b_hnp_enable:1;
 	unsigned			a_hnp_support:1;
 	unsigned			a_alt_hnp_support:1;
+<<<<<<< HEAD
 	unsigned			host_request:1;
 	unsigned			otg_srp_reqd:1;
 	const char			*name;
 	struct device			dev;
 	u8				usb_core_id;
+=======
+	const char			*name;
+	struct device			dev;
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static inline void set_gadget_data(struct usb_gadget *gadget, void *data)
@@ -796,8 +817,11 @@ static inline int usb_gadget_disconnect(struct usb_gadget *gadget)
  * @suspend: Invoked on USB suspend.  May be called in_interrupt.
  * @resume: Invoked on USB resume.  May be called in_interrupt.
  * @driver: Driver model state for this driver.
+<<<<<<< HEAD
  * @usb_core_id: Identifies the usb core controlled by this usb_gadget_driver.
  *               Used in case of more then one core operates concurrently.
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * Devices are disabled till a gadget driver successfully bind()s, which
  * means the driver will handle setup() requests needed to enumerate (and
@@ -855,8 +879,11 @@ struct usb_gadget_driver {
 
 	/* FIXME support safe rmmod */
 	struct device_driver	driver;
+<<<<<<< HEAD
 
 	u8			usb_core_id;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 
@@ -940,11 +967,14 @@ int usb_gadget_get_string(struct usb_gadget_strings *table, int id, u8 *buf);
 
 /* utility to simplify managing config descriptors */
 
+<<<<<<< HEAD
 /* Find and fill the requested descriptor into buffer */
 int
 usb_find_descriptor_fillbuf(void *, unsigned,
 		const struct usb_descriptor_header **, u8);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* write vector of descriptors into buffer */
 int usb_descriptor_fillbuf(void *, unsigned,
 		const struct usb_descriptor_header **);

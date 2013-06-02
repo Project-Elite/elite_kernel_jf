@@ -912,9 +912,12 @@ static int cx25821_dev_setup(struct cx25821_dev *dev)
 	list_add_tail(&dev->devlist, &cx25821_devlist);
 	mutex_unlock(&cx25821_devlist_mutex);
 
+<<<<<<< HEAD
 	strcpy(cx25821_boards[UNKNOWN_BOARD].name, "unknown");
 	strcpy(cx25821_boards[CX25821_BOARD].name, "cx25821");
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (dev->pci->device != 0x8210) {
 		pr_info("%s(): Exiting. Incorrect Hardware device = 0x%02x\n",
 			__func__, dev->pci->device);

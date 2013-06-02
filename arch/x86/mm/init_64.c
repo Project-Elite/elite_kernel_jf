@@ -821,6 +821,12 @@ int kern_addr_valid(unsigned long addr)
 	if (pud_none(*pud))
 		return 0;
 
+<<<<<<< HEAD
+=======
+	if (pud_large(*pud))
+		return pfn_valid(pud_pfn(*pud));
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	pmd = pmd_offset(pud, addr);
 	if (pmd_none(*pmd))
 		return 0;

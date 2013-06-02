@@ -637,6 +637,10 @@ static void aer_recover_work_func(struct work_struct *work)
 			continue;
 		}
 		do_recovery(pdev, entry.severity);
+<<<<<<< HEAD
+=======
+		pci_dev_put(pdev);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 #endif

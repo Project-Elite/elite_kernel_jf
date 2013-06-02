@@ -58,7 +58,11 @@ static void spin_dump(raw_spinlock_t *lock, const char *msg)
 	printk(KERN_EMERG "BUG: spinlock %s on CPU#%d, %s/%d\n",
 		msg, raw_smp_processor_id(),
 		current->comm, task_pid_nr(current));
+<<<<<<< HEAD
 	printk(KERN_EMERG " lock: %pS, .magic: %08x, .owner: %s/%d, "
+=======
+	printk(KERN_EMERG " lock: %p, .magic: %08x, .owner: %s/%d, "
+>>>>>>> remotes/linux2/linux-3.4.y
 			".owner_cpu: %d\n",
 		lock, lock->magic,
 		owner ? owner->comm : "<none>",
@@ -106,6 +110,7 @@ static inline void debug_spin_unlock(raw_spinlock_t *lock)
 static void __spin_lock_debug(raw_spinlock_t *lock)
 {
 	u64 i;
+<<<<<<< HEAD
 	u64 loops = (loops_per_jiffy * HZ) >> 4;
 
 	for (i = 0; i < loops; i++) {
@@ -128,6 +133,26 @@ static void __spin_lock_debug(raw_spinlock_t *lock)
         * progress.
         */
        arch_spin_lock(&lock->raw_lock);
+=======
+	u64 loops = loops_per_jiffy * HZ;
+	int print_once = 1;
+
+	for (;;) {
+		for (i = 0; i < loops; i++) {
+			if (arch_spin_trylock(&lock->raw_lock))
+				return;
+			__delay(1);
+		}
+		/* lockup suspected: */
+		if (print_once) {
+			print_once = 0;
+			spin_dump(lock, "lockup");
+#ifdef CONFIG_SMP
+			trigger_all_cpu_backtrace();
+#endif
+		}
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 void do_raw_spin_lock(raw_spinlock_t *lock)

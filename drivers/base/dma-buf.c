@@ -44,6 +44,7 @@ static int dma_buf_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int dma_buf_mmap_internal(struct file *file, struct vm_area_struct *vma)
 {
 	struct dma_buf *dmabuf;
@@ -64,6 +65,10 @@ static int dma_buf_mmap_internal(struct file *file, struct vm_area_struct *vma)
 static const struct file_operations dma_buf_fops = {
 	.release	= dma_buf_release,
 	.mmap		= dma_buf_mmap_internal,
+=======
+static const struct file_operations dma_buf_fops = {
+	.release	= dma_buf_release,
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /*
@@ -100,8 +105,12 @@ struct dma_buf *dma_buf_export(void *priv, const struct dma_buf_ops *ops,
 			  || !ops->unmap_dma_buf
 			  || !ops->release
 			  || !ops->kmap_atomic
+<<<<<<< HEAD
 			  || !ops->kmap
 			  || !ops->mmap)) {
+=======
+			  || !ops->kmap)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		return ERR_PTR(-EINVAL);
 	}
 
@@ -425,6 +434,7 @@ void dma_buf_kunmap(struct dma_buf *dmabuf, unsigned long page_num,
 		dmabuf->ops->kunmap(dmabuf, page_num, vaddr);
 }
 EXPORT_SYMBOL_GPL(dma_buf_kunmap);
+<<<<<<< HEAD
 
 
 /**
@@ -468,3 +478,5 @@ int dma_buf_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma,
 	return dmabuf->ops->mmap(dmabuf, vma);
 }
 EXPORT_SYMBOL_GPL(dma_buf_mmap);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

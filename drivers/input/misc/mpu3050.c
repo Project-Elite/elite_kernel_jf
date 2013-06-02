@@ -40,9 +40,12 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/pm_runtime.h>
+<<<<<<< HEAD
 #include <linux/gpio.h>
 #include <linux/input/mpu3050.h>
 #include <linux/regulator/consumer.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #define MPU3050_CHIP_ID		0x69
 
@@ -51,8 +54,11 @@
 #define MPU3050_MIN_VALUE	-32768
 #define MPU3050_MAX_VALUE	32767
 
+<<<<<<< HEAD
 #define MPU3050_MIN_POLL_INTERVAL	1
 #define MPU3050_MAX_POLL_INTERVAL	250
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #define MPU3050_DEFAULT_POLL_INTERVAL	200
 #define MPU3050_DEFAULT_FS_RANGE	3
 
@@ -93,10 +99,15 @@
 #define MPU3050_DLPF_CFG_MASK		0x07
 /* INT_CFG */
 #define MPU3050_RAW_RDY_EN		0x01
+<<<<<<< HEAD
 #define MPU3050_MPU_RDY_EN		0x04
 #define MPU3050_LATCH_INT_EN		0x20
 #define MPU3050_OPEN_DRAIN		0x40
 #define MPU3050_ACTIVE_LOW		0x80
+=======
+#define MPU3050_MPU_RDY_EN		0x02
+#define MPU3050_LATCH_INT_EN		0x04
+>>>>>>> remotes/linux2/linux-3.4.y
 /* PWR_MGM */
 #define MPU3050_PWR_MGM_PLL_X		0x01
 #define MPU3050_PWR_MGM_PLL_Y		0x02
@@ -119,6 +130,7 @@ struct mpu3050_sensor {
 	struct i2c_client *client;
 	struct device *dev;
 	struct input_dev *idev;
+<<<<<<< HEAD
 	struct mpu3050_gyro_platform_data *platform_data;
 	struct delayed_work input_work;
 	u32    use_poll;
@@ -326,6 +338,10 @@ static int remove_sysfs_interfaces(struct device *dev)
 	return 0;
 }
 
+=======
+};
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  *	mpu3050_xyz_read_reg	-	read the axes values
  *	@buffer: provide register addr and get register
@@ -391,21 +407,27 @@ static void mpu3050_set_power_mode(struct i2c_client *client, u8 val)
 {
 	u8 value;
 
+<<<<<<< HEAD
 	if (val) {
 		mpu3050_config_regulator(client, 1);
 		udelay(10);
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	value = i2c_smbus_read_byte_data(client, MPU3050_PWR_MGM);
 	value = (value & ~MPU3050_PWR_MGM_MASK) |
 		(((val << MPU3050_PWR_MGM_POS) & MPU3050_PWR_MGM_MASK) ^
 		 MPU3050_PWR_MGM_MASK);
 	i2c_smbus_write_byte_data(client, MPU3050_PWR_MGM, value);
+<<<<<<< HEAD
 
 	if (!val) {
 		udelay(10);
 		mpu3050_config_regulator(client, 0);
 	}
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /**
@@ -421,6 +443,7 @@ static int mpu3050_input_open(struct input_dev *input)
 	struct mpu3050_sensor *sensor = input_get_drvdata(input);
 	int error;
 
+<<<<<<< HEAD
 	pm_runtime_get_sync(sensor->dev);
 
 	/* Enable interrupts */
@@ -428,13 +451,25 @@ static int mpu3050_input_open(struct input_dev *input)
 					MPU3050_ACTIVE_LOW |
 					MPU3050_OPEN_DRAIN |
 					MPU3050_RAW_RDY_EN);
+=======
+	pm_runtime_get(sensor->dev);
+
+	/* Enable interrupts */
+	error = i2c_smbus_write_byte_data(sensor->client, MPU3050_INT_CFG,
+					  MPU3050_LATCH_INT_EN |
+					  MPU3050_RAW_RDY_EN |
+					  MPU3050_MPU_RDY_EN);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (error < 0) {
 		pm_runtime_put(sensor->dev);
 		return error;
 	}
+<<<<<<< HEAD
 	if (sensor->use_poll)
 		schedule_delayed_work(&sensor->input_work,
 			msecs_to_jiffies(sensor->poll_interval));
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -450,9 +485,12 @@ static void mpu3050_input_close(struct input_dev *input)
 {
 	struct mpu3050_sensor *sensor = input_get_drvdata(input);
 
+<<<<<<< HEAD
 	if (sensor->use_poll)
 		cancel_delayed_work_sync(&sensor->input_work);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	pm_runtime_put(sensor->dev);
 }
 
@@ -480,6 +518,7 @@ static irqreturn_t mpu3050_interrupt_thread(int irq, void *data)
 }
 
 /**
+<<<<<<< HEAD
  *	mpu3050_input_work_fn -		polling work
  *	@work: the work struct
  *
@@ -507,6 +546,8 @@ static void mpu3050_input_work_fn(struct work_struct *work)
 }
 
 /**
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  *	mpu3050_hw_init	-	initialize hardware
  *	@sensor: the sensor
  *
@@ -536,13 +577,22 @@ static int __devinit mpu3050_hw_init(struct mpu3050_sensor *sensor)
 
 	/* Output frequency divider. The poll interval */
 	ret = i2c_smbus_write_byte_data(client, MPU3050_SMPLRT_DIV,
+<<<<<<< HEAD
 					sensor->poll_interval - 1);
+=======
+					MPU3050_DEFAULT_POLL_INTERVAL - 1);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (ret < 0)
 		return ret;
 
 	/* Set low pass filter and full scale */
+<<<<<<< HEAD
 	reg = MPU3050_DLPF_CFG_42HZ;
 	reg |= MPU3050_DEFAULT_FS_RANGE << 3;
+=======
+	reg = MPU3050_DEFAULT_FS_RANGE;
+	reg |= MPU3050_DLPF_CFG_42HZ << 3;
+>>>>>>> remotes/linux2/linux-3.4.y
 	reg |= MPU3050_EXT_SYNC_NONE << 5;
 	ret = i2c_smbus_write_byte_data(client, MPU3050_DLPF_FS_SYNC, reg);
 	if (ret < 0)
@@ -580,6 +630,7 @@ static int __devinit mpu3050_probe(struct i2c_client *client,
 	sensor->client = client;
 	sensor->dev = &client->dev;
 	sensor->idev = idev;
+<<<<<<< HEAD
 	sensor->platform_data = client->dev.platform_data;
 	i2c_set_clientdata(client, sensor);
 	if (sensor->platform_data) {
@@ -593,6 +644,8 @@ static int __devinit mpu3050_probe(struct i2c_client *client,
 	} else {
 		sensor->poll_interval = MPU3050_DEFAULT_POLL_INTERVAL;
 	}
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	mpu3050_set_power_mode(client, 1);
 	msleep(10);
@@ -633,6 +686,7 @@ static int __devinit mpu3050_probe(struct i2c_client *client,
 	if (error)
 		goto err_pm_set_suspended;
 
+<<<<<<< HEAD
 	if (client->irq == 0) {
 		sensor->use_poll = 1;
 		INIT_DELAYED_WORK(&sensor->input_work, mpu3050_input_work_fn);
@@ -669,6 +723,16 @@ static int __devinit mpu3050_probe(struct i2c_client *client,
 				client->irq, error);
 			goto err_pm_set_suspended;
 		}
+=======
+	error = request_threaded_irq(client->irq,
+				     NULL, mpu3050_interrupt_thread,
+				     IRQF_TRIGGER_RISING,
+				     "mpu3050", sensor);
+	if (error) {
+		dev_err(&client->dev,
+			"can't get IRQ %d, error %d\n", client->irq, error);
+		goto err_pm_set_suspended;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	error = input_register_device(idev);
@@ -677,17 +741,21 @@ static int __devinit mpu3050_probe(struct i2c_client *client,
 		goto err_free_irq;
 	}
 
+<<<<<<< HEAD
 	error = create_sysfs_interfaces(&client->dev);
 	if (error < 0) {
 		dev_err(&client->dev, "failed to create sysfs\n");
 		goto err_input_cleanup;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	pm_runtime_enable(&client->dev);
 	pm_runtime_set_autosuspend_delay(&client->dev, MPU3050_AUTO_DELAY);
 
 	return 0;
 
+<<<<<<< HEAD
 err_input_cleanup:
 	input_unregister_device(idev);
 err_free_irq:
@@ -697,6 +765,10 @@ err_free_gpio:
 	if ((client->irq > 0) &&
 		(gpio_is_valid(sensor->platform_data->gpio_int)))
 		gpio_free(sensor->platform_data->gpio_int);
+=======
+err_free_irq:
+	free_irq(client->irq, sensor);
+>>>>>>> remotes/linux2/linux-3.4.y
 err_pm_set_suspended:
 	pm_runtime_set_suspended(&client->dev);
 err_free_mem:
@@ -718,12 +790,17 @@ static int __devexit mpu3050_remove(struct i2c_client *client)
 	pm_runtime_disable(&client->dev);
 	pm_runtime_set_suspended(&client->dev);
 
+<<<<<<< HEAD
 	if (client->irq)
 		free_irq(client->irq, sensor);
 
 	remove_sysfs_interfaces(&client->dev);
 	input_unregister_device(sensor->idev);
 
+=======
+	free_irq(client->irq, sensor);
+	input_unregister_device(sensor->idev);
+>>>>>>> remotes/linux2/linux-3.4.y
 	kfree(sensor);
 
 	return 0;

@@ -31,6 +31,7 @@
 #define AUTOFS_MIN_PROTO_VERSION	AUTOFS_PROTO_VERSION
 
 /*
+<<<<<<< HEAD
  * Architectures where both 32- and 64-bit binaries can be executed
  * on 64-bit kernels need this.  This keeps the structure format
  * uniform, and makes sure the wait_queue_token isn't too big to be
@@ -50,6 +51,18 @@
 typedef unsigned int autofs_wqt_t;
 #else
 typedef unsigned long autofs_wqt_t;
+=======
+ * The wait_queue_token (autofs_wqt_t) is part of a structure which is passed
+ * back to the kernel via ioctl from userspace. On architectures where 32- and
+ * 64-bit userspace binaries can be executed it's important that the size of
+ * autofs_wqt_t stays constant between 32- and 64-bit Linux kernels so that we
+ * do not break the binary ABI interface by changing the structure size.
+ */
+#if defined(__ia64__) || defined(__alpha__) /* pure 64bit architectures */
+typedef unsigned long autofs_wqt_t;
+#else
+typedef unsigned int autofs_wqt_t;
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif
 
 /* Packet types */

@@ -58,9 +58,12 @@ enum {
 	SUBMIT_DATA_OUT_URB	= (1 << 5),
 	ALLOC_CMD_URB		= (1 << 6),
 	SUBMIT_CMD_URB		= (1 << 7),
+<<<<<<< HEAD
 	COMPLETED_DATA_IN	= (1 << 8),
 	COMPLETED_DATA_OUT	= (1 << 9),
 	DATA_COMPLETES_CMD	= (1 << 10),
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /* Overrides scsi_pointer */
@@ -114,7 +117,10 @@ static void uas_sense(struct urb *urb, struct scsi_cmnd *cmnd)
 {
 	struct sense_iu *sense_iu = urb->transfer_buffer;
 	struct scsi_device *sdev = cmnd->device;
+<<<<<<< HEAD
 	struct uas_cmd_info *cmdinfo = (void *)&cmnd->SCp;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (urb->actual_length > 16) {
 		unsigned len = be16_to_cpup(&sense_iu->len);
@@ -132,15 +138,22 @@ static void uas_sense(struct urb *urb, struct scsi_cmnd *cmnd)
 	}
 
 	cmnd->result = sense_iu->status;
+<<<<<<< HEAD
 	if (!(cmdinfo->state & DATA_COMPLETES_CMD))
 		cmnd->scsi_done(cmnd);
+=======
+	cmnd->scsi_done(cmnd);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void uas_sense_old(struct urb *urb, struct scsi_cmnd *cmnd)
 {
 	struct sense_iu_old *sense_iu = urb->transfer_buffer;
 	struct scsi_device *sdev = cmnd->device;
+<<<<<<< HEAD
 	struct uas_cmd_info *cmdinfo = (void *)&cmnd->SCp;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (urb->actual_length > 8) {
 		unsigned len = be16_to_cpup(&sense_iu->len) - 2;
@@ -158,8 +171,12 @@ static void uas_sense_old(struct urb *urb, struct scsi_cmnd *cmnd)
 	}
 
 	cmnd->result = sense_iu->status;
+<<<<<<< HEAD
 	if (!(cmdinfo->state & DATA_COMPLETES_CMD))
 		cmnd->scsi_done(cmnd);
+=======
+	cmnd->scsi_done(cmnd);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void uas_xfer_data(struct urb *urb, struct scsi_cmnd *cmnd,
@@ -184,7 +201,10 @@ static void uas_stat_cmplt(struct urb *urb)
 	struct Scsi_Host *shost = urb->context;
 	struct uas_dev_info *devinfo = (void *)shost->hostdata[0];
 	struct scsi_cmnd *cmnd;
+<<<<<<< HEAD
 	struct uas_cmd_info *cmdinfo;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	u16 tag;
 	int ret;
 
@@ -210,13 +230,17 @@ static void uas_stat_cmplt(struct urb *urb)
 			dev_err(&urb->dev->dev, "failed submit status urb\n");
 		return;
 	}
+<<<<<<< HEAD
 	cmdinfo = (void *)&cmnd->SCp;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	switch (iu->iu_id) {
 	case IU_ID_STATUS:
 		if (devinfo->cmnd == cmnd)
 			devinfo->cmnd = NULL;
 
+<<<<<<< HEAD
 		if (!(cmdinfo->state & COMPLETED_DATA_IN) &&
 				cmdinfo->data_in_urb) {
 		       if (devinfo->use_streams) {
@@ -236,6 +260,8 @@ static void uas_stat_cmplt(struct urb *urb)
 			}
 		}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (urb->actual_length < 16)
 			devinfo->uas_sense_old = 1;
 		if (devinfo->uas_sense_old)
@@ -264,6 +290,7 @@ static void uas_stat_cmplt(struct urb *urb)
 		dev_err(&urb->dev->dev, "failed submit status urb\n");
 }
 
+<<<<<<< HEAD
 static void uas_data_out_cmplt(struct urb *urb)
 {
 	struct scsi_cmnd *cmnd = urb->context;
@@ -317,6 +344,29 @@ static struct urb *uas_alloc_data_urb(struct uas_dev_info *devinfo, gfp_t gfp,
 	usb_fill_bulk_urb(urb, udev, pipe, NULL, sdb->length,
 			complete_fn, cmnd);
 	urb->stream_id = stream_id;
+=======
+static void uas_data_cmplt(struct urb *urb)
+{
+	struct scsi_data_buffer *sdb = urb->context;
+	sdb->resid = sdb->length - urb->actual_length;
+	usb_free_urb(urb);
+}
+
+static struct urb *uas_alloc_data_urb(struct uas_dev_info *devinfo, gfp_t gfp,
+				unsigned int pipe, u16 stream_id,
+				struct scsi_data_buffer *sdb,
+				enum dma_data_direction dir)
+{
+	struct usb_device *udev = devinfo->udev;
+	struct urb *urb = usb_alloc_urb(0, gfp);
+
+	if (!urb)
+		goto out;
+	usb_fill_bulk_urb(urb, udev, pipe, NULL, sdb->length, uas_data_cmplt,
+									sdb);
+	if (devinfo->use_streams)
+		urb->stream_id = stream_id;
+>>>>>>> remotes/linux2/linux-3.4.y
 	urb->num_sgs = udev->bus->sg_tablesize ? sdb->table.nents : 0;
 	urb->sg = sdb->table.sgl;
  out:
@@ -418,8 +468,13 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
 
 	if (cmdinfo->state & ALLOC_DATA_IN_URB) {
 		cmdinfo->data_in_urb = uas_alloc_data_urb(devinfo, gfp,
+<<<<<<< HEAD
 					devinfo->data_in_pipe, cmnd,
 					DMA_FROM_DEVICE);
+=======
+					devinfo->data_in_pipe, cmdinfo->stream,
+					scsi_in(cmnd), DMA_FROM_DEVICE);
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (!cmdinfo->data_in_urb)
 			return SCSI_MLQUEUE_DEVICE_BUSY;
 		cmdinfo->state &= ~ALLOC_DATA_IN_URB;
@@ -436,8 +491,13 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
 
 	if (cmdinfo->state & ALLOC_DATA_OUT_URB) {
 		cmdinfo->data_out_urb = uas_alloc_data_urb(devinfo, gfp,
+<<<<<<< HEAD
 					devinfo->data_out_pipe, cmnd,
 					DMA_TO_DEVICE);
+=======
+					devinfo->data_out_pipe, cmdinfo->stream,
+					scsi_out(cmnd), DMA_TO_DEVICE);
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (!cmdinfo->data_out_urb)
 			return SCSI_MLQUEUE_DEVICE_BUSY;
 		cmdinfo->state &= ~ALLOC_DATA_OUT_URB;

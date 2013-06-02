@@ -18,6 +18,11 @@
 #include <linux/interrupt.h>
 #include <linux/delay.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/cpu.h>
+#include <linux/module.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/err.h>
 #include <linux/slab.h>
 #include <asm/uv/uv_hub.h>
@@ -59,6 +64,11 @@ static struct xpc_heartbeat_uv *xpc_heartbeat_uv;
 					 XPC_NOTIFY_MSG_SIZE_UV)
 #define XPC_NOTIFY_IRQ_NAME		"xpc_notify"
 
+<<<<<<< HEAD
+=======
+static int xpc_mq_node = -1;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static struct xpc_gru_mq_uv *xpc_activate_mq_uv;
 static struct xpc_gru_mq_uv *xpc_notify_mq_uv;
 
@@ -109,11 +119,16 @@ xpc_get_gru_mq_irq_uv(struct xpc_gru_mq_uv *mq, int cpu, char *irq_name)
 #if defined CONFIG_X86_64
 	mq->irq = uv_setup_irq(irq_name, cpu, mq->mmr_blade, mq->mmr_offset,
 			UV_AFFINITY_CPU);
+<<<<<<< HEAD
 	if (mq->irq < 0) {
 		dev_err(xpc_part, "uv_setup_irq() returned error=%d\n",
 			-mq->irq);
 		return mq->irq;
 	}
+=======
+	if (mq->irq < 0)
+		return mq->irq;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	mq->mmr_value = uv_read_global_mmr64(mmr_pnode, mq->mmr_offset);
 
@@ -238,8 +253,14 @@ xpc_create_gru_mq_uv(unsigned int mq_size, int cpu, char *irq_name,
 	mq->mmr_blade = uv_cpu_to_blade_id(cpu);
 
 	nid = cpu_to_node(cpu);
+<<<<<<< HEAD
 	page = alloc_pages_exact_node(nid, GFP_KERNEL | __GFP_ZERO | GFP_THISNODE,
 				pg_order);
+=======
+	page = alloc_pages_exact_node(nid,
+				      GFP_KERNEL | __GFP_ZERO | GFP_THISNODE,
+				      pg_order);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (page == NULL) {
 		dev_err(xpc_part, "xpc_create_gru_mq_uv() failed to alloc %d "
 			"bytes of memory on nid=%d for GRU mq\n", mq_size, nid);
@@ -1731,9 +1752,56 @@ static struct xpc_arch_operations xpc_arch_ops_uv = {
 	.notify_senders_of_disconnect = xpc_notify_senders_of_disconnect_uv,
 };
 
+<<<<<<< HEAD
 int
 xpc_init_uv(void)
 {
+=======
+static int
+xpc_init_mq_node(int nid)
+{
+	int cpu;
+
+	get_online_cpus();
+
+	for_each_cpu(cpu, cpumask_of_node(nid)) {
+		xpc_activate_mq_uv =
+			xpc_create_gru_mq_uv(XPC_ACTIVATE_MQ_SIZE_UV, nid,
+					     XPC_ACTIVATE_IRQ_NAME,
+					     xpc_handle_activate_IRQ_uv);
+		if (!IS_ERR(xpc_activate_mq_uv))
+			break;
+	}
+	if (IS_ERR(xpc_activate_mq_uv)) {
+		put_online_cpus();
+		return PTR_ERR(xpc_activate_mq_uv);
+	}
+
+	for_each_cpu(cpu, cpumask_of_node(nid)) {
+		xpc_notify_mq_uv =
+			xpc_create_gru_mq_uv(XPC_NOTIFY_MQ_SIZE_UV, nid,
+					     XPC_NOTIFY_IRQ_NAME,
+					     xpc_handle_notify_IRQ_uv);
+		if (!IS_ERR(xpc_notify_mq_uv))
+			break;
+	}
+	if (IS_ERR(xpc_notify_mq_uv)) {
+		xpc_destroy_gru_mq_uv(xpc_activate_mq_uv);
+		put_online_cpus();
+		return PTR_ERR(xpc_notify_mq_uv);
+	}
+
+	put_online_cpus();
+	return 0;
+}
+
+int
+xpc_init_uv(void)
+{
+	int nid;
+	int ret = 0;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	xpc_arch_ops = xpc_arch_ops_uv;
 
 	if (sizeof(struct xpc_notify_mq_msghdr_uv) > XPC_MSG_HDR_MAX_SIZE) {
@@ -1742,6 +1810,7 @@ xpc_init_uv(void)
 		return -E2BIG;
 	}
 
+<<<<<<< HEAD
 	xpc_activate_mq_uv = xpc_create_gru_mq_uv(XPC_ACTIVATE_MQ_SIZE_UV, 0,
 						  XPC_ACTIVATE_IRQ_NAME,
 						  xpc_handle_activate_IRQ_uv);
@@ -1757,6 +1826,23 @@ xpc_init_uv(void)
 	}
 
 	return 0;
+=======
+	if (xpc_mq_node < 0)
+		for_each_online_node(nid) {
+			ret = xpc_init_mq_node(nid);
+
+			if (!ret)
+				break;
+		}
+	else
+		ret = xpc_init_mq_node(xpc_mq_node);
+
+	if (ret < 0)
+		dev_err(xpc_part, "xpc_init_mq_node() returned error=%d\n",
+			-ret);
+
+	return ret;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 void
@@ -1765,3 +1851,9 @@ xpc_exit_uv(void)
 	xpc_destroy_gru_mq_uv(xpc_notify_mq_uv);
 	xpc_destroy_gru_mq_uv(xpc_activate_mq_uv);
 }
+<<<<<<< HEAD
+=======
+
+module_param(xpc_mq_node, int, 0);
+MODULE_PARM_DESC(xpc_mq_node, "Node number on which to allocate message queues.");
+>>>>>>> remotes/linux2/linux-3.4.y

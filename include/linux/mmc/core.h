@@ -18,9 +18,12 @@ struct mmc_request;
 struct mmc_command {
 	u32			opcode;
 	u32			arg;
+<<<<<<< HEAD
 #define MMC_CMD23_ARG_REL_WR	(1 << 31)
 #define MMC_CMD23_ARG_PACKED	((0 << 31) | (1 << 30))
 #define MMC_CMD23_ARG_TAG_REQ	(1 << 29)
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	u32			resp[4];
 	unsigned int		flags;		/* expected response type */
 #define MMC_RSP_PRESENT	(1 << 0)
@@ -121,10 +124,15 @@ struct mmc_data {
 	unsigned int		sg_len;		/* size of scatter list */
 	struct scatterlist	*sg;		/* I/O scatter list */
 	s32			host_cookie;	/* host private data */
+<<<<<<< HEAD
 	bool			fault_injected; /* fault injected */
 };
 
 struct mmc_host;
+=======
+};
+
+>>>>>>> remotes/linux2/linux-3.4.y
 struct mmc_request {
 	struct mmc_command	*sbc;		/* SET_BLOCK_COUNT for multiblock */
 	struct mmc_command	*cmd;
@@ -133,6 +141,7 @@ struct mmc_request {
 
 	struct completion	completion;
 	void			(*done)(struct mmc_request *);/* completion function */
+<<<<<<< HEAD
 	struct mmc_host		*host;
 };
 
@@ -141,6 +150,14 @@ struct mmc_async_req;
 
 extern int mmc_stop_bkops(struct mmc_card *);
 extern int mmc_read_bkops_status(struct mmc_card *);
+=======
+};
+
+struct mmc_host;
+struct mmc_card;
+struct mmc_async_req;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 extern struct mmc_async_req *mmc_start_req(struct mmc_host *,
 					   struct mmc_async_req *, int *);
 extern int mmc_interrupt_hpi(struct mmc_card *);
@@ -149,6 +166,7 @@ extern int mmc_wait_for_cmd(struct mmc_host *, struct mmc_command *, int);
 extern int mmc_app_cmd(struct mmc_host *, struct mmc_card *);
 extern int mmc_wait_for_app_cmd(struct mmc_host *, struct mmc_card *,
 	struct mmc_command *, int);
+<<<<<<< HEAD
 extern void mmc_start_bkops(struct mmc_card *card, bool from_exception);
 extern void mmc_start_delayed_bkops(struct mmc_card *card);
 extern void mmc_start_idle_time_bkops(struct work_struct *work);
@@ -156,6 +174,9 @@ extern void mmc_bkops_completion_polling(struct work_struct *work);
 extern int __mmc_switch(struct mmc_card *, u8, u8, u8, unsigned int, bool);
 extern int mmc_switch(struct mmc_card *, u8, u8, u8, unsigned int);
 extern int mmc_send_ext_csd(struct mmc_card *card, u8 *ext_csd);
+=======
+extern int mmc_switch(struct mmc_card *, u8, u8, u8, unsigned int);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #define MMC_ERASE_ARG		0x00000000
 #define MMC_SECURE_ERASE_ARG	0x80000000
@@ -189,12 +210,17 @@ extern unsigned int mmc_align_data_size(struct mmc_card *, unsigned int);
 extern int __mmc_claim_host(struct mmc_host *host, atomic_t *abort);
 extern void mmc_release_host(struct mmc_host *host);
 extern int mmc_try_claim_host(struct mmc_host *host);
+<<<<<<< HEAD
 extern void mmc_set_ios(struct mmc_host *host);
 extern int mmc_detect_card_removed(struct mmc_host *host);
 extern int mmc_flush_cache(struct mmc_card *);
 
 extern int mmc_flush_cache(struct mmc_card *);
 extern int mmc_bkops_enable(struct mmc_host *host, u8 value);
+=======
+
+extern int mmc_flush_cache(struct mmc_card *);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 extern int mmc_detect_card_removed(struct mmc_host *host);
 

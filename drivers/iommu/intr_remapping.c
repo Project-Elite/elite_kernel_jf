@@ -752,6 +752,10 @@ int __init parse_ioapics_under_ir(void)
 {
 	struct dmar_drhd_unit *drhd;
 	int ir_supported = 0;
+<<<<<<< HEAD
+=======
+	int ioapic_idx;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	for_each_drhd_unit(drhd) {
 		struct intel_iommu *iommu = drhd->iommu;
@@ -764,6 +768,7 @@ int __init parse_ioapics_under_ir(void)
 		}
 	}
 
+<<<<<<< HEAD
 	if (ir_supported && ir_ioapic_num != nr_ioapics) {
 		printk(KERN_WARNING
 		       "Not all IO-APIC's listed under remapping hardware\n");
@@ -771,6 +776,22 @@ int __init parse_ioapics_under_ir(void)
 	}
 
 	return ir_supported;
+=======
+	if (!ir_supported)
+		return 0;
+
+	for (ioapic_idx = 0; ioapic_idx < nr_ioapics; ioapic_idx++) {
+		int ioapic_id = mpc_ioapic_id(ioapic_idx);
+		if (!map_ioapic_to_ir(ioapic_id)) {
+			pr_err(FW_BUG "ioapic %d has no mapping iommu, "
+			       "interrupt remapping will be disabled\n",
+			       ioapic_id);
+			return -1;
+		}
+	}
+
+	return 1;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 int __init ir_dev_scope_init(void)

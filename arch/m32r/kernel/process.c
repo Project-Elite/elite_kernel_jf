@@ -26,6 +26,10 @@
 #include <linux/ptrace.h>
 #include <linux/unistd.h>
 #include <linux/hardirq.h>
+<<<<<<< HEAD
+=======
+#include <linux/rcupdate.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <asm/io.h>
 #include <asm/uaccess.h>
@@ -82,6 +86,10 @@ void cpu_idle (void)
 {
 	/* endless idle loop with no priority at all */
 	while (1) {
+<<<<<<< HEAD
+=======
+		rcu_idle_enter();
+>>>>>>> remotes/linux2/linux-3.4.y
 		while (!need_resched()) {
 			void (*idle)(void) = pm_idle;
 
@@ -90,6 +98,10 @@ void cpu_idle (void)
 
 			idle();
 		}
+<<<<<<< HEAD
+=======
+		rcu_idle_exit();
+>>>>>>> remotes/linux2/linux-3.4.y
 		schedule_preempt_disabled();
 	}
 }

@@ -122,7 +122,10 @@ static int mmc_bus_remove(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static int mmc_bus_suspend(struct device *dev)
 {
 	struct mmc_driver *drv = to_mmc_driver(dev->driver);
@@ -144,10 +147,13 @@ static int mmc_bus_resume(struct device *dev)
 		ret = drv->resume(card);
 	return ret;
 }
+<<<<<<< HEAD
 #else
 #define mmc_bus_suspend NULL
 #define mmc_bus_resume NULL
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #ifdef CONFIG_PM_RUNTIME
 
@@ -254,8 +260,11 @@ struct mmc_card *mmc_alloc_card(struct mmc_host *host, struct device_type *type)
 	card->dev.release = mmc_release_card;
 	card->dev.type = type;
 
+<<<<<<< HEAD
 	spin_lock_init(&card->wr_pack_stats.lock);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return card;
 }
 
@@ -327,7 +336,10 @@ int mmc_add_card(struct mmc_card *card)
 #ifdef CONFIG_DEBUG_FS
 	mmc_add_card_debugfs(card);
 #endif
+<<<<<<< HEAD
 	mmc_init_context_info(card->host);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	ret = device_add(&card->dev);
 	if (ret)
@@ -359,8 +371,11 @@ void mmc_remove_card(struct mmc_card *card)
 		device_del(&card->dev);
 	}
 
+<<<<<<< HEAD
 	kfree(card->wr_pack_stats.packing_events);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	put_device(&card->dev);
 }
 

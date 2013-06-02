@@ -84,6 +84,15 @@ enum {
 	CSS_REMOVED, /* This CSS is dead */
 };
 
+<<<<<<< HEAD
+=======
+/* Caller must verify that the css is not for root cgroup */
+static inline void __css_get(struct cgroup_subsys_state *css, int count)
+{
+	atomic_add(count, &css->refcnt);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Call css_get() to hold a reference on the css; it can be used
  * for a reference obtained via:
@@ -91,7 +100,10 @@ enum {
  * - task->cgroups for a locked task
  */
 
+<<<<<<< HEAD
 extern void __css_get(struct cgroup_subsys_state *css, int count);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static inline void css_get(struct cgroup_subsys_state *css)
 {
 	/* We don't need to reference count the root state */
@@ -138,7 +150,14 @@ static inline void css_put(struct cgroup_subsys_state *css)
 enum {
 	/* Control Group is dead */
 	CGRP_REMOVED,
+<<<<<<< HEAD
 	/* Control Group has ever had a child cgroup or a task */
+=======
+	/*
+	 * Control Group has previously had a child cgroup or a task,
+	 * but no longer (only if CGRP_NOTIFY_ON_RELEASE is set)
+	 */
+>>>>>>> remotes/linux2/linux-3.4.y
 	CGRP_RELEASABLE,
 	/* Control Group requires release notifications to userspace */
 	CGRP_NOTIFY_ON_RELEASE,
@@ -247,7 +266,10 @@ struct css_set {
 
 	/* For RCU-protected deletion */
 	struct rcu_head rcu_head;
+<<<<<<< HEAD
 	struct work_struct work;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /*
@@ -448,7 +470,10 @@ struct cgroup_subsys {
 	struct cgroup_subsys_state *(*create)(struct cgroup *cgrp);
 	int (*pre_destroy)(struct cgroup *cgrp);
 	void (*destroy)(struct cgroup *cgrp);
+<<<<<<< HEAD
 	int (*allow_attach)(struct cgroup *cgrp, struct cgroup_taskset *tset);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	int (*can_attach)(struct cgroup *cgrp, struct cgroup_taskset *tset);
 	void (*cancel_attach)(struct cgroup *cgrp, struct cgroup_taskset *tset);
 	void (*attach)(struct cgroup *cgrp, struct cgroup_taskset *tset);

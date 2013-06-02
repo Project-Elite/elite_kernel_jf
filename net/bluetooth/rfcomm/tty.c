@@ -26,7 +26,10 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/interrupt.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <linux/tty.h>
 #include <linux/tty_driver.h>
@@ -35,6 +38,10 @@
 #include <linux/capability.h>
 #include <linux/slab.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
+=======
+#include <linux/workqueue.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
@@ -66,7 +73,11 @@ struct rfcomm_dev {
 	struct rfcomm_dlc	*dlc;
 	struct tty_struct	*tty;
 	wait_queue_head_t       wait;
+<<<<<<< HEAD
 	struct tasklet_struct   wakeup_task;
+=======
+	struct work_struct	wakeup_task;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	struct device		*tty_dev;
 
@@ -76,13 +87,21 @@ struct rfcomm_dev {
 };
 
 static LIST_HEAD(rfcomm_dev_list);
+<<<<<<< HEAD
 static DEFINE_RWLOCK(rfcomm_dev_lock);
+=======
+static DEFINE_SPINLOCK(rfcomm_dev_lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static void rfcomm_dev_data_ready(struct rfcomm_dlc *dlc, struct sk_buff *skb);
 static void rfcomm_dev_state_change(struct rfcomm_dlc *dlc, int err);
 static void rfcomm_dev_modem_status(struct rfcomm_dlc *dlc, u8 v24_sig);
 
+<<<<<<< HEAD
 static void rfcomm_tty_wakeup(unsigned long arg);
+=======
+static void rfcomm_tty_wakeup(struct work_struct *work);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* ---- Device functions ---- */
 static void rfcomm_dev_destruct(struct rfcomm_dev *dev)
@@ -134,6 +153,7 @@ static inline void rfcomm_dev_put(struct rfcomm_dev *dev)
 static struct rfcomm_dev *__rfcomm_dev_get(int id)
 {
 	struct rfcomm_dev *dev;
+<<<<<<< HEAD
 	struct list_head  *p;
 
 	list_for_each(p, &rfcomm_dev_list) {
@@ -141,6 +161,12 @@ static struct rfcomm_dev *__rfcomm_dev_get(int id)
 		if (dev->id == id)
 			return dev;
 	}
+=======
+
+	list_for_each_entry(dev, &rfcomm_dev_list, list)
+		if (dev->id == id)
+			return dev;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return NULL;
 }
@@ -149,7 +175,11 @@ static inline struct rfcomm_dev *rfcomm_dev_get(int id)
 {
 	struct rfcomm_dev *dev;
 
+<<<<<<< HEAD
 	read_lock(&rfcomm_dev_lock);
+=======
+	spin_lock(&rfcomm_dev_lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	dev = __rfcomm_dev_get(id);
 
@@ -160,7 +190,11 @@ static inline struct rfcomm_dev *rfcomm_dev_get(int id)
 			rfcomm_dev_hold(dev);
 	}
 
+<<<<<<< HEAD
 	read_unlock(&rfcomm_dev_lock);
+=======
+	spin_unlock(&rfcomm_dev_lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return dev;
 }
@@ -198,8 +232,13 @@ static DEVICE_ATTR(channel, S_IRUGO, show_channel, NULL);
 
 static int rfcomm_dev_add(struct rfcomm_dev_req *req, struct rfcomm_dlc *dlc)
 {
+<<<<<<< HEAD
 	struct rfcomm_dev *dev;
 	struct list_head *head = &rfcomm_dev_list, *p;
+=======
+	struct rfcomm_dev *dev, *entry;
+	struct list_head *head = &rfcomm_dev_list;
+>>>>>>> remotes/linux2/linux-3.4.y
 	int err = 0;
 
 	BT_DBG("id %d channel %d", req->dev_id, req->channel);
@@ -208,24 +247,41 @@ static int rfcomm_dev_add(struct rfcomm_dev_req *req, struct rfcomm_dlc *dlc)
 	if (!dev)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	write_lock_bh(&rfcomm_dev_lock);
+=======
+	spin_lock(&rfcomm_dev_lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (req->dev_id < 0) {
 		dev->id = 0;
 
+<<<<<<< HEAD
 		list_for_each(p, &rfcomm_dev_list) {
 			if (list_entry(p, struct rfcomm_dev, list)->id != dev->id)
 				break;
 
 			dev->id++;
 			head = p;
+=======
+		list_for_each_entry(entry, &rfcomm_dev_list, list) {
+			if (entry->id != dev->id)
+				break;
+
+			dev->id++;
+			head = &entry->list;
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 	} else {
 		dev->id = req->dev_id;
 
+<<<<<<< HEAD
 		list_for_each(p, &rfcomm_dev_list) {
 			struct rfcomm_dev *entry = list_entry(p, struct rfcomm_dev, list);
 
+=======
+		list_for_each_entry(entry, &rfcomm_dev_list, list) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (entry->id == dev->id) {
 				err = -EADDRINUSE;
 				goto out;
@@ -234,7 +290,11 @@ static int rfcomm_dev_add(struct rfcomm_dev_req *req, struct rfcomm_dlc *dlc)
 			if (entry->id > dev->id - 1)
 				break;
 
+<<<<<<< HEAD
 			head = p;
+=======
+			head = &entry->list;
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 
@@ -258,7 +318,11 @@ static int rfcomm_dev_add(struct rfcomm_dev_req *req, struct rfcomm_dlc *dlc)
 	atomic_set(&dev->opened, 0);
 
 	init_waitqueue_head(&dev->wait);
+<<<<<<< HEAD
 	tasklet_init(&dev->wakeup_task, rfcomm_tty_wakeup, (unsigned long) dev);
+=======
+	INIT_WORK(&dev->wakeup_task, rfcomm_tty_wakeup);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	skb_queue_head_init(&dev->pending);
 
@@ -295,7 +359,11 @@ static int rfcomm_dev_add(struct rfcomm_dev_req *req, struct rfcomm_dlc *dlc)
 	__module_get(THIS_MODULE);
 
 out:
+<<<<<<< HEAD
 	write_unlock_bh(&rfcomm_dev_lock);
+=======
+	spin_unlock(&rfcomm_dev_lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (err < 0)
 		goto free;
@@ -332,9 +400,15 @@ static void rfcomm_dev_del(struct rfcomm_dev *dev)
 	if (atomic_read(&dev->opened) > 0)
 		return;
 
+<<<<<<< HEAD
 	write_lock_bh(&rfcomm_dev_lock);
 	list_del_init(&dev->list);
 	write_unlock_bh(&rfcomm_dev_lock);
+=======
+	spin_lock(&rfcomm_dev_lock);
+	list_del_init(&dev->list);
+	spin_unlock(&rfcomm_dev_lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	rfcomm_dev_put(dev);
 }
@@ -352,7 +426,11 @@ static void rfcomm_wfree(struct sk_buff *skb)
 	struct rfcomm_dev *dev = (void *) skb->sk;
 	atomic_sub(skb->truesize, &dev->wmem_alloc);
 	if (test_bit(RFCOMM_TTY_ATTACHED, &dev->flags))
+<<<<<<< HEAD
 		tasklet_schedule(&dev->wakeup_task);
+=======
+		queue_work(system_nrt_wq, &dev->wakeup_task);
+>>>>>>> remotes/linux2/linux-3.4.y
 	rfcomm_dev_put(dev);
 }
 
@@ -456,9 +534,15 @@ static int rfcomm_release_dev(void __user *arg)
 
 static int rfcomm_get_dev_list(void __user *arg)
 {
+<<<<<<< HEAD
 	struct rfcomm_dev_list_req *dl;
 	struct rfcomm_dev_info *di;
 	struct list_head *p;
+=======
+	struct rfcomm_dev *dev;
+	struct rfcomm_dev_list_req *dl;
+	struct rfcomm_dev_info *di;
+>>>>>>> remotes/linux2/linux-3.4.y
 	int n = 0, size, err;
 	u16 dev_num;
 
@@ -472,16 +556,26 @@ static int rfcomm_get_dev_list(void __user *arg)
 
 	size = sizeof(*dl) + dev_num * sizeof(*di);
 
+<<<<<<< HEAD
 	dl = kmalloc(size, GFP_KERNEL);
+=======
+	dl = kzalloc(size, GFP_KERNEL);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!dl)
 		return -ENOMEM;
 
 	di = dl->dev_info;
 
+<<<<<<< HEAD
 	read_lock_bh(&rfcomm_dev_lock);
 
 	list_for_each(p, &rfcomm_dev_list) {
 		struct rfcomm_dev *dev = list_entry(p, struct rfcomm_dev, list);
+=======
+	spin_lock(&rfcomm_dev_lock);
+
+	list_for_each_entry(dev, &rfcomm_dev_list, list) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (test_bit(RFCOMM_TTY_RELEASED, &dev->flags))
 			continue;
 		(di + n)->id      = dev->id;
@@ -494,7 +588,11 @@ static int rfcomm_get_dev_list(void __user *arg)
 			break;
 	}
 
+<<<<<<< HEAD
 	read_unlock_bh(&rfcomm_dev_lock);
+=======
+	spin_unlock(&rfcomm_dev_lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	dl->dev_num = n;
 	size = sizeof(*dl) + n * sizeof(*di);
@@ -636,9 +734,16 @@ static void rfcomm_dev_modem_status(struct rfcomm_dlc *dlc, u8 v24_sig)
 }
 
 /* ---- TTY functions ---- */
+<<<<<<< HEAD
 static void rfcomm_tty_wakeup(unsigned long arg)
 {
 	struct rfcomm_dev *dev = (void *) arg;
+=======
+static void rfcomm_tty_wakeup(struct work_struct *work)
+{
+	struct rfcomm_dev *dev = container_of(work, struct rfcomm_dev,
+								wakeup_task);
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct tty_struct *tty = dev->tty;
 	if (!tty)
 		return;
@@ -763,7 +868,11 @@ static void rfcomm_tty_close(struct tty_struct *tty, struct file *filp)
 		rfcomm_dlc_close(dev->dlc, 0);
 
 		clear_bit(RFCOMM_TTY_ATTACHED, &dev->flags);
+<<<<<<< HEAD
 		tasklet_kill(&dev->wakeup_task);
+=======
+		cancel_work_sync(&dev->wakeup_task);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		rfcomm_dlc_lock(dev->dlc);
 		tty->driver_data = NULL;
@@ -771,9 +880,15 @@ static void rfcomm_tty_close(struct tty_struct *tty, struct file *filp)
 		rfcomm_dlc_unlock(dev->dlc);
 
 		if (test_bit(RFCOMM_TTY_RELEASED, &dev->flags)) {
+<<<<<<< HEAD
 			write_lock_bh(&rfcomm_dev_lock);
 			list_del_init(&dev->list);
 			write_unlock_bh(&rfcomm_dev_lock);
+=======
+			spin_lock(&rfcomm_dev_lock);
+			list_del_init(&dev->list);
+			spin_unlock(&rfcomm_dev_lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 			rfcomm_dev_put(dev);
 		}
@@ -1156,11 +1271,20 @@ static const struct tty_operations rfcomm_ops = {
 
 int __init rfcomm_init_ttys(void)
 {
+<<<<<<< HEAD
 	rfcomm_tty_driver = alloc_tty_driver(RFCOMM_TTY_PORTS);
 	if (!rfcomm_tty_driver)
 		return -1;
 
 	rfcomm_tty_driver->owner	= THIS_MODULE;
+=======
+	int error;
+
+	rfcomm_tty_driver = alloc_tty_driver(RFCOMM_TTY_PORTS);
+	if (!rfcomm_tty_driver)
+		return -ENOMEM;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	rfcomm_tty_driver->driver_name	= "rfcomm";
 	rfcomm_tty_driver->name		= "rfcomm";
 	rfcomm_tty_driver->major	= RFCOMM_TTY_MAJOR;
@@ -1173,10 +1297,18 @@ int __init rfcomm_init_ttys(void)
 	rfcomm_tty_driver->init_termios.c_lflag &= ~ICANON;
 	tty_set_operations(rfcomm_tty_driver, &rfcomm_ops);
 
+<<<<<<< HEAD
 	if (tty_register_driver(rfcomm_tty_driver)) {
 		BT_ERR("Can't register RFCOMM TTY driver");
 		put_tty_driver(rfcomm_tty_driver);
 		return -1;
+=======
+	error = tty_register_driver(rfcomm_tty_driver);
+	if (error) {
+		BT_ERR("Can't register RFCOMM TTY driver");
+		put_tty_driver(rfcomm_tty_driver);
+		return error;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	BT_INFO("RFCOMM TTY layer initialized");

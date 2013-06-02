@@ -482,6 +482,12 @@ flush_signal_handlers(struct task_struct *t, int force_default)
 		if (force_default || ka->sa.sa_handler != SIG_IGN)
 			ka->sa.sa_handler = SIG_DFL;
 		ka->sa.sa_flags = 0;
+<<<<<<< HEAD
+=======
+#ifdef __ARCH_HAS_SA_RESTORER
+		ka->sa.sa_restorer = NULL;
+#endif
+>>>>>>> remotes/linux2/linux-3.4.y
 		sigemptyset(&ka->sa.sa_mask);
 		ka++;
 	}
@@ -677,6 +683,7 @@ int dequeue_signal(struct task_struct *tsk, sigset_t *mask, siginfo_t *info)
  * No need to set need_resched since signal event passing
  * goes through ->blocked
  */
+<<<<<<< HEAD
 void signal_wake_up(struct task_struct *t, int resume)
 {
 	unsigned int mask;
@@ -685,15 +692,26 @@ void signal_wake_up(struct task_struct *t, int resume)
 
 	/*
 	 * For SIGKILL, we want to wake it up in the stopped/traced/killable
+=======
+void signal_wake_up_state(struct task_struct *t, unsigned int state)
+{
+	set_tsk_thread_flag(t, TIF_SIGPENDING);
+	/*
+	 * TASK_WAKEKILL also means wake it up in the stopped/traced/killable
+>>>>>>> remotes/linux2/linux-3.4.y
 	 * case. We don't check t->state here because there is a race with it
 	 * executing another processor and just now entering stopped state.
 	 * By using wake_up_state, we ensure the process will wake up and
 	 * handle its death signal.
 	 */
+<<<<<<< HEAD
 	mask = TASK_INTERRUPTIBLE;
 	if (resume)
 		mask |= TASK_WAKEKILL;
 	if (!wake_up_state(t, mask))
+=======
+	if (!wake_up_state(t, state | TASK_INTERRUPTIBLE))
+>>>>>>> remotes/linux2/linux-3.4.y
 		kick_process(t);
 }
 
@@ -842,7 +860,11 @@ static void ptrace_trap_notify(struct task_struct *t)
 	assert_spin_locked(&t->sighand->siglock);
 
 	task_set_jobctl_pending(t, JOBCTL_TRAP_NOTIFY);
+<<<<<<< HEAD
 	signal_wake_up(t, t->jobctl & JOBCTL_LISTENING);
+=======
+	ptrace_signal_wake_up(t, t->jobctl & JOBCTL_LISTENING);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*
@@ -1808,6 +1830,13 @@ static inline int may_ptrace_stop(void)
 	 * If SIGKILL was already sent before the caller unlocked
 	 * ->siglock we must see ->core_state != NULL. Otherwise it
 	 * is safe to enter schedule().
+<<<<<<< HEAD
+=======
+	 *
+	 * This is almost outdated, a task with the pending SIGKILL can't
+	 * block in TASK_TRACED. But PTRACE_EVENT_EXIT can be reported
+	 * after SIGKILL was already dequeued.
+>>>>>>> remotes/linux2/linux-3.4.y
 	 */
 	if (unlikely(current->mm->core_state) &&
 	    unlikely(current->mm == current->parent->mm))
@@ -1933,6 +1962,10 @@ static void ptrace_stop(int exit_code, int why, int clear_code, siginfo_t *info)
 		if (gstop_done)
 			do_notify_parent_cldstop(current, false, why);
 
+<<<<<<< HEAD
+=======
+		/* tasklist protects us from ptrace_freeze_traced() */
+>>>>>>> remotes/linux2/linux-3.4.y
 		__set_current_state(TASK_RUNNING);
 		if (clear_code)
 			current->exit_code = 0;
@@ -2865,7 +2898,11 @@ do_send_specific(pid_t tgid, pid_t pid, int sig, struct siginfo *info)
 
 static int do_tkill(pid_t tgid, pid_t pid, int sig)
 {
+<<<<<<< HEAD
 	struct siginfo info;
+=======
+	struct siginfo info = {};
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	info.si_signo = sig;
 	info.si_errno = 0;

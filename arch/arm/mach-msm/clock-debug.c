@@ -1,6 +1,10 @@
 /*
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2007-2010, Code Aurora Forum. All rights reserved.
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -17,12 +21,16 @@
 #include <linux/module.h>
 #include <linux/ctype.h>
 #include <linux/debugfs.h>
+<<<<<<< HEAD
 #include <linux/seq_file.h>
 #include <linux/clk.h>
 #include <linux/list.h>
 #include <linux/clkdev.h>
 #include <mach/clk-provider.h>
 
+=======
+#include <linux/clk.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 #include "clock.h"
 
 static int clock_debug_rate_set(void *data, u64 val)
@@ -32,6 +40,7 @@ static int clock_debug_rate_set(void *data, u64 val)
 
 	/* Only increases to max rate will succeed, but that's actually good
 	 * for debugging purposes so we don't check for error. */
+<<<<<<< HEAD
 	if (clock->flags & CLKFLAG_MAX)
 		clk_set_max_rate(clock, val);
 	ret = clk_set_rate(clock, val);
@@ -39,6 +48,17 @@ static int clock_debug_rate_set(void *data, u64 val)
 		pr_err("clk_set_rate(%s, %lu) failed (%d)\n", clock->dbg_name,
 				(unsigned long)val, ret);
 
+=======
+	if (clock->flags & CLK_MAX)
+		clk_set_max_rate(clock, val);
+	if (clock->flags & CLK_MIN)
+		ret = clk_set_min_rate(clock, val);
+	else
+		ret = clk_set_rate(clock, val);
+	if (ret != 0)
+		printk(KERN_ERR "clk_set%s_rate failed (%d)\n",
+			(clock->flags & CLK_MIN) ? "_min" : "", ret);
+>>>>>>> remotes/linux2/linux-3.4.y
 	return ret;
 }
 
@@ -52,6 +72,7 @@ static int clock_debug_rate_get(void *data, u64 *val)
 DEFINE_SIMPLE_ATTRIBUTE(clock_rate_fops, clock_debug_rate_get,
 			clock_debug_rate_set, "%llu\n");
 
+<<<<<<< HEAD
 static struct clk *measure;
 
 static int clock_debug_measure_get(void *data, u64 *val)
@@ -88,15 +109,23 @@ static int clock_debug_measure_get(void *data, u64 *val)
 DEFINE_SIMPLE_ATTRIBUTE(clock_measure_fops, clock_debug_measure_get,
 			NULL, "%lld\n");
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static int clock_debug_enable_set(void *data, u64 val)
 {
 	struct clk *clock = data;
 	int rc = 0;
 
 	if (val)
+<<<<<<< HEAD
 		rc = clk_prepare_enable(clock);
 	else
 		clk_disable_unprepare(clock);
+=======
+		rc = clock->ops->enable(clock->id);
+	else
+		clock->ops->disable(clock->id);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return rc;
 }
@@ -104,6 +133,7 @@ static int clock_debug_enable_set(void *data, u64 val)
 static int clock_debug_enable_get(void *data, u64 *val)
 {
 	struct clk *clock = data;
+<<<<<<< HEAD
 	int enabled;
 
 	if (clock->ops->is_enabled)
@@ -112,20 +142,33 @@ static int clock_debug_enable_get(void *data, u64 *val)
 		enabled = !!(clock->count);
 
 	*val = enabled;
+=======
+
+	*val = clock->ops->is_enabled(clock->id);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
 DEFINE_SIMPLE_ATTRIBUTE(clock_enable_fops, clock_debug_enable_get,
+<<<<<<< HEAD
 			clock_debug_enable_set, "%lld\n");
+=======
+			clock_debug_enable_set, "%llu\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static int clock_debug_local_get(void *data, u64 *val)
 {
 	struct clk *clock = data;
 
+<<<<<<< HEAD
 	if (!clock->ops->is_local)
 		*val = true;
 	else
 		*val = clock->ops->is_local(clock);
+=======
+	*val = clock->ops->is_local(clock->id);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -133,6 +176,7 @@ static int clock_debug_local_get(void *data, u64 *val)
 DEFINE_SIMPLE_ATTRIBUTE(clock_local_fops, clock_debug_local_get,
 			NULL, "%llu\n");
 
+<<<<<<< HEAD
 static int clock_debug_hwcg_get(void *data, u64 *val)
 {
 	struct clk *clock = data;
@@ -228,6 +272,19 @@ struct clk_table {
 };
 
 static int clock_debug_add(struct clk *clock)
+=======
+static struct dentry *debugfs_base;
+
+int __init clock_debug_init(void)
+{
+	debugfs_base = debugfs_create_dir("clk", NULL);
+	if (!debugfs_base)
+		return -ENOMEM;
+	return 0;
+}
+
+int __init clock_debug_add(struct clk *clock)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	char temp[50], *ptr;
 	struct dentry *clk_dir;
@@ -235,7 +292,11 @@ static int clock_debug_add(struct clk *clock)
 	if (!debugfs_base)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	strlcpy(temp, clock->dbg_name, ARRAY_SIZE(temp));
+=======
+	strncpy(temp, clock->dbg_name, ARRAY_SIZE(temp)-1);
+>>>>>>> remotes/linux2/linux-3.4.y
 	for (ptr = temp; *ptr; ptr++)
 		*ptr = tolower(*ptr);
 
@@ -254,6 +315,7 @@ static int clock_debug_add(struct clk *clock)
 	if (!debugfs_create_file("is_local", S_IRUGO, clk_dir, clock,
 				&clock_local_fops))
 		goto error;
+<<<<<<< HEAD
 
 	if (!debugfs_create_file("has_hw_gating", S_IRUGO, clk_dir, clock,
 				&clock_hwcg_fops))
@@ -274,11 +336,14 @@ static int clock_debug_add(struct clk *clock)
 				S_IRUGO, clk_dir, clock, &fmax_rates_fops))
 			goto error;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 error:
 	debugfs_remove_recursive(clk_dir);
 	return -ENOMEM;
 }
+<<<<<<< HEAD
 static LIST_HEAD(clk_list);
 static DEFINE_SPINLOCK(clk_list_lock);
 
@@ -465,3 +530,5 @@ void clock_debug_print_enabled(void)
 		pr_info("No clocks enabled.\n");
 
 }
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

@@ -617,7 +617,11 @@ static int set_termios(struct tty_struct *tty, void __user *arg, int opt)
 	if (opt & TERMIOS_WAIT) {
 		tty_wait_until_sent(tty, 0);
 		if (signal_pending(current))
+<<<<<<< HEAD
 			return -EINTR;
+=======
+			return -ERESTARTSYS;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	tty_set_termios(tty, &tmp_termios);
@@ -684,7 +688,11 @@ static int set_termiox(struct tty_struct *tty, void __user *arg, int opt)
 	if (opt & TERMIOS_WAIT) {
 		tty_wait_until_sent(tty, 0);
 		if (signal_pending(current))
+<<<<<<< HEAD
 			return -EINTR;
+=======
+			return -ERESTARTSYS;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	mutex_lock(&tty->termios_mutex);

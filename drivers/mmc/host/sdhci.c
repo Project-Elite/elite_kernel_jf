@@ -21,11 +21,19 @@
 #include <linux/slab.h>
 #include <linux/scatterlist.h>
 #include <linux/regulator/consumer.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm_runtime.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <linux/leds.h>
 
 #include <linux/mmc/mmc.h>
 #include <linux/mmc/host.h>
+<<<<<<< HEAD
+=======
+#include <linux/mmc/card.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include "sdhci.h"
 
@@ -42,11 +50,16 @@
 #define MAX_TUNING_LOOP 40
 
 static unsigned int debug_quirks = 0;
+<<<<<<< HEAD
+=======
+static unsigned int debug_quirks2;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static void sdhci_finish_data(struct sdhci_host *);
 
 static void sdhci_send_command(struct sdhci_host *, struct mmc_command *);
 static void sdhci_finish_command(struct sdhci_host *);
+<<<<<<< HEAD
 static int sdhci_execute_tuning(struct mmc_host *mmc);
 static void sdhci_tuning_timer(unsigned long data);
 
@@ -97,6 +110,72 @@ static void sdhci_dumpregs(struct sdhci_host *host)
 		       readl(host->ioaddr + SDHCI_ADMA_ADDRESS));
 
 	printk(KERN_DEBUG DRIVER_NAME ": ===========================================\n");
+=======
+static int sdhci_execute_tuning(struct mmc_host *mmc, u32 opcode);
+static void sdhci_tuning_timer(unsigned long data);
+
+#ifdef CONFIG_PM_RUNTIME
+static int sdhci_runtime_pm_get(struct sdhci_host *host);
+static int sdhci_runtime_pm_put(struct sdhci_host *host);
+#else
+static inline int sdhci_runtime_pm_get(struct sdhci_host *host)
+{
+	return 0;
+}
+static inline int sdhci_runtime_pm_put(struct sdhci_host *host)
+{
+	return 0;
+}
+#endif
+
+static void sdhci_dumpregs(struct sdhci_host *host)
+{
+	pr_debug(DRIVER_NAME ": =========== REGISTER DUMP (%s)===========\n",
+		mmc_hostname(host->mmc));
+
+	pr_debug(DRIVER_NAME ": Sys addr: 0x%08x | Version:  0x%08x\n",
+		sdhci_readl(host, SDHCI_DMA_ADDRESS),
+		sdhci_readw(host, SDHCI_HOST_VERSION));
+	pr_debug(DRIVER_NAME ": Blk size: 0x%08x | Blk cnt:  0x%08x\n",
+		sdhci_readw(host, SDHCI_BLOCK_SIZE),
+		sdhci_readw(host, SDHCI_BLOCK_COUNT));
+	pr_debug(DRIVER_NAME ": Argument: 0x%08x | Trn mode: 0x%08x\n",
+		sdhci_readl(host, SDHCI_ARGUMENT),
+		sdhci_readw(host, SDHCI_TRANSFER_MODE));
+	pr_debug(DRIVER_NAME ": Present:  0x%08x | Host ctl: 0x%08x\n",
+		sdhci_readl(host, SDHCI_PRESENT_STATE),
+		sdhci_readb(host, SDHCI_HOST_CONTROL));
+	pr_debug(DRIVER_NAME ": Power:    0x%08x | Blk gap:  0x%08x\n",
+		sdhci_readb(host, SDHCI_POWER_CONTROL),
+		sdhci_readb(host, SDHCI_BLOCK_GAP_CONTROL));
+	pr_debug(DRIVER_NAME ": Wake-up:  0x%08x | Clock:    0x%08x\n",
+		sdhci_readb(host, SDHCI_WAKE_UP_CONTROL),
+		sdhci_readw(host, SDHCI_CLOCK_CONTROL));
+	pr_debug(DRIVER_NAME ": Timeout:  0x%08x | Int stat: 0x%08x\n",
+		sdhci_readb(host, SDHCI_TIMEOUT_CONTROL),
+		sdhci_readl(host, SDHCI_INT_STATUS));
+	pr_debug(DRIVER_NAME ": Int enab: 0x%08x | Sig enab: 0x%08x\n",
+		sdhci_readl(host, SDHCI_INT_ENABLE),
+		sdhci_readl(host, SDHCI_SIGNAL_ENABLE));
+	pr_debug(DRIVER_NAME ": AC12 err: 0x%08x | Slot int: 0x%08x\n",
+		sdhci_readw(host, SDHCI_ACMD12_ERR),
+		sdhci_readw(host, SDHCI_SLOT_INT_STATUS));
+	pr_debug(DRIVER_NAME ": Caps:     0x%08x | Caps_1:   0x%08x\n",
+		sdhci_readl(host, SDHCI_CAPABILITIES),
+		sdhci_readl(host, SDHCI_CAPABILITIES_1));
+	pr_debug(DRIVER_NAME ": Cmd:      0x%08x | Max curr: 0x%08x\n",
+		sdhci_readw(host, SDHCI_COMMAND),
+		sdhci_readl(host, SDHCI_MAX_CURRENT));
+	pr_debug(DRIVER_NAME ": Host ctl2: 0x%08x\n",
+		sdhci_readw(host, SDHCI_HOST_CONTROL2));
+
+	if (host->flags & SDHCI_USE_ADMA)
+		pr_debug(DRIVER_NAME ": ADMA Err: 0x%08x | ADMA Ptr: 0x%08x\n",
+		       readl(host->ioaddr + SDHCI_ADMA_ERROR),
+		       readl(host->ioaddr + SDHCI_ADMA_ADDRESS));
+
+	pr_debug(DRIVER_NAME ": ===========================================\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*****************************************************************************\
@@ -128,12 +207,23 @@ static void sdhci_mask_irqs(struct sdhci_host *host, u32 irqs)
 
 static void sdhci_set_card_detection(struct sdhci_host *host, bool enable)
 {
+<<<<<<< HEAD
 	u32 irqs = SDHCI_INT_CARD_REMOVE | SDHCI_INT_CARD_INSERT;
+=======
+	u32 present, irqs;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if ((host->quirks & SDHCI_QUIRK_BROKEN_CARD_DETECTION) ||
 	    (host->mmc->caps & MMC_CAP_NONREMOVABLE))
 		return;
 
+<<<<<<< HEAD
+=======
+	present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
+			      SDHCI_CARD_PRESENT;
+	irqs = present ? SDHCI_INT_CARD_REMOVE : SDHCI_INT_CARD_INSERT;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (enable)
 		sdhci_unmask_irqs(host, irqs);
 	else
@@ -178,7 +268,11 @@ static void sdhci_reset(struct sdhci_host *host, u8 mask)
 	/* hw clears the bit when it's done */
 	while (sdhci_readb(host, SDHCI_SOFTWARE_RESET) & mask) {
 		if (timeout == 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: Reset 0x%x never completed.\n",
+=======
+			pr_err("%s: Reset 0x%x never completed.\n",
+>>>>>>> remotes/linux2/linux-3.4.y
 				mmc_hostname(host->mmc), (int)mask);
 			sdhci_dumpregs(host);
 			return;
@@ -192,6 +286,14 @@ static void sdhci_reset(struct sdhci_host *host, u8 mask)
 
 	if (host->quirks & SDHCI_QUIRK_RESTORE_IRQS_AFTER_RESET)
 		sdhci_clear_set_irqs(host, SDHCI_INT_ALL_MASK, ier);
+<<<<<<< HEAD
+=======
+
+	if (host->flags & (SDHCI_USE_SDMA | SDHCI_USE_ADMA)) {
+		if ((host->ops->enable_dma) && (mask & SDHCI_RESET_ALL))
+			host->ops->enable_dma(host);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios);
@@ -249,11 +351,21 @@ static void sdhci_led_control(struct led_classdev *led,
 
 	spin_lock_irqsave(&host->lock, flags);
 
+<<<<<<< HEAD
+=======
+	if (host->runtime_suspended)
+		goto out;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (brightness == LED_OFF)
 		sdhci_deactivate_led(host);
 	else
 		sdhci_activate_led(host);
+<<<<<<< HEAD
 
+=======
+out:
+>>>>>>> remotes/linux2/linux-3.4.y
 	spin_unlock_irqrestore(&host->lock, flags);
 }
 #endif
@@ -398,12 +510,20 @@ static void sdhci_transfer_pio(struct sdhci_host *host)
 static char *sdhci_kmap_atomic(struct scatterlist *sg, unsigned long *flags)
 {
 	local_irq_save(*flags);
+<<<<<<< HEAD
 	return kmap_atomic(sg_page(sg), KM_BIO_SRC_IRQ) + sg->offset;
+=======
+	return kmap_atomic(sg_page(sg)) + sg->offset;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void sdhci_kunmap_atomic(void *buffer, unsigned long *flags)
 {
+<<<<<<< HEAD
 	kunmap_atomic(buffer, KM_BIO_SRC_IRQ);
+=======
+	kunmap_atomic(buffer);
+>>>>>>> remotes/linux2/linux-3.4.y
 	local_irq_restore(*flags);
 }
 
@@ -626,12 +746,20 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd)
 	/* timeout in us */
 	if (!data)
 		target_timeout = cmd->cmd_timeout_ms * 1000;
+<<<<<<< HEAD
 	else
 		target_timeout = data->timeout_ns / 1000 +
 			data->timeout_clks / host->clock;
 
 	if (host->quirks & SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK)
 		host->timeout_clk = host->clock / 1000;
+=======
+	else {
+		target_timeout = data->timeout_ns / 1000;
+		if (host->clock)
+			target_timeout += data->timeout_clks / host->clock;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Figure out needed cycles.
@@ -643,7 +771,10 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd)
 	 *     =>
 	 *     (1) / (2) > 2^6
 	 */
+<<<<<<< HEAD
 	BUG_ON(!host->timeout_clk);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	count = 0;
 	current_timeout = (1 << 13) * 1000 / host->timeout_clk;
 	while (current_timeout < target_timeout) {
@@ -654,9 +785,16 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd)
 	}
 
 	if (count >= 0xF) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: Too large timeout requested for CMD%d!\n",
 		       mmc_hostname(host->mmc), cmd->opcode);
 		count = 0xE;
+=======
+		pr_warning("%s: Too large timeout requested for CMD%d!\n",
+		       mmc_hostname(host->mmc), cmd->opcode);
+		count = 0xE;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return count;
 }
@@ -948,7 +1086,11 @@ static void sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
 
 	while (sdhci_readl(host, SDHCI_PRESENT_STATE) & mask) {
 		if (timeout == 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: Controller never released "
+=======
+			pr_err("%s: Controller never released "
+>>>>>>> remotes/linux2/linux-3.4.y
 				"inhibit bit(s).\n", mmc_hostname(host->mmc));
 			sdhci_dumpregs(host);
 			cmd->error = -EIO;
@@ -970,7 +1112,11 @@ static void sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
 	sdhci_set_transfer_mode(host, cmd);
 
 	if ((cmd->flags & MMC_RSP_136) && (cmd->flags & MMC_RSP_BUSY)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Unsupported response type!\n",
+=======
+		pr_err("%s: Unsupported response type!\n",
+>>>>>>> remotes/linux2/linux-3.4.y
 			mmc_hostname(host->mmc));
 		cmd->error = -EINVAL;
 		tasklet_schedule(&host->finish_tasklet);
@@ -992,7 +1138,12 @@ static void sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
 		flags |= SDHCI_CMD_INDEX;
 
 	/* CMD19 is special in that the Data Present Select should be set */
+<<<<<<< HEAD
 	if (cmd->data || (cmd->opcode == MMC_SEND_TUNING_BLOCK))
+=======
+	if (cmd->data || cmd->opcode == MMC_SEND_TUNING_BLOCK ||
+	    cmd->opcode == MMC_SEND_TUNING_BLOCK_HS200)
+>>>>>>> remotes/linux2/linux-3.4.y
 		flags |= SDHCI_CMD_DATA;
 
 	sdhci_writew(host, SDHCI_MAKE_CMD(cmd->opcode, flags), SDHCI_COMMAND);
@@ -1042,12 +1193,21 @@ static void sdhci_finish_command(struct sdhci_host *host)
 static void sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
 {
 	int div = 0; /* Initialized for compiler warning */
+<<<<<<< HEAD
+=======
+	int real_div = div, clk_mul = 1;
+>>>>>>> remotes/linux2/linux-3.4.y
 	u16 clk = 0;
 	unsigned long timeout;
 
 	if (clock && clock == host->clock)
 		return;
 
+<<<<<<< HEAD
+=======
+	host->mmc->actual_clock = 0;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (host->ops->set_clock) {
 		host->ops->set_clock(host, clock);
 		if (host->quirks & SDHCI_QUIRK_NONSTANDARD_CLOCK)
@@ -1085,6 +1245,11 @@ static void sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
 				 * Control register.
 				 */
 				clk = SDHCI_PROG_CLOCK_MODE;
+<<<<<<< HEAD
+=======
+				real_div = div;
+				clk_mul = host->clk_mul;
+>>>>>>> remotes/linux2/linux-3.4.y
 				div--;
 			}
 		} else {
@@ -1098,6 +1263,10 @@ static void sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
 						break;
 				}
 			}
+<<<<<<< HEAD
+=======
+			real_div = div;
+>>>>>>> remotes/linux2/linux-3.4.y
 			div >>= 1;
 		}
 	} else {
@@ -1106,9 +1275,19 @@ static void sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
 			if ((host->max_clk / div) <= clock)
 				break;
 		}
+<<<<<<< HEAD
 		div >>= 1;
 	}
 
+=======
+		real_div = div;
+		div >>= 1;
+	}
+
+	if (real_div)
+		host->mmc->actual_clock = (host->max_clk * clk_mul) / real_div;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	clk |= (div & SDHCI_DIV_MASK) << SDHCI_DIVIDER_SHIFT;
 	clk |= ((div & SDHCI_DIV_HI_MASK) >> SDHCI_DIV_MASK_LEN)
 		<< SDHCI_DIVIDER_HI_SHIFT;
@@ -1120,7 +1299,11 @@ static void sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
 	while (!((clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL))
 		& SDHCI_CLOCK_INT_STABLE)) {
 		if (timeout == 0) {
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: Internal clock never "
+=======
+			pr_err("%s: Internal clock never "
+>>>>>>> remotes/linux2/linux-3.4.y
 				"stabilised.\n", mmc_hostname(host->mmc));
 			sdhci_dumpregs(host);
 			return;
@@ -1136,7 +1319,11 @@ out:
 	host->clock = clock;
 }
 
+<<<<<<< HEAD
 static void sdhci_set_power(struct sdhci_host *host, unsigned short power)
+=======
+static int sdhci_set_power(struct sdhci_host *host, unsigned short power)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	u8 pwr = 0;
 
@@ -1159,13 +1346,21 @@ static void sdhci_set_power(struct sdhci_host *host, unsigned short power)
 	}
 
 	if (host->pwr == pwr)
+<<<<<<< HEAD
 		return;
+=======
+		return -1;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	host->pwr = pwr;
 
 	if (pwr == 0) {
 		sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
+<<<<<<< HEAD
 		return;
+=======
+		return 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	/*
@@ -1192,6 +1387,11 @@ static void sdhci_set_power(struct sdhci_host *host, unsigned short power)
 	 */
 	if (host->quirks & SDHCI_QUIRK_DELAY_AFTER_POWER)
 		mdelay(10);
+<<<<<<< HEAD
+=======
+
+	return power;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /*****************************************************************************\
@@ -1205,9 +1405,18 @@ static void sdhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
 	struct sdhci_host *host;
 	bool present;
 	unsigned long flags;
+<<<<<<< HEAD
 
 	host = mmc_priv(mmc);
 
+=======
+	u32 tuning_opcode;
+
+	host = mmc_priv(mmc);
+
+	sdhci_runtime_pm_get(host);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	spin_lock_irqsave(&host->lock, flags);
 
 	WARN_ON(host->mrq != NULL);
@@ -1250,12 +1459,28 @@ static void sdhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
 		 */
 		if ((host->flags & SDHCI_NEEDS_RETUNING) &&
 		    !(present_state & (SDHCI_DOING_WRITE | SDHCI_DOING_READ))) {
+<<<<<<< HEAD
 			spin_unlock_irqrestore(&host->lock, flags);
 			sdhci_execute_tuning(mmc);
 			spin_lock_irqsave(&host->lock, flags);
 
 			/* Restore original mmc_request structure */
 			host->mrq = mrq;
+=======
+			if (mmc->card) {
+				/* eMMC uses cmd21 but sd and sdio use cmd19 */
+				tuning_opcode =
+					mmc->card->type == MMC_TYPE_MMC ?
+					MMC_SEND_TUNING_BLOCK_HS200 :
+					MMC_SEND_TUNING_BLOCK;
+				spin_unlock_irqrestore(&host->lock, flags);
+				sdhci_execute_tuning(mmc, tuning_opcode);
+				spin_lock_irqsave(&host->lock, flags);
+
+				/* Restore original mmc_request structure */
+				host->mrq = mrq;
+			}
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 
 		if (mrq->sbc && !(host->flags & SDHCI_AUTO_CMD23))
@@ -1268,6 +1493,7 @@ static void sdhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
 	spin_unlock_irqrestore(&host->lock, flags);
 }
 
+<<<<<<< HEAD
 static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 {
 	struct sdhci_host *host;
@@ -1280,6 +1506,22 @@ static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 
 	if (host->flags & SDHCI_DEVICE_DEAD)
 		goto out;
+=======
+static void sdhci_do_set_ios(struct sdhci_host *host, struct mmc_ios *ios)
+{
+	unsigned long flags;
+	int vdd_bit = -1;
+	u8 ctrl;
+
+	spin_lock_irqsave(&host->lock, flags);
+
+	if (host->flags & SDHCI_DEVICE_DEAD) {
+		spin_unlock_irqrestore(&host->lock, flags);
+		if (host->vmmc && ios->power_mode == MMC_POWER_OFF)
+			mmc_regulator_set_ocr(host->mmc, host->vmmc, 0);
+		return;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Reset the chip on each power off.
@@ -1293,9 +1535,21 @@ static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	sdhci_set_clock(host, ios->clock);
 
 	if (ios->power_mode == MMC_POWER_OFF)
+<<<<<<< HEAD
 		sdhci_set_power(host, -1);
 	else
 		sdhci_set_power(host, ios->vdd);
+=======
+		vdd_bit = sdhci_set_power(host, -1);
+	else
+		vdd_bit = sdhci_set_power(host, ios->vdd);
+
+	if (host->vmmc && vdd_bit != -1) {
+		spin_unlock_irqrestore(&host->lock, flags);
+		mmc_regulator_set_ocr(host->mmc, host->vmmc, vdd_bit);
+		spin_lock_irqsave(&host->lock, flags);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (host->ops->platform_send_init_74_clocks)
 		host->ops->platform_send_init_74_clocks(host, ios->power_mode);
@@ -1338,7 +1592,12 @@ static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 		unsigned int clock;
 
 		/* In case of UHS-I modes, set High Speed Enable */
+<<<<<<< HEAD
 		if ((ios->timing == MMC_TIMING_UHS_SDR50) ||
+=======
+		if ((ios->timing == MMC_TIMING_MMC_HS200) ||
+		    (ios->timing == MMC_TIMING_UHS_SDR50) ||
+>>>>>>> remotes/linux2/linux-3.4.y
 		    (ios->timing == MMC_TIMING_UHS_SDR104) ||
 		    (ios->timing == MMC_TIMING_UHS_DDR50) ||
 		    (ios->timing == MMC_TIMING_UHS_SDR25))
@@ -1391,7 +1650,13 @@ static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 			ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
 			/* Select Bus Speed Mode for host */
 			ctrl_2 &= ~SDHCI_CTRL_UHS_MASK;
+<<<<<<< HEAD
 			if (ios->timing == MMC_TIMING_UHS_SDR12)
+=======
+			if (ios->timing == MMC_TIMING_MMC_HS200)
+				ctrl_2 |= SDHCI_CTRL_HS_SDR200;
+			else if (ios->timing == MMC_TIMING_UHS_SDR12)
+>>>>>>> remotes/linux2/linux-3.4.y
 				ctrl_2 |= SDHCI_CTRL_UHS_SDR12;
 			else if (ios->timing == MMC_TIMING_UHS_SDR25)
 				ctrl_2 |= SDHCI_CTRL_UHS_SDR25;
@@ -1419,12 +1684,28 @@ static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	if(host->quirks & SDHCI_QUIRK_RESET_CMD_DATA_ON_IOS)
 		sdhci_reset(host, SDHCI_RESET_CMD | SDHCI_RESET_DATA);
 
+<<<<<<< HEAD
 out:
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	mmiowb();
 	spin_unlock_irqrestore(&host->lock, flags);
 }
 
+<<<<<<< HEAD
 static int check_ro(struct sdhci_host *host)
+=======
+static void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+{
+	struct sdhci_host *host = mmc_priv(mmc);
+
+	sdhci_runtime_pm_get(host);
+	sdhci_do_set_ios(host, ios);
+	sdhci_runtime_pm_put(host);
+}
+
+static int sdhci_check_ro(struct sdhci_host *host)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	unsigned long flags;
 	int is_readonly;
@@ -1448,6 +1729,7 @@ static int check_ro(struct sdhci_host *host)
 
 #define SAMPLE_COUNT	5
 
+<<<<<<< HEAD
 static int sdhci_get_ro(struct mmc_host *mmc)
 {
 	struct sdhci_host *host;
@@ -1461,6 +1743,18 @@ static int sdhci_get_ro(struct mmc_host *mmc)
 	ro_count = 0;
 	for (i = 0; i < SAMPLE_COUNT; i++) {
 		if (check_ro(host)) {
+=======
+static int sdhci_do_get_ro(struct sdhci_host *host)
+{
+	int i, ro_count;
+
+	if (!(host->quirks & SDHCI_QUIRK_UNSTABLE_RO_DETECT))
+		return sdhci_check_ro(host);
+
+	ro_count = 0;
+	for (i = 0; i < SAMPLE_COUNT; i++) {
+		if (sdhci_check_ro(host)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (++ro_count > SAMPLE_COUNT / 2)
 				return 1;
 		}
@@ -1469,6 +1763,7 @@ static int sdhci_get_ro(struct mmc_host *mmc)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void sdhci_enable_sdio_irq(struct mmc_host *mmc, int enable)
 {
 	struct sdhci_host *host;
@@ -1478,15 +1773,51 @@ static void sdhci_enable_sdio_irq(struct mmc_host *mmc, int enable)
 
 	spin_lock_irqsave(&host->lock, flags);
 
+=======
+static void sdhci_hw_reset(struct mmc_host *mmc)
+{
+	struct sdhci_host *host = mmc_priv(mmc);
+
+	if (host->ops && host->ops->hw_reset)
+		host->ops->hw_reset(host);
+}
+
+static int sdhci_get_ro(struct mmc_host *mmc)
+{
+	struct sdhci_host *host = mmc_priv(mmc);
+	int ret;
+
+	sdhci_runtime_pm_get(host);
+	ret = sdhci_do_get_ro(host);
+	sdhci_runtime_pm_put(host);
+	return ret;
+}
+
+static void sdhci_enable_sdio_irq_nolock(struct sdhci_host *host, int enable)
+{
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (host->flags & SDHCI_DEVICE_DEAD)
 		goto out;
 
 	if (enable)
+<<<<<<< HEAD
+=======
+		host->flags |= SDHCI_SDIO_IRQ_ENABLED;
+	else
+		host->flags &= ~SDHCI_SDIO_IRQ_ENABLED;
+
+	/* SDIO IRQ will be enabled as appropriate in runtime resume */
+	if (host->runtime_suspended)
+		goto out;
+
+	if (enable)
+>>>>>>> remotes/linux2/linux-3.4.y
 		sdhci_unmask_irqs(host, SDHCI_INT_CARD_INT);
 	else
 		sdhci_mask_irqs(host, SDHCI_INT_CARD_INT);
 out:
 	mmiowb();
+<<<<<<< HEAD
 
 	spin_unlock_irqrestore(&host->lock, flags);
 }
@@ -1495,12 +1826,32 @@ static int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
 	struct mmc_ios *ios)
 {
 	struct sdhci_host *host;
+=======
+}
+
+static void sdhci_enable_sdio_irq(struct mmc_host *mmc, int enable)
+{
+	struct sdhci_host *host = mmc_priv(mmc);
+	unsigned long flags;
+
+	spin_lock_irqsave(&host->lock, flags);
+	sdhci_enable_sdio_irq_nolock(host, enable);
+	spin_unlock_irqrestore(&host->lock, flags);
+}
+
+static int sdhci_do_start_signal_voltage_switch(struct sdhci_host *host,
+						struct mmc_ios *ios)
+{
+>>>>>>> remotes/linux2/linux-3.4.y
 	u8 pwr;
 	u16 clk, ctrl;
 	u32 present_state;
 
+<<<<<<< HEAD
 	host = mmc_priv(mmc);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Signal Voltage Switching is only applicable for Host Controllers
 	 * v3.00 and above.
@@ -1526,7 +1877,11 @@ static int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
 		if (!(ctrl & SDHCI_CTRL_VDD_180))
 			return 0;
 		else {
+<<<<<<< HEAD
 			printk(KERN_INFO DRIVER_NAME ": Switching to 3.3V "
+=======
+			pr_info(DRIVER_NAME ": Switching to 3.3V "
+>>>>>>> remotes/linux2/linux-3.4.y
 				"signalling voltage failed\n");
 			return -EIO;
 		}
@@ -1585,7 +1940,11 @@ static int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
 		pwr |= SDHCI_POWER_ON;
 		sdhci_writeb(host, pwr, SDHCI_POWER_CONTROL);
 
+<<<<<<< HEAD
 		printk(KERN_INFO DRIVER_NAME ": Switching to 1.8V signalling "
+=======
+		pr_info(DRIVER_NAME ": Switching to 1.8V signalling "
+>>>>>>> remotes/linux2/linux-3.4.y
 			"voltage failed, retrying with S18R set to 0\n");
 		return -EAGAIN;
 	} else
@@ -1593,7 +1952,25 @@ static int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
 		return 0;
 }
 
+<<<<<<< HEAD
 static int sdhci_execute_tuning(struct mmc_host *mmc)
+=======
+static int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
+	struct mmc_ios *ios)
+{
+	struct sdhci_host *host = mmc_priv(mmc);
+	int err;
+
+	if (host->version < SDHCI_SPEC_300)
+		return 0;
+	sdhci_runtime_pm_get(host);
+	err = sdhci_do_start_signal_voltage_switch(host, ios);
+	sdhci_runtime_pm_put(host);
+	return err;
+}
+
+static int sdhci_execute_tuning(struct mmc_host *mmc, u32 opcode)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct sdhci_host *host;
 	u16 ctrl;
@@ -1601,15 +1978,24 @@ static int sdhci_execute_tuning(struct mmc_host *mmc)
 	int tuning_loop_counter = MAX_TUNING_LOOP;
 	unsigned long timeout;
 	int err = 0;
+<<<<<<< HEAD
 
 	host = mmc_priv(mmc);
 
+=======
+	bool requires_tuning_nonuhs = false;
+
+	host = mmc_priv(mmc);
+
+	sdhci_runtime_pm_get(host);
+>>>>>>> remotes/linux2/linux-3.4.y
 	disable_irq(host->irq);
 	spin_lock(&host->lock);
 
 	ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
 
 	/*
+<<<<<<< HEAD
 	 * Host Controller needs tuning only in case of SDR104 mode
 	 * and for SDR50 mode when Use Tuning for SDR50 is set in
 	 * Capabilities register.
@@ -1617,10 +2003,29 @@ static int sdhci_execute_tuning(struct mmc_host *mmc)
 	if (((ctrl & SDHCI_CTRL_UHS_MASK) == SDHCI_CTRL_UHS_SDR104) ||
 	    (((ctrl & SDHCI_CTRL_UHS_MASK) == SDHCI_CTRL_UHS_SDR50) &&
 	    (host->flags & SDHCI_SDR50_NEEDS_TUNING)))
+=======
+	 * The Host Controller needs tuning only in case of SDR104 mode
+	 * and for SDR50 mode when Use Tuning for SDR50 is set in the
+	 * Capabilities register.
+	 * If the Host Controller supports the HS200 mode then the
+	 * tuning function has to be executed.
+	 */
+	if (((ctrl & SDHCI_CTRL_UHS_MASK) == SDHCI_CTRL_UHS_SDR50) &&
+	    (host->flags & SDHCI_SDR50_NEEDS_TUNING ||
+	     host->flags & SDHCI_HS200_NEEDS_TUNING))
+		requires_tuning_nonuhs = true;
+
+	if (((ctrl & SDHCI_CTRL_UHS_MASK) == SDHCI_CTRL_UHS_SDR104) ||
+	    requires_tuning_nonuhs)
+>>>>>>> remotes/linux2/linux-3.4.y
 		ctrl |= SDHCI_CTRL_EXEC_TUNING;
 	else {
 		spin_unlock(&host->lock);
 		enable_irq(host->irq);
+<<<<<<< HEAD
+=======
+		sdhci_runtime_pm_put(host);
+>>>>>>> remotes/linux2/linux-3.4.y
 		return 0;
 	}
 
@@ -1646,12 +2051,20 @@ static int sdhci_execute_tuning(struct mmc_host *mmc)
 	timeout = 150;
 	do {
 		struct mmc_command cmd = {0};
+<<<<<<< HEAD
 		struct mmc_request mrq = {0};
+=======
+		struct mmc_request mrq = {NULL};
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		if (!tuning_loop_counter && !timeout)
 			break;
 
+<<<<<<< HEAD
 		cmd.opcode = MMC_SEND_TUNING_BLOCK;
+=======
+		cmd.opcode = opcode;
+>>>>>>> remotes/linux2/linux-3.4.y
 		cmd.arg = 0;
 		cmd.flags = MMC_RSP_R1 | MMC_CMD_ADTC;
 		cmd.retries = 0;
@@ -1666,7 +2079,21 @@ static int sdhci_execute_tuning(struct mmc_host *mmc)
 		 * block to the Host Controller. So we set the block size
 		 * to 64 here.
 		 */
+<<<<<<< HEAD
 		sdhci_writew(host, SDHCI_MAKE_BLKSZ(7, 64), SDHCI_BLOCK_SIZE);
+=======
+		if (cmd.opcode == MMC_SEND_TUNING_BLOCK_HS200) {
+			if (mmc->ios.bus_width == MMC_BUS_WIDTH_8)
+				sdhci_writew(host, SDHCI_MAKE_BLKSZ(7, 128),
+					     SDHCI_BLOCK_SIZE);
+			else if (mmc->ios.bus_width == MMC_BUS_WIDTH_4)
+				sdhci_writew(host, SDHCI_MAKE_BLKSZ(7, 64),
+					     SDHCI_BLOCK_SIZE);
+		} else {
+			sdhci_writew(host, SDHCI_MAKE_BLKSZ(7, 64),
+				     SDHCI_BLOCK_SIZE);
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		/*
 		 * The tuning block is sent by the card to the host controller.
@@ -1692,7 +2119,11 @@ static int sdhci_execute_tuning(struct mmc_host *mmc)
 		spin_lock(&host->lock);
 
 		if (!host->tuning_done) {
+<<<<<<< HEAD
 			printk(KERN_INFO DRIVER_NAME ": Timeout waiting for "
+=======
+			pr_info(DRIVER_NAME ": Timeout waiting for "
+>>>>>>> remotes/linux2/linux-3.4.y
 				"Buffer Read Ready interrupt during tuning "
 				"procedure, falling back to fixed sampling "
 				"clock\n");
@@ -1722,7 +2153,11 @@ static int sdhci_execute_tuning(struct mmc_host *mmc)
 		sdhci_writew(host, ctrl, SDHCI_HOST_CONTROL2);
 	} else {
 		if (!(ctrl & SDHCI_CTRL_TUNED_CLK)) {
+<<<<<<< HEAD
 			printk(KERN_INFO DRIVER_NAME ": Tuning procedure"
+=======
+			pr_info(DRIVER_NAME ": Tuning procedure"
+>>>>>>> remotes/linux2/linux-3.4.y
 				" failed, falling back to fixed sampling"
 				" clock\n");
 			err = -EIO;
@@ -1764,10 +2199,15 @@ out:
 	sdhci_clear_set_irqs(host, SDHCI_INT_DATA_AVAIL, ier);
 	spin_unlock(&host->lock);
 	enable_irq(host->irq);
+<<<<<<< HEAD
+=======
+	sdhci_runtime_pm_put(host);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return err;
 }
 
+<<<<<<< HEAD
 static void sdhci_enable_preset_value(struct mmc_host *mmc, bool enable)
 {
 	struct sdhci_host *host;
@@ -1776,6 +2216,13 @@ static void sdhci_enable_preset_value(struct mmc_host *mmc, bool enable)
 
 	host = mmc_priv(mmc);
 
+=======
+static void sdhci_do_enable_preset_value(struct sdhci_host *host, bool enable)
+{
+	u16 ctrl;
+	unsigned long flags;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Host Controller v3.00 defines preset value registers */
 	if (host->version < SDHCI_SPEC_300)
 		return;
@@ -1791,18 +2238,42 @@ static void sdhci_enable_preset_value(struct mmc_host *mmc, bool enable)
 	if (enable && !(ctrl & SDHCI_CTRL_PRESET_VAL_ENABLE)) {
 		ctrl |= SDHCI_CTRL_PRESET_VAL_ENABLE;
 		sdhci_writew(host, ctrl, SDHCI_HOST_CONTROL2);
+<<<<<<< HEAD
 	} else if (!enable && (ctrl & SDHCI_CTRL_PRESET_VAL_ENABLE)) {
 		ctrl &= ~SDHCI_CTRL_PRESET_VAL_ENABLE;
 		sdhci_writew(host, ctrl, SDHCI_HOST_CONTROL2);
+=======
+		host->flags |= SDHCI_PV_ENABLED;
+	} else if (!enable && (ctrl & SDHCI_CTRL_PRESET_VAL_ENABLE)) {
+		ctrl &= ~SDHCI_CTRL_PRESET_VAL_ENABLE;
+		sdhci_writew(host, ctrl, SDHCI_HOST_CONTROL2);
+		host->flags &= ~SDHCI_PV_ENABLED;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	spin_unlock_irqrestore(&host->lock, flags);
 }
 
+<<<<<<< HEAD
+=======
+static void sdhci_enable_preset_value(struct mmc_host *mmc, bool enable)
+{
+	struct sdhci_host *host = mmc_priv(mmc);
+
+	sdhci_runtime_pm_get(host);
+	sdhci_do_enable_preset_value(host, enable);
+	sdhci_runtime_pm_put(host);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static const struct mmc_host_ops sdhci_ops = {
 	.request	= sdhci_request,
 	.set_ios	= sdhci_set_ios,
 	.get_ro		= sdhci_get_ro,
+<<<<<<< HEAD
+=======
+	.hw_reset	= sdhci_hw_reset,
+>>>>>>> remotes/linux2/linux-3.4.y
 	.enable_sdio_irq = sdhci_enable_sdio_irq,
 	.start_signal_voltage_switch	= sdhci_start_signal_voltage_switch,
 	.execute_tuning			= sdhci_execute_tuning,
@@ -1824,6 +2295,7 @@ static void sdhci_tasklet_card(unsigned long param)
 
 	spin_lock_irqsave(&host->lock, flags);
 
+<<<<<<< HEAD
 	if (!(sdhci_readl(host, SDHCI_PRESENT_STATE) & SDHCI_CARD_PRESENT)) {
 		if (host->mrq) {
 			printk(KERN_ERR "%s: Card removed during transfer!\n",
@@ -1837,6 +2309,21 @@ static void sdhci_tasklet_card(unsigned long param)
 			host->mrq->cmd->error = -ENOMEDIUM;
 			tasklet_schedule(&host->finish_tasklet);
 		}
+=======
+	/* Check host->mrq first in case we are runtime suspended */
+	if (host->mrq &&
+	    !(sdhci_readl(host, SDHCI_PRESENT_STATE) & SDHCI_CARD_PRESENT)) {
+		pr_err("%s: Card removed during transfer!\n",
+			mmc_hostname(host->mmc));
+		pr_err("%s: Resetting controller.\n",
+			mmc_hostname(host->mmc));
+
+		sdhci_reset(host, SDHCI_RESET_CMD);
+		sdhci_reset(host, SDHCI_RESET_DATA);
+
+		host->mrq->cmd->error = -ENOMEDIUM;
+		tasklet_schedule(&host->finish_tasklet);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	spin_unlock_irqrestore(&host->lock, flags);
@@ -1852,14 +2339,26 @@ static void sdhci_tasklet_finish(unsigned long param)
 
 	host = (struct sdhci_host*)param;
 
+<<<<<<< HEAD
+=======
+	spin_lock_irqsave(&host->lock, flags);
+
+>>>>>>> remotes/linux2/linux-3.4.y
         /*
          * If this tasklet gets rescheduled while running, it will
          * be run again afterwards but without any active request.
          */
+<<<<<<< HEAD
 	if (!host->mrq)
 		return;
 
 	spin_lock_irqsave(&host->lock, flags);
+=======
+	if (!host->mrq) {
+		spin_unlock_irqrestore(&host->lock, flags);
+		return;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	del_timer(&host->timer);
 
@@ -1903,6 +2402,10 @@ static void sdhci_tasklet_finish(unsigned long param)
 	spin_unlock_irqrestore(&host->lock, flags);
 
 	mmc_request_done(host->mmc, mrq);
+<<<<<<< HEAD
+=======
+	sdhci_runtime_pm_put(host);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void sdhci_timeout_timer(unsigned long data)
@@ -1915,7 +2418,11 @@ static void sdhci_timeout_timer(unsigned long data)
 	spin_lock_irqsave(&host->lock, flags);
 
 	if (host->mrq) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Timeout waiting for hardware "
+=======
+		pr_err("%s: Timeout waiting for hardware "
+>>>>>>> remotes/linux2/linux-3.4.y
 			"interrupt.\n", mmc_hostname(host->mmc));
 		sdhci_dumpregs(host);
 
@@ -1961,7 +2468,11 @@ static void sdhci_cmd_irq(struct sdhci_host *host, u32 intmask)
 	BUG_ON(intmask == 0);
 
 	if (!host->cmd) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Got command interrupt 0x%08x even "
+=======
+		pr_err("%s: Got command interrupt 0x%08x even "
+>>>>>>> remotes/linux2/linux-3.4.y
 			"though no command operation was in progress.\n",
 			mmc_hostname(host->mmc), (unsigned)intmask);
 		sdhci_dumpregs(host);
@@ -2036,12 +2547,22 @@ static void sdhci_show_adma_error(struct sdhci_host *host) { }
 
 static void sdhci_data_irq(struct sdhci_host *host, u32 intmask)
 {
+<<<<<<< HEAD
+=======
+	u32 command;
+>>>>>>> remotes/linux2/linux-3.4.y
 	BUG_ON(intmask == 0);
 
 	/* CMD19 generates _only_ Buffer Read Ready interrupt */
 	if (intmask & SDHCI_INT_DATA_AVAIL) {
+<<<<<<< HEAD
 		if (SDHCI_GET_CMD(sdhci_readw(host, SDHCI_COMMAND)) ==
 		    MMC_SEND_TUNING_BLOCK) {
+=======
+		command = SDHCI_GET_CMD(sdhci_readw(host, SDHCI_COMMAND));
+		if (command == MMC_SEND_TUNING_BLOCK ||
+		    command == MMC_SEND_TUNING_BLOCK_HS200) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			host->tuning_done = 1;
 			wake_up(&host->buf_ready_int);
 			return;
@@ -2061,7 +2582,11 @@ static void sdhci_data_irq(struct sdhci_host *host, u32 intmask)
 			}
 		}
 
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Got data interrupt 0x%08x even "
+=======
+		pr_err("%s: Got data interrupt 0x%08x even "
+>>>>>>> remotes/linux2/linux-3.4.y
 			"though no data operation was in progress.\n",
 			mmc_hostname(host->mmc), (unsigned)intmask);
 		sdhci_dumpregs(host);
@@ -2078,7 +2603,11 @@ static void sdhci_data_irq(struct sdhci_host *host, u32 intmask)
 			!= MMC_BUS_TEST_R)
 		host->data->error = -EILSEQ;
 	else if (intmask & SDHCI_INT_ADMA_ERROR) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: ADMA error\n", mmc_hostname(host->mmc));
+=======
+		pr_err("%s: ADMA error\n", mmc_hostname(host->mmc));
+>>>>>>> remotes/linux2/linux-3.4.y
 		sdhci_show_adma_error(host);
 		host->data->error = -EIO;
 	}
@@ -2140,6 +2669,16 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
 
 	spin_lock(&host->lock);
 
+<<<<<<< HEAD
+=======
+	if (host->runtime_suspended) {
+		spin_unlock(&host->lock);
+		pr_warning("%s: got irq while runtime suspended\n",
+		       mmc_hostname(host->mmc));
+		return IRQ_HANDLED;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	intmask = sdhci_readl(host, SDHCI_INT_STATUS);
 
 	if (!intmask || intmask == 0xffffffff) {
@@ -2152,6 +2691,7 @@ again:
 		mmc_hostname(host->mmc), intmask);
 
 	if (intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) {
+<<<<<<< HEAD
 		sdhci_writel(host, intmask & (SDHCI_INT_CARD_INSERT |
 			SDHCI_INT_CARD_REMOVE), SDHCI_INT_STATUS);
 		tasklet_schedule(&host->card_tasklet);
@@ -2159,6 +2699,32 @@ again:
 
 	intmask &= ~(SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE);
 
+=======
+		u32 present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
+			      SDHCI_CARD_PRESENT;
+
+		/*
+		 * There is a observation on i.mx esdhc.  INSERT bit will be
+		 * immediately set again when it gets cleared, if a card is
+		 * inserted.  We have to mask the irq to prevent interrupt
+		 * storm which will freeze the system.  And the REMOVE gets
+		 * the same situation.
+		 *
+		 * More testing are needed here to ensure it works for other
+		 * platforms though.
+		 */
+		sdhci_mask_irqs(host, present ? SDHCI_INT_CARD_INSERT :
+						SDHCI_INT_CARD_REMOVE);
+		sdhci_unmask_irqs(host, present ? SDHCI_INT_CARD_REMOVE :
+						  SDHCI_INT_CARD_INSERT);
+
+		sdhci_writel(host, intmask & (SDHCI_INT_CARD_INSERT |
+			     SDHCI_INT_CARD_REMOVE), SDHCI_INT_STATUS);
+		intmask &= ~(SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE);
+		tasklet_schedule(&host->card_tasklet);
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (intmask & SDHCI_INT_CMD_MASK) {
 		sdhci_writel(host, intmask & SDHCI_INT_CMD_MASK,
 			SDHCI_INT_STATUS);
@@ -2176,7 +2742,11 @@ again:
 	intmask &= ~SDHCI_INT_ERROR;
 
 	if (intmask & SDHCI_INT_BUS_POWER) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Card is consuming too much power!\n",
+=======
+		pr_err("%s: Card is consuming too much power!\n",
+>>>>>>> remotes/linux2/linux-3.4.y
 			mmc_hostname(host->mmc));
 		sdhci_writel(host, SDHCI_INT_BUS_POWER, SDHCI_INT_STATUS);
 	}
@@ -2189,9 +2759,12 @@ again:
 	intmask &= ~SDHCI_INT_CARD_INT;
 
 	if (intmask) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Unexpected interrupt 0x%08x.\n",
 			mmc_hostname(host->mmc), intmask);
 		sdhci_dumpregs(host);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		unexpected |= intmask;
 		sdhci_writel(host, intmask, SDHCI_INT_STATUS);
 	}
@@ -2226,9 +2799,16 @@ out:
 
 #ifdef CONFIG_PM
 
+<<<<<<< HEAD
 int sdhci_suspend_host(struct sdhci_host *host, pm_message_t state)
 {
 	int ret;
+=======
+int sdhci_suspend_host(struct sdhci_host *host)
+{
+	int ret;
+	bool has_tuning_timer;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (host->ops->platform_suspend)
 		host->ops->platform_suspend(host);
@@ -2236,13 +2816,20 @@ int sdhci_suspend_host(struct sdhci_host *host, pm_message_t state)
 	sdhci_disable_card_detection(host);
 
 	/* Disable tuning since we are suspending */
+<<<<<<< HEAD
 	if (host->version >= SDHCI_SPEC_300 && host->tuning_count &&
 	    host->tuning_mode == SDHCI_TUNING_MODE_1) {
+=======
+	has_tuning_timer = host->version >= SDHCI_SPEC_300 &&
+		host->tuning_count && host->tuning_mode == SDHCI_TUNING_MODE_1;
+	if (has_tuning_timer) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		del_timer_sync(&host->tuning_timer);
 		host->flags &= ~SDHCI_NEEDS_RETUNING;
 	}
 
 	ret = mmc_suspend_host(host->mmc);
+<<<<<<< HEAD
 	if (ret)
 		return ret;
 
@@ -2251,6 +2838,22 @@ int sdhci_suspend_host(struct sdhci_host *host, pm_message_t state)
 	if (host->vmmc)
 		ret = regulator_disable(host->vmmc);
 
+=======
+	if (ret) {
+		if (has_tuning_timer) {
+			host->flags |= SDHCI_NEEDS_RETUNING;
+			mod_timer(&host->tuning_timer, jiffies +
+					host->tuning_count * HZ);
+		}
+
+		sdhci_enable_card_detection(host);
+
+		return ret;
+	}
+
+	free_irq(host->irq, host);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return ret;
 }
 
@@ -2260,6 +2863,7 @@ int sdhci_resume_host(struct sdhci_host *host)
 {
 	int ret;
 
+<<<<<<< HEAD
 	if (host->vmmc) {
 		int ret = regulator_enable(host->vmmc);
 		if (ret)
@@ -2267,6 +2871,8 @@ int sdhci_resume_host(struct sdhci_host *host)
 	}
 
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (host->flags & (SDHCI_USE_SDMA | SDHCI_USE_ADMA)) {
 		if (host->ops->enable_dma)
 			host->ops->enable_dma(host);
@@ -2317,6 +2923,93 @@ EXPORT_SYMBOL_GPL(sdhci_enable_irq_wakeups);
 
 #endif /* CONFIG_PM */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_RUNTIME
+
+static int sdhci_runtime_pm_get(struct sdhci_host *host)
+{
+	return pm_runtime_get_sync(host->mmc->parent);
+}
+
+static int sdhci_runtime_pm_put(struct sdhci_host *host)
+{
+	pm_runtime_mark_last_busy(host->mmc->parent);
+	return pm_runtime_put_autosuspend(host->mmc->parent);
+}
+
+int sdhci_runtime_suspend_host(struct sdhci_host *host)
+{
+	unsigned long flags;
+	int ret = 0;
+
+	/* Disable tuning since we are suspending */
+	if (host->version >= SDHCI_SPEC_300 &&
+	    host->tuning_mode == SDHCI_TUNING_MODE_1) {
+		del_timer_sync(&host->tuning_timer);
+		host->flags &= ~SDHCI_NEEDS_RETUNING;
+	}
+
+	spin_lock_irqsave(&host->lock, flags);
+	sdhci_mask_irqs(host, SDHCI_INT_ALL_MASK);
+	spin_unlock_irqrestore(&host->lock, flags);
+
+	synchronize_irq(host->irq);
+
+	spin_lock_irqsave(&host->lock, flags);
+	host->runtime_suspended = true;
+	spin_unlock_irqrestore(&host->lock, flags);
+
+	return ret;
+}
+EXPORT_SYMBOL_GPL(sdhci_runtime_suspend_host);
+
+int sdhci_runtime_resume_host(struct sdhci_host *host)
+{
+	unsigned long flags;
+	int ret = 0, host_flags = host->flags;
+
+	if (host_flags & (SDHCI_USE_SDMA | SDHCI_USE_ADMA)) {
+		if (host->ops->enable_dma)
+			host->ops->enable_dma(host);
+	}
+
+	sdhci_init(host, 0);
+
+	/* Force clock and power re-program */
+	host->pwr = 0;
+	host->clock = 0;
+	sdhci_do_set_ios(host, &host->mmc->ios);
+
+	sdhci_do_start_signal_voltage_switch(host, &host->mmc->ios);
+	if (host_flags & SDHCI_PV_ENABLED)
+		sdhci_do_enable_preset_value(host, true);
+
+	/* Set the re-tuning expiration flag */
+	if ((host->version >= SDHCI_SPEC_300) && host->tuning_count &&
+	    (host->tuning_mode == SDHCI_TUNING_MODE_1))
+		host->flags |= SDHCI_NEEDS_RETUNING;
+
+	spin_lock_irqsave(&host->lock, flags);
+
+	host->runtime_suspended = false;
+
+	/* Enable SDIO IRQ */
+	if ((host->flags & SDHCI_SDIO_IRQ_ENABLED))
+		sdhci_enable_sdio_irq_nolock(host, true);
+
+	/* Enable Card Detection */
+	sdhci_enable_card_detection(host);
+
+	spin_unlock_irqrestore(&host->lock, flags);
+
+	return ret;
+}
+EXPORT_SYMBOL_GPL(sdhci_runtime_resume_host);
+
+#endif
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /*****************************************************************************\
  *                                                                           *
  * Device allocation/registration                                            *
@@ -2359,6 +3052,11 @@ int sdhci_add_host(struct sdhci_host *host)
 
 	if (debug_quirks)
 		host->quirks = debug_quirks;
+<<<<<<< HEAD
+=======
+	if (debug_quirks2)
+		host->quirks2 = debug_quirks2;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	sdhci_reset(host, SDHCI_RESET_ALL);
 
@@ -2366,7 +3064,11 @@ int sdhci_add_host(struct sdhci_host *host)
 	host->version = (host->version & SDHCI_SPEC_VER_MASK)
 				>> SDHCI_SPEC_VER_SHIFT;
 	if (host->version > SDHCI_SPEC_300) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Unknown controller version (%d). "
+=======
+		pr_err("%s: Unknown controller version (%d). "
+>>>>>>> remotes/linux2/linux-3.4.y
 			"You may experience problems.\n", mmc_hostname(mmc),
 			host->version);
 	}
@@ -2403,7 +3105,11 @@ int sdhci_add_host(struct sdhci_host *host)
 	if (host->flags & (SDHCI_USE_SDMA | SDHCI_USE_ADMA)) {
 		if (host->ops->enable_dma) {
 			if (host->ops->enable_dma(host)) {
+<<<<<<< HEAD
 				printk(KERN_WARNING "%s: No suitable DMA "
+=======
+				pr_warning("%s: No suitable DMA "
+>>>>>>> remotes/linux2/linux-3.4.y
 					"available. Falling back to PIO.\n",
 					mmc_hostname(mmc));
 				host->flags &=
@@ -2423,7 +3129,11 @@ int sdhci_add_host(struct sdhci_host *host)
 		if (!host->adma_desc || !host->align_buffer) {
 			kfree(host->adma_desc);
 			kfree(host->align_buffer);
+<<<<<<< HEAD
 			printk(KERN_WARNING "%s: Unable to allocate ADMA "
+=======
+			pr_warning("%s: Unable to allocate ADMA "
+>>>>>>> remotes/linux2/linux-3.4.y
 				"buffers. Falling back to standard DMA.\n",
 				mmc_hostname(mmc));
 			host->flags &= ~SDHCI_USE_ADMA;
@@ -2451,14 +3161,19 @@ int sdhci_add_host(struct sdhci_host *host)
 	if (host->max_clk == 0 || host->quirks &
 			SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN) {
 		if (!host->ops->get_max_clock) {
+<<<<<<< HEAD
 			printk(KERN_ERR
 			       "%s: Hardware doesn't specify base clock "
+=======
+			pr_err("%s: Hardware doesn't specify base clock "
+>>>>>>> remotes/linux2/linux-3.4.y
 			       "frequency.\n", mmc_hostname(mmc));
 			return -ENODEV;
 		}
 		host->max_clk = host->ops->get_max_clock(host);
 	}
 
+<<<<<<< HEAD
 	host->timeout_clk =
 		(caps[0] & SDHCI_TIMEOUT_CLK_MASK) >> SDHCI_TIMEOUT_CLK_SHIFT;
 	if (host->timeout_clk == 0) {
@@ -2491,6 +3206,8 @@ int sdhci_add_host(struct sdhci_host *host)
 	if (host->clk_mul)
 		host->clk_mul += 1;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * In case of Host Controller v3.00, find out whether clock
 	 * multiplier is supported.
@@ -2523,6 +3240,29 @@ int sdhci_add_host(struct sdhci_host *host)
 	} else
 		mmc->f_min = host->max_clk / SDHCI_MAX_DIV_SPEC_200;
 
+<<<<<<< HEAD
+=======
+	host->timeout_clk =
+		(caps[0] & SDHCI_TIMEOUT_CLK_MASK) >> SDHCI_TIMEOUT_CLK_SHIFT;
+	if (host->timeout_clk == 0) {
+		if (host->ops->get_timeout_clock) {
+			host->timeout_clk = host->ops->get_timeout_clock(host);
+		} else if (!(host->quirks &
+				SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK)) {
+			pr_err("%s: Hardware doesn't specify timeout clock "
+			       "frequency.\n", mmc_hostname(mmc));
+			return -ENODEV;
+		}
+	}
+	if (caps[0] & SDHCI_TIMEOUT_CLK_UNIT)
+		host->timeout_clk *= 1000;
+
+	if (host->quirks & SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK)
+		host->timeout_clk = mmc->f_max / 1000;
+
+	mmc->max_discard_to = (1 << 27) / host->timeout_clk;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	mmc->caps |= MMC_CAP_SDIO_IRQ | MMC_CAP_ERASE | MMC_CAP_CMD23;
 
 	if (host->quirks & SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12)
@@ -2569,10 +3309,21 @@ int sdhci_add_host(struct sdhci_host *host)
 	if (caps[1] & SDHCI_SUPPORT_DDR50)
 		mmc->caps |= MMC_CAP_UHS_DDR50;
 
+<<<<<<< HEAD
 	/* Does the host needs tuning for SDR50? */
 	if (caps[1] & SDHCI_USE_SDR50_TUNING)
 		host->flags |= SDHCI_SDR50_NEEDS_TUNING;
 
+=======
+	/* Does the host need tuning for SDR50? */
+	if (caps[1] & SDHCI_USE_SDR50_TUNING)
+		host->flags |= SDHCI_SDR50_NEEDS_TUNING;
+
+	/* Does the host need tuning for HS200? */
+	if (mmc->caps2 & MMC_CAP2_HS200)
+		host->flags |= SDHCI_HS200_NEEDS_TUNING;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Driver Type(s) (A, C, D) supported by the host */
 	if (caps[1] & SDHCI_DRIVER_TYPE_A)
 		mmc->caps |= MMC_CAP_DRIVER_TYPE_A;
@@ -2581,6 +3332,18 @@ int sdhci_add_host(struct sdhci_host *host)
 	if (caps[1] & SDHCI_DRIVER_TYPE_D)
 		mmc->caps |= MMC_CAP_DRIVER_TYPE_D;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * If Power Off Notify capability is enabled by the host,
+	 * set notify to short power off notify timeout value.
+	 */
+	if (mmc->caps2 & MMC_CAP2_POWEROFF_NOTIFY)
+		mmc->power_notify_type = MMC_HOST_PW_NOTIFY_SHORT;
+	else
+		mmc->power_notify_type = MMC_HOST_PW_NOTIFY_NONE;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Initial value for re-tuning timer count */
 	host->tuning_count = (caps[1] & SDHCI_RETUNING_TIMER_COUNT_MASK) >>
 			      SDHCI_RETUNING_TIMER_COUNT_SHIFT;
@@ -2670,7 +3433,11 @@ int sdhci_add_host(struct sdhci_host *host)
 		mmc->ocr_avail_mmc &= host->ocr_avail_mmc;
 
 	if (mmc->ocr_avail == 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Hardware doesn't report any "
+=======
+		pr_err("%s: Hardware doesn't report any "
+>>>>>>> remotes/linux2/linux-3.4.y
 			"support voltages.\n", mmc_hostname(mmc));
 		return -ENODEV;
 	}
@@ -2718,7 +3485,11 @@ int sdhci_add_host(struct sdhci_host *host)
 		mmc->max_blk_size = (caps[0] & SDHCI_MAX_BLOCK_MASK) >>
 				SDHCI_MAX_BLOCK_SHIFT;
 		if (mmc->max_blk_size >= 3) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "%s: Invalid maximum block size, "
+=======
+			pr_warning("%s: Invalid maximum block size, "
+>>>>>>> remotes/linux2/linux-3.4.y
 				"assuming 512 bytes\n", mmc_hostname(mmc));
 			mmc->max_blk_size = 0;
 		}
@@ -2757,10 +3528,15 @@ int sdhci_add_host(struct sdhci_host *host)
 
 	host->vmmc = regulator_get(mmc_dev(mmc), "vmmc");
 	if (IS_ERR(host->vmmc)) {
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: no vmmc regulator found\n", mmc_hostname(mmc));
 		host->vmmc = NULL;
 	} else {
 		regulator_enable(host->vmmc);
+=======
+		pr_info("%s: no vmmc regulator found\n", mmc_hostname(mmc));
+		host->vmmc = NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	sdhci_init(host, 0);
@@ -2786,7 +3562,11 @@ int sdhci_add_host(struct sdhci_host *host)
 
 	mmc_add_host(mmc);
 
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: SDHCI controller on %s [%s] using %s\n",
+=======
+	pr_info("%s: SDHCI controller on %s [%s] using %s\n",
+>>>>>>> remotes/linux2/linux-3.4.y
 		mmc_hostname(mmc), host->hw_name, dev_name(mmc_dev(mmc)),
 		(host->flags & SDHCI_USE_ADMA) ? "ADMA" :
 		(host->flags & SDHCI_USE_SDMA) ? "DMA" : "PIO");
@@ -2819,7 +3599,11 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
 		host->flags |= SDHCI_DEVICE_DEAD;
 
 		if (host->mrq) {
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: Controller removed during "
+=======
+			pr_err("%s: Controller removed during "
+>>>>>>> remotes/linux2/linux-3.4.y
 				" transfer!\n", mmc_hostname(host->mmc));
 
 			host->mrq->cmd->error = -ENOMEDIUM;
@@ -2849,10 +3633,15 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
 	tasklet_kill(&host->card_tasklet);
 	tasklet_kill(&host->finish_tasklet);
 
+<<<<<<< HEAD
 	if (host->vmmc) {
 		regulator_disable(host->vmmc);
 		regulator_put(host->vmmc);
 	}
+=======
+	if (host->vmmc)
+		regulator_put(host->vmmc);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	kfree(host->adma_desc);
 	kfree(host->align_buffer);
@@ -2878,9 +3667,15 @@ EXPORT_SYMBOL_GPL(sdhci_free_host);
 
 static int __init sdhci_drv_init(void)
 {
+<<<<<<< HEAD
 	printk(KERN_INFO DRIVER_NAME
 		": Secure Digital Host Controller Interface driver\n");
 	printk(KERN_INFO DRIVER_NAME ": Copyright(c) Pierre Ossman\n");
+=======
+	pr_info(DRIVER_NAME
+		": Secure Digital Host Controller Interface driver\n");
+	pr_info(DRIVER_NAME ": Copyright(c) Pierre Ossman\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -2893,9 +3688,17 @@ module_init(sdhci_drv_init);
 module_exit(sdhci_drv_exit);
 
 module_param(debug_quirks, uint, 0444);
+<<<<<<< HEAD
+=======
+module_param(debug_quirks2, uint, 0444);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 MODULE_AUTHOR("Pierre Ossman <pierre@ossman.eu>");
 MODULE_DESCRIPTION("Secure Digital Host Controller Interface core driver");
 MODULE_LICENSE("GPL");
 
 MODULE_PARM_DESC(debug_quirks, "Force certain quirks.");
+<<<<<<< HEAD
+=======
+MODULE_PARM_DESC(debug_quirks2, "Force certain other quirks.");
+>>>>>>> remotes/linux2/linux-3.4.y

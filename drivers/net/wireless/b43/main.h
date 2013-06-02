@@ -137,9 +137,14 @@ void b43_mac_phy_clock_set(struct b43_wldev *dev, bool on);
 
 
 struct b43_request_fw_context;
+<<<<<<< HEAD
 int b43_do_request_fw(struct b43_request_fw_context *ctx,
 		      const char *name,
 		      struct b43_firmware_file *fw);
+=======
+int b43_do_request_fw(struct b43_request_fw_context *ctx, const char *name,
+		      struct b43_firmware_file *fw, bool async);
+>>>>>>> remotes/linux2/linux-3.4.y
 void b43_do_release_fw(struct b43_firmware_file *fw);
 
 #endif /* B43_MAIN_H_ */

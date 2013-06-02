@@ -131,9 +131,16 @@ static int bcma_register_cores(struct bcma_bus *bus)
 
 static void bcma_unregister_cores(struct bcma_bus *bus)
 {
+<<<<<<< HEAD
 	struct bcma_device *core;
 
 	list_for_each_entry(core, &bus->cores, list) {
+=======
+	struct bcma_device *core, *tmp;
+
+	list_for_each_entry_safe(core, tmp, &bus->cores, list) {
+		list_del(&core->list);
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (core->dev_registered)
 			device_unregister(&core->dev);
 	}

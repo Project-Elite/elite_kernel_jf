@@ -22,7 +22,13 @@
 ccflags-$(GCOV) := -fprofile-arcs -ftest-coverage
 ccflags-$(GCOV) += -O0
 
+<<<<<<< HEAD
 ccflags-y += -Werror
+=======
+ifdef WARNINGS_BECOME_ERRORS
+ccflags-y += -Werror
+endif
+>>>>>>> remotes/linux2/linux-3.4.y
 
 obj-$(CONFIG_SCSI_LPFC) := lpfc.o
 

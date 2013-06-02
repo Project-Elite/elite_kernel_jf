@@ -31,7 +31,15 @@
 static union {
 	raw_spinlock_t lock;
 	char pad[L1_CACHE_BYTES];
+<<<<<<< HEAD
 } atomic64_lock[NR_LOCKS] __cacheline_aligned_in_smp;
+=======
+} atomic64_lock[NR_LOCKS] __cacheline_aligned_in_smp = {
+	[0 ... (NR_LOCKS - 1)] = {
+		.lock =  __RAW_SPIN_LOCK_UNLOCKED(atomic64_lock.lock),
+	},
+};
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static inline raw_spinlock_t *lock_addr(const atomic64_t *v)
 {
@@ -173,6 +181,7 @@ int atomic64_add_unless(atomic64_t *v, long long a, long long u)
 	return ret;
 }
 EXPORT_SYMBOL(atomic64_add_unless);
+<<<<<<< HEAD
 
 static int init_atomic64_lock(void)
 {
@@ -184,3 +193,5 @@ static int init_atomic64_lock(void)
 }
 
 pure_initcall(init_atomic64_lock);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

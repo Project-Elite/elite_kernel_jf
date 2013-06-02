@@ -7,6 +7,7 @@
  */
 #ifndef _ASM_MUTEX_H
 #define _ASM_MUTEX_H
+<<<<<<< HEAD
 
 #if __LINUX_ARM_ARCH__ < 6
 /* On pre-ARMv6 hardware the swp based implementation is the most efficient. */
@@ -132,4 +133,12 @@ __mutex_fastpath_trylock(atomic_t *count, int (*fail_fn)(atomic_t *))
 }
 
 #endif
+=======
+/*
+ * On pre-ARMv6 hardware this results in a swp-based implementation,
+ * which is the most efficient. For ARMv6+, we emit a pair of exclusive
+ * accesses instead.
+ */
+#include <asm-generic/mutex-xchg.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif

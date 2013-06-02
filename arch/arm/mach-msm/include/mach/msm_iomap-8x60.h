@@ -1,6 +1,10 @@
 /*
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
  * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+>>>>>>> remotes/linux2/linux-3.4.y
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -35,6 +39,7 @@
  *
  */
 
+<<<<<<< HEAD
 #define MSM_QGIC_DIST_BASE	IOMEM(0xFA000000)
 #define MSM_QGIC_DIST_PHYS	0x02080000
 #define MSM_QGIC_DIST_SIZE	SZ_4K
@@ -131,6 +136,37 @@
 
 #ifdef CONFIG_DEBUG_MSM8660_UART
 #define MSM_DEBUG_UART_BASE	0xFBC40000
+=======
+#define MSM8X60_QGIC_DIST_PHYS	0x02080000
+#define MSM8X60_QGIC_DIST_SIZE	SZ_4K
+
+#define MSM8X60_QGIC_CPU_PHYS	0x02081000
+#define MSM8X60_QGIC_CPU_SIZE	SZ_4K
+
+#define MSM_ACC_BASE		IOMEM(0xF0002000)
+#define MSM_ACC_PHYS		0x02001000
+#define MSM_ACC_SIZE		SZ_4K
+
+#define MSM_GCC_BASE		IOMEM(0xF0003000)
+#define MSM_GCC_PHYS		0x02082000
+#define MSM_GCC_SIZE		SZ_4K
+
+#define MSM_TLMM_BASE		IOMEM(0xF0004000)
+#define MSM_TLMM_PHYS		0x00800000
+#define MSM_TLMM_SIZE		SZ_16K
+
+#define MSM_SHARED_RAM_BASE	IOMEM(0xF0100000)
+#define MSM_SHARED_RAM_SIZE	SZ_1M
+
+#define MSM8X60_TMR_PHYS	0x02000000
+#define MSM8X60_TMR_SIZE	SZ_4K
+
+#define MSM8X60_TMR0_PHYS	0x02040000
+#define MSM8X60_TMR0_SIZE	SZ_4K
+
+#ifdef CONFIG_DEBUG_MSM8660_UART
+#define MSM_DEBUG_UART_BASE	0xE1040000
+>>>>>>> remotes/linux2/linux-3.4.y
 #define MSM_DEBUG_UART_PHYS	0x19C40000
 #endif
 

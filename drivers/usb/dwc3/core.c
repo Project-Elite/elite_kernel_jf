@@ -372,6 +372,7 @@ static int __devinit dwc3_core_init(struct dwc3 *dwc)
 
 	dwc3_writel(dwc->regs, DWC3_GCTL, reg);
 
+<<<<<<< HEAD
 	/*
 	 * The default value of GUCTL[31:22] should be 0x8. But on cores
 	 * revision < 2.30a, the default value is mistakenly overridden
@@ -414,6 +415,8 @@ static int __devinit dwc3_core_init(struct dwc3 *dwc)
 		dwc3_writel(dwc->regs, DWC3_GUSB3PIPECTL(0), reg);
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	ret = dwc3_alloc_event_buffers(dwc, DWC3_EVENT_BUFFERS_SIZE);
 	if (ret) {
 		dev_err(dwc->dev, "failed to allocate event buffers\n");
@@ -452,6 +455,10 @@ static int __devinit dwc3_probe(struct platform_device *pdev)
 	struct device		*dev = &pdev->dev;
 
 	int			ret = -ENOMEM;
+<<<<<<< HEAD
+=======
+	int			irq;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	void __iomem		*regs;
 	void			*mem;
@@ -466,6 +473,7 @@ static int __devinit dwc3_probe(struct platform_device *pdev)
 	dwc = PTR_ALIGN(mem, DWC3_ALIGN_MASK + 1);
 	dwc->mem = mem;
 
+<<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 	if (!res) {
 		dev_err(dev, "missing IRQ\n");
@@ -490,6 +498,18 @@ static int __devinit dwc3_probe(struct platform_device *pdev)
 			resource_size(res) - DWC3_GLOBALS_REGS_START,
 			dev_name(dev));
 
+=======
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (!res) {
+		dev_err(dev, "missing resource\n");
+		return -ENODEV;
+	}
+
+	dwc->res = res;
+
+	res = devm_request_mem_region(dev, res->start, resource_size(res),
+			dev_name(dev));
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!res) {
 		dev_err(dev, "can't request mem region\n");
 		return -ENOMEM;
@@ -501,12 +521,25 @@ static int __devinit dwc3_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+=======
+	irq = platform_get_irq(pdev, 0);
+	if (irq < 0) {
+		dev_err(dev, "missing IRQ\n");
+		return -ENODEV;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	spin_lock_init(&dwc->lock);
 	platform_set_drvdata(pdev, dwc);
 
 	dwc->regs	= regs;
 	dwc->regs_size	= resource_size(res);
 	dwc->dev	= dev;
+<<<<<<< HEAD
+=======
+	dwc->irq	= irq;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!strncmp("super", maximum_speed, 5))
 		dwc->maximum_speed = DWC3_DCFG_SUPERSPEED;
@@ -522,9 +555,15 @@ static int __devinit dwc3_probe(struct platform_device *pdev)
 	if (of_get_property(node, "tx-fifo-resize", NULL))
 		dwc->needs_fifo_resize = true;
 
+<<<<<<< HEAD
 	pm_runtime_no_callbacks(dev);
 	pm_runtime_set_active(dev);
 	pm_runtime_enable(dev);
+=======
+	pm_runtime_enable(dev);
+	pm_runtime_get_sync(dev);
+	pm_runtime_forbid(dev);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	ret = dwc3_core_init(dwc);
 	if (ret) {
@@ -553,6 +592,7 @@ static int __devinit dwc3_probe(struct platform_device *pdev)
 		break;
 	case DWC3_MODE_DRD:
 		dwc3_set_mode(dwc, DWC3_GCTL_PRTCAP_OTG);
+<<<<<<< HEAD
 		ret = dwc3_otg_init(dwc);
 		if (ret) {
 			dev_err(dev, "failed to initialize otg\n");
@@ -563,14 +603,22 @@ static int __devinit dwc3_probe(struct platform_device *pdev)
 		if (ret) {
 			dev_err(dev, "failed to initialize host\n");
 			dwc3_otg_exit(dwc);
+=======
+		ret = dwc3_host_init(dwc);
+		if (ret) {
+			dev_err(dev, "failed to initialize host\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto err1;
 		}
 
 		ret = dwc3_gadget_init(dwc);
 		if (ret) {
 			dev_err(dev, "failed to initialize gadget\n");
+<<<<<<< HEAD
 			dwc3_host_exit(dwc);
 			dwc3_otg_exit(dwc);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto err1;
 		}
 		break;
@@ -586,6 +634,11 @@ static int __devinit dwc3_probe(struct platform_device *pdev)
 		goto err2;
 	}
 
+<<<<<<< HEAD
+=======
+	pm_runtime_allow(dev);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 
 err2:
@@ -597,9 +650,14 @@ err2:
 		dwc3_host_exit(dwc);
 		break;
 	case DWC3_MODE_DRD:
+<<<<<<< HEAD
 		dwc3_gadget_exit(dwc);
 		dwc3_host_exit(dwc);
 		dwc3_otg_exit(dwc);
+=======
+		dwc3_host_exit(dwc);
+		dwc3_gadget_exit(dwc);
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	default:
 		/* do nothing */
@@ -619,6 +677,10 @@ static int __devexit dwc3_remove(struct platform_device *pdev)
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 
+<<<<<<< HEAD
+=======
+	pm_runtime_put(&pdev->dev);
+>>>>>>> remotes/linux2/linux-3.4.y
 	pm_runtime_disable(&pdev->dev);
 
 	dwc3_debugfs_exit(dwc);
@@ -631,9 +693,14 @@ static int __devexit dwc3_remove(struct platform_device *pdev)
 		dwc3_host_exit(dwc);
 		break;
 	case DWC3_MODE_DRD:
+<<<<<<< HEAD
 		dwc3_gadget_exit(dwc);
 		dwc3_host_exit(dwc);
 		dwc3_otg_exit(dwc);
+=======
+		dwc3_host_exit(dwc);
+		dwc3_gadget_exit(dwc);
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	default:
 		/* do nothing */

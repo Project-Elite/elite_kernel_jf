@@ -721,11 +721,21 @@ int scsi_verify_blk_ioctl(struct block_device *bd, unsigned int cmd)
 		break;
 	}
 
+<<<<<<< HEAD
+=======
+	if (capable(CAP_SYS_RAWIO))
+		return 0;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* In particular, rule out all resets and host-specific ioctls.  */
 	printk_ratelimited(KERN_WARNING
 			   "%s: sending ioctl %x to a partition!\n", current->comm, cmd);
 
+<<<<<<< HEAD
 	return capable(CAP_SYS_RAWIO) ? 0 : -ENOIOCTLCMD;
+=======
+	return -ENOIOCTLCMD;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL(scsi_verify_blk_ioctl);
 

@@ -1,14 +1,21 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
  * only version 2 as published by the Free Software Foundation.
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  */
 
 #include <linux/module.h>
@@ -16,12 +23,16 @@
 #include <linux/pm_runtime.h>
 #include <linux/usb/msm_hsusb_hw.h>
 #include <linux/usb/ulpi.h>
+<<<<<<< HEAD
 #include <linux/gpio.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include "ci13xxx_udc.c"
 
 #define MSM_USB_BASE	(udc->regs)
 
+<<<<<<< HEAD
 struct ci13xxx_udc_context {
 	int irq;
 	void __iomem *regs;
@@ -32,11 +43,14 @@ struct ci13xxx_udc_context {
 
 static struct ci13xxx_udc_context _udc_ctxt;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static irqreturn_t msm_udc_irq(int irq, void *data)
 {
 	return udc_irq();
 }
 
+<<<<<<< HEAD
 static void ci13xxx_msm_suspend(void)
 {
 	struct device *dev = _udc->gadget.dev.parent;
@@ -84,12 +98,37 @@ static void ci13xxx_msm_notify_event(struct ci13xxx *udc, unsigned event)
 		ci13xxx_msm_resume();
 		break;
 
+=======
+static void ci13xxx_msm_notify_event(struct ci13xxx *udc, unsigned event)
+{
+	struct device *dev = udc->gadget.dev.parent;
+	int val;
+
+	switch (event) {
+	case CI13XXX_CONTROLLER_RESET_EVENT:
+		dev_dbg(dev, "CI13XXX_CONTROLLER_RESET_EVENT received\n");
+		writel(0, USB_AHBBURST);
+		writel(0, USB_AHBMODE);
+		break;
+	case CI13XXX_CONTROLLER_STOPPED_EVENT:
+		dev_dbg(dev, "CI13XXX_CONTROLLER_STOPPED_EVENT received\n");
+		/*
+		 * Put the transceiver in non-driving mode. Otherwise host
+		 * may not detect soft-disconnection.
+		 */
+		val = usb_phy_io_read(udc->transceiver, ULPI_FUNC_CTRL);
+		val &= ~ULPI_FUNC_CTRL_OPMODE_MASK;
+		val |= ULPI_FUNC_CTRL_OPMODE_NONDRIVING;
+		usb_phy_io_write(udc->transceiver, val, ULPI_FUNC_CTRL);
+		break;
+>>>>>>> remotes/linux2/linux-3.4.y
 	default:
 		dev_dbg(dev, "unknown ci13xxx_udc event\n");
 		break;
 	}
 }
 
+<<<<<<< HEAD
 static irqreturn_t ci13xxx_msm_resume_irq(int irq, void *data)
 {
 	struct ci13xxx *udc = _udc;
@@ -102,18 +141,25 @@ static irqreturn_t ci13xxx_msm_resume_irq(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static struct ci13xxx_udc_driver ci13xxx_msm_udc_driver = {
 	.name			= "ci13xxx_msm",
 	.flags			= CI13XXX_REGS_SHARED |
 				  CI13XXX_REQUIRE_TRANSCEIVER |
 				  CI13XXX_PULLUP_ON_VBUS |
+<<<<<<< HEAD
 				  CI13XXX_ZERO_ITC |
 				  CI13XXX_DISABLE_STREAMING |
 				  CI13XXX_IS_OTG,
+=======
+				  CI13XXX_DISABLE_STREAMING,
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	.notify_event		= ci13xxx_msm_notify_event,
 };
 
+<<<<<<< HEAD
 static int ci13xxx_msm_install_wake_gpio(struct platform_device *pdev,
 				struct resource *res)
 {
@@ -163,6 +209,13 @@ static void ci13xxx_msm_uninstall_wake_gpio(struct platform_device *pdev)
 static int ci13xxx_msm_probe(struct platform_device *pdev)
 {
 	struct resource *res;
+=======
+static int ci13xxx_msm_probe(struct platform_device *pdev)
+{
+	struct resource *res;
+	void __iomem *regs;
+	int irq;
+>>>>>>> remotes/linux2/linux-3.4.y
 	int ret;
 
 	dev_dbg(&pdev->dev, "ci13xxx_msm_probe\n");
@@ -173,25 +226,40 @@ static int ci13xxx_msm_probe(struct platform_device *pdev)
 		return -ENXIO;
 	}
 
+<<<<<<< HEAD
 	_udc_ctxt.regs = ioremap(res->start, resource_size(res));
 	if (!_udc_ctxt.regs) {
+=======
+	regs = ioremap(res->start, resource_size(res));
+	if (!regs) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		dev_err(&pdev->dev, "ioremap failed\n");
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	ret = udc_probe(&ci13xxx_msm_udc_driver, &pdev->dev, _udc_ctxt.regs);
+=======
+	ret = udc_probe(&ci13xxx_msm_udc_driver, &pdev->dev, regs);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (ret < 0) {
 		dev_err(&pdev->dev, "udc_probe failed\n");
 		goto iounmap;
 	}
 
+<<<<<<< HEAD
 	_udc_ctxt.irq = platform_get_irq(pdev, 0);
 	if (_udc_ctxt.irq < 0) {
+=======
+	irq = platform_get_irq(pdev, 0);
+	if (irq < 0) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		dev_err(&pdev->dev, "IRQ not found\n");
 		ret = -ENXIO;
 		goto udc_remove;
 	}
 
+<<<<<<< HEAD
 	res = platform_get_resource_byname(pdev, IORESOURCE_IO, "USB_RESUME");
 	if (res) {
 		ret = ci13xxx_msm_install_wake_gpio(pdev, res);
@@ -206,6 +274,12 @@ static int ci13xxx_msm_probe(struct platform_device *pdev)
 	if (ret < 0) {
 		dev_err(&pdev->dev, "request_irq failed\n");
 		goto gpio_uninstall;
+=======
+	ret = request_irq(irq, msm_udc_irq, IRQF_SHARED, pdev->name, pdev);
+	if (ret < 0) {
+		dev_err(&pdev->dev, "request_irq failed\n");
+		goto udc_remove;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	pm_runtime_no_callbacks(&pdev->dev);
@@ -213,16 +287,24 @@ static int ci13xxx_msm_probe(struct platform_device *pdev)
 
 	return 0;
 
+<<<<<<< HEAD
 gpio_uninstall:
 	ci13xxx_msm_uninstall_wake_gpio(pdev);
 udc_remove:
 	udc_remove();
 iounmap:
 	iounmap(_udc_ctxt.regs);
+=======
+udc_remove:
+	udc_remove();
+iounmap:
+	iounmap(regs);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return ret;
 }
 
+<<<<<<< HEAD
 int ci13xxx_msm_remove(struct platform_device *pdev)
 {
 	pm_runtime_disable(&pdev->dev);
@@ -237,6 +319,11 @@ static struct platform_driver ci13xxx_msm_driver = {
 	.probe = ci13xxx_msm_probe,
 	.driver = { .name = "msm_hsusb", },
 	.remove = ci13xxx_msm_remove,
+=======
+static struct platform_driver ci13xxx_msm_driver = {
+	.probe = ci13xxx_msm_probe,
+	.driver = { .name = "msm_hsusb", },
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 MODULE_ALIAS("platform:msm_hsusb");
 
@@ -246,10 +333,13 @@ static int __init ci13xxx_msm_init(void)
 }
 module_init(ci13xxx_msm_init);
 
+<<<<<<< HEAD
 static void __exit ci13xxx_msm_exit(void)
 {
 	platform_driver_unregister(&ci13xxx_msm_driver);
 }
 module_exit(ci13xxx_msm_exit);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 MODULE_LICENSE("GPL v2");

@@ -1950,7 +1950,11 @@ static int __ocfs2_change_file_space(struct file *file, struct inode *inode,
 	if (ret < 0)
 		mlog_errno(ret);
 
+<<<<<<< HEAD
 	if (file->f_flags & O_SYNC)
+=======
+	if (file && (file->f_flags & O_SYNC))
+>>>>>>> remotes/linux2/linux-3.4.y
 		handle->h_sync = 1;
 
 	ocfs2_commit_trans(osb, handle);
@@ -2422,8 +2426,15 @@ out_dio:
 		unaligned_dio = 0;
 	}
 
+<<<<<<< HEAD
 	if (unaligned_dio)
 		atomic_dec(&OCFS2_I(inode)->ip_unaligned_aio);
+=======
+	if (unaligned_dio) {
+		ocfs2_iocb_clear_unaligned_aio(iocb);
+		atomic_dec(&OCFS2_I(inode)->ip_unaligned_aio);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 out:
 	if (rw_level != -1)

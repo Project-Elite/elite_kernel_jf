@@ -72,7 +72,11 @@ static unsigned long bat_iv_ogm_emit_send_time(const struct bat_priv *bat_priv)
 {
 	return jiffies + msecs_to_jiffies(
 		   atomic_read(&bat_priv->orig_interval) -
+<<<<<<< HEAD
 		   JITTER + (random32() % 2*JITTER));
+=======
+		   JITTER + (random32() % (2*JITTER)));
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /* when do we schedule a ogm packet to be sent */

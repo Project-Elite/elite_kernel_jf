@@ -1,6 +1,10 @@
 /*
    BlueZ - Bluetooth protocol stack for Linux
+<<<<<<< HEAD
    Copyright (c) 2000-2001, 2010-2012, The Linux Foundation. All rights reserved.
+=======
+   Copyright (c) 2000-2001, 2010, Code Aurora Forum. All rights reserved.
+>>>>>>> remotes/linux2/linux-3.4.y
 
    Written 2000,2001 by Maxim Krasnyansky <maxk@qualcomm.com>
 
@@ -35,10 +39,15 @@
 #include <linux/init.h>
 #include <linux/skbuff.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <linux/notifier.h>
 #include <net/sock.h>
 
 #include <asm/system.h>
+=======
+#include <net/sock.h>
+
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/uaccess.h>
 #include <asm/unaligned.h>
 
@@ -53,11 +62,27 @@ static void hci_cc_inquiry_cancel(struct hci_dev *hdev, struct sk_buff *skb)
 
 	BT_DBG("%s status 0x%x", hdev->name, status);
 
+<<<<<<< HEAD
 	if (status)
 		return;
 
 	clear_bit(HCI_INQUIRY, &hdev->flags);
 
+=======
+	if (status) {
+		hci_dev_lock(hdev);
+		mgmt_stop_discovery_failed(hdev, status);
+		hci_dev_unlock(hdev);
+		return;
+	}
+
+	clear_bit(HCI_INQUIRY, &hdev->flags);
+
+	hci_dev_lock(hdev);
+	hci_discovery_set_state(hdev, DISCOVERY_STOPPED);
+	hci_dev_unlock(hdev);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	hci_req_complete(hdev, HCI_OP_INQUIRY_CANCEL, status);
 
 	hci_conn_check_pending(hdev);
@@ -72,6 +97,7 @@ static void hci_cc_exit_periodic_inq(struct hci_dev *hdev, struct sk_buff *skb)
 	if (status)
 		return;
 
+<<<<<<< HEAD
 	clear_bit(HCI_INQUIRY, &hdev->flags);
 
 	hci_conn_check_pending(hdev);
@@ -102,6 +128,11 @@ static void hci_cc_link_key_reply(struct hci_dev *hdev, struct sk_buff *skb)
 	hci_dev_unlock(hdev);
 }
 
+=======
+	hci_conn_check_pending(hdev);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static void hci_cc_remote_name_req_cancel(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	BT_DBG("%s", hdev->name);
@@ -211,6 +242,14 @@ static void hci_cc_reset(struct hci_dev *hdev, struct sk_buff *skb)
 	clear_bit(HCI_RESET, &hdev->flags);
 
 	hci_req_complete(hdev, HCI_OP_RESET, status);
+<<<<<<< HEAD
+=======
+
+	/* Reset all non-persistent flags */
+	hdev->dev_flags &= ~(BIT(HCI_LE_SCAN) | BIT(HCI_PENDING_CLASS));
+
+	hdev->discovery.state = DISCOVERY_STOPPED;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_cc_write_local_name(struct hci_dev *hdev, struct sk_buff *skb)
@@ -223,6 +262,7 @@ static void hci_cc_write_local_name(struct hci_dev *hdev, struct sk_buff *skb)
 	sent = hci_sent_cmd_data(hdev, HCI_OP_WRITE_LOCAL_NAME);
 	if (!sent)
 		return;
+<<<<<<< HEAD
 	hci_dev_lock(hdev);
 	if (!status)
 		memcpy(hdev->dev_name, sent, HCI_MAX_NAME_LENGTH);
@@ -230,6 +270,19 @@ static void hci_cc_write_local_name(struct hci_dev *hdev, struct sk_buff *skb)
 	if (test_bit(HCI_MGMT, &hdev->flags))
 		mgmt_set_local_name_complete(hdev->id, sent, status);
 	hci_dev_unlock(hdev);
+=======
+
+	hci_dev_lock(hdev);
+
+	if (test_bit(HCI_MGMT, &hdev->dev_flags))
+		mgmt_set_local_name_complete(hdev, sent, status);
+	else if (!status)
+		memcpy(hdev->dev_name, sent, HCI_MAX_NAME_LENGTH);
+
+	hci_dev_unlock(hdev);
+
+	hci_req_complete(hdev, HCI_OP_WRITE_LOCAL_NAME, status);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_cc_read_local_name(struct hci_dev *hdev, struct sk_buff *skb)
@@ -241,7 +294,12 @@ static void hci_cc_read_local_name(struct hci_dev *hdev, struct sk_buff *skb)
 	if (rp->status)
 		return;
 
+<<<<<<< HEAD
 	memcpy(hdev->dev_name, rp->name, HCI_MAX_NAME_LENGTH);
+=======
+	if (test_bit(HCI_SETUP, &hdev->dev_flags))
+		memcpy(hdev->dev_name, rp->name, HCI_MAX_NAME_LENGTH);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_cc_write_auth_enable(struct hci_dev *hdev, struct sk_buff *skb)
@@ -264,6 +322,12 @@ static void hci_cc_write_auth_enable(struct hci_dev *hdev, struct sk_buff *skb)
 			clear_bit(HCI_AUTH, &hdev->flags);
 	}
 
+<<<<<<< HEAD
+=======
+	if (test_bit(HCI_MGMT, &hdev->dev_flags))
+		mgmt_auth_enable_complete(hdev, status);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	hci_req_complete(hdev, HCI_OP_WRITE_AUTH_ENABLE, status);
 }
 
@@ -292,7 +356,12 @@ static void hci_cc_write_encrypt_mode(struct hci_dev *hdev, struct sk_buff *skb)
 
 static void hci_cc_write_scan_enable(struct hci_dev *hdev, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	__u8 status = *((__u8 *) skb->data);
+=======
+	__u8 param, status = *((__u8 *) skb->data);
+	int old_pscan, old_iscan;
+>>>>>>> remotes/linux2/linux-3.4.y
 	void *sent;
 
 	BT_DBG("%s status 0x%x", hdev->name, status);
@@ -301,6 +370,7 @@ static void hci_cc_write_scan_enable(struct hci_dev *hdev, struct sk_buff *skb)
 	if (!sent)
 		return;
 
+<<<<<<< HEAD
 	if (!status) {
 		__u8 param = *((__u8 *) sent);
 		int old_pscan, old_iscan;
@@ -325,6 +395,42 @@ static void hci_cc_write_scan_enable(struct hci_dev *hdev, struct sk_buff *skb)
 		hci_dev_unlock(hdev);
 	}
 
+=======
+	param = *((__u8 *) sent);
+
+	hci_dev_lock(hdev);
+
+	if (status != 0) {
+		mgmt_write_scan_failed(hdev, param, status);
+		hdev->discov_timeout = 0;
+		goto done;
+	}
+
+	old_pscan = test_and_clear_bit(HCI_PSCAN, &hdev->flags);
+	old_iscan = test_and_clear_bit(HCI_ISCAN, &hdev->flags);
+
+	if (param & SCAN_INQUIRY) {
+		set_bit(HCI_ISCAN, &hdev->flags);
+		if (!old_iscan)
+			mgmt_discoverable(hdev, 1);
+		if (hdev->discov_timeout > 0) {
+			int to = msecs_to_jiffies(hdev->discov_timeout * 1000);
+			queue_delayed_work(hdev->workqueue, &hdev->discov_off,
+									to);
+		}
+	} else if (old_iscan)
+		mgmt_discoverable(hdev, 0);
+
+	if (param & SCAN_PAGE) {
+		set_bit(HCI_PSCAN, &hdev->flags);
+		if (!old_pscan)
+			mgmt_connectable(hdev, 1);
+	} else if (old_pscan)
+		mgmt_connectable(hdev, 0);
+
+done:
+	hci_dev_unlock(hdev);
+>>>>>>> remotes/linux2/linux-3.4.y
 	hci_req_complete(hdev, HCI_OP_WRITE_SCAN_ENABLE, status);
 }
 
@@ -350,14 +456,29 @@ static void hci_cc_write_class_of_dev(struct hci_dev *hdev, struct sk_buff *skb)
 
 	BT_DBG("%s status 0x%x", hdev->name, status);
 
+<<<<<<< HEAD
 	if (status)
 		return;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	sent = hci_sent_cmd_data(hdev, HCI_OP_WRITE_CLASS_OF_DEV);
 	if (!sent)
 		return;
 
+<<<<<<< HEAD
 	memcpy(hdev->dev_class, sent, 3);
+=======
+	hci_dev_lock(hdev);
+
+	if (status == 0)
+		memcpy(hdev->dev_class, sent, 3);
+
+	if (test_bit(HCI_MGMT, &hdev->dev_flags))
+		mgmt_set_class_of_dev_complete(hdev, sent, status);
+
+	hci_dev_unlock(hdev);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_cc_read_voice_setting(struct hci_dev *hdev, struct sk_buff *skb)
@@ -379,11 +500,16 @@ static void hci_cc_read_voice_setting(struct hci_dev *hdev, struct sk_buff *skb)
 
 	BT_DBG("%s voice setting 0x%04x", hdev->name, setting);
 
+<<<<<<< HEAD
 	if (hdev->notify) {
 		tasklet_disable(&hdev->tx_task);
 		hdev->notify(hdev, HCI_NOTIFY_VOICE_SETTING);
 		tasklet_enable(&hdev->tx_task);
 	}
+=======
+	if (hdev->notify)
+		hdev->notify(hdev, HCI_NOTIFY_VOICE_SETTING);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_cc_write_voice_setting(struct hci_dev *hdev, struct sk_buff *skb)
@@ -410,11 +536,16 @@ static void hci_cc_write_voice_setting(struct hci_dev *hdev, struct sk_buff *skb
 
 	BT_DBG("%s voice setting 0x%04x", hdev->name, setting);
 
+<<<<<<< HEAD
 	if (hdev->notify) {
 		tasklet_disable(&hdev->tx_task);
 		hdev->notify(hdev, HCI_NOTIFY_VOICE_SETTING);
 		tasklet_enable(&hdev->tx_task);
 	}
+=======
+	if (hdev->notify)
+		hdev->notify(hdev, HCI_NOTIFY_VOICE_SETTING);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_cc_host_buffer_size(struct hci_dev *hdev, struct sk_buff *skb)
@@ -426,6 +557,7 @@ static void hci_cc_host_buffer_size(struct hci_dev *hdev, struct sk_buff *skb)
 	hci_req_complete(hdev, HCI_OP_HOST_BUFFER_SIZE, status);
 }
 
+<<<<<<< HEAD
 static void hci_cc_le_clear_white_list(struct hci_dev *hdev,
 							struct sk_buff *skb)
 {
@@ -448,6 +580,8 @@ static void hci_cc_read_ssp_mode(struct hci_dev *hdev, struct sk_buff *skb)
 	hdev->ssp_mode = rp->mode;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static void hci_cc_write_ssp_mode(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	__u8 status = *((__u8 *) skb->data);
@@ -455,14 +589,28 @@ static void hci_cc_write_ssp_mode(struct hci_dev *hdev, struct sk_buff *skb)
 
 	BT_DBG("%s status 0x%x", hdev->name, status);
 
+<<<<<<< HEAD
 	if (status)
 		return;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	sent = hci_sent_cmd_data(hdev, HCI_OP_WRITE_SSP_MODE);
 	if (!sent)
 		return;
 
+<<<<<<< HEAD
 	hdev->ssp_mode = *((__u8 *) sent);
+=======
+	if (test_bit(HCI_MGMT, &hdev->dev_flags))
+		mgmt_ssp_enable_complete(hdev, *((u8 *) sent), status);
+	else if (!status) {
+		if (*((u8 *) sent))
+			set_bit(HCI_SSP_ENABLED, &hdev->dev_flags);
+		else
+			clear_bit(HCI_SSP_ENABLED, &hdev->dev_flags);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static u8 hci_get_inquiry_mode(struct hci_dev *hdev)
@@ -509,6 +657,7 @@ static void hci_setup_event_mask(struct hci_dev *hdev)
 	 * command otherwise */
 	u8 events[8] = { 0xff, 0xff, 0xfb, 0xff, 0x00, 0x00, 0x00, 0x00 };
 
+<<<<<<< HEAD
 	BT_DBG("");
 
 	/* Events for 1.2 and newer controllers */
@@ -519,6 +668,18 @@ static void hci_setup_event_mask(struct hci_dev *hdev)
 		events[5] |= 0x08; /* Synchronous Connection Complete */
 		events[5] |= 0x10; /* Synchronous Connection Changed */
 	}
+=======
+	/* CSR 1.1 dongles does not accept any bitfield so don't try to set
+	 * any event mask for pre 1.2 devices */
+	if (hdev->hci_ver < BLUETOOTH_VER_1_2)
+		return;
+
+	events[4] |= 0x01; /* Flow Specification Complete */
+	events[4] |= 0x02; /* Inquiry Result with RSSI */
+	events[4] |= 0x04; /* Read Remote Extended Features Complete */
+	events[5] |= 0x08; /* Synchronous Connection Complete */
+	events[5] |= 0x10; /* Synchronous Connection Changed */
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (hdev->features[3] & LMP_RSSI_INQ)
 		events[4] |= 0x04; /* Inquiry Result with RSSI */
@@ -559,12 +720,36 @@ static void hci_setup_event_mask(struct hci_dev *hdev)
 
 static void hci_setup(struct hci_dev *hdev)
 {
+<<<<<<< HEAD
 	if (hdev->lmp_ver > 1)
 		hci_send_cmd(hdev, HCI_OP_READ_LOCAL_COMMANDS, 0, NULL);
 
 	if (hdev->features[6] & LMP_SIMPLE_PAIR) {
 		u8 mode = 0x01;
 		hci_send_cmd(hdev, HCI_OP_WRITE_SSP_MODE, sizeof(mode), &mode);
+=======
+	if (hdev->dev_type != HCI_BREDR)
+		return;
+
+	hci_setup_event_mask(hdev);
+
+	if (hdev->hci_ver > BLUETOOTH_VER_1_1)
+		hci_send_cmd(hdev, HCI_OP_READ_LOCAL_COMMANDS, 0, NULL);
+
+	if (hdev->features[6] & LMP_SIMPLE_PAIR) {
+		if (test_bit(HCI_SSP_ENABLED, &hdev->dev_flags)) {
+			u8 mode = 0x01;
+			hci_send_cmd(hdev, HCI_OP_WRITE_SSP_MODE,
+				     sizeof(mode), &mode);
+		} else {
+			struct hci_cp_write_eir cp;
+
+			memset(hdev->eir, 0, sizeof(hdev->eir));
+			memset(&cp, 0, sizeof(cp));
+
+			hci_send_cmd(hdev, HCI_OP_WRITE_EIR, sizeof(cp), &cp);
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	if (hdev->features[3] & LMP_RSSI_INQ)
@@ -572,6 +757,23 @@ static void hci_setup(struct hci_dev *hdev)
 
 	if (hdev->features[7] & LMP_INQ_TX_PWR)
 		hci_send_cmd(hdev, HCI_OP_READ_INQ_RSP_TX_POWER, 0, NULL);
+<<<<<<< HEAD
+=======
+
+	if (hdev->features[7] & LMP_EXTFEATURES) {
+		struct hci_cp_read_local_ext_features cp;
+
+		cp.page = 0x01;
+		hci_send_cmd(hdev, HCI_OP_READ_LOCAL_EXT_FEATURES, sizeof(cp),
+			     &cp);
+	}
+
+	if (test_bit(HCI_LINK_SECURITY, &hdev->dev_flags)) {
+		u8 enable = 1;
+		hci_send_cmd(hdev, HCI_OP_WRITE_AUTH_ENABLE, sizeof(enable),
+			     &enable);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_cc_read_local_version(struct hci_dev *hdev, struct sk_buff *skb)
@@ -581,7 +783,11 @@ static void hci_cc_read_local_version(struct hci_dev *hdev, struct sk_buff *skb)
 	BT_DBG("%s status 0x%x", hdev->name, rp->status);
 
 	if (rp->status)
+<<<<<<< HEAD
 		return;
+=======
+		goto done;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	hdev->hci_ver = rp->hci_ver;
 	hdev->hci_rev = __le16_to_cpu(rp->hci_rev);
@@ -593,8 +799,16 @@ static void hci_cc_read_local_version(struct hci_dev *hdev, struct sk_buff *skb)
 					hdev->manufacturer,
 					hdev->hci_ver, hdev->hci_rev);
 
+<<<<<<< HEAD
 	if (hdev->dev_type == HCI_BREDR && test_bit(HCI_INIT, &hdev->flags))
 		hci_setup(hdev);
+=======
+	if (test_bit(HCI_INIT, &hdev->flags))
+		hci_setup(hdev);
+
+done:
+	hci_req_complete(hdev, HCI_OP_READ_LOCAL_VERSION, rp->status);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_setup_link_policy(struct hci_dev *hdev)
@@ -611,8 +825,13 @@ static void hci_setup_link_policy(struct hci_dev *hdev)
 		link_policy |= HCI_LP_PARK;
 
 	link_policy = cpu_to_le16(link_policy);
+<<<<<<< HEAD
 	hci_send_cmd(hdev, HCI_OP_WRITE_DEF_LINK_POLICY,
 					sizeof(link_policy), &link_policy);
+=======
+	hci_send_cmd(hdev, HCI_OP_WRITE_DEF_LINK_POLICY, sizeof(link_policy),
+		     &link_policy);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_cc_read_local_commands(struct hci_dev *hdev, struct sk_buff *skb)
@@ -644,6 +863,7 @@ static void hci_cc_read_local_features(struct hci_dev *hdev, struct sk_buff *skb
 
 	memcpy(hdev->features, rp->features, 8);
 
+<<<<<<< HEAD
 	if (hdev->dev_type == HCI_BREDR && test_bit(HCI_INIT, &hdev->flags)) {
 		if (hdev->features[6] & LMP_SIMPLE_PAIR) {
 			u8 mode = 0x01;
@@ -661,6 +881,8 @@ static void hci_cc_read_local_features(struct hci_dev *hdev, struct sk_buff *skb
 		hci_setup_event_mask(hdev);
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Adjust default settings according to features
 	 * supported by device. */
 
@@ -705,8 +927,55 @@ static void hci_cc_read_local_features(struct hci_dev *hdev, struct sk_buff *skb
 					hdev->features[6], hdev->features[7]);
 }
 
+<<<<<<< HEAD
 static void hci_cc_read_flow_control_mode(struct hci_dev *hdev,
 					struct sk_buff *skb)
+=======
+static void hci_set_le_support(struct hci_dev *hdev)
+{
+	struct hci_cp_write_le_host_supported cp;
+
+	memset(&cp, 0, sizeof(cp));
+
+	if (enable_le && test_bit(HCI_LE_ENABLED, &hdev->dev_flags)) {
+		cp.le = 1;
+		cp.simul = !!(hdev->features[6] & LMP_SIMUL_LE_BR);
+	}
+
+	if (cp.le != !!(hdev->host_features[0] & LMP_HOST_LE))
+		hci_send_cmd(hdev, HCI_OP_WRITE_LE_HOST_SUPPORTED, sizeof(cp),
+			     &cp);
+}
+
+static void hci_cc_read_local_ext_features(struct hci_dev *hdev,
+							struct sk_buff *skb)
+{
+	struct hci_rp_read_local_ext_features *rp = (void *) skb->data;
+
+	BT_DBG("%s status 0x%x", hdev->name, rp->status);
+
+	if (rp->status)
+		goto done;
+
+	switch (rp->page) {
+	case 0:
+		memcpy(hdev->features, rp->features, 8);
+		break;
+	case 1:
+		memcpy(hdev->host_features, rp->features, 8);
+		break;
+	}
+
+	if (test_bit(HCI_INIT, &hdev->flags) && hdev->features[4] & LMP_LE)
+		hci_set_le_support(hdev);
+
+done:
+	hci_req_complete(hdev, HCI_OP_READ_LOCAL_EXT_FEATURES, rp->status);
+}
+
+static void hci_cc_read_flow_control_mode(struct hci_dev *hdev,
+						struct sk_buff *skb)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct hci_rp_read_flow_control_mode *rp = (void *) skb->data;
 
@@ -716,6 +985,11 @@ static void hci_cc_read_flow_control_mode(struct hci_dev *hdev,
 		return;
 
 	hdev->flow_ctl_mode = rp->mode;
+<<<<<<< HEAD
+=======
+
+	hci_req_complete(hdev, HCI_OP_READ_FLOW_CONTROL_MODE, rp->status);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_cc_read_buffer_size(struct hci_dev *hdev, struct sk_buff *skb)
@@ -727,6 +1001,7 @@ static void hci_cc_read_buffer_size(struct hci_dev *hdev, struct sk_buff *skb)
 	if (rp->status)
 		return;
 
+<<<<<<< HEAD
 	if (hdev->flow_ctl_mode == HCI_PACKET_BASED_FLOW_CTL_MODE) {
 		hdev->acl_mtu  = __le16_to_cpu(rp->acl_mtu);
 		hdev->sco_mtu  = rp->sco_mtu;
@@ -735,12 +1010,23 @@ static void hci_cc_read_buffer_size(struct hci_dev *hdev, struct sk_buff *skb)
 		hdev->acl_cnt = hdev->acl_pkts;
 		hdev->sco_cnt = hdev->sco_pkts;
 	}
+=======
+	hdev->acl_mtu  = __le16_to_cpu(rp->acl_mtu);
+	hdev->sco_mtu  = rp->sco_mtu;
+	hdev->acl_pkts = __le16_to_cpu(rp->acl_max_pkt);
+	hdev->sco_pkts = __le16_to_cpu(rp->sco_max_pkt);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (test_bit(HCI_QUIRK_FIXUP_BUFFER_SIZE, &hdev->quirks)) {
 		hdev->sco_mtu  = 64;
 		hdev->sco_pkts = 8;
 	}
 
+<<<<<<< HEAD
+=======
+	hdev->acl_cnt = hdev->acl_pkts;
+	hdev->sco_cnt = hdev->sco_pkts;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	BT_DBG("%s acl mtu %d:%d sco mtu %d:%d", hdev->name,
 					hdev->acl_mtu, hdev->acl_pkts,
@@ -759,6 +1045,7 @@ static void hci_cc_read_bd_addr(struct hci_dev *hdev, struct sk_buff *skb)
 	hci_req_complete(hdev, HCI_OP_READ_BD_ADDR, rp->status);
 }
 
+<<<<<<< HEAD
 static void hci_cc_write_ca_timeout(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	__u8 status = *((__u8 *) skb->data);
@@ -770,6 +1057,10 @@ static void hci_cc_write_ca_timeout(struct hci_dev *hdev, struct sk_buff *skb)
 
 static void hci_cc_read_data_block_size(struct hci_dev *hdev,
 					struct sk_buff *skb)
+=======
+static void hci_cc_read_data_block_size(struct hci_dev *hdev,
+							struct sk_buff *skb)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct hci_rp_read_data_block_size *rp = (void *) skb->data;
 
@@ -778,6 +1069,7 @@ static void hci_cc_read_data_block_size(struct hci_dev *hdev,
 	if (rp->status)
 		return;
 
+<<<<<<< HEAD
 	if (hdev->flow_ctl_mode == HCI_BLOCK_BASED_FLOW_CTL_MODE) {
 		hdev->acl_mtu  = __le16_to_cpu(rp->max_acl_len);
 		hdev->sco_mtu = 0;
@@ -795,6 +1087,31 @@ static void hci_cc_read_data_block_size(struct hci_dev *hdev,
 
 static void hci_cc_read_local_amp_info(struct hci_dev *hdev,
 				struct sk_buff *skb)
+=======
+	hdev->block_mtu = __le16_to_cpu(rp->max_acl_len);
+	hdev->block_len = __le16_to_cpu(rp->block_len);
+	hdev->num_blocks = __le16_to_cpu(rp->num_blocks);
+
+	hdev->block_cnt = hdev->num_blocks;
+
+	BT_DBG("%s blk mtu %d cnt %d len %d", hdev->name, hdev->block_mtu,
+					hdev->block_cnt, hdev->block_len);
+
+	hci_req_complete(hdev, HCI_OP_READ_DATA_BLOCK_SIZE, rp->status);
+}
+
+static void hci_cc_write_ca_timeout(struct hci_dev *hdev, struct sk_buff *skb)
+{
+	__u8 status = *((__u8 *) skb->data);
+
+	BT_DBG("%s status 0x%x", hdev->name, status);
+
+	hci_req_complete(hdev, HCI_OP_WRITE_CA_TIMEOUT, status);
+}
+
+static void hci_cc_read_local_amp_info(struct hci_dev *hdev,
+		struct sk_buff *skb)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct hci_rp_read_local_amp_info *rp = (void *) skb->data;
 
@@ -872,10 +1189,18 @@ static void hci_cc_pin_code_reply(struct hci_dev *hdev, struct sk_buff *skb)
 	struct hci_conn *conn;
 
 	BT_DBG("%s status 0x%x", hdev->name, rp->status);
+<<<<<<< HEAD
 	hci_dev_lock(hdev);
 
 	if (test_bit(HCI_MGMT, &hdev->flags))
 		mgmt_pin_code_reply_complete(hdev->id, &rp->bdaddr, rp->status);
+=======
+
+	hci_dev_lock(hdev);
+
+	if (test_bit(HCI_MGMT, &hdev->dev_flags))
+		mgmt_pin_code_reply_complete(hdev, &rp->bdaddr, rp->status);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (rp->status != 0)
 		goto unlock;
@@ -887,6 +1212,10 @@ static void hci_cc_pin_code_reply(struct hci_dev *hdev, struct sk_buff *skb)
 	conn = hci_conn_hash_lookup_ba(hdev, ACL_LINK, &cp->bdaddr);
 	if (conn)
 		conn->pin_length = cp->pin_len;
+<<<<<<< HEAD
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 unlock:
 	hci_dev_unlock(hdev);
 }
@@ -896,6 +1225,7 @@ static void hci_cc_pin_code_neg_reply(struct hci_dev *hdev, struct sk_buff *skb)
 	struct hci_rp_pin_code_neg_reply *rp = (void *) skb->data;
 
 	BT_DBG("%s status 0x%x", hdev->name, rp->status);
+<<<<<<< HEAD
 	hci_dev_lock(hdev);
 
 	if (test_bit(HCI_MGMT, &hdev->flags))
@@ -903,6 +1233,18 @@ static void hci_cc_pin_code_neg_reply(struct hci_dev *hdev, struct sk_buff *skb)
 								rp->status);
 	hci_dev_unlock(hdev);
 }
+=======
+
+	hci_dev_lock(hdev);
+
+	if (test_bit(HCI_MGMT, &hdev->dev_flags))
+		mgmt_pin_code_neg_reply_complete(hdev, &rp->bdaddr,
+								rp->status);
+
+	hci_dev_unlock(hdev);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static void hci_cc_le_read_buffer_size(struct hci_dev *hdev,
 				       struct sk_buff *skb)
 {
@@ -923,6 +1265,7 @@ static void hci_cc_le_read_buffer_size(struct hci_dev *hdev,
 	hci_req_complete(hdev, HCI_OP_LE_READ_BUFFER_SIZE, rp->status);
 }
 
+<<<<<<< HEAD
 static void hci_cc_le_read_white_list_size(struct hci_dev *hdev,
 				       struct sk_buff *skb)
 {
@@ -941,10 +1284,30 @@ static void hci_cc_le_read_white_list_size(struct hci_dev *hdev,
 }
 
 static void hci_cc_user_confirm_reply(struct hci_dev *hdev, struct sk_buff *skb)
+=======
+static void hci_cc_user_confirm_reply(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	struct hci_rp_user_confirm_reply *rp = (void *) skb->data;
 
 	BT_DBG("%s status 0x%x", hdev->name, rp->status);
+
+	hci_dev_lock(hdev);
+
+	if (test_bit(HCI_MGMT, &hdev->dev_flags))
+		mgmt_user_confirm_reply_complete(hdev, &rp->bdaddr, ACL_LINK, 0,
+						 rp->status);
+
+	hci_dev_unlock(hdev);
+}
+
+static void hci_cc_user_confirm_neg_reply(struct hci_dev *hdev,
+							struct sk_buff *skb)
+>>>>>>> remotes/linux2/linux-3.4.y
+{
+	struct hci_rp_user_confirm_reply *rp = (void *) skb->data;
+
+	BT_DBG("%s status 0x%x", hdev->name, rp->status);
+<<<<<<< HEAD
 	hci_dev_lock(hdev);
 
 	if (test_bit(HCI_MGMT, &hdev->flags))
@@ -955,10 +1318,24 @@ static void hci_cc_user_confirm_reply(struct hci_dev *hdev, struct sk_buff *skb)
 
 static void hci_cc_user_confirm_neg_reply(struct hci_dev *hdev,
 							struct sk_buff *skb)
+=======
+
+	hci_dev_lock(hdev);
+
+	if (test_bit(HCI_MGMT, &hdev->dev_flags))
+		mgmt_user_confirm_neg_reply_complete(hdev, &rp->bdaddr,
+						     ACL_LINK, 0, rp->status);
+
+	hci_dev_unlock(hdev);
+}
+
+static void hci_cc_user_passkey_reply(struct hci_dev *hdev, struct sk_buff *skb)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct hci_rp_user_confirm_reply *rp = (void *) skb->data;
 
 	BT_DBG("%s status 0x%x", hdev->name, rp->status);
+<<<<<<< HEAD
 	hci_dev_lock(hdev);
 
 	if (test_bit(HCI_MGMT, &hdev->flags))
@@ -980,6 +1357,32 @@ static void hci_cc_read_rssi(struct hci_dev *hdev, struct sk_buff *skb)
 	if (conn)
 		mgmt_read_rssi_complete(hdev->id, rp->rssi, &conn->dst,
 			__le16_to_cpu(rp->handle), rp->status);
+=======
+
+	hci_dev_lock(hdev);
+
+	if (test_bit(HCI_MGMT, &hdev->dev_flags))
+		mgmt_user_passkey_reply_complete(hdev, &rp->bdaddr, ACL_LINK,
+						 0, rp->status);
+
+	hci_dev_unlock(hdev);
+}
+
+static void hci_cc_user_passkey_neg_reply(struct hci_dev *hdev,
+							struct sk_buff *skb)
+{
+	struct hci_rp_user_confirm_reply *rp = (void *) skb->data;
+
+	BT_DBG("%s status 0x%x", hdev->name, rp->status);
+
+	hci_dev_lock(hdev);
+
+	if (test_bit(HCI_MGMT, &hdev->dev_flags))
+		mgmt_user_passkey_neg_reply_complete(hdev, &rp->bdaddr,
+						     ACL_LINK, 0, rp->status);
+
+	hci_dev_unlock(hdev);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void hci_cc_read_local_oob_data_reply(struct hci_dev *hdev,
@@ -988,13 +1391,95 @@ static void hci_cc_read_local_oob_data_reply(struct hci_dev *hdev,
 	struct hci_rp_read_local_oob_data *rp = (void *) skb->data;
 
 	BT_DBG("%s status 0x%x", hdev->name, rp->status);
+<<<<<<< HEAD
 	hci_dev_lock(hdev);
 
 	mgmt_read_local_oob_data_reply_complete(hdev->id, rp->hash,
+=======
+
+	hci_dev_lock(hdev);
+	mgmt_read_local_oob_data_reply_complete(hdev, rp->hash,
+>>>>>>> remotes/linux2/linux-3.4.y
 						rp->randomizer, rp->status);
 	hci_dev_unlock(hdev);
 }
 
+<<<<<<< HEAD
+=======
+static void hci_cc_le_set_scan_param(struct hci_dev *hdev, struct sk_buff *skb)
+{
+	__u8 status = *((__u8 *) skb->data);
+
+	BT_DBG("%s status 0x%x", hdev->name, status);
+
+	hci_req_complete(hdev, HCI_OP_LE_SET_SCAN_PARAM, status);
+
+	if (status) {
+		hci_dev_lock(hdev);
+		mgmt_start_discovery_failed(hdev, status);
+		hci_dev_unlock(hdev);
+		return;
+	}
+}
+
+static void hci_cc_le_set_scan_enable(struct hci_dev *hdev,
+					struct sk_buff *skb)
+{
+	struct hci_cp_le_set_scan_enable *cp;
+	__u8 status = *((__u8 *) skb->data);
+
+	BT_DBG("%s status 0x%x", hdev->name, status);
+
+	cp = hci_sent_cmd_data(hdev, HCI_OP_LE_SET_SCAN_ENABLE);
+	if (!cp)
+		return;
+
+	switch (cp->enable) {
+	case LE_SCANNING_ENABLED:
+		hci_req_complete(hdev, HCI_OP_LE_SET_SCAN_ENABLE, status);
+
+		if (status) {
+			hci_dev_lock(hdev);
+			mgmt_start_discovery_failed(hdev, status);
+			hci_dev_unlock(hdev);
+			return;
+		}
+
+		set_bit(HCI_LE_SCAN, &hdev->dev_flags);
+
+		cancel_delayed_work_sync(&hdev->adv_work);
+
+		hci_dev_lock(hdev);
+		hci_adv_entries_clear(hdev);
+		hci_discovery_set_state(hdev, DISCOVERY_FINDING);
+		hci_dev_unlock(hdev);
+		break;
+
+	case LE_SCANNING_DISABLED:
+		if (status)
+			return;
+
+		clear_bit(HCI_LE_SCAN, &hdev->dev_flags);
+
+		schedule_delayed_work(&hdev->adv_work, ADV_CLEAR_TIMEOUT);
+
+		if (hdev->discovery.type == DISCOV_TYPE_INTERLEAVED) {
+			mgmt_interleaved_discovery(hdev);
+		} else {
+			hci_dev_lock(hdev);
+			hci_discovery_set_state(hdev, DISCOVERY_STOPPED);
+			hci_dev_unlock(hdev);
+		}
+
+		break;
+
+	default:
+		BT_ERR("Used reserved LE_Scan_Enable param %d", cp->enable);
+		break;
+	}
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static void hci_cc_le_ltk_reply(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	struct hci_rp_le_ltk_reply *rp = (void *) skb->data;
@@ -1019,6 +1504,7 @@ static void hci_cc_le_ltk_neg_reply(struct hci_dev *hdev, struct sk_buff *skb)
 	hci_req_complete(hdev, HCI_OP_LE_LTK_NEG_REPLY, rp->status);
 }
 
+<<<<<<< HEAD
 static void hci_cc_le_set_scan_enable(struct hci_dev *hdev,
 					struct sk_buff *skb)
 {
@@ -1040,6 +1526,33 @@ static void hci_cc_le_set_scan_enable(struct hci_dev *hdev,
 		mod_timer(&hdev->adv_timer, jiffies + ADV_CLEAR_TIMEOUT);
 	}
 }
+=======
+static inline void hci_cc_write_le_host_supported(struct hci_dev *hdev,
+							struct sk_buff *skb)
+{
+	struct hci_cp_write_le_host_supported *sent;
+	__u8 status = *((__u8 *) skb->data);
+
+	BT_DBG("%s status 0x%x", hdev->name, status);
+
+	sent = hci_sent_cmd_data(hdev, HCI_OP_WRITE_LE_HOST_SUPPORTED);
+	if (!sent)
+		return;
+
+	if (!status) {
+		if (sent->le)
+			hdev->host_features[0] |= LMP_HOST_LE;
+		else
+			hdev->host_features[0] &= ~LMP_HOST_LE;
+	}
+
+	if (test_bit(HCI_MGMT, &hdev->dev_flags) &&
+					!test_bit(HCI_INIT, &hdev->flags))
+		mgmt_le_enable_complete(hdev, sent->le, status);
+
+	hci_req_complete(hdev, HCI_OP_WRITE_LE_HOST_SUPPORTED, status);
+}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static inline void hci_cs_inquiry(struct hci_dev *hdev, __u8 status)
 {
@@ -1047,6 +1560,7 @@ static inline void hci_cs_inquiry(struct hci_dev *hdev, __u8 status)
 
 	if (status) {
 		hci_req_complete(hdev, HCI_OP_INQUIRY, status);
+<<<<<<< HEAD
 
 		hci_conn_check_pending(hdev);
 	} else {
@@ -1056,6 +1570,21 @@ static inline void hci_cs_inquiry(struct hci_dev *hdev, __u8 status)
 			mgmt_inquiry_started(hdev->id);
 		hci_dev_unlock(hdev);
 	}
+=======
+		hci_conn_check_pending(hdev);
+		hci_dev_lock(hdev);
+		if (test_bit(HCI_MGMT, &hdev->dev_flags))
+			mgmt_start_discovery_failed(hdev, status);
+		hci_dev_unlock(hdev);
+		return;
+	}
+
+	set_bit(HCI_INQUIRY, &hdev->flags);
+
+	hci_dev_lock(hdev);
+	hci_discovery_set_state(hdev, DISCOVERY_FINDING);
+	hci_dev_unlock(hdev);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static inline void hci_cs_create_conn(struct hci_dev *hdev, __u8 status)
@@ -1086,9 +1615,15 @@ static inline void hci_cs_create_conn(struct hci_dev *hdev, __u8 status)
 		}
 	} else {
 		if (!conn) {
+<<<<<<< HEAD
 			conn = hci_conn_add(hdev, ACL_LINK, 0, &cp->bdaddr);
 			if (conn) {
 				conn->out = 1;
+=======
+			conn = hci_conn_add(hdev, ACL_LINK, &cp->bdaddr);
+			if (conn) {
+				conn->out = true;
+>>>>>>> remotes/linux2/linux-3.4.y
 				conn->link_mode |= HCI_LM_MASTER;
 			} else
 				BT_ERR("No memory for new connection");
@@ -1140,6 +1675,12 @@ static void hci_cs_auth_requested(struct hci_dev *hdev, __u8 status)
 
 	BT_DBG("%s status 0x%x", hdev->name, status);
 
+<<<<<<< HEAD
+=======
+	if (!status)
+		return;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	cp = hci_sent_cmd_data(hdev, HCI_OP_AUTH_REQUESTED);
 	if (!cp)
 		return;
@@ -1148,6 +1689,7 @@ static void hci_cs_auth_requested(struct hci_dev *hdev, __u8 status)
 
 	conn = hci_conn_hash_lookup_handle(hdev, __le16_to_cpu(cp->handle));
 	if (conn) {
+<<<<<<< HEAD
 		if (status) {
 			mgmt_auth_failed(hdev->id, &conn->dst, status);
 			clear_bit(HCI_CONN_AUTH_PEND, &conn->pend);
@@ -1169,6 +1711,12 @@ static void hci_cs_auth_requested(struct hci_dev *hdev, __u8 status)
 			}
 		}
 		conn->auth_initiator = 1;
+=======
+		if (conn->state == BT_CONFIG) {
+			hci_proto_connect_cfm(conn, status);
+			hci_conn_put(conn);
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	hci_dev_unlock(hdev);
@@ -1211,15 +1759,103 @@ static int hci_outgoing_auth_needed(struct hci_dev *hdev,
 		return 0;
 
 	/* Only request authentication for SSP connections or non-SSP
+<<<<<<< HEAD
 	 * devices with sec_level >= BT_SECURITY_MEDIUM*/
 	 BT_DBG("Pending sec level is %d", conn->pending_sec_level);
 	if (!(hdev->ssp_mode > 0 && conn->ssp_mode > 0) &&
 				conn->pending_sec_level < BT_SECURITY_MEDIUM)
+=======
+	 * devices with sec_level HIGH or if MITM protection is requested */
+	if (!hci_conn_ssp_enabled(conn) &&
+				conn->pending_sec_level != BT_SECURITY_HIGH &&
+				!(conn->auth_type & 0x01))
+>>>>>>> remotes/linux2/linux-3.4.y
 		return 0;
 
 	return 1;
 }
 
+<<<<<<< HEAD
+=======
+static inline int hci_resolve_name(struct hci_dev *hdev,
+				   struct inquiry_entry *e)
+{
+	struct hci_cp_remote_name_req cp;
+
+	memset(&cp, 0, sizeof(cp));
+
+	bacpy(&cp.bdaddr, &e->data.bdaddr);
+	cp.pscan_rep_mode = e->data.pscan_rep_mode;
+	cp.pscan_mode = e->data.pscan_mode;
+	cp.clock_offset = e->data.clock_offset;
+
+	return hci_send_cmd(hdev, HCI_OP_REMOTE_NAME_REQ, sizeof(cp), &cp);
+}
+
+static bool hci_resolve_next_name(struct hci_dev *hdev)
+{
+	struct discovery_state *discov = &hdev->discovery;
+	struct inquiry_entry *e;
+
+	if (list_empty(&discov->resolve))
+		return false;
+
+	e = hci_inquiry_cache_lookup_resolve(hdev, BDADDR_ANY, NAME_NEEDED);
+	if (!e)
+		return false;
+
+	if (hci_resolve_name(hdev, e) == 0) {
+		e->name_state = NAME_PENDING;
+		return true;
+	}
+
+	return false;
+}
+
+static void hci_check_pending_name(struct hci_dev *hdev, struct hci_conn *conn,
+				   bdaddr_t *bdaddr, u8 *name, u8 name_len)
+{
+	struct discovery_state *discov = &hdev->discovery;
+	struct inquiry_entry *e;
+
+	if (conn && !test_and_set_bit(HCI_CONN_MGMT_CONNECTED, &conn->flags))
+		mgmt_device_connected(hdev, bdaddr, ACL_LINK, 0x00, 0, name,
+				      name_len, conn->dev_class);
+
+	if (discov->state == DISCOVERY_STOPPED)
+		return;
+
+	if (discov->state == DISCOVERY_STOPPING)
+		goto discov_complete;
+
+	if (discov->state != DISCOVERY_RESOLVING)
+		return;
+
+	e = hci_inquiry_cache_lookup_resolve(hdev, bdaddr, NAME_PENDING);
+	/* If the device was not found in a list of found devices names of which
+	 * are pending. there is no need to continue resolving a next name as it
+	 * will be done upon receiving another Remote Name Request Complete
+	 * Event */
+	if (!e)
+		return;
+
+	list_del(&e->list);
+	if (name) {
+		e->name_state = NAME_KNOWN;
+		mgmt_remote_name(hdev, bdaddr, ACL_LINK, 0x00,
+				 e->data.rssi, name, name_len);
+	} else {
+		e->name_state = NAME_NOT_KNOWN;
+	}
+
+	if (hci_resolve_next_name(hdev))
+		return;
+
+discov_complete:
+	hci_discovery_set_state(hdev, DISCOVERY_STOPPED);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static void hci_cs_remote_name_req(struct hci_dev *hdev, __u8 status)
 {
 	struct hci_cp_remote_name_req *cp;
@@ -1239,12 +1875,30 @@ static void hci_cs_remote_name_req(struct hci_dev *hdev, __u8 status)
 	hci_dev_lock(hdev);
 
 	conn = hci_conn_hash_lookup_ba(hdev, ACL_LINK, &cp->bdaddr);
+<<<<<<< HEAD
 	if (conn && hci_outgoing_auth_needed(hdev, conn)) {
+=======
+
+	if (test_bit(HCI_MGMT, &hdev->dev_flags))
+		hci_check_pending_name(hdev, conn, &cp->bdaddr, NULL, 0);
+
+	if (!conn)
+		goto unlock;
+
+	if (!hci_outgoing_auth_needed(hdev, conn))
+		goto unlock;
+
+	if (!test_and_set_bit(HCI_CONN_AUTH_PEND, &conn->flags)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		struct hci_cp_auth_requested cp;
 		cp.handle = __cpu_to_le16(conn->handle);
 		hci_send_cmd(hdev, HCI_OP_AUTH_REQUESTED, sizeof(cp), &cp);
 	}
 
+<<<<<<< HEAD
+=======
+unlock:
+>>>>>>> remotes/linux2/linux-3.4.y
 	hci_dev_unlock(hdev);
 }
 
@@ -1355,9 +2009,15 @@ static void hci_cs_sniff_mode(struct hci_dev *hdev, __u8 status)
 
 	conn = hci_conn_hash_lookup_handle(hdev, __le16_to_cpu(cp->handle));
 	if (conn) {
+<<<<<<< HEAD
 		clear_bit(HCI_CONN_MODE_CHANGE_PEND, &conn->pend);
 
 		if (test_and_clear_bit(HCI_CONN_SCO_SETUP_PEND, &conn->pend))
+=======
+		clear_bit(HCI_CONN_MODE_CHANGE_PEND, &conn->flags);
+
+		if (test_and_clear_bit(HCI_CONN_SCO_SETUP_PEND, &conn->flags))
+>>>>>>> remotes/linux2/linux-3.4.y
 			hci_sco_setup(conn, status);
 	}
 
@@ -1382,20 +2042,54 @@ static void hci_cs_exit_sniff_mode(struct hci_dev *hdev, __u8 status)
 
 	conn = hci_conn_hash_lookup_handle(hdev, __le16_to_cpu(cp->handle));
 	if (conn) {
+<<<<<<< HEAD
 		clear_bit(HCI_CONN_MODE_CHANGE_PEND, &conn->pend);
 
 		if (test_and_clear_bit(HCI_CONN_SCO_SETUP_PEND, &conn->pend))
+=======
+		clear_bit(HCI_CONN_MODE_CHANGE_PEND, &conn->flags);
+
+		if (test_and_clear_bit(HCI_CONN_SCO_SETUP_PEND, &conn->flags))
+>>>>>>> remotes/linux2/linux-3.4.y
 			hci_sco_setup(conn, status);
 	}
 
 	hci_dev_unlock(hdev);
 }
 
+<<<<<<< HEAD
+=======
+static void hci_cs_disconnect(struct hci_dev *hdev, u8 status)
+{
+	struct hci_cp_disconnect *cp;
+	struct hci_conn *conn;
+
+	if (!status)
+		return;
+
+	cp = hci_sent_cmd_data(hdev, HCI_OP_DISCONNECT);
+	if (!cp)
+		return;
+
+	hci_dev_lock(hdev);
+
+	conn = hci_conn_hash_lookup_handle(hdev, __le16_to_cpu(cp->handle));
+	if (conn)
+		mgmt_disconnect_failed(hdev, &conn->dst, conn->type,
+				       conn->dst_type, status);
+
+	hci_dev_unlock(hdev);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static void hci_cs_le_create_conn(struct hci_dev *hdev, __u8 status)
 {
 	struct hci_cp_le_create_conn *cp;
 	struct hci_conn *conn;
+<<<<<<< HEAD
 	unsigned long exp = msecs_to_jiffies(5000);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	BT_DBG("%s status 0x%x", hdev->name, status);
 
@@ -1418,6 +2112,7 @@ static void hci_cs_le_create_conn(struct hci_dev *hdev, __u8 status)
 		}
 	} else {
 		if (!conn) {
+<<<<<<< HEAD
 			conn = hci_le_conn_add(hdev, &cp->peer_addr,
 						cp->peer_addr_type);
 			if (conn)
@@ -1458,11 +2153,22 @@ static void hci_cs_accept_logical_link(struct hci_dev *hdev, __u8 status)
 		}
 	} else if (chan) {
 		chan->state = BT_CONNECT2;
+=======
+			conn = hci_conn_add(hdev, LE_LINK, &cp->peer_addr);
+			if (conn) {
+				conn->dst_type = cp->peer_addr_type;
+				conn->out = true;
+			} else {
+				BT_ERR("No memory for new connection");
+			}
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	hci_dev_unlock(hdev);
 }
 
+<<<<<<< HEAD
 static void hci_cs_create_logical_link(struct hci_dev *hdev, __u8 status)
 {
 	struct hci_cp_create_logical_link *cp;
@@ -1529,10 +2235,34 @@ static void hci_cs_disconn_logical_link(struct hci_dev *hdev, __u8 status)
 
 	cp = hci_sent_cmd_data(hdev, HCI_OP_DISCONN_LOGICAL_LINK);
 	if (!cp)
+=======
+static void hci_cs_le_start_enc(struct hci_dev *hdev, u8 status)
+{
+	BT_DBG("%s status 0x%x", hdev->name, status);
+}
+
+static inline void hci_inquiry_complete_evt(struct hci_dev *hdev, struct sk_buff *skb)
+{
+	__u8 status = *((__u8 *) skb->data);
+	struct discovery_state *discov = &hdev->discovery;
+	struct inquiry_entry *e;
+
+	BT_DBG("%s status %d", hdev->name, status);
+
+	hci_req_complete(hdev, HCI_OP_INQUIRY, status);
+
+	hci_conn_check_pending(hdev);
+
+	if (!test_and_clear_bit(HCI_INQUIRY, &hdev->flags))
+		return;
+
+	if (!test_bit(HCI_MGMT, &hdev->dev_flags))
+>>>>>>> remotes/linux2/linux-3.4.y
 		return;
 
 	hci_dev_lock(hdev);
 
+<<<<<<< HEAD
 	chan = hci_chan_list_lookup_handle(hdev, cp->log_handle);
 	if (chan)
 		hci_chan_del(chan);
@@ -1588,6 +2318,26 @@ static inline void hci_inquiry_complete_evt(struct hci_dev *hdev, struct sk_buff
 
 	if (!lmp_le_capable(hdev))
 		hci_conn_check_pending(hdev);
+=======
+	if (discov->state != DISCOVERY_FINDING)
+		goto unlock;
+
+	if (list_empty(&discov->resolve)) {
+		hci_discovery_set_state(hdev, DISCOVERY_STOPPED);
+		goto unlock;
+	}
+
+	e = hci_inquiry_cache_lookup_resolve(hdev, BDADDR_ANY, NAME_NEEDED);
+	if (e && hci_resolve_name(hdev, e) == 0) {
+		e->name_state = NAME_PENDING;
+		hci_discovery_set_state(hdev, DISCOVERY_RESOLVING);
+	} else {
+		hci_discovery_set_state(hdev, DISCOVERY_STOPPED);
+	}
+
+unlock:
+	hci_dev_unlock(hdev);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static inline void hci_inquiry_result_evt(struct hci_dev *hdev, struct sk_buff *skb)
@@ -1604,6 +2354,11 @@ static inline void hci_inquiry_result_evt(struct hci_dev *hdev, struct sk_buff *
 	hci_dev_lock(hdev);
 
 	for (; num_rsp; num_rsp--, info++) {
+<<<<<<< HEAD
+=======
+		bool name_known, ssp;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 		bacpy(&data.bdaddr, &info->bdaddr);
 		data.pscan_rep_mode	= info->pscan_rep_mode;
 		data.pscan_period_mode	= info->pscan_period_mode;
@@ -1612,9 +2367,17 @@ static inline void hci_inquiry_result_evt(struct hci_dev *hdev, struct sk_buff *
 		data.clock_offset	= info->clock_offset;
 		data.rssi		= 0x00;
 		data.ssp_mode		= 0x00;
+<<<<<<< HEAD
 		hci_inquiry_cache_update(hdev, &data);
 		mgmt_device_found(hdev->id, &info->bdaddr, 0, 0,
 					info->dev_class, 0, 0, NULL);
+=======
+
+		name_known = hci_inquiry_cache_update(hdev, &data, false, &ssp);
+		mgmt_device_found(hdev, &info->bdaddr, ACL_LINK, 0x00,
+				  info->dev_class, 0, !name_known, ssp, NULL,
+				  0);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	hci_dev_unlock(hdev);
@@ -1647,12 +2410,21 @@ static inline void hci_conn_complete_evt(struct hci_dev *hdev, struct sk_buff *s
 		if (conn->type == ACL_LINK) {
 			conn->state = BT_CONFIG;
 			hci_conn_hold(conn);
+<<<<<<< HEAD
 			conn->disc_timeout = HCI_DISCONN_TIMEOUT;
 			mgmt_connected(hdev->id, &ev->bdaddr, 0);
 		} else if (conn->type == LE_LINK) {
 			conn->state = BT_CONNECTED;
 			conn->disc_timeout = HCI_DISCONN_TIMEOUT;
 			mgmt_connected(hdev->id, &ev->bdaddr, 1);
+=======
+
+			if (!conn->out && !hci_conn_ssp_enabled(conn) &&
+			    !hci_find_link_key(hdev, &ev->bdaddr))
+				conn->disc_timeout = HCI_PAIRING_TIMEOUT;
+			else
+				conn->disc_timeout = HCI_DISCONN_TIMEOUT;
+>>>>>>> remotes/linux2/linux-3.4.y
 		} else
 			conn->state = BT_CONNECTED;
 
@@ -1665,6 +2437,7 @@ static inline void hci_conn_complete_evt(struct hci_dev *hdev, struct sk_buff *s
 		if (test_bit(HCI_ENCRYPT, &hdev->flags))
 			conn->link_mode |= HCI_LM_ENCRYPT;
 
+<<<<<<< HEAD
 		/* Get remote version */
 		if (conn->type == ACL_LINK) {
 			struct hci_cp_read_remote_version cp;
@@ -1685,6 +2458,29 @@ static inline void hci_conn_complete_evt(struct hci_dev *hdev, struct sk_buff *s
 		conn->state = BT_CLOSED;
 		if (conn->type == ACL_LINK || conn->type == LE_LINK)
 			mgmt_connect_failed(hdev->id, &ev->bdaddr, ev->status);
+=======
+		/* Get remote features */
+		if (conn->type == ACL_LINK) {
+			struct hci_cp_read_remote_features cp;
+			cp.handle = ev->handle;
+			hci_send_cmd(hdev, HCI_OP_READ_REMOTE_FEATURES,
+				     sizeof(cp), &cp);
+		}
+
+		/* Set packet type for incoming connection */
+		if (!conn->out && hdev->hci_ver < BLUETOOTH_VER_2_0) {
+			struct hci_cp_change_conn_ptype cp;
+			cp.handle = ev->handle;
+			cp.pkt_type = cpu_to_le16(conn->pkt_type);
+			hci_send_cmd(hdev, HCI_OP_CHANGE_CONN_PTYPE, sizeof(cp),
+				     &cp);
+		}
+	} else {
+		conn->state = BT_CLOSED;
+		if (conn->type == ACL_LINK)
+			mgmt_connect_failed(hdev, &ev->bdaddr, conn->type,
+					    conn->dst_type, ev->status);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	if (conn->type == ACL_LINK)
@@ -1702,6 +2498,7 @@ unlock:
 	hci_conn_check_pending(hdev);
 }
 
+<<<<<<< HEAD
 static inline bool is_sco_active(struct hci_dev *hdev)
 {
 	if (hci_conn_hash_lookup_state(hdev, SCO_LINK, BT_CONNECTED) ||
@@ -1711,6 +2508,8 @@ static inline bool is_sco_active(struct hci_dev *hdev)
 	return false;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static inline void hci_conn_request_evt(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	struct hci_ev_conn_request *ev = (void *) skb->data;
@@ -1735,8 +2534,12 @@ static inline void hci_conn_request_evt(struct hci_dev *hdev, struct sk_buff *sk
 
 		conn = hci_conn_hash_lookup_ba(hdev, ev->link_type, &ev->bdaddr);
 		if (!conn) {
+<<<<<<< HEAD
 			/* pkt_type not yet used for incoming connections */
 			conn = hci_conn_add(hdev, ev->link_type, 0, &ev->bdaddr);
+=======
+			conn = hci_conn_add(hdev, ev->link_type, &ev->bdaddr);
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (!conn) {
 				BT_ERR("No memory for new connection");
 				hci_dev_unlock(hdev);
@@ -1745,8 +2548,11 @@ static inline void hci_conn_request_evt(struct hci_dev *hdev, struct sk_buff *sk
 		}
 
 		memcpy(conn->dev_class, ev->dev_class, 3);
+<<<<<<< HEAD
 		/* For incoming connection update remote class to userspace */
 		mgmt_remote_class(hdev->id, &ev->bdaddr, ev->dev_class);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		conn->state = BT_CONNECT;
 
 		hci_dev_unlock(hdev);
@@ -1756,14 +2562,23 @@ static inline void hci_conn_request_evt(struct hci_dev *hdev, struct sk_buff *sk
 
 			bacpy(&cp.bdaddr, &ev->bdaddr);
 
+<<<<<<< HEAD
 			if (lmp_rswitch_capable(hdev) && ((mask & HCI_LM_MASTER)
 						|| is_sco_active(hdev)))
+=======
+			if (lmp_rswitch_capable(hdev) && (mask & HCI_LM_MASTER))
+>>>>>>> remotes/linux2/linux-3.4.y
 				cp.role = 0x00; /* Become master */
 			else
 				cp.role = 0x01; /* Remain slave */
 
+<<<<<<< HEAD
 			hci_send_cmd(hdev, HCI_OP_ACCEPT_CONN_REQ,
 							sizeof(cp), &cp);
+=======
+			hci_send_cmd(hdev, HCI_OP_ACCEPT_CONN_REQ, sizeof(cp),
+				     &cp);
+>>>>>>> remotes/linux2/linux-3.4.y
 		} else {
 			struct hci_cp_accept_sync_conn_req cp;
 
@@ -1772,19 +2587,32 @@ static inline void hci_conn_request_evt(struct hci_dev *hdev, struct sk_buff *sk
 
 			cp.tx_bandwidth   = cpu_to_le32(0x00001f40);
 			cp.rx_bandwidth   = cpu_to_le32(0x00001f40);
+<<<<<<< HEAD
 			cp.max_latency    = cpu_to_le16(0x000A);
 			cp.content_format = cpu_to_le16(hdev->voice_setting);
 			cp.retrans_effort = 0x01;
 
 			hci_send_cmd(hdev, HCI_OP_ACCEPT_SYNC_CONN_REQ,
 							sizeof(cp), &cp);
+=======
+			cp.max_latency    = cpu_to_le16(0xffff);
+			cp.content_format = cpu_to_le16(hdev->voice_setting);
+			cp.retrans_effort = 0xff;
+
+			hci_send_cmd(hdev, HCI_OP_ACCEPT_SYNC_CONN_REQ,
+				     sizeof(cp), &cp);
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 	} else {
 		/* Connection rejected */
 		struct hci_cp_reject_conn_req cp;
 
 		bacpy(&cp.bdaddr, &ev->bdaddr);
+<<<<<<< HEAD
 		cp.reason = 0x0f;
+=======
+		cp.reason = HCI_ERROR_REJ_BAD_ADDR;
+>>>>>>> remotes/linux2/linux-3.4.y
 		hci_send_cmd(hdev, HCI_OP_REJECT_CONN_REQ, sizeof(cp), &cp);
 	}
 }
@@ -1794,6 +2622,7 @@ static inline void hci_disconn_complete_evt(struct hci_dev *hdev, struct sk_buff
 	struct hci_ev_disconn_complete *ev = (void *) skb->data;
 	struct hci_conn *conn;
 
+<<<<<<< HEAD
 	BT_DBG("%s status %d reason %d", hdev->name, ev->status, ev->reason);
 
 	if (ev->status) {
@@ -1802,6 +2631,9 @@ static inline void hci_disconn_complete_evt(struct hci_dev *hdev, struct sk_buff
 		hci_dev_unlock(hdev);
 		return;
 	}
+=======
+	BT_DBG("%s status %d", hdev->name, ev->status);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	hci_dev_lock(hdev);
 
@@ -1809,6 +2641,7 @@ static inline void hci_disconn_complete_evt(struct hci_dev *hdev, struct sk_buff
 	if (!conn)
 		goto unlock;
 
+<<<<<<< HEAD
 	conn->state = BT_CLOSED;
 
 	if (conn->type == ACL_LINK || conn->type == LE_LINK)
@@ -1819,6 +2652,27 @@ static inline void hci_disconn_complete_evt(struct hci_dev *hdev, struct sk_buff
 
 	hci_proto_disconn_cfm(conn, ev->reason, 0);
 	hci_conn_del(conn);
+=======
+	if (ev->status == 0)
+		conn->state = BT_CLOSED;
+
+	if (test_and_clear_bit(HCI_CONN_MGMT_CONNECTED, &conn->flags) &&
+			(conn->type == ACL_LINK || conn->type == LE_LINK)) {
+		if (ev->status != 0)
+			mgmt_disconnect_failed(hdev, &conn->dst, conn->type,
+						conn->dst_type, ev->status);
+		else
+			mgmt_device_disconnected(hdev, &conn->dst, conn->type,
+						 conn->dst_type);
+	}
+
+	if (ev->status == 0) {
+		if (conn->type == ACL_LINK && conn->flush_key)
+			hci_remove_link_key(hdev, &conn->dst);
+		hci_proto_disconn_cfm(conn, ev->reason);
+		hci_conn_del(conn);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 unlock:
 	hci_dev_unlock(hdev);
@@ -1834,6 +2688,7 @@ static inline void hci_auth_complete_evt(struct hci_dev *hdev, struct sk_buff *s
 	hci_dev_lock(hdev);
 
 	conn = hci_conn_hash_lookup_handle(hdev, __le16_to_cpu(ev->handle));
+<<<<<<< HEAD
 	if (conn) {
 		if (ev->status == 0x06 && hdev->ssp_mode > 0 &&
 							conn->ssp_mode > 0) {
@@ -1919,6 +2774,61 @@ static inline void hci_auth_complete_evt(struct hci_dev *hdev, struct sk_buff *s
 		}
 	}
 
+=======
+	if (!conn)
+		goto unlock;
+
+	if (!ev->status) {
+		if (!hci_conn_ssp_enabled(conn) &&
+				test_bit(HCI_CONN_REAUTH_PEND, &conn->flags)) {
+			BT_INFO("re-auth of legacy device is not possible.");
+		} else {
+			conn->link_mode |= HCI_LM_AUTH;
+			conn->sec_level = conn->pending_sec_level;
+		}
+	} else {
+		mgmt_auth_failed(hdev, &conn->dst, conn->type, conn->dst_type,
+				 ev->status);
+	}
+
+	clear_bit(HCI_CONN_AUTH_PEND, &conn->flags);
+	clear_bit(HCI_CONN_REAUTH_PEND, &conn->flags);
+
+	if (conn->state == BT_CONFIG) {
+		if (!ev->status && hci_conn_ssp_enabled(conn)) {
+			struct hci_cp_set_conn_encrypt cp;
+			cp.handle  = ev->handle;
+			cp.encrypt = 0x01;
+			hci_send_cmd(hdev, HCI_OP_SET_CONN_ENCRYPT, sizeof(cp),
+									&cp);
+		} else {
+			conn->state = BT_CONNECTED;
+			hci_proto_connect_cfm(conn, ev->status);
+			hci_conn_put(conn);
+		}
+	} else {
+		hci_auth_cfm(conn, ev->status);
+
+		hci_conn_hold(conn);
+		conn->disc_timeout = HCI_DISCONN_TIMEOUT;
+		hci_conn_put(conn);
+	}
+
+	if (test_bit(HCI_CONN_ENCRYPT_PEND, &conn->flags)) {
+		if (!ev->status) {
+			struct hci_cp_set_conn_encrypt cp;
+			cp.handle  = ev->handle;
+			cp.encrypt = 0x01;
+			hci_send_cmd(hdev, HCI_OP_SET_CONN_ENCRYPT, sizeof(cp),
+									&cp);
+		} else {
+			clear_bit(HCI_CONN_ENCRYPT_PEND, &conn->flags);
+			hci_encrypt_cfm(conn, ev->status, 0x00);
+		}
+	}
+
+unlock:
+>>>>>>> remotes/linux2/linux-3.4.y
 	hci_dev_unlock(hdev);
 }
 
@@ -1933,16 +2843,42 @@ static inline void hci_remote_name_evt(struct hci_dev *hdev, struct sk_buff *skb
 
 	hci_dev_lock(hdev);
 
+<<<<<<< HEAD
 	if (test_bit(HCI_MGMT, &hdev->flags))
 		mgmt_remote_name(hdev->id, &ev->bdaddr, ev->status, ev->name);
 
 	conn = hci_conn_hash_lookup_ba(hdev, ACL_LINK, &ev->bdaddr);
 	if (conn && hci_outgoing_auth_needed(hdev, conn)) {
+=======
+	conn = hci_conn_hash_lookup_ba(hdev, ACL_LINK, &ev->bdaddr);
+
+	if (!test_bit(HCI_MGMT, &hdev->dev_flags))
+		goto check_auth;
+
+	if (ev->status == 0)
+		hci_check_pending_name(hdev, conn, &ev->bdaddr, ev->name,
+				       strnlen(ev->name, HCI_MAX_NAME_LENGTH));
+	else
+		hci_check_pending_name(hdev, conn, &ev->bdaddr, NULL, 0);
+
+check_auth:
+	if (!conn)
+		goto unlock;
+
+	if (!hci_outgoing_auth_needed(hdev, conn))
+		goto unlock;
+
+	if (!test_and_set_bit(HCI_CONN_AUTH_PEND, &conn->flags)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		struct hci_cp_auth_requested cp;
 		cp.handle = __cpu_to_le16(conn->handle);
 		hci_send_cmd(hdev, HCI_OP_AUTH_REQUESTED, sizeof(cp), &cp);
 	}
 
+<<<<<<< HEAD
+=======
+unlock:
+>>>>>>> remotes/linux2/linux-3.4.y
 	hci_dev_unlock(hdev);
 }
 
@@ -1967,7 +2903,17 @@ static inline void hci_encrypt_change_evt(struct hci_dev *hdev, struct sk_buff *
 				conn->link_mode &= ~HCI_LM_ENCRYPT;
 		}
 
+<<<<<<< HEAD
 		clear_bit(HCI_CONN_ENCRYPT_PEND, &conn->pend);
+=======
+		clear_bit(HCI_CONN_ENCRYPT_PEND, &conn->flags);
+
+		if (ev->status && conn->state == BT_CONNECTED) {
+			hci_acl_disconn(conn, 0x13);
+			hci_conn_put(conn);
+			goto unlock;
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		if (conn->state == BT_CONFIG) {
 			if (!ev->status)
@@ -1975,6 +2921,7 @@ static inline void hci_encrypt_change_evt(struct hci_dev *hdev, struct sk_buff *
 
 			hci_proto_connect_cfm(conn, ev->status);
 			hci_conn_put(conn);
+<<<<<<< HEAD
 		} else {
 			/*
 			* If the remote device does not support
@@ -1999,6 +2946,13 @@ static inline void hci_encrypt_change_evt(struct hci_dev *hdev, struct sk_buff *
 			mgmt_encrypt_change(hdev->id, &conn->dst, ev->status);
 	}
 
+=======
+		} else
+			hci_encrypt_cfm(conn, ev->status, ev->encrypt);
+	}
+
+unlock:
+>>>>>>> remotes/linux2/linux-3.4.y
 	hci_dev_unlock(hdev);
 }
 
@@ -2016,7 +2970,11 @@ static inline void hci_change_link_key_complete_evt(struct hci_dev *hdev, struct
 		if (!ev->status)
 			conn->link_mode |= HCI_LM_SECURE;
 
+<<<<<<< HEAD
 		clear_bit(HCI_CONN_AUTH_PEND, &conn->pend);
+=======
+		clear_bit(HCI_CONN_AUTH_PEND, &conn->flags);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		hci_key_change_cfm(conn, ev->status);
 	}
@@ -2037,10 +2995,15 @@ static inline void hci_remote_features_evt(struct hci_dev *hdev, struct sk_buff 
 	if (!conn)
 		goto unlock;
 
+<<<<<<< HEAD
 	if (!ev->status) {
 		memcpy(conn->features, ev->features, 8);
 		mgmt_remote_features(hdev->id, &conn->dst, ev->features);
 	}
+=======
+	if (!ev->status)
+		memcpy(conn->features, ev->features, 8);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (conn->state != BT_CONFIG)
 		goto unlock;
@@ -2052,18 +3015,31 @@ static inline void hci_remote_features_evt(struct hci_dev *hdev, struct sk_buff 
 		hci_send_cmd(hdev, HCI_OP_READ_REMOTE_EXT_FEATURES,
 							sizeof(cp), &cp);
 		goto unlock;
+<<<<<<< HEAD
 	} else  if (!(lmp_ssp_capable(conn)) && conn->auth_initiator &&
 		(conn->pending_sec_level == BT_SECURITY_HIGH)) {
 		conn->pending_sec_level = BT_SECURITY_MEDIUM;
 	}
 
 	if (!ev->status) {
+=======
+	}
+
+	if (!ev->status && !test_bit(HCI_CONN_MGMT_CONNECTED, &conn->flags)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		struct hci_cp_remote_name_req cp;
 		memset(&cp, 0, sizeof(cp));
 		bacpy(&cp.bdaddr, &conn->dst);
 		cp.pscan_rep_mode = 0x02;
 		hci_send_cmd(hdev, HCI_OP_REMOTE_NAME_REQ, sizeof(cp), &cp);
+<<<<<<< HEAD
 	}
+=======
+	} else if (!test_and_set_bit(HCI_CONN_MGMT_CONNECTED, &conn->flags))
+		mgmt_device_connected(hdev, &conn->dst, conn->type,
+				      conn->dst_type, 0, NULL, 0,
+				      conn->dev_class);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!hci_outgoing_auth_needed(hdev, conn)) {
 		conn->state = BT_CONNECTED;
@@ -2077,6 +3053,7 @@ unlock:
 
 static inline void hci_remote_version_evt(struct hci_dev *hdev, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	struct hci_ev_remote_version *ev = (void *) skb->data;
 	struct hci_cp_read_remote_features cp;
 	struct hci_conn *conn;
@@ -2095,6 +3072,9 @@ static inline void hci_remote_version_evt(struct hci_dev *hdev, struct sk_buff *
 				ev->manufacturer, ev->lmp_subver);
 unlock:
 	hci_dev_unlock(hdev);
+=======
+	BT_DBG("%s", hdev->name);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static inline void hci_qos_setup_complete_evt(struct hci_dev *hdev, struct sk_buff *skb)
@@ -2111,9 +3091,12 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 
 	opcode = __le16_to_cpu(ev->opcode);
 
+<<<<<<< HEAD
 	if (test_bit(HCI_RESET, &hdev->flags) && (opcode != HCI_OP_RESET))
 		return;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	switch (opcode) {
 	case HCI_OP_INQUIRY_CANCEL:
 		hci_cc_inquiry_cancel(hdev, skb);
@@ -2123,10 +3106,13 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 		hci_cc_exit_periodic_inq(hdev, skb);
 		break;
 
+<<<<<<< HEAD
 	case HCI_OP_LINK_KEY_REPLY:
 		hci_cc_link_key_reply(hdev, skb);
 		break;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	case HCI_OP_REMOTE_NAME_REQ_CANCEL:
 		hci_cc_remote_name_req_cancel(hdev, skb);
 		break;
@@ -2195,10 +3181,13 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 		hci_cc_host_buffer_size(hdev, skb);
 		break;
 
+<<<<<<< HEAD
 	case HCI_OP_READ_SSP_MODE:
 		hci_cc_read_ssp_mode(hdev, skb);
 		break;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	case HCI_OP_WRITE_SSP_MODE:
 		hci_cc_write_ssp_mode(hdev, skb);
 		break;
@@ -2215,6 +3204,13 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 		hci_cc_read_local_features(hdev, skb);
 		break;
 
+<<<<<<< HEAD
+=======
+	case HCI_OP_READ_LOCAL_EXT_FEATURES:
+		hci_cc_read_local_ext_features(hdev, skb);
+		break;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	case HCI_OP_READ_BUFFER_SIZE:
 		hci_cc_read_buffer_size(hdev, skb);
 		break;
@@ -2223,6 +3219,13 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 		hci_cc_read_bd_addr(hdev, skb);
 		break;
 
+<<<<<<< HEAD
+=======
+	case HCI_OP_READ_DATA_BLOCK_SIZE:
+		hci_cc_read_data_block_size(hdev, skb);
+		break;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	case HCI_OP_WRITE_CA_TIMEOUT:
 		hci_cc_write_ca_timeout(hdev, skb);
 		break;
@@ -2231,19 +3234,25 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 		hci_cc_read_flow_control_mode(hdev, skb);
 		break;
 
+<<<<<<< HEAD
 	case HCI_OP_READ_DATA_BLOCK_SIZE:
 		hci_cc_read_data_block_size(hdev, skb);
 		break;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	case HCI_OP_READ_LOCAL_AMP_INFO:
 		hci_cc_read_local_amp_info(hdev, skb);
 		break;
 
+<<<<<<< HEAD
 	case HCI_OP_READ_LOCAL_AMP_ASSOC:
 	case HCI_OP_WRITE_REMOTE_AMP_ASSOC:
 		hci_amp_cmd_complete(hdev, opcode, skb);
 		break;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	case HCI_OP_DELETE_STORED_LINK_KEY:
 		hci_cc_delete_stored_link_key(hdev, skb);
 		break;
@@ -2280,6 +3289,7 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 		hci_cc_le_read_buffer_size(hdev, skb);
 		break;
 
+<<<<<<< HEAD
 	case HCI_OP_LE_READ_WHITE_LIST_SIZE:
 		hci_cc_le_read_white_list_size(hdev, skb);
 		break;
@@ -2298,6 +3308,30 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 
 	case HCI_OP_USER_CONFIRM_NEG_REPLY:
 		hci_cc_user_confirm_neg_reply(hdev, skb);
+=======
+	case HCI_OP_USER_CONFIRM_REPLY:
+		hci_cc_user_confirm_reply(hdev, skb);
+		break;
+
+	case HCI_OP_USER_CONFIRM_NEG_REPLY:
+		hci_cc_user_confirm_neg_reply(hdev, skb);
+		break;
+
+	case HCI_OP_USER_PASSKEY_REPLY:
+		hci_cc_user_passkey_reply(hdev, skb);
+		break;
+
+	case HCI_OP_USER_PASSKEY_NEG_REPLY:
+		hci_cc_user_passkey_neg_reply(hdev, skb);
+		break;
+
+	case HCI_OP_LE_SET_SCAN_PARAM:
+		hci_cc_le_set_scan_param(hdev, skb);
+		break;
+
+	case HCI_OP_LE_SET_SCAN_ENABLE:
+		hci_cc_le_set_scan_enable(hdev, skb);
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 
 	case HCI_OP_LE_LTK_REPLY:
@@ -2308,8 +3342,13 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 		hci_cc_le_ltk_neg_reply(hdev, skb);
 		break;
 
+<<<<<<< HEAD
 	case HCI_OP_LE_SET_SCAN_ENABLE:
 		hci_cc_le_set_scan_enable(hdev, skb);
+=======
+	case HCI_OP_WRITE_LE_HOST_SUPPORTED:
+		hci_cc_write_le_host_supported(hdev, skb);
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 
 	default:
@@ -2320,10 +3359,17 @@ static inline void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *sk
 	if (ev->opcode != HCI_OP_NOP)
 		del_timer(&hdev->cmd_timer);
 
+<<<<<<< HEAD
 	if (ev->ncmd) {
 		atomic_set(&hdev->cmd_cnt, 1);
 		if (!skb_queue_empty(&hdev->cmd_q))
 			tasklet_schedule(&hdev->cmd_task);
+=======
+	if (ev->ncmd && !test_bit(HCI_RESET, &hdev->flags)) {
+		atomic_set(&hdev->cmd_cnt, 1);
+		if (!skb_queue_empty(&hdev->cmd_q))
+			queue_work(hdev->workqueue, &hdev->cmd_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 
@@ -2381,6 +3427,7 @@ static inline void hci_cmd_status_evt(struct hci_dev *hdev, struct sk_buff *skb)
 		hci_cs_exit_sniff_mode(hdev, ev->status);
 		break;
 
+<<<<<<< HEAD
 	case HCI_OP_CREATE_LOGICAL_LINK:
 		hci_cs_create_logical_link(hdev, ev->status);
 		break;
@@ -2408,6 +3455,10 @@ static inline void hci_cmd_status_evt(struct hci_dev *hdev, struct sk_buff *skb)
 	case HCI_OP_DISCONNECT:
 		if (ev->status != 0)
 			mgmt_disconnect_failed(hdev->id);
+=======
+	case HCI_OP_DISCONNECT:
+		hci_cs_disconnect(hdev, ev->status);
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 
 	case HCI_OP_LE_CREATE_CONN:
@@ -2429,7 +3480,11 @@ static inline void hci_cmd_status_evt(struct hci_dev *hdev, struct sk_buff *skb)
 	if (ev->ncmd && !test_bit(HCI_RESET, &hdev->flags)) {
 		atomic_set(&hdev->cmd_cnt, 1);
 		if (!skb_queue_empty(&hdev->cmd_q))
+<<<<<<< HEAD
 			tasklet_schedule(&hdev->cmd_task);
+=======
+			queue_work(hdev->workqueue, &hdev->cmd_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 
@@ -2451,7 +3506,11 @@ static inline void hci_role_change_evt(struct hci_dev *hdev, struct sk_buff *skb
 				conn->link_mode |= HCI_LM_MASTER;
 		}
 
+<<<<<<< HEAD
 		clear_bit(HCI_CONN_RSWITCH_PEND, &conn->pend);
+=======
+		clear_bit(HCI_CONN_RSWITCH_PEND, &conn->flags);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		hci_role_switch_cfm(conn, ev->status, ev->role);
 	}
@@ -2462,6 +3521,7 @@ static inline void hci_role_change_evt(struct hci_dev *hdev, struct sk_buff *skb
 static inline void hci_num_comp_pkts_evt(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	struct hci_ev_num_comp_pkts *ev = (void *) skb->data;
+<<<<<<< HEAD
 	__le16 *ptr;
 	int i;
 
@@ -2470,10 +3530,22 @@ static inline void hci_num_comp_pkts_evt(struct hci_dev *hdev, struct sk_buff *s
 	BT_DBG("%s num_hndl %d", hdev->name, ev->num_hndl);
 
 	if (skb->len < ev->num_hndl * 4) {
+=======
+	int i;
+
+	if (hdev->flow_ctl_mode != HCI_FLOW_CTL_MODE_PACKET_BASED) {
+		BT_ERR("Wrong event for mode %d", hdev->flow_ctl_mode);
+		return;
+	}
+
+	if (skb->len < sizeof(*ev) || skb->len < sizeof(*ev) +
+			ev->num_hndl * sizeof(struct hci_comp_pkts_info)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		BT_DBG("%s bad parameters", hdev->name);
 		return;
 	}
 
+<<<<<<< HEAD
 	tasklet_disable(&hdev->tx_task);
 
 	for (i = 0, ptr = (__le16 *) skb->data; i < ev->num_hndl; i++) {
@@ -2534,10 +3606,76 @@ static inline void hci_num_comp_blocks_evt(struct hci_dev *hdev,
 		hdev->name, ev->total_num_blocks, ev->num_hndl);
 
 	if (skb->len < ev->num_hndl * 6) {
+=======
+	BT_DBG("%s num_hndl %d", hdev->name, ev->num_hndl);
+
+	for (i = 0; i < ev->num_hndl; i++) {
+		struct hci_comp_pkts_info *info = &ev->handles[i];
+		struct hci_conn *conn;
+		__u16  handle, count;
+
+		handle = __le16_to_cpu(info->handle);
+		count  = __le16_to_cpu(info->count);
+
+		conn = hci_conn_hash_lookup_handle(hdev, handle);
+		if (!conn)
+			continue;
+
+		conn->sent -= count;
+
+		switch (conn->type) {
+		case ACL_LINK:
+			hdev->acl_cnt += count;
+			if (hdev->acl_cnt > hdev->acl_pkts)
+				hdev->acl_cnt = hdev->acl_pkts;
+			break;
+
+		case LE_LINK:
+			if (hdev->le_pkts) {
+				hdev->le_cnt += count;
+				if (hdev->le_cnt > hdev->le_pkts)
+					hdev->le_cnt = hdev->le_pkts;
+			} else {
+				hdev->acl_cnt += count;
+				if (hdev->acl_cnt > hdev->acl_pkts)
+					hdev->acl_cnt = hdev->acl_pkts;
+			}
+			break;
+
+		case SCO_LINK:
+			hdev->sco_cnt += count;
+			if (hdev->sco_cnt > hdev->sco_pkts)
+				hdev->sco_cnt = hdev->sco_pkts;
+			break;
+
+		default:
+			BT_ERR("Unknown type %d conn %p", conn->type, conn);
+			break;
+		}
+	}
+
+	queue_work(hdev->workqueue, &hdev->tx_work);
+}
+
+static inline void hci_num_comp_blocks_evt(struct hci_dev *hdev,
+					   struct sk_buff *skb)
+{
+	struct hci_ev_num_comp_blocks *ev = (void *) skb->data;
+	int i;
+
+	if (hdev->flow_ctl_mode != HCI_FLOW_CTL_MODE_BLOCK_BASED) {
+		BT_ERR("Wrong event for mode %d", hdev->flow_ctl_mode);
+		return;
+	}
+
+	if (skb->len < sizeof(*ev) || skb->len < sizeof(*ev) +
+			ev->num_hndl * sizeof(struct hci_comp_blocks_info)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		BT_DBG("%s bad parameters", hdev->name);
 		return;
 	}
 
+<<<<<<< HEAD
 	tasklet_disable(&hdev->tx_task);
 
 	for (i = 0, ptr = (__le16 *) skb->data; i < ev->num_hndl; i++) {
@@ -2581,6 +3719,39 @@ static inline void hci_num_comp_blocks_evt(struct hci_dev *hdev,
 	tasklet_schedule(&hdev->tx_task);
 
 	tasklet_enable(&hdev->tx_task);
+=======
+	BT_DBG("%s num_blocks %d num_hndl %d", hdev->name, ev->num_blocks,
+								ev->num_hndl);
+
+	for (i = 0; i < ev->num_hndl; i++) {
+		struct hci_comp_blocks_info *info = &ev->handles[i];
+		struct hci_conn *conn;
+		__u16  handle, block_count;
+
+		handle = __le16_to_cpu(info->handle);
+		block_count = __le16_to_cpu(info->blocks);
+
+		conn = hci_conn_hash_lookup_handle(hdev, handle);
+		if (!conn)
+			continue;
+
+		conn->sent -= block_count;
+
+		switch (conn->type) {
+		case ACL_LINK:
+			hdev->block_cnt += block_count;
+			if (hdev->block_cnt > hdev->num_blocks)
+				hdev->block_cnt = hdev->num_blocks;
+			break;
+
+		default:
+			BT_ERR("Unknown type %d conn %p", conn->type, conn);
+			break;
+		}
+	}
+
+	queue_work(hdev->workqueue, &hdev->tx_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static inline void hci_mode_change_evt(struct hci_dev *hdev, struct sk_buff *skb)
@@ -2597,6 +3768,7 @@ static inline void hci_mode_change_evt(struct hci_dev *hdev, struct sk_buff *skb
 		conn->mode = ev->mode;
 		conn->interval = __le16_to_cpu(ev->interval);
 
+<<<<<<< HEAD
 		if (!test_and_clear_bit(HCI_CONN_MODE_CHANGE_PEND, &conn->pend)) {
 			if (conn->mode == HCI_CM_ACTIVE)
 				conn->power_save = 1;
@@ -2608,6 +3780,16 @@ static inline void hci_mode_change_evt(struct hci_dev *hdev, struct sk_buff *skb
 				wake_unlock(&conn->idle_lock);
 
 		if (test_and_clear_bit(HCI_CONN_SCO_SETUP_PEND, &conn->pend))
+=======
+		if (!test_and_clear_bit(HCI_CONN_MODE_CHANGE_PEND, &conn->flags)) {
+			if (conn->mode == HCI_CM_ACTIVE)
+				set_bit(HCI_CONN_POWER_SAVE, &conn->flags);
+			else
+				clear_bit(HCI_CONN_POWER_SAVE, &conn->flags);
+		}
+
+		if (test_and_clear_bit(HCI_CONN_SCO_SETUP_PEND, &conn->flags))
+>>>>>>> remotes/linux2/linux-3.4.y
 			hci_sco_setup(conn, ev->status);
 	}
 
@@ -2624,6 +3806,7 @@ static inline void hci_pin_code_request_evt(struct hci_dev *hdev, struct sk_buff
 	hci_dev_lock(hdev);
 
 	conn = hci_conn_hash_lookup_ba(hdev, ACL_LINK, &ev->bdaddr);
+<<<<<<< HEAD
 	if (conn && conn->state == BT_CONNECTED) {
 		hci_conn_hold(conn);
 		conn->disc_timeout = HCI_PAIRING_TIMEOUT;
@@ -2638,6 +3821,32 @@ static inline void hci_pin_code_request_evt(struct hci_dev *hdev, struct sk_buff
 	if (test_bit(HCI_MGMT, &hdev->flags))
 		mgmt_pin_code_request(hdev->id, &ev->bdaddr);
 
+=======
+	if (!conn)
+		goto unlock;
+
+	if (conn->state == BT_CONNECTED) {
+		hci_conn_hold(conn);
+		conn->disc_timeout = HCI_PAIRING_TIMEOUT;
+		hci_conn_put(conn);
+	}
+
+	if (!test_bit(HCI_PAIRABLE, &hdev->dev_flags))
+		hci_send_cmd(hdev, HCI_OP_PIN_CODE_NEG_REPLY,
+					sizeof(ev->bdaddr), &ev->bdaddr);
+	else if (test_bit(HCI_MGMT, &hdev->dev_flags)) {
+		u8 secure;
+
+		if (conn->pending_sec_level == BT_SECURITY_HIGH)
+			secure = 1;
+		else
+			secure = 0;
+
+		mgmt_pin_code_request(hdev, &ev->bdaddr, secure);
+	}
+
+unlock:
+>>>>>>> remotes/linux2/linux-3.4.y
 	hci_dev_unlock(hdev);
 }
 
@@ -2650,7 +3859,11 @@ static inline void hci_link_key_request_evt(struct hci_dev *hdev, struct sk_buff
 
 	BT_DBG("%s", hdev->name);
 
+<<<<<<< HEAD
 	if (!test_bit(HCI_LINK_KEYS, &hdev->flags))
+=======
+	if (!test_bit(HCI_LINK_KEYS, &hdev->dev_flags))
+>>>>>>> remotes/linux2/linux-3.4.y
 		return;
 
 	hci_dev_lock(hdev);
@@ -2662,15 +3875,24 @@ static inline void hci_link_key_request_evt(struct hci_dev *hdev, struct sk_buff
 		goto not_found;
 	}
 
+<<<<<<< HEAD
 	BT_DBG("%s found key type %u for %s", hdev->name, key->key_type,
 							batostr(&ev->bdaddr));
 
 	if (!test_bit(HCI_DEBUG_KEYS, &hdev->flags) && key->key_type == 0x03) {
+=======
+	BT_DBG("%s found key type %u for %s", hdev->name, key->type,
+							batostr(&ev->bdaddr));
+
+	if (!test_bit(HCI_DEBUG_KEYS, &hdev->dev_flags) &&
+				key->type == HCI_LK_DEBUG_COMBINATION) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		BT_DBG("%s ignoring debug key", hdev->name);
 		goto not_found;
 	}
 
 	conn = hci_conn_hash_lookup_ba(hdev, ACL_LINK, &ev->bdaddr);
+<<<<<<< HEAD
 
 	if (conn) {
 		BT_DBG("Conn pending sec level is %d, ssp is %d, key len is %d",
@@ -2687,6 +3909,25 @@ static inline void hci_link_key_request_evt(struct hci_dev *hdev, struct sk_buff
 						(conn->auth_type & 0x01)) {
 		BT_DBG("%s ignoring unauthenticated key", hdev->name);
 		goto not_found;
+=======
+	if (conn) {
+		if (key->type == HCI_LK_UNAUTH_COMBINATION &&
+				conn->auth_type != 0xff &&
+				(conn->auth_type & 0x01)) {
+			BT_DBG("%s ignoring unauthenticated key", hdev->name);
+			goto not_found;
+		}
+
+		if (key->type == HCI_LK_COMBINATION && key->pin_len < 16 &&
+				conn->pending_sec_level == BT_SECURITY_HIGH) {
+			BT_DBG("%s ignoring key unauthenticated for high \
+							security", hdev->name);
+			goto not_found;
+		}
+
+		conn->key_type = key->type;
+		conn->pin_length = key->pin_len;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	bacpy(&cp.bdaddr, &ev->bdaddr);
@@ -2709,7 +3950,11 @@ static inline void hci_link_key_notify_evt(struct hci_dev *hdev, struct sk_buff 
 	struct hci_conn *conn;
 	u8 pin_len = 0;
 
+<<<<<<< HEAD
 	BT_DBG("%s type %d", hdev->name, ev->key_type);
+=======
+	BT_DBG("%s", hdev->name);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	hci_dev_lock(hdev);
 
@@ -2717,6 +3962,7 @@ static inline void hci_link_key_notify_evt(struct hci_dev *hdev, struct sk_buff 
 	if (conn) {
 		hci_conn_hold(conn);
 		conn->disc_timeout = HCI_DISCONN_TIMEOUT;
+<<<<<<< HEAD
 
 		memcpy(conn->link_key, ev->link_key, 16);
 		conn->key_type = ev->key_type;
@@ -2730,6 +3976,18 @@ static inline void hci_link_key_notify_evt(struct hci_dev *hdev, struct sk_buff 
 
 	if (test_bit(HCI_LINK_KEYS, &hdev->flags))
 		hci_add_link_key(hdev, 1, &ev->bdaddr, ev->link_key,
+=======
+		pin_len = conn->pin_length;
+
+		if (ev->key_type != HCI_LK_CHANGED_COMBINATION)
+			conn->key_type = ev->key_type;
+
+		hci_conn_put(conn);
+	}
+
+	if (test_bit(HCI_LINK_KEYS, &hdev->dev_flags))
+		hci_add_link_key(hdev, conn, 1, &ev->bdaddr, ev->link_key,
+>>>>>>> remotes/linux2/linux-3.4.y
 							ev->key_type, pin_len);
 
 	hci_dev_unlock(hdev);
@@ -2796,6 +4054,10 @@ static inline void hci_inquiry_result_with_rssi_evt(struct hci_dev *hdev, struct
 {
 	struct inquiry_data data;
 	int num_rsp = *((__u8 *) skb->data);
+<<<<<<< HEAD
+=======
+	bool name_known, ssp;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	BT_DBG("%s num_rsp %d", hdev->name, num_rsp);
 
@@ -2817,10 +4079,19 @@ static inline void hci_inquiry_result_with_rssi_evt(struct hci_dev *hdev, struct
 			data.clock_offset	= info->clock_offset;
 			data.rssi		= info->rssi;
 			data.ssp_mode		= 0x00;
+<<<<<<< HEAD
 			hci_inquiry_cache_update(hdev, &data);
 			mgmt_device_found(hdev->id, &info->bdaddr, 0, 0,
 						info->dev_class, info->rssi,
 						0, NULL);
+=======
+
+			name_known = hci_inquiry_cache_update(hdev, &data,
+							      false, &ssp);
+			mgmt_device_found(hdev, &info->bdaddr, ACL_LINK, 0x00,
+					  info->dev_class, info->rssi,
+					  !name_known, ssp, NULL, 0);
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 	} else {
 		struct inquiry_info_with_rssi *info = (void *) (skb->data + 1);
@@ -2834,10 +4105,18 @@ static inline void hci_inquiry_result_with_rssi_evt(struct hci_dev *hdev, struct
 			data.clock_offset	= info->clock_offset;
 			data.rssi		= info->rssi;
 			data.ssp_mode		= 0x00;
+<<<<<<< HEAD
 			hci_inquiry_cache_update(hdev, &data);
 			mgmt_device_found(hdev->id, &info->bdaddr, 0, 0,
 						info->dev_class, info->rssi,
 						0, NULL);
+=======
+			name_known = hci_inquiry_cache_update(hdev, &data,
+							      false, &ssp);
+			mgmt_device_found(hdev, &info->bdaddr, ACL_LINK, 0x00,
+					  info->dev_class, info->rssi,
+					  !name_known, ssp, NULL, 0);
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 
@@ -2862,6 +4141,7 @@ static inline void hci_remote_ext_features_evt(struct hci_dev *hdev, struct sk_b
 
 		ie = hci_inquiry_cache_lookup(hdev, &conn->dst);
 		if (ie)
+<<<<<<< HEAD
 			ie->data.ssp_mode = (ev->features[0] & 0x01);
 
 		conn->ssp_mode = (ev->features[0] & 0x01);
@@ -2876,18 +4156,35 @@ static inline void hci_remote_ext_features_evt(struct hci_dev *hdev, struct sk_b
 			conn->pending_sec_level = BT_SECURITY_HIGH;
 			conn->auth_type = HCI_AT_DEDICATED_BONDING_MITM;
 		}
+=======
+			ie->data.ssp_mode = (ev->features[0] & LMP_HOST_SSP);
+
+		if (ev->features[0] & LMP_HOST_SSP)
+			set_bit(HCI_CONN_SSP_ENABLED, &conn->flags);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	if (conn->state != BT_CONFIG)
 		goto unlock;
 
+<<<<<<< HEAD
 	if (!ev->status) {
+=======
+	if (!ev->status && !test_bit(HCI_CONN_MGMT_CONNECTED, &conn->flags)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		struct hci_cp_remote_name_req cp;
 		memset(&cp, 0, sizeof(cp));
 		bacpy(&cp.bdaddr, &conn->dst);
 		cp.pscan_rep_mode = 0x02;
 		hci_send_cmd(hdev, HCI_OP_REMOTE_NAME_REQ, sizeof(cp), &cp);
+<<<<<<< HEAD
 	}
+=======
+	} else if (!test_and_set_bit(HCI_CONN_MGMT_CONNECTED, &conn->flags))
+		mgmt_device_connected(hdev, &conn->dst, conn->type,
+				      conn->dst_type, 0, NULL, 0,
+				      conn->dev_class);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!hci_outgoing_auth_needed(hdev, conn)) {
 		conn->state = BT_CONNECTED;
@@ -2934,9 +4231,13 @@ static inline void hci_sync_conn_complete_evt(struct hci_dev *hdev, struct sk_bu
 	case 0x1a:	/* Unsupported Remote Feature */
 	case 0x1f:	/* Unspecified error */
 		if (conn->out && conn->attempt < 2) {
+<<<<<<< HEAD
 			if (!conn->hdev->is_wbs)
 				conn->pkt_type =
 					(hdev->esco_type & SCO_ESCO_MASK) |
+=======
+			conn->pkt_type = (hdev->esco_type & SCO_ESCO_MASK) |
+>>>>>>> remotes/linux2/linux-3.4.y
 					(hdev->esco_type & EDR_ESCO_MASK);
 			hci_setup_sync(conn, conn->link->handle);
 			goto unlock;
@@ -2964,6 +4265,7 @@ static inline void hci_sync_conn_changed_evt(struct hci_dev *hdev, struct sk_buf
 static inline void hci_sniff_subrate_evt(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	struct hci_ev_sniff_subrate *ev = (void *) skb->data;
+<<<<<<< HEAD
 	struct hci_conn *conn =
 		hci_conn_hash_lookup_handle(hdev, __le16_to_cpu(ev->handle));
 
@@ -2974,6 +4276,10 @@ static inline void hci_sniff_subrate_evt(struct hci_dev *hdev, struct sk_buff *s
 		hci_conn_enter_active_mode(conn, 1);
 		hci_dev_unlock(hdev);
 	}
+=======
+
+	BT_DBG("%s status %d", hdev->name, ev->status);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static inline void hci_extended_inquiry_result_evt(struct hci_dev *hdev, struct sk_buff *skb)
@@ -2990,6 +4296,11 @@ static inline void hci_extended_inquiry_result_evt(struct hci_dev *hdev, struct 
 	hci_dev_lock(hdev);
 
 	for (; num_rsp; num_rsp--, info++) {
+<<<<<<< HEAD
+=======
+		bool name_known, ssp;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 		bacpy(&data.bdaddr, &info->bdaddr);
 		data.pscan_rep_mode	= info->pscan_rep_mode;
 		data.pscan_period_mode	= info->pscan_period_mode;
@@ -2998,10 +4309,26 @@ static inline void hci_extended_inquiry_result_evt(struct hci_dev *hdev, struct 
 		data.clock_offset	= info->clock_offset;
 		data.rssi		= info->rssi;
 		data.ssp_mode		= 0x01;
+<<<<<<< HEAD
 		hci_inquiry_cache_update(hdev, &data);
 		mgmt_device_found(hdev->id, &info->bdaddr, 0, 0,
 				info->dev_class, info->rssi,
 				HCI_MAX_EIR_LENGTH, info->data);
+=======
+
+		if (test_bit(HCI_MGMT, &hdev->dev_flags))
+			name_known = eir_has_data_type(info->data,
+						       sizeof(info->data),
+						       EIR_NAME_COMPLETE);
+		else
+			name_known = true;
+
+		name_known = hci_inquiry_cache_update(hdev, &data, name_known,
+						      &ssp);
+		mgmt_device_found(hdev, &info->bdaddr, ACL_LINK, 0x00,
+				  info->dev_class, info->rssi, !name_known,
+				  ssp, info->data, sizeof(info->data));
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	hci_dev_unlock(hdev);
@@ -3009,12 +4336,16 @@ static inline void hci_extended_inquiry_result_evt(struct hci_dev *hdev, struct 
 
 static inline u8 hci_get_auth_req(struct hci_conn *conn)
 {
+<<<<<<< HEAD
 	BT_DBG("%p", conn);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* If remote requests dedicated bonding follow that lead */
 	if (conn->remote_auth == 0x02 || conn->remote_auth == 0x03) {
 		/* If both remote and local IO capabilities allow MITM
 		 * protection then require it, otherwise don't */
+<<<<<<< HEAD
 		if (conn->remote_cap == 0x03 || conn->io_capability == 0x03) {
 			return 0x02;
 		} else {
@@ -3026,6 +4357,17 @@ static inline u8 hci_get_auth_req(struct hci_conn *conn)
 	/* If remote requests no-bonding follow that lead */
 	if (conn->remote_auth <= 0x01)
 		return 0x00;
+=======
+		if (conn->remote_cap == 0x03 || conn->io_capability == 0x03)
+			return 0x02;
+		else
+			return 0x03;
+	}
+
+	/* If remote requests no-bonding follow that lead */
+	if (conn->remote_auth == 0x00 || conn->remote_auth == 0x01)
+		return conn->remote_auth | (conn->auth_type & 0x01);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return conn->auth_type;
 }
@@ -3045,6 +4387,7 @@ static inline void hci_io_capa_request_evt(struct hci_dev *hdev, struct sk_buff 
 
 	hci_conn_hold(conn);
 
+<<<<<<< HEAD
 	if (!test_bit(HCI_MGMT, &hdev->flags))
 		goto unlock;
 
@@ -3062,6 +4405,24 @@ static inline void hci_io_capa_request_evt(struct hci_dev *hdev, struct sk_buff 
 			cp.authentication = hci_get_auth_req(conn);
 
 		if ((conn->out == 0x01 || conn->remote_oob == 0x01) &&
+=======
+	if (!test_bit(HCI_MGMT, &hdev->dev_flags))
+		goto unlock;
+
+	if (test_bit(HCI_PAIRABLE, &hdev->dev_flags) ||
+			(conn->remote_auth & ~0x01) == HCI_AT_NO_BONDING) {
+		struct hci_cp_io_capability_reply cp;
+
+		bacpy(&cp.bdaddr, &ev->bdaddr);
+		/* Change the IO capability from KeyboardDisplay
+		 * to DisplayYesNo as it is not supported by BT spec. */
+		cp.capability = (conn->io_capability == 0x04) ?
+						0x01 : conn->io_capability;
+		conn->auth_type = hci_get_auth_req(conn);
+		cp.authentication = conn->auth_type;
+
+		if ((conn->out || test_bit(HCI_CONN_REMOTE_OOB, &conn->flags)) &&
+>>>>>>> remotes/linux2/linux-3.4.y
 				hci_find_remote_oob_data(hdev, &conn->dst))
 			cp.oob_data = 0x01;
 		else
@@ -3073,7 +4434,11 @@ static inline void hci_io_capa_request_evt(struct hci_dev *hdev, struct sk_buff 
 		struct hci_cp_io_capability_neg_reply cp;
 
 		bacpy(&cp.bdaddr, &ev->bdaddr);
+<<<<<<< HEAD
 		cp.reason = 0x16; /* Pairing not allowed */
+=======
+		cp.reason = HCI_ERROR_PAIRING_NOT_ALLOWED;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		hci_send_cmd(hdev, HCI_OP_IO_CAPABILITY_NEG_REPLY,
 							sizeof(cp), &cp);
@@ -3097,22 +4462,38 @@ static inline void hci_io_capa_reply_evt(struct hci_dev *hdev, struct sk_buff *s
 		goto unlock;
 
 	conn->remote_cap = ev->capability;
+<<<<<<< HEAD
 	conn->remote_oob = ev->oob_data;
 	conn->remote_auth = ev->authentication;
+=======
+	conn->remote_auth = ev->authentication;
+	if (ev->oob_data)
+		set_bit(HCI_CONN_REMOTE_OOB, &conn->flags);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 unlock:
 	hci_dev_unlock(hdev);
 }
 
+<<<<<<< HEAD
 static inline void hci_user_ssp_confirmation_evt(struct hci_dev *hdev,
 						u8 event, struct sk_buff *skb)
 {
 	struct hci_ev_user_confirm_req *ev = (void *) skb->data;
+=======
+static inline void hci_user_confirm_request_evt(struct hci_dev *hdev,
+							struct sk_buff *skb)
+{
+	struct hci_ev_user_confirm_req *ev = (void *) skb->data;
+	int loc_mitm, rem_mitm, confirm_hint = 0;
+	struct hci_conn *conn;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	BT_DBG("%s", hdev->name);
 
 	hci_dev_lock(hdev);
 
+<<<<<<< HEAD
 	if (test_bit(HCI_MGMT, &hdev->flags)) {
 		if (event == HCI_EV_USER_PASSKEY_REQUEST)
 			mgmt_user_confirm_request(hdev->id, event,
@@ -3122,6 +4503,77 @@ static inline void hci_user_ssp_confirmation_evt(struct hci_dev *hdev,
 						&ev->bdaddr, ev->passkey);
 	}
 
+=======
+	if (!test_bit(HCI_MGMT, &hdev->dev_flags))
+		goto unlock;
+
+	conn = hci_conn_hash_lookup_ba(hdev, ACL_LINK, &ev->bdaddr);
+	if (!conn)
+		goto unlock;
+
+	loc_mitm = (conn->auth_type & 0x01);
+	rem_mitm = (conn->remote_auth & 0x01);
+
+	/* If we require MITM but the remote device can't provide that
+	 * (it has NoInputNoOutput) then reject the confirmation
+	 * request. The only exception is when we're dedicated bonding
+	 * initiators (connect_cfm_cb set) since then we always have the MITM
+	 * bit set. */
+	if (!conn->connect_cfm_cb && loc_mitm && conn->remote_cap == 0x03) {
+		BT_DBG("Rejecting request: remote device can't provide MITM");
+		hci_send_cmd(hdev, HCI_OP_USER_CONFIRM_NEG_REPLY,
+					sizeof(ev->bdaddr), &ev->bdaddr);
+		goto unlock;
+	}
+
+	/* If no side requires MITM protection; auto-accept */
+	if ((!loc_mitm || conn->remote_cap == 0x03) &&
+				(!rem_mitm || conn->io_capability == 0x03)) {
+
+		/* If we're not the initiators request authorization to
+		 * proceed from user space (mgmt_user_confirm with
+		 * confirm_hint set to 1). */
+		if (!test_bit(HCI_CONN_AUTH_PEND, &conn->flags)) {
+			BT_DBG("Confirming auto-accept as acceptor");
+			confirm_hint = 1;
+			goto confirm;
+		}
+
+		BT_DBG("Auto-accept of user confirmation with %ums delay",
+						hdev->auto_accept_delay);
+
+		if (hdev->auto_accept_delay > 0) {
+			int delay = msecs_to_jiffies(hdev->auto_accept_delay);
+			mod_timer(&conn->auto_accept_timer, jiffies + delay);
+			goto unlock;
+		}
+
+		hci_send_cmd(hdev, HCI_OP_USER_CONFIRM_REPLY,
+						sizeof(ev->bdaddr), &ev->bdaddr);
+		goto unlock;
+	}
+
+confirm:
+	mgmt_user_confirm_request(hdev, &ev->bdaddr, ACL_LINK, 0, ev->passkey,
+				  confirm_hint);
+
+unlock:
+	hci_dev_unlock(hdev);
+}
+
+static inline void hci_user_passkey_request_evt(struct hci_dev *hdev,
+							struct sk_buff *skb)
+{
+	struct hci_ev_user_passkey_req *ev = (void *) skb->data;
+
+	BT_DBG("%s", hdev->name);
+
+	hci_dev_lock(hdev);
+
+	if (test_bit(HCI_MGMT, &hdev->dev_flags))
+		mgmt_user_passkey_request(hdev, &ev->bdaddr, ACL_LINK, 0);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	hci_dev_unlock(hdev);
 }
 
@@ -3143,8 +4595,14 @@ static inline void hci_simple_pair_complete_evt(struct hci_dev *hdev, struct sk_
 	 * initiated the authentication. A traditional auth_complete
 	 * event gets always produced as initiator and is also mapped to
 	 * the mgmt_auth_failed event */
+<<<<<<< HEAD
 	if (!test_bit(HCI_CONN_AUTH_PEND, &conn->pend) && ev->status != 0)
 		mgmt_auth_failed(hdev->id, &conn->dst, ev->status);
+=======
+	if (!test_bit(HCI_CONN_AUTH_PEND, &conn->flags) && ev->status != 0)
+		mgmt_auth_failed(hdev, &conn->dst, conn->type, conn->dst_type,
+				 ev->status);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	hci_conn_put(conn);
 
@@ -3163,13 +4621,21 @@ static inline void hci_remote_host_features_evt(struct hci_dev *hdev, struct sk_
 
 	ie = hci_inquiry_cache_lookup(hdev, &ev->bdaddr);
 	if (ie)
+<<<<<<< HEAD
 		ie->data.ssp_mode = (ev->features[0] & 0x01);
+=======
+		ie->data.ssp_mode = (ev->features[0] & LMP_HOST_SSP);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	hci_dev_unlock(hdev);
 }
 
 static inline void hci_remote_oob_data_request_evt(struct hci_dev *hdev,
+<<<<<<< HEAD
 							struct sk_buff *skb)
+=======
+						   struct sk_buff *skb)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct hci_ev_remote_oob_data_request *ev = (void *) skb->data;
 	struct oob_data *data;
@@ -3178,7 +4644,11 @@ static inline void hci_remote_oob_data_request_evt(struct hci_dev *hdev,
 
 	hci_dev_lock(hdev);
 
+<<<<<<< HEAD
 	if (!test_bit(HCI_MGMT, &hdev->flags))
+=======
+	if (!test_bit(HCI_MGMT, &hdev->dev_flags))
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto unlock;
 
 	data = hci_find_remote_oob_data(hdev, &ev->bdaddr);
@@ -3207,12 +4677,16 @@ static inline void hci_le_conn_complete_evt(struct hci_dev *hdev, struct sk_buff
 {
 	struct hci_ev_le_conn_complete *ev = (void *) skb->data;
 	struct hci_conn *conn;
+<<<<<<< HEAD
 	u8 white_list;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	BT_DBG("%s status %d", hdev->name, ev->status);
 
 	hci_dev_lock(hdev);
 
+<<<<<<< HEAD
 	/* Ignore event for LE cancel create conn whitelist */
 	if (ev->status && !bacmp(&ev->bdaddr, BDADDR_ANY))
 		goto unlock;
@@ -3227,20 +4701,36 @@ static inline void hci_le_conn_complete_evt(struct hci_dev *hdev, struct sk_buff
 	conn = hci_conn_hash_lookup_ba(hdev, LE_LINK, &ev->bdaddr);
 	if (!conn) {
 		conn = hci_le_conn_add(hdev, &ev->bdaddr, ev->bdaddr_type);
+=======
+	conn = hci_conn_hash_lookup_ba(hdev, LE_LINK, &ev->bdaddr);
+	if (!conn) {
+		conn = hci_conn_add(hdev, LE_LINK, &ev->bdaddr);
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (!conn) {
 			BT_ERR("No memory for new connection");
 			hci_dev_unlock(hdev);
 			return;
 		}
+<<<<<<< HEAD
 	}
 
 	if (ev->status) {
+=======
+
+		conn->dst_type = ev->bdaddr_type;
+	}
+
+	if (ev->status) {
+		mgmt_connect_failed(hdev, &ev->bdaddr, conn->type,
+						conn->dst_type, ev->status);
+>>>>>>> remotes/linux2/linux-3.4.y
 		hci_proto_connect_cfm(conn, ev->status);
 		conn->state = BT_CLOSED;
 		hci_conn_del(conn);
 		goto unlock;
 	}
 
+<<<<<<< HEAD
 	conn->sec_level = BT_SECURITY_LOW;
 	conn->handle = __le16_to_cpu(ev->handle);
 	conn->state = BT_CONNECTED;
@@ -3257,11 +4747,26 @@ static inline void hci_le_conn_complete_evt(struct hci_dev *hdev, struct sk_buff
 
 	if (!white_list)
 		hci_proto_connect_cfm(conn, ev->status);
+=======
+	if (!test_and_set_bit(HCI_CONN_MGMT_CONNECTED, &conn->flags))
+		mgmt_device_connected(hdev, &ev->bdaddr, conn->type,
+				      conn->dst_type, 0, NULL, 0, NULL);
+
+	conn->sec_level = BT_SECURITY_LOW;
+	conn->handle = __le16_to_cpu(ev->handle);
+	conn->state = BT_CONNECTED;
+
+	hci_conn_hold_device(conn);
+	hci_conn_add_sysfs(conn);
+
+	hci_proto_connect_cfm(conn, ev->status);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 unlock:
 	hci_dev_unlock(hdev);
 }
 
+<<<<<<< HEAD
 static inline void hci_le_conn_update_complete_evt(struct hci_dev *hdev,
 							struct sk_buff *skb)
 {
@@ -3290,6 +4795,29 @@ static inline void hci_le_conn_update_complete_evt(struct hci_dev *hdev,
 			__le16_to_cpu(ev->supervision_timeout));
 
 unlock:
+=======
+static inline void hci_le_adv_report_evt(struct hci_dev *hdev,
+						struct sk_buff *skb)
+{
+	u8 num_reports = skb->data[0];
+	void *ptr = &skb->data[1];
+	s8 rssi;
+
+	hci_dev_lock(hdev);
+
+	while (num_reports--) {
+		struct hci_ev_le_advertising_info *ev = ptr;
+
+		hci_add_adv_entry(hdev, ev);
+
+		rssi = ev->data[ev->length];
+		mgmt_device_found(hdev, &ev->bdaddr, LE_LINK, ev->bdaddr_type,
+				  NULL, rssi, 0, 1, ev->data, ev->length);
+
+		ptr += sizeof(*ev) + ev->length + 1;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	hci_dev_unlock(hdev);
 }
 
@@ -3300,7 +4828,11 @@ static inline void hci_le_ltk_request_evt(struct hci_dev *hdev,
 	struct hci_cp_le_ltk_reply cp;
 	struct hci_cp_le_ltk_neg_reply neg;
 	struct hci_conn *conn;
+<<<<<<< HEAD
 	struct link_key *ltk;
+=======
+	struct smp_ltk *ltk;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	BT_DBG("%s handle %d", hdev->name, cpu_to_le16(ev->handle));
 
@@ -3316,10 +4848,24 @@ static inline void hci_le_ltk_request_evt(struct hci_dev *hdev,
 
 	memcpy(cp.ltk, ltk->val, sizeof(ltk->val));
 	cp.handle = cpu_to_le16(conn->handle);
+<<<<<<< HEAD
 	conn->pin_length = ltk->pin_len;
 
 	hci_send_cmd(hdev, HCI_OP_LE_LTK_REPLY, sizeof(cp), &cp);
 
+=======
+
+	if (ltk->authenticated)
+		conn->sec_level = BT_SECURITY_HIGH;
+
+	hci_send_cmd(hdev, HCI_OP_LE_LTK_REPLY, sizeof(cp), &cp);
+
+	if (ltk->type & HCI_SMP_STK) {
+		list_del(&ltk->list);
+		kfree(ltk);
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	hci_dev_unlock(hdev);
 
 	return;
@@ -3330,6 +4876,7 @@ not_found:
 	hci_dev_unlock(hdev);
 }
 
+<<<<<<< HEAD
 static inline void hci_le_adv_report_evt(struct hci_dev *hdev,
 						struct sk_buff *skb)
 {
@@ -3351,6 +4898,8 @@ static inline void hci_le_adv_report_evt(struct hci_dev *hdev,
 	hci_dev_unlock(hdev);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static inline void hci_le_meta_evt(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	struct hci_ev_le_meta *le_ev = (void *) skb->data;
@@ -3362,23 +4911,32 @@ static inline void hci_le_meta_evt(struct hci_dev *hdev, struct sk_buff *skb)
 		hci_le_conn_complete_evt(hdev, skb);
 		break;
 
+<<<<<<< HEAD
 	case HCI_EV_LE_CONN_UPDATE_COMPLETE:
 		hci_le_conn_update_complete_evt(hdev, skb);
+=======
+	case HCI_EV_LE_ADVERTISING_REPORT:
+		hci_le_adv_report_evt(hdev, skb);
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 
 	case HCI_EV_LE_LTK_REQ:
 		hci_le_ltk_request_evt(hdev, skb);
 		break;
 
+<<<<<<< HEAD
 	case HCI_EV_LE_ADVERTISING_REPORT:
 		hci_le_adv_report_evt(hdev, skb);
 		break;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	default:
 		break;
 	}
 }
 
+<<<<<<< HEAD
 static inline void hci_phy_link_complete(struct hci_dev *hdev,
 					struct sk_buff *skb)
 {
@@ -3499,13 +5057,18 @@ static inline void hci_disconn_phy_link_complete_evt(struct hci_dev *hdev,
 	hci_dev_unlock(hdev);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
 {
 	struct hci_event_hdr *hdr = (void *) skb->data;
 	__u8 event = hdr->evt;
 
+<<<<<<< HEAD
 	BT_DBG("");
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	skb_pull(skb, HCI_EVENT_HDR_SIZE);
 
 	switch (event) {
@@ -3633,10 +5196,19 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
 		hci_io_capa_reply_evt(hdev, skb);
 		break;
 
+<<<<<<< HEAD
 	case HCI_EV_USER_PASSKEY_REQUEST:
 	case HCI_EV_USER_PASSKEY_NOTIFICATION:
 	case HCI_EV_USER_CONFIRM_REQUEST:
 		hci_user_ssp_confirmation_evt(hdev, event, skb);
+=======
+	case HCI_EV_USER_CONFIRM_REQUEST:
+		hci_user_confirm_request_evt(hdev, skb);
+		break;
+
+	case HCI_EV_USER_PASSKEY_REQUEST:
+		hci_user_passkey_request_evt(hdev, skb);
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 
 	case HCI_EV_SIMPLE_PAIR_COMPLETE:
@@ -3655,6 +5227,7 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
 		hci_remote_oob_data_request_evt(hdev, skb);
 		break;
 
+<<<<<<< HEAD
 	case HCI_EV_PHYS_LINK_COMPLETE:
 		hci_phy_link_complete(hdev, skb);
 		hci_amp_event_packet(hdev, event, skb);
@@ -3677,10 +5250,13 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
 		hci_amp_event_packet(hdev, event, skb);
 		break;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	case HCI_EV_NUM_COMP_BLOCKS:
 		hci_num_comp_blocks_evt(hdev, skb);
 		break;
 
+<<<<<<< HEAD
 	case HCI_EV_CHANNEL_SELECTED:
 		hci_amp_event_packet(hdev, event, skb);
 		break;
@@ -3689,6 +5265,8 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
 		hci_amp_event_packet(hdev, event, skb);
 		break;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	default:
 		BT_DBG("%s event 0x%x", hdev->name, event);
 		break;
@@ -3697,6 +5275,7 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
 	kfree_skb(skb);
 	hdev->stat.evt_rx++;
 }
+<<<<<<< HEAD
 
 /* Generate internal stack event */
 void hci_si_event(struct hci_dev *hdev, int type, int dlen, void *data)
@@ -3725,3 +5304,5 @@ void hci_si_event(struct hci_dev *hdev, int type, int dlen, void *data)
 	hci_send_to_sock(hdev, skb, NULL);
 	kfree_skb(skb);
 }
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

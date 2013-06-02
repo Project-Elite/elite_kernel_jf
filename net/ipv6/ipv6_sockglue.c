@@ -828,6 +828,10 @@ pref_skip_coa:
 		if (val < 0 || val > 255)
 			goto e_inval;
 		np->min_hopcount = val;
+<<<<<<< HEAD
+=======
+		retv = 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	case IPV6_DONTFRAG:
 		np->dontfrag = valbool;

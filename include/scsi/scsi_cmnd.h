@@ -134,10 +134,23 @@ struct scsi_cmnd {
 
 static inline struct scsi_driver *scsi_cmd_to_driver(struct scsi_cmnd *cmd)
 {
+<<<<<<< HEAD
 	if (!cmd->request->rq_disk)
 		return NULL;
 
 	return *(struct scsi_driver **)cmd->request->rq_disk->private_data;
+=======
+	struct scsi_driver **sdp;
+
+	if (!cmd->request->rq_disk)
+		return NULL;
+
+	sdp = (struct scsi_driver **)cmd->request->rq_disk->private_data;
+	if (!sdp)
+		return NULL;
+
+	return *sdp;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 extern struct scsi_cmnd *scsi_get_command(struct scsi_device *, gfp_t);

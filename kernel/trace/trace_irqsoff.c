@@ -32,7 +32,11 @@ enum {
 
 static int trace_type __read_mostly;
 
+<<<<<<< HEAD
 static int save_lat_flag;
+=======
+static int save_flags;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static void stop_irqsoff_tracer(struct trace_array *tr, int graph);
 static int start_irqsoff_tracer(struct trace_array *tr, int graph);
@@ -557,8 +561,16 @@ static void stop_irqsoff_tracer(struct trace_array *tr, int graph)
 
 static void __irqsoff_tracer_init(struct trace_array *tr)
 {
+<<<<<<< HEAD
 	save_lat_flag = trace_flags & TRACE_ITER_LATENCY_FMT;
 	trace_flags |= TRACE_ITER_LATENCY_FMT;
+=======
+	save_flags = trace_flags;
+
+	/* non overwrite screws up the latency tracers */
+	set_tracer_flag(TRACE_ITER_OVERWRITE, 1);
+	set_tracer_flag(TRACE_ITER_LATENCY_FMT, 1);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	tracing_max_latency = 0;
 	irqsoff_trace = tr;
@@ -572,10 +584,20 @@ static void __irqsoff_tracer_init(struct trace_array *tr)
 
 static void irqsoff_tracer_reset(struct trace_array *tr)
 {
+<<<<<<< HEAD
 	stop_irqsoff_tracer(tr, is_graph());
 
 	if (!save_lat_flag)
 		trace_flags &= ~TRACE_ITER_LATENCY_FMT;
+=======
+	int lat_flag = save_flags & TRACE_ITER_LATENCY_FMT;
+	int overwrite_flag = save_flags & TRACE_ITER_OVERWRITE;
+
+	stop_irqsoff_tracer(tr, is_graph());
+
+	set_tracer_flag(TRACE_ITER_LATENCY_FMT, lat_flag);
+	set_tracer_flag(TRACE_ITER_OVERWRITE, overwrite_flag);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void irqsoff_tracer_start(struct trace_array *tr)
@@ -608,6 +630,10 @@ static struct tracer irqsoff_tracer __read_mostly =
 	.print_line     = irqsoff_print_line,
 	.flags		= &tracer_flags,
 	.set_flag	= irqsoff_set_flag,
+<<<<<<< HEAD
+=======
+	.flag_changed	= trace_keep_overwrite,
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_FTRACE_SELFTEST
 	.selftest    = trace_selftest_startup_irqsoff,
 #endif
@@ -641,6 +667,10 @@ static struct tracer preemptoff_tracer __read_mostly =
 	.print_line     = irqsoff_print_line,
 	.flags		= &tracer_flags,
 	.set_flag	= irqsoff_set_flag,
+<<<<<<< HEAD
+=======
+	.flag_changed	= trace_keep_overwrite,
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_FTRACE_SELFTEST
 	.selftest    = trace_selftest_startup_preemptoff,
 #endif
@@ -676,6 +706,10 @@ static struct tracer preemptirqsoff_tracer __read_mostly =
 	.print_line     = irqsoff_print_line,
 	.flags		= &tracer_flags,
 	.set_flag	= irqsoff_set_flag,
+<<<<<<< HEAD
+=======
+	.flag_changed	= trace_keep_overwrite,
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_FTRACE_SELFTEST
 	.selftest    = trace_selftest_startup_preemptirqsoff,
 #endif

@@ -75,7 +75,13 @@
 #define	NB_PIF0_PWRDOWN_1	0x01100013
 
 #define USB_INTEL_XUSB2PR      0xD0
+<<<<<<< HEAD
 #define USB_INTEL_USB3_PSSEN   0xD8
+=======
+#define USB_INTEL_USB2PRM      0xD4
+#define USB_INTEL_USB3_PSSEN   0xD8
+#define USB_INTEL_USB3PRM      0xDC
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static struct amd_chipset_info {
 	struct pci_dev	*nb_dev;
@@ -543,7 +549,18 @@ static const struct dmi_system_id __devinitconst ehci_dmi_nohandoff_table[] = {
 		/*  Pegatron Lucid (Ordissimo AIRIS) */
 		.matches = {
 			DMI_MATCH(DMI_BOARD_NAME, "M11JB"),
+<<<<<<< HEAD
 			DMI_MATCH(DMI_BIOS_VERSION, "Lucid-GE-133"),
+=======
+			DMI_MATCH(DMI_BIOS_VERSION, "Lucid-"),
+		},
+	},
+	{
+		/*  Pegatron Lucid (Ordissimo) */
+		.matches = {
+			DMI_MATCH(DMI_BOARD_NAME, "Ordissimo"),
+			DMI_MATCH(DMI_BIOS_VERSION, "Lucid-"),
+>>>>>>> remotes/linux2/linux-3.4.y
 		},
 	},
 	{ }
@@ -714,6 +731,10 @@ static int handshake(void __iomem *ptr, u32 mask, u32 done,
 }
 
 #define PCI_DEVICE_ID_INTEL_LYNX_POINT_XHCI	0x8C31
+<<<<<<< HEAD
+=======
+#define PCI_DEVICE_ID_INTEL_LYNX_POINT_LP_XHCI	0x9C31
+>>>>>>> remotes/linux2/linux-3.4.y
 
 bool usb_is_intel_ppt_switchable_xhci(struct pci_dev *pdev)
 {
@@ -727,7 +748,12 @@ bool usb_is_intel_lpt_switchable_xhci(struct pci_dev *pdev)
 {
 	return pdev->class == PCI_CLASS_SERIAL_USB_XHCI &&
 		pdev->vendor == PCI_VENDOR_ID_INTEL &&
+<<<<<<< HEAD
 		pdev->device == PCI_DEVICE_ID_INTEL_LYNX_POINT_XHCI;
+=======
+		(pdev->device == PCI_DEVICE_ID_INTEL_LYNX_POINT_XHCI ||
+		 pdev->device == PCI_DEVICE_ID_INTEL_LYNX_POINT_LP_XHCI);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 bool usb_is_intel_switchable_xhci(struct pci_dev *pdev)
@@ -769,6 +795,7 @@ void usb_enable_xhci_ports(struct pci_dev *xhci_pdev)
 				"defaulting to EHCI.\n");
 		dev_warn(&xhci_pdev->dev,
 				"USB 3.0 devices will work at USB 2.0 speeds.\n");
+<<<<<<< HEAD
 		return;
 	}
 
@@ -776,6 +803,24 @@ void usb_enable_xhci_ports(struct pci_dev *xhci_pdev)
 	/* Write USB3_PSSEN, the USB 3.0 Port SuperSpeed Enable
 	 * Register, to turn on SuperSpeed terminations for all
 	 * available ports.
+=======
+		usb_disable_xhci_ports(xhci_pdev);
+		return;
+	}
+
+	/* Read USB3PRM, the USB 3.0 Port Routing Mask Register
+	 * Indicate the ports that can be changed from OS.
+	 */
+	pci_read_config_dword(xhci_pdev, USB_INTEL_USB3PRM,
+			&ports_available);
+
+	dev_dbg(&xhci_pdev->dev, "Configurable ports to enable SuperSpeed: 0x%x\n",
+			ports_available);
+
+	/* Write USB3_PSSEN, the USB 3.0 Port SuperSpeed Enable
+	 * Register, to turn on SuperSpeed terminations for the
+	 * switchable ports.
+>>>>>>> remotes/linux2/linux-3.4.y
 	 */
 	pci_write_config_dword(xhci_pdev, USB_INTEL_USB3_PSSEN,
 			cpu_to_le32(ports_available));
@@ -785,7 +830,20 @@ void usb_enable_xhci_ports(struct pci_dev *xhci_pdev)
 	dev_dbg(&xhci_pdev->dev, "USB 3.0 ports that are now enabled "
 			"under xHCI: 0x%x\n", ports_available);
 
+<<<<<<< HEAD
 	ports_available = 0xffffffff;
+=======
+	/* Read XUSB2PRM, xHCI USB 2.0 Port Routing Mask Register
+	 * Indicate the USB 2.0 ports to be controlled by the xHCI host.
+	 */
+
+	pci_read_config_dword(xhci_pdev, USB_INTEL_USB2PRM,
+			&ports_available);
+
+	dev_dbg(&xhci_pdev->dev, "Configurable USB 2.0 ports to hand over to xCHI: 0x%x\n",
+			ports_available);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Write XUSB2PR, the xHC USB 2.0 Port Routing Register, to
 	 * switch the USB 2.0 power and data lines over to the xHCI
 	 * host.
@@ -800,6 +858,16 @@ void usb_enable_xhci_ports(struct pci_dev *xhci_pdev)
 }
 EXPORT_SYMBOL_GPL(usb_enable_xhci_ports);
 
+<<<<<<< HEAD
+=======
+void usb_disable_xhci_ports(struct pci_dev *xhci_pdev)
+{
+	pci_write_config_dword(xhci_pdev, USB_INTEL_USB3_PSSEN, 0x0);
+	pci_write_config_dword(xhci_pdev, USB_INTEL_XUSB2PR, 0x0);
+}
+EXPORT_SYMBOL_GPL(usb_disable_xhci_ports);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  * PCI Quirks for xHCI.
  *
@@ -815,12 +883,20 @@ static void __devinit quirk_usb_handoff_xhci(struct pci_dev *pdev)
 	void __iomem *op_reg_base;
 	u32 val;
 	int timeout;
+<<<<<<< HEAD
+=======
+	int len = pci_resource_len(pdev, 0);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!mmio_resource_enabled(pdev, 0))
 		return;
 
+<<<<<<< HEAD
 	base = ioremap_nocache(pci_resource_start(pdev, 0),
 				pci_resource_len(pdev, 0));
+=======
+	base = ioremap_nocache(pci_resource_start(pdev, 0), len);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (base == NULL)
 		return;
 
@@ -830,9 +906,23 @@ static void __devinit quirk_usb_handoff_xhci(struct pci_dev *pdev)
 	 */
 	ext_cap_offset = xhci_find_next_cap_offset(base, XHCI_HCC_PARAMS_OFFSET);
 	do {
+<<<<<<< HEAD
 		if (!ext_cap_offset)
 			/* We've reached the end of the extended capabilities */
 			goto hc_init;
+=======
+		if ((ext_cap_offset + sizeof(val)) > len) {
+			/* We're reading garbage from the controller */
+			dev_warn(&pdev->dev,
+				 "xHCI controller failing to respond");
+			return;
+		}
+
+		if (!ext_cap_offset)
+			/* We've reached the end of the extended capabilities */
+			goto hc_init;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 		val = readl(base + ext_cap_offset);
 		if (XHCI_EXT_CAPS_ID(val) == XHCI_EXT_CAPS_LEGACY)
 			break;
@@ -863,9 +953,16 @@ static void __devinit quirk_usb_handoff_xhci(struct pci_dev *pdev)
 	/* Disable any BIOS SMIs and clear all SMI events*/
 	writel(val, base + ext_cap_offset + XHCI_LEGACY_CONTROL_OFFSET);
 
+<<<<<<< HEAD
 	if (usb_is_intel_switchable_xhci(pdev))
 		usb_enable_xhci_ports(pdev);
 hc_init:
+=======
+hc_init:
+	if (usb_is_intel_switchable_xhci(pdev))
+		usb_enable_xhci_ports(pdev);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	op_reg_base = base + XHCI_HC_LENGTH(readl(base));
 
 	/* Wait for the host controller to be ready before writing any

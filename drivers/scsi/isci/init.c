@@ -470,7 +470,11 @@ static int __devinit isci_pci_probe(struct pci_dev *pdev, const struct pci_devic
 		return -ENOMEM;
 	pci_set_drvdata(pdev, pci_info);
 
+<<<<<<< HEAD
 	if (efi_enabled)
+=======
+	if (efi_enabled(EFI_RUNTIME_SERVICES))
+>>>>>>> remotes/linux2/linux-3.4.y
 		orom = isci_get_efi_var(pdev);
 
 	if (!orom)
@@ -481,7 +485,10 @@ static int __devinit isci_pci_probe(struct pci_dev *pdev, const struct pci_devic
 						orom->hdr.version)) {
 			dev_warn(&pdev->dev,
 				 "[%d]: invalid oem parameters detected, falling back to firmware\n", i);
+<<<<<<< HEAD
 			devm_kfree(&pdev->dev, orom);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			orom = NULL;
 			break;
 		}

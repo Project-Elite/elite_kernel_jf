@@ -193,10 +193,17 @@ static void klist_release(struct kref *kref)
 		if (waiter->node != n)
 			continue;
 
+<<<<<<< HEAD
 		list_del(&waiter->list);
 		waiter->woken = 1;
 		mb();
 		wake_up_process(waiter->process);
+=======
+		waiter->woken = 1;
+		mb();
+		wake_up_process(waiter->process);
+		list_del(&waiter->list);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 	spin_unlock(&klist_remove_lock);
 	knode_set_klist(n, NULL);

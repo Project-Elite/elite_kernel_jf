@@ -28,7 +28,10 @@ Contents:
 2.3  Userspace
 2.4  Ondemand
 2.5  Conservative
+<<<<<<< HEAD
 2.6  Interactive
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 3.   The Governor Interface in the CPUfreq Core
 
@@ -192,6 +195,7 @@ governor but for the opposite direction.  For example when set to its
 default value of '20' it means that if the CPU usage needs to be below
 20% between samples to have the frequency decreased.
 
+<<<<<<< HEAD
 
 2.6 Interactive
 ---------------
@@ -277,6 +281,8 @@ on a write to boostpulse, before allowing speed to drop according to
 load as usual.  Default is 80000 uS.
 
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 3. The Governor Interface in the CPUfreq Core
 =============================================
 

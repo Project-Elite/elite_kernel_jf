@@ -173,8 +173,12 @@ find_safe_buffer(struct dmabounce_device_info *device_info, dma_addr_t safe_dma_
 	read_lock_irqsave(&device_info->lock, flags);
 
 	list_for_each_entry(b, &device_info->safe_buffers, node)
+<<<<<<< HEAD
 		if (b->safe_dma_addr <= safe_dma_addr &&
 		    b->safe_dma_addr + b->size > safe_dma_addr) {
+=======
+		if (b->safe_dma_addr == safe_dma_addr) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			rb = b;
 			break;
 		}
@@ -255,7 +259,11 @@ static inline dma_addr_t map_single(struct device *dev, void *ptr, size_t size,
 	if (buf == NULL) {
 		dev_err(dev, "%s: unable to map unsafe buffer %p!\n",
 		       __func__, ptr);
+<<<<<<< HEAD
 		return DMA_ERROR_CODE;
+=======
+		return ~0;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	dev_dbg(dev, "%s: unsafe buffer %p (dma=%#x) mapped to %p (dma=%#x)\n",
@@ -308,9 +316,14 @@ static inline void unmap_single(struct device *dev, struct safe_buffer *buf,
  * substitute the safe buffer for the unsafe one.
  * (basically move the buffer from an unsafe area to a safe one)
  */
+<<<<<<< HEAD
 static dma_addr_t dmabounce_map_page(struct device *dev, struct page *page,
 		unsigned long offset, size_t size, enum dma_data_direction dir,
 		struct dma_attrs *attrs)
+=======
+dma_addr_t __dma_map_page(struct device *dev, struct page *page,
+		unsigned long offset, size_t size, enum dma_data_direction dir)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	dma_addr_t dma_addr;
 	int ret;
@@ -322,20 +335,35 @@ static dma_addr_t dmabounce_map_page(struct device *dev, struct page *page,
 
 	ret = needs_bounce(dev, dma_addr, size);
 	if (ret < 0)
+<<<<<<< HEAD
 		return DMA_ERROR_CODE;
 
 	if (ret == 0) {
 		arm_dma_ops.sync_single_for_device(dev, dma_addr, size, dir);
+=======
+		return ~0;
+
+	if (ret == 0) {
+		__dma_page_cpu_to_dev(page, offset, size, dir);
+>>>>>>> remotes/linux2/linux-3.4.y
 		return dma_addr;
 	}
 
 	if (PageHighMem(page)) {
 		dev_err(dev, "DMA buffer bouncing of HIGHMEM pages is not supported\n");
+<<<<<<< HEAD
 		return DMA_ERROR_CODE;
+=======
+		return ~0;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return map_single(dev, page_address(page) + offset, size, dir);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(__dma_map_page);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * see if a mapped address was really a "safe" buffer and if so, copy
@@ -343,8 +371,13 @@ static dma_addr_t dmabounce_map_page(struct device *dev, struct page *page,
  * the safe buffer.  (basically return things back to the way they
  * should be)
  */
+<<<<<<< HEAD
 static void dmabounce_unmap_page(struct device *dev, dma_addr_t dma_addr, size_t size,
 		enum dma_data_direction dir, struct dma_attrs *attrs)
+=======
+void __dma_unmap_page(struct device *dev, dma_addr_t dma_addr, size_t size,
+		enum dma_data_direction dir)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct safe_buffer *buf;
 
@@ -353,18 +386,32 @@ static void dmabounce_unmap_page(struct device *dev, dma_addr_t dma_addr, size_t
 
 	buf = find_safe_buffer_dev(dev, dma_addr, __func__);
 	if (!buf) {
+<<<<<<< HEAD
 		arm_dma_ops.sync_single_for_cpu(dev, dma_addr, size, dir);
+=======
+		__dma_page_dev_to_cpu(pfn_to_page(dma_to_pfn(dev, dma_addr)),
+			dma_addr & ~PAGE_MASK, size, dir);
+>>>>>>> remotes/linux2/linux-3.4.y
 		return;
 	}
 
 	unmap_single(dev, buf, size, dir);
 }
+<<<<<<< HEAD
 
 static int __dmabounce_sync_for_cpu(struct device *dev, dma_addr_t addr,
 		size_t sz, enum dma_data_direction dir)
 {
 	struct safe_buffer *buf;
 	unsigned long off;
+=======
+EXPORT_SYMBOL(__dma_unmap_page);
+
+int dmabounce_sync_for_cpu(struct device *dev, dma_addr_t addr,
+		unsigned long off, size_t sz, enum dma_data_direction dir)
+{
+	struct safe_buffer *buf;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	dev_dbg(dev, "%s(dma=%#x,off=%#lx,sz=%zx,dir=%x)\n",
 		__func__, addr, off, sz, dir);
@@ -373,8 +420,11 @@ static int __dmabounce_sync_for_cpu(struct device *dev, dma_addr_t addr,
 	if (!buf)
 		return 1;
 
+<<<<<<< HEAD
 	off = addr - buf->safe_dma_addr;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	BUG_ON(buf->direction != dir);
 
 	dev_dbg(dev, "%s: unsafe buffer %p (dma=%#x) mapped to %p (dma=%#x)\n",
@@ -390,6 +440,7 @@ static int __dmabounce_sync_for_cpu(struct device *dev, dma_addr_t addr,
 	}
 	return 0;
 }
+<<<<<<< HEAD
 
 static void dmabounce_sync_for_cpu(struct device *dev,
 		dma_addr_t handle, size_t size, enum dma_data_direction dir)
@@ -405,6 +456,14 @@ static int __dmabounce_sync_for_device(struct device *dev, dma_addr_t addr,
 {
 	struct safe_buffer *buf;
 	unsigned long off;
+=======
+EXPORT_SYMBOL(dmabounce_sync_for_cpu);
+
+int dmabounce_sync_for_device(struct device *dev, dma_addr_t addr,
+		unsigned long off, size_t sz, enum dma_data_direction dir)
+{
+	struct safe_buffer *buf;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	dev_dbg(dev, "%s(dma=%#x,off=%#lx,sz=%zx,dir=%x)\n",
 		__func__, addr, off, sz, dir);
@@ -413,8 +472,11 @@ static int __dmabounce_sync_for_device(struct device *dev, dma_addr_t addr,
 	if (!buf)
 		return 1;
 
+<<<<<<< HEAD
 	off = addr - buf->safe_dma_addr;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	BUG_ON(buf->direction != dir);
 
 	dev_dbg(dev, "%s: unsafe buffer %p (dma=%#x) mapped to %p (dma=%#x)\n",
@@ -430,6 +492,7 @@ static int __dmabounce_sync_for_device(struct device *dev, dma_addr_t addr,
 	}
 	return 0;
 }
+<<<<<<< HEAD
 
 static void dmabounce_sync_for_device(struct device *dev,
 		dma_addr_t handle, size_t size, enum dma_data_direction dir)
@@ -462,6 +525,9 @@ static struct dma_map_ops dmabounce_ops = {
 	.sync_sg_for_device	= arm_dma_sync_sg_for_device,
 	.set_dma_mask		= dmabounce_set_mask,
 };
+=======
+EXPORT_SYMBOL(dmabounce_sync_for_device);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static int dmabounce_init_pool(struct dmabounce_pool *pool, struct device *dev,
 		const char *name, unsigned long size)
@@ -523,7 +589,10 @@ int dmabounce_register_dev(struct device *dev, unsigned long small_buffer_size,
 #endif
 
 	dev->archdata.dmabounce = device_info;
+<<<<<<< HEAD
 	set_dma_ops(dev, &dmabounce_ops);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	dev_info(dev, "dmabounce: registered device\n");
 
@@ -542,7 +611,10 @@ void dmabounce_unregister_dev(struct device *dev)
 	struct dmabounce_device_info *device_info = dev->archdata.dmabounce;
 
 	dev->archdata.dmabounce = NULL;
+<<<<<<< HEAD
 	set_dma_ops(dev, NULL);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!device_info) {
 		dev_warn(dev,

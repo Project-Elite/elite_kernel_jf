@@ -191,6 +191,11 @@ struct dentry_operations {
 #define DCACHE_MANAGED_DENTRY \
 	(DCACHE_MOUNTED|DCACHE_NEED_AUTOMOUNT|DCACHE_MANAGE_TRANSIT)
 
+<<<<<<< HEAD
+=======
+#define DCACHE_DENTRY_KILLED	0x100000
+
+>>>>>>> remotes/linux2/linux-3.4.y
 extern seqlock_t rename_lock;
 
 static inline int dname_external(struct dentry *dentry)

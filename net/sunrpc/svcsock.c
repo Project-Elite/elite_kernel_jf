@@ -1137,9 +1137,15 @@ static int svc_tcp_recvfrom(struct svc_rqst *rqstp)
 	if (len >= 0)
 		svsk->sk_tcplen += len;
 	if (len != want) {
+<<<<<<< HEAD
 		if (len < 0 && len != -EAGAIN)
 			goto err_other;
 		svc_tcp_save_pages(svsk, rqstp);
+=======
+		svc_tcp_save_pages(svsk, rqstp);
+		if (len < 0 && len != -EAGAIN)
+			goto err_other;
+>>>>>>> remotes/linux2/linux-3.4.y
 		dprintk("svc: incomplete TCP record (%d of %d)\n",
 			svsk->sk_tcplen, svsk->sk_reclen);
 		goto err_noclose;

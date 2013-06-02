@@ -1808,7 +1808,12 @@ static void virtcons_remove(struct virtio_device *vdev)
 	/* Disable interrupts for vqs */
 	vdev->config->reset(vdev);
 	/* Finish up work that's lined up */
+<<<<<<< HEAD
 	cancel_work_sync(&portdev->control_work);
+=======
+	if (use_multiport(portdev))
+		cancel_work_sync(&portdev->control_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	list_for_each_entry_safe(port, port2, &portdev->ports, list)
 		unplug_port(port);

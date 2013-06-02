@@ -22,6 +22,7 @@
 
 #define MMC_QUEUE_BOUNCESZ	65536
 
+<<<<<<< HEAD
 
 /*
  * Based on benchmark tests the default num of requests to trigger the write
@@ -29,6 +30,9 @@
  * manage to keep the high write throughput.
  */
 #define DEFAULT_NUM_REQS_TO_START_PACK 17
+=======
+#define MMC_QUEUE_SUSPENDED	(1 << 0)
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Prepare a MMC request. This just filters out odd stuff.
@@ -57,19 +61,28 @@ static int mmc_queue_thread(void *d)
 {
 	struct mmc_queue *mq = d;
 	struct request_queue *q = mq->queue;
+<<<<<<< HEAD
 	struct request *req;
 	struct mmc_card *card = mq->card;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	current->flags |= PF_MEMALLOC;
 
 	down(&mq->thread_sem);
 	do {
+<<<<<<< HEAD
 		struct mmc_queue_req *tmp;
 		req = NULL;	/* Must be set to NULL at each iteration */
+=======
+		struct request *req = NULL;
+		struct mmc_queue_req *tmp;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		spin_lock_irq(q->queue_lock);
 		set_current_state(TASK_INTERRUPTIBLE);
 		req = blk_fetch_request(q);
+<<<<<<< HEAD
 		/* set nopacked_period if next request is RT class */
 		if (req && IS_RT_CLASS_REQ(req))
 			    mmc_set_nopacked_period(mq, HZ);
@@ -80,11 +93,15 @@ static int mmc_queue_thread(void *d)
 			!(mq->mqrq_prev->req->cmd_flags & REQ_DISCARD))
 			card->host->context_info.is_waiting_last_req = true;
 
+=======
+		mq->mqrq_cur->req = req;
+>>>>>>> remotes/linux2/linux-3.4.y
 		spin_unlock_irq(q->queue_lock);
 
 		if (req || mq->mqrq_prev->req) {
 			set_current_state(TASK_RUNNING);
 			mq->issue_fn(mq, req);
+<<<<<<< HEAD
 			if (mq->flags & MMC_QUEUE_NEW_REQUEST) {
 				mq->flags &= ~MMC_QUEUE_NEW_REQUEST;
 				continue; /* fetch again */
@@ -100,28 +117,40 @@ static int mmc_queue_thread(void *d)
 				mq->mqrq_cur->brq.mrq.data = NULL;
 				mq->mqrq_cur->req = NULL;
 			}
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		} else {
 			if (kthread_should_stop()) {
 				set_current_state(TASK_RUNNING);
 				break;
 			}
+<<<<<<< HEAD
 			mmc_start_delayed_bkops(card);
 			mq->card->host->context_info.is_urgent = false;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			up(&mq->thread_sem);
 			schedule();
 			down(&mq->thread_sem);
 		}
 
+<<<<<<< HEAD
 		/*
 		 * Current request becomes previous request
 		 * and vice versa.
 		 */
+=======
+		/* Current request becomes previous request and vice versa. */
+>>>>>>> remotes/linux2/linux-3.4.y
 		mq->mqrq_prev->brq.mrq.data = NULL;
 		mq->mqrq_prev->req = NULL;
 		tmp = mq->mqrq_prev;
 		mq->mqrq_prev = mq->mqrq_cur;
 		mq->mqrq_cur = tmp;
+<<<<<<< HEAD
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	} while (1);
 	up(&mq->thread_sem);
 
@@ -138,9 +167,12 @@ static void mmc_request(struct request_queue *q)
 {
 	struct mmc_queue *mq = q->queuedata;
 	struct request *req;
+<<<<<<< HEAD
 	unsigned long flags;
 	struct mmc_context_info *cntx;
 	struct io_context *ioc;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!mq) {
 		while ((req = blk_fetch_request(q)) != NULL) {
@@ -150,6 +182,7 @@ static void mmc_request(struct request_queue *q)
 		return;
 	}
 
+<<<<<<< HEAD
 	if (unlikely(!irqs_disabled())) {
 		ioc = get_task_io_context(current, GFP_NOWAIT, 0);
 		if (ioc) {
@@ -218,6 +251,12 @@ static void mmc_urgent_request(struct request_queue *q)
 	}
 }
 
+=======
+	if (!mq->mqrq_cur->req && !mq->mqrq_prev->req)
+		wake_up_process(mq->thread);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static struct scatterlist *mmc_alloc_sg(int sg_len, int *err)
 {
 	struct scatterlist *sg;
@@ -250,6 +289,7 @@ static void mmc_queue_setup_discard(struct request_queue *q,
 	/* granularity must not be greater than max. discard */
 	if (card->pref_erase > max_discard)
 		q->limits.discard_granularity = 0;
+<<<<<<< HEAD
 	if (mmc_can_secure_erase_trim(card))
 		queue_flag_set_unlocked(QUEUE_FLAG_SECDISCARD, q);
 }
@@ -259,6 +299,12 @@ static void mmc_queue_setup_sanitize(struct request_queue *q)
 	queue_flag_set_unlocked(QUEUE_FLAG_SANITIZE, q);
 }
 
+=======
+	if (mmc_can_secure_erase_trim(card) || mmc_can_sanitize(card))
+		queue_flag_set_unlocked(QUEUE_FLAG_SECDISCARD, q);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  * mmc_init_queue - initialise a queue structure.
  * @mq: mmc queue
@@ -285,6 +331,7 @@ int mmc_init_queue(struct mmc_queue *mq, struct mmc_card *card,
 	if (!mq->queue)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	if ((host->caps2 & MMC_CAP2_STOP_REQUEST) &&
 			host->ops->stop_request &&
 			mq->card->ext_csd.hpi)
@@ -301,15 +348,25 @@ int mmc_init_queue(struct mmc_queue *mq, struct mmc_card *card,
 	mq->queue->queuedata = mq;
 	mq->nopacked_period = 0;
 	mq->num_wr_reqs_to_start_packing = DEFAULT_NUM_REQS_TO_START_PACK;
+=======
+	memset(&mq->mqrq_cur, 0, sizeof(mq->mqrq_cur));
+	memset(&mq->mqrq_prev, 0, sizeof(mq->mqrq_prev));
+	mq->mqrq_cur = mqrq_cur;
+	mq->mqrq_prev = mqrq_prev;
+	mq->queue->queuedata = mq;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	blk_queue_prep_rq(mq->queue, mmc_prep_request);
 	queue_flag_set_unlocked(QUEUE_FLAG_NONROT, mq->queue);
 	if (mmc_can_erase(card))
 		mmc_queue_setup_discard(mq->queue, card);
 
+<<<<<<< HEAD
 	if ((mmc_can_sanitize(card) && (host->caps2 & MMC_CAP2_SANITIZE)))
 		mmc_queue_setup_sanitize(mq->queue);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_MMC_BLOCK_BOUNCE
 	if (host->max_segs == 1) {
 		unsigned int bouncesz;
@@ -501,6 +558,7 @@ void mmc_queue_resume(struct mmc_queue *mq)
 	}
 }
 
+<<<<<<< HEAD
 static unsigned int mmc_queue_packed_map_sg(struct mmc_queue *mq,
 					    struct mmc_queue_req *mqrq,
 					    struct scatterlist *sg)
@@ -530,6 +588,8 @@ static unsigned int mmc_queue_packed_map_sg(struct mmc_queue *mq,
 	return sg_len;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Prepare the sg list(s) to be handed of to the host driver
  */
@@ -540,6 +600,7 @@ unsigned int mmc_queue_map_sg(struct mmc_queue *mq, struct mmc_queue_req *mqrq)
 	struct scatterlist *sg;
 	int i;
 
+<<<<<<< HEAD
 	if (!mqrq->bounce_buf) {
 		if (!list_empty(&mqrq->packed_list))
 			return mmc_queue_packed_map_sg(mq, mqrq, mqrq->sg);
@@ -553,6 +614,14 @@ unsigned int mmc_queue_map_sg(struct mmc_queue *mq, struct mmc_queue_req *mqrq)
 		sg_len = mmc_queue_packed_map_sg(mq, mqrq, mqrq->bounce_sg);
 	else
 		sg_len = blk_rq_map_sg(mq->queue, mqrq->req, mqrq->bounce_sg);
+=======
+	if (!mqrq->bounce_buf)
+		return blk_rq_map_sg(mq->queue, mqrq->req, mqrq->sg);
+
+	BUG_ON(!mqrq->bounce_sg);
+
+	sg_len = blk_rq_map_sg(mq->queue, mqrq->req, mqrq->bounce_sg);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	mqrq->bounce_sg_len = sg_len;
 

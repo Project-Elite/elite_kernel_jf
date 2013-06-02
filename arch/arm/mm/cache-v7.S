@@ -211,6 +211,12 @@ ENTRY(v7_coherent_user_range)
  * isn't mapped, just try the next page.
  */
 9001:
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ARM_ERRATA_775420
+	dsb
+#endif
+>>>>>>> remotes/linux2/linux-3.4.y
 	mov	r12, r12, lsr #12
 	mov	r12, r12, lsl #12
 	add	r12, r12, #4096

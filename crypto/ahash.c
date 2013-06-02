@@ -404,7 +404,11 @@ static int crypto_ahash_report(struct sk_buff *skb, struct crypto_alg *alg)
 {
 	struct crypto_report_hash rhash;
 
+<<<<<<< HEAD
 	snprintf(rhash.type, CRYPTO_MAX_ALG_NAME, "%s", "ahash");
+=======
+	strncpy(rhash.type, "ahash", sizeof(rhash.type));
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	rhash.blocksize = alg->cra_blocksize;
 	rhash.digestsize = __crypto_hash_alg_common(alg)->digestsize;

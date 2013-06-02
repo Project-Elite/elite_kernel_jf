@@ -62,4 +62,7 @@ obj-$(CONFIG_USB_SERIAL_WHITEHEAT)		+= whiteheat.o
 obj-$(CONFIG_USB_SERIAL_XIRCOM)			+= keyspan_pda.o
 obj-$(CONFIG_USB_SERIAL_VIVOPAY_SERIAL)		+= vivopay-serial.o
 obj-$(CONFIG_USB_SERIAL_ZIO)			+= zio.o
+<<<<<<< HEAD
 obj-$(CONFIG_USB_SERIAL_CSVT)			+= csvt.o
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

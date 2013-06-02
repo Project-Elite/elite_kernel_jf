@@ -22,13 +22,24 @@
 static u8 *udl_get_edid(struct udl_device *udl)
 {
 	u8 *block;
+<<<<<<< HEAD
 	char rbuf[3];
+=======
+	char *rbuf;
+>>>>>>> remotes/linux2/linux-3.4.y
 	int ret, i;
 
 	block = kmalloc(EDID_LENGTH, GFP_KERNEL);
 	if (block == NULL)
 		return NULL;
 
+<<<<<<< HEAD
+=======
+	rbuf = kmalloc(2, GFP_KERNEL);
+	if (rbuf == NULL)
+		goto error;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	for (i = 0; i < EDID_LENGTH; i++) {
 		ret = usb_control_msg(udl->ddev->usbdev,
 				      usb_rcvctrlpipe(udl->ddev->usbdev, 0), (0x02),
@@ -36,16 +47,27 @@ static u8 *udl_get_edid(struct udl_device *udl)
 				      HZ);
 		if (ret < 1) {
 			DRM_ERROR("Read EDID byte %d failed err %x\n", i, ret);
+<<<<<<< HEAD
 			i--;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto error;
 		}
 		block[i] = rbuf[1];
 	}
 
+<<<<<<< HEAD
+=======
+	kfree(rbuf);
+>>>>>>> remotes/linux2/linux-3.4.y
 	return block;
 
 error:
 	kfree(block);
+<<<<<<< HEAD
+=======
+	kfree(rbuf);
+>>>>>>> remotes/linux2/linux-3.4.y
 	return NULL;
 }
 
@@ -56,9 +78,27 @@ static int udl_get_modes(struct drm_connector *connector)
 	int ret;
 
 	edid = (struct edid *)udl_get_edid(udl);
+<<<<<<< HEAD
 
 	connector->display_info.raw_edid = (char *)edid;
 
+=======
+	if (!edid) {
+		drm_mode_connector_update_edid_property(connector, NULL);
+		return 0;
+	}
+
+	connector->display_info.raw_edid = (char *)edid;
+
+	/*
+	 * We only read the main block, but if the monitor reports extension
+	 * blocks then the drm edid code expects them to be present, so patch
+	 * the extension count to 0.
+	 */
+	edid->checksum += edid->extensions;
+	edid->extensions = 0;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	drm_mode_connector_update_edid_property(connector, edid);
 	ret = drm_add_edid_modes(connector, edid);
 	connector->display_info.raw_edid = NULL;
@@ -69,6 +109,16 @@ static int udl_get_modes(struct drm_connector *connector)
 static int udl_mode_valid(struct drm_connector *connector,
 			  struct drm_display_mode *mode)
 {
+<<<<<<< HEAD
+=======
+	struct udl_device *udl = connector->dev->dev_private;
+	if (!udl->sku_pixel_limit)
+		return 0;
+
+	if (mode->vdisplay * mode->hdisplay > udl->sku_pixel_limit)
+		return MODE_VIRTUAL_Y;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 

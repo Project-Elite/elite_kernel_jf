@@ -1,7 +1,11 @@
 /*
  * Qualcomm Serial USB driver
  *
+<<<<<<< HEAD
  *	Copyright (c) 2008, 2012 The Linux Foundation. All rights reserved.
+=======
+ *	Copyright (c) 2008 QUALCOMM Incorporated.
+>>>>>>> remotes/linux2/linux-3.4.y
  *	Copyright (c) 2009 Greg Kroah-Hartman <gregkh@suse.de>
  *	Copyright (c) 2009 Novell Inc.
  *
@@ -55,6 +59,10 @@ static const struct usb_device_id id_table[] = {
 	{DEVICE_G1K(0x05c6, 0x9221)},	/* Generic Gobi QDL device */
 	{DEVICE_G1K(0x05c6, 0x9231)},	/* Generic Gobi QDL device */
 	{DEVICE_G1K(0x1f45, 0x0001)},	/* Unknown Gobi QDL device */
+<<<<<<< HEAD
+=======
+	{DEVICE_G1K(0x1bc7, 0x900e)},	/* Telit Gobi QDL device */
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Gobi 2000 devices */
 	{USB_DEVICE(0x1410, 0xa010)},	/* Novatel Gobi 2000 QDL device */
@@ -114,14 +122,20 @@ static const struct usb_device_id id_table[] = {
 	{USB_DEVICE(0x1199, 0x9019)},	/* Sierra Wireless Gobi 3000 Modem device */
 	{USB_DEVICE(0x12D1, 0x14F0)},	/* Sony Gobi 3000 QDL */
 	{USB_DEVICE(0x12D1, 0x14F1)},	/* Sony Gobi 3000 Composite */
+<<<<<<< HEAD
 	{USB_DEVICE(0x05c6, 0x9048)},	/* MDM9x15 device */
 	{USB_DEVICE(0x05c6, 0x904C)},	/* MDM9x15 device */
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	{ }				/* Terminating entry */
 };
 MODULE_DEVICE_TABLE(usb, id_table);
 
+<<<<<<< HEAD
 #define EFS_SYNC_IFC_NUM	2
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static struct usb_driver qcdriver = {
 	.name			= "qcserial",
 	.probe			= usb_serial_probe,
@@ -243,6 +257,7 @@ static int qcprobe(struct usb_serial *serial, const struct usb_device_id *id)
 		}
 		break;
 
+<<<<<<< HEAD
 	case 9:
 		if (ifnum != EFS_SYNC_IFC_NUM) {
 			kfree(data);
@@ -251,6 +266,8 @@ static int qcprobe(struct usb_serial *serial, const struct usb_device_id *id)
 
 		retval = 0;
 		break;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	default:
 		dev_err(&serial->dev->dev,
 			"unknown number of interfaces: %d\n", nintf);
@@ -290,8 +307,11 @@ static struct usb_serial_driver qcdevice = {
 	.write		     = usb_wwan_write,
 	.write_room	     = usb_wwan_write_room,
 	.chars_in_buffer     = usb_wwan_chars_in_buffer,
+<<<<<<< HEAD
 	.throttle            = usb_wwan_throttle,
 	.unthrottle          = usb_wwan_unthrottle,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	.attach		     = usb_wwan_startup,
 	.disconnect	     = usb_wwan_disconnect,
 	.release	     = qc_release,

@@ -165,6 +165,10 @@ struct atmel_mci {
 	void __iomem		*regs;
 
 	struct scatterlist	*sg;
+<<<<<<< HEAD
+=======
+	unsigned int		sg_len;
+>>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int		pio_offset;
 
 	struct atmel_mci_slot	*cur_slot;
@@ -754,6 +758,10 @@ static u32 atmci_prepare_data(struct atmel_mci *host, struct mmc_data *data)
 	data->error = -EINPROGRESS;
 
 	host->sg = data->sg;
+<<<<<<< HEAD
+=======
+	host->sg_len = data->sg_len;
+>>>>>>> remotes/linux2/linux-3.4.y
 	host->data = data;
 	host->data_chan = NULL;
 
@@ -1592,7 +1600,12 @@ static void atmci_read_data_pio(struct atmel_mci *host)
 			if (offset == sg->length) {
 				flush_dcache_page(sg_page(sg));
 				host->sg = sg = sg_next(sg);
+<<<<<<< HEAD
 				if (!sg)
+=======
+				host->sg_len--;
+				if (!sg || !host->sg_len)
+>>>>>>> remotes/linux2/linux-3.4.y
 					goto done;
 
 				offset = 0;
@@ -1605,7 +1618,12 @@ static void atmci_read_data_pio(struct atmel_mci *host)
 
 			flush_dcache_page(sg_page(sg));
 			host->sg = sg = sg_next(sg);
+<<<<<<< HEAD
 			if (!sg)
+=======
+			host->sg_len--;
+			if (!sg || !host->sg_len)
+>>>>>>> remotes/linux2/linux-3.4.y
 				goto done;
 
 			offset = 4 - remaining;
@@ -1659,7 +1677,12 @@ static void atmci_write_data_pio(struct atmel_mci *host)
 			nbytes += 4;
 			if (offset == sg->length) {
 				host->sg = sg = sg_next(sg);
+<<<<<<< HEAD
 				if (!sg)
+=======
+				host->sg_len--;
+				if (!sg || !host->sg_len)
+>>>>>>> remotes/linux2/linux-3.4.y
 					goto done;
 
 				offset = 0;
@@ -1673,7 +1696,12 @@ static void atmci_write_data_pio(struct atmel_mci *host)
 			nbytes += remaining;
 
 			host->sg = sg = sg_next(sg);
+<<<<<<< HEAD
 			if (!sg) {
+=======
+			host->sg_len--;
+			if (!sg || !host->sg_len) {
+>>>>>>> remotes/linux2/linux-3.4.y
 				atmci_writel(host, ATMCI_TDR, value);
 				goto done;
 			}
@@ -2190,10 +2218,15 @@ static int __exit atmci_remove(struct platform_device *pdev)
 	atmci_readl(host, ATMCI_SR);
 	clk_disable(host->mck);
 
+<<<<<<< HEAD
 #ifdef CONFIG_MMC_ATMELMCI_DMA
 	if (host->dma.chan)
 		dma_release_channel(host->dma.chan);
 #endif
+=======
+	if (host->dma.chan)
+		dma_release_channel(host->dma.chan);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	free_irq(platform_get_irq(pdev, 0), host);
 	iounmap(host->regs);

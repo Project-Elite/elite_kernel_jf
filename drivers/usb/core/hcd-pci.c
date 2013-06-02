@@ -173,6 +173,10 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	struct hc_driver	*driver;
 	struct usb_hcd		*hcd;
 	int			retval;
+<<<<<<< HEAD
+=======
+	int			hcd_irq = 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (usb_disabled())
 		return -ENODEV;
@@ -187,6 +191,7 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 		return -ENODEV;
 	dev->current_state = PCI_D0;
 
+<<<<<<< HEAD
 	/* The xHCI driver supports MSI and MSI-X,
 	 * so don't fail if the BIOS doesn't provide a legacy IRQ.
 	 */
@@ -196,6 +201,21 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 			pci_name(dev));
 		retval = -ENODEV;
 		goto disable_pci;
+=======
+	/*
+	 * The xHCI driver has its own irq management
+	 * make sure irq setup is not touched for xhci in generic hcd code
+	 */
+	if ((driver->flags & HCD_MASK) != HCD_USB3) {
+		if (!dev->irq) {
+			dev_err(&dev->dev,
+			"Found HC with no IRQ. Check BIOS/PCI %s setup!\n",
+				pci_name(dev));
+			retval = -ENODEV;
+			goto disable_pci;
+		}
+		hcd_irq = dev->irq;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	hcd = usb_create_hcd(driver, &dev->dev, pci_name(dev));
@@ -245,7 +265,11 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 
 	pci_set_master(dev);
 
+<<<<<<< HEAD
 	retval = usb_add_hcd(hcd, dev->irq, IRQF_SHARED);
+=======
+	retval = usb_add_hcd(hcd, hcd_irq, IRQF_SHARED);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (retval != 0)
 		goto unmap_registers;
 	set_hs_companion(dev, hcd);

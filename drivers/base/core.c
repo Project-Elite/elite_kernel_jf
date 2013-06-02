@@ -649,7 +649,10 @@ void device_initialize(struct device *dev)
 {
 	dev->kobj.kset = devices_kset;
 	kobject_init(&dev->kobj, &device_ktype);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&dev->deferred_probe);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	INIT_LIST_HEAD(&dev->dma_pools);
 	mutex_init(&dev->mutex);
 	lockdep_set_novalidate_class(&dev->mutex);

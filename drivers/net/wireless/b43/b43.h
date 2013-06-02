@@ -7,6 +7,10 @@
 #include <linux/hw_random.h>
 #include <linux/bcma/bcma.h>
 #include <linux/ssb/ssb.h>
+<<<<<<< HEAD
+=======
+#include <linux/completion.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <net/mac80211.h>
 
 #include "debugfs.h"
@@ -718,6 +722,13 @@ enum b43_firmware_file_type {
 struct b43_request_fw_context {
 	/* The device we are requesting the fw for. */
 	struct b43_wldev *dev;
+<<<<<<< HEAD
+=======
+	/* a completion event structure needed if this call is asynchronous */
+	struct completion fw_load_complete;
+	/* a pointer to the firmware object */
+	const struct firmware *blob;
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* The type of firmware to request. */
 	enum b43_firmware_file_type req_type;
 	/* Error messages for each firmware type. */

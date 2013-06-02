@@ -483,6 +483,7 @@ config USB_VL600
 
 	  http://ubuntuforums.org/showpost.php?p=10589647&postcount=17
 
+<<<<<<< HEAD
 config MSM_RMNET_USB
 	tristate "RMNET USB Driver"
 	depends on USB_USBNET
@@ -492,5 +493,7 @@ config MSM_RMNET_USB
 
 	To compile this driver as a module, choose M here: the module
 	will be called rmnet_usb. If unsure, choose N.
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 endmenu

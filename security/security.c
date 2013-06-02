@@ -130,6 +130,7 @@ int __init register_security(struct security_operations *ops)
 
 /* Security operations */
 
+<<<<<<< HEAD
 int security_binder_set_context_mgr(struct task_struct *mgr)
 {
 	return security_ops->binder_set_context_mgr(mgr);
@@ -150,6 +151,8 @@ int security_binder_transfer_file(struct task_struct *from, struct task_struct *
 	return security_ops->binder_transfer_file(from, to, file);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 int security_ptrace_access_check(struct task_struct *child, unsigned int mode)
 {
 	return security_ops->ptrace_access_check(child, mode);

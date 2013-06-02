@@ -12,6 +12,7 @@
  */
 
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/pm_runtime.h>
 #include <linux/module.h>
 #include <linux/slab.h>
@@ -27,18 +28,30 @@ static void xhci_plat_quirks(struct device *dev, struct xhci_hcd *xhci)
 {
 	struct xhci_plat_data *pdata = dev->platform_data;
 
+=======
+#include <linux/module.h>
+#include <linux/slab.h>
+
+#include "xhci.h"
+
+static void xhci_plat_quirks(struct device *dev, struct xhci_hcd *xhci)
+{
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * As of now platform drivers don't provide MSI support so we ensure
 	 * here that the generic code does not try to make a pci_dev from our
 	 * dev struct in order to setup MSI
 	 */
 	xhci->quirks |= XHCI_BROKEN_MSI;
+<<<<<<< HEAD
 
 	if (!pdata)
 		return;
 	else if (pdata->vendor == SYNOPSIS_DWC3_VENDOR &&
 			pdata->revision < 0x230A)
 		xhci->quirks |= XHCI_PORTSC_DELAY;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /* called during probe() after chip reset completes */
@@ -132,7 +145,11 @@ static int xhci_plat_probe(struct platform_device *pdev)
 		goto put_hcd;
 	}
 
+<<<<<<< HEAD
 	hcd->regs = ioremap(hcd->rsrc_start, hcd->rsrc_len);
+=======
+	hcd->regs = ioremap_nocache(hcd->rsrc_start, hcd->rsrc_len);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!hcd->regs) {
 		dev_dbg(&pdev->dev, "error mapping memory\n");
 		ret = -EFAULT;
@@ -163,6 +180,7 @@ static int xhci_plat_probe(struct platform_device *pdev)
 	if (ret)
 		goto put_usb3_hcd;
 
+<<<<<<< HEAD
 	phy = usb_get_transceiver();
 	if (phy && phy->otg) {
 		dev_dbg(&pdev->dev, "%s otg support available\n", __func__);
@@ -181,6 +199,8 @@ static int xhci_plat_probe(struct platform_device *pdev)
 		pm_runtime_get(&pdev->dev);
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 
 put_usb3_hcd:
@@ -214,6 +234,7 @@ static int xhci_plat_remove(struct platform_device *dev)
 	usb_put_hcd(hcd);
 	kfree(xhci);
 
+<<<<<<< HEAD
 	if (phy && phy->otg) {
 		otg_set_host(phy->otg, NULL);
 		usb_put_transceiver(phy);
@@ -222,6 +243,8 @@ static int xhci_plat_remove(struct platform_device *dev)
 		pm_runtime_disable(&dev->dev);
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 

@@ -32,6 +32,7 @@
 
 #include <trace/events/power.h>
 
+<<<<<<< HEAD
 //KT Specifics
 int GLOBALKT_MIN_FREQ_LIMIT = 378000;
 int GLOBALKT_MAX_FREQ_LIMIT = 1890000;
@@ -62,6 +63,8 @@ unsigned int kthermal_limit = 0;
 
 extern void apenable_auto_hotplug(bool state);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  * The "cpufreq driver" - the arch- or hardware-dependent low
  * level driver of CPUFreq support, and its spinlock. This lock
@@ -71,11 +74,15 @@ static struct cpufreq_driver *cpufreq_driver;
 static DEFINE_PER_CPU(struct cpufreq_policy *, cpufreq_cpu_data);
 #ifdef CONFIG_HOTPLUG_CPU
 /* This one keeps track of the previously set governor of a removed CPU */
+<<<<<<< HEAD
 struct cpufreq_cpu_save_data {
 	char gov[CPUFREQ_NAME_LEN];
 	unsigned int max, min;
 };
 static DEFINE_PER_CPU(struct cpufreq_cpu_save_data, cpufreq_policy_save);
+=======
+static DEFINE_PER_CPU(char[CPUFREQ_NAME_LEN], cpufreq_cpu_governor);
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif
 static DEFINE_SPINLOCK(cpufreq_driver_lock);
 
@@ -102,7 +109,11 @@ static DEFINE_PER_CPU(int, cpufreq_policy_cpu);
 static DEFINE_PER_CPU(struct rw_semaphore, cpu_policy_rwsem);
 
 #define lock_policy_rwsem(mode, cpu)					\
+<<<<<<< HEAD
 int lock_policy_rwsem_##mode						\
+=======
+static int lock_policy_rwsem_##mode					\
+>>>>>>> remotes/linux2/linux-3.4.y
 (int cpu)								\
 {									\
 	int policy_cpu = per_cpu(cpufreq_policy_cpu, cpu);		\
@@ -127,7 +138,11 @@ static void unlock_policy_rwsem_read(int cpu)
 	up_read(&per_cpu(cpu_policy_rwsem, policy_cpu));
 }
 
+<<<<<<< HEAD
 void unlock_policy_rwsem_write(int cpu)
+=======
+static void unlock_policy_rwsem_write(int cpu)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	int policy_cpu = per_cpu(cpufreq_policy_cpu, cpu);
 	BUG_ON(policy_cpu == -1);
@@ -172,7 +187,11 @@ void disable_cpufreq(void)
 static LIST_HEAD(cpufreq_governor_list);
 static DEFINE_MUTEX(cpufreq_governor_mutex);
 
+<<<<<<< HEAD
 static struct cpufreq_policy *__cpufreq_cpu_get(unsigned int cpu, int sysfs)
+=======
+struct cpufreq_policy *cpufreq_cpu_get(unsigned int cpu)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct cpufreq_policy *data;
 	unsigned long flags;
@@ -196,7 +215,11 @@ static struct cpufreq_policy *__cpufreq_cpu_get(unsigned int cpu, int sysfs)
 	if (!data)
 		goto err_out_put_module;
 
+<<<<<<< HEAD
 	if (!sysfs && !kobject_get(&data->kobj))
+=======
+	if (!kobject_get(&data->kobj))
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto err_out_put_module;
 
 	spin_unlock_irqrestore(&cpufreq_driver_lock, flags);
@@ -209,6 +232,7 @@ err_out_unlock:
 err_out:
 	return NULL;
 }
+<<<<<<< HEAD
 
 struct cpufreq_policy *cpufreq_cpu_get(unsigned int cpu)
 {
@@ -238,6 +262,18 @@ static void cpufreq_cpu_put_sysfs(struct cpufreq_policy *data)
 {
 	__cpufreq_cpu_put(data, 1);
 }
+=======
+EXPORT_SYMBOL_GPL(cpufreq_cpu_get);
+
+
+void cpufreq_cpu_put(struct cpufreq_policy *data)
+{
+	kobject_put(&data->kobj);
+	module_put(cpufreq_driver->owner);
+}
+EXPORT_SYMBOL_GPL(cpufreq_cpu_put);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*********************************************************************
  *            EXTERNALLY AFFECTING FREQUENCY CHANGES                 *
@@ -330,14 +366,20 @@ void cpufreq_notify_transition(struct cpufreq_freqs *freqs, unsigned int state)
 		trace_cpu_frequency(freqs->new, freqs->cpu);
 		srcu_notifier_call_chain(&cpufreq_transition_notifier_list,
 				CPUFREQ_POSTCHANGE, freqs);
+<<<<<<< HEAD
 		if (likely(policy) && likely(policy->cpu == freqs->cpu)) {
 			policy->cur = freqs->new;
 			sysfs_notify(&policy->kobj, NULL, "scaling_cur_freq");
 		}
+=======
+		if (likely(policy) && likely(policy->cpu == freqs->cpu))
+			policy->cur = freqs->new;
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	}
 }
 EXPORT_SYMBOL_GPL(cpufreq_notify_transition);
+<<<<<<< HEAD
 /**
  * cpufreq_notify_utilization - notify CPU userspace about CPU utilization
  * change
@@ -355,6 +397,10 @@ void cpufreq_notify_utilization(struct cpufreq_policy *policy,
 		sysfs_notify(&policy->kobj, NULL, "cpu_utilization");
 
 }
+=======
+
+
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*********************************************************************
  *                          SYSFS INTERFACE                          *
@@ -442,7 +488,10 @@ show_one(cpuinfo_transition_latency, cpuinfo.transition_latency);
 show_one(scaling_min_freq, min);
 show_one(scaling_max_freq, max);
 show_one(scaling_cur_freq, cur);
+<<<<<<< HEAD
 show_one(cpu_utilization, util);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static int __cpufreq_set_policy(struct cpufreq_policy *data,
 				struct cpufreq_policy *policy);
@@ -471,6 +520,7 @@ static ssize_t store_##file_name					\
 	return ret ? ret : count;					\
 }
 
+<<<<<<< HEAD
 static ssize_t __ref store_scaling_min_freq(struct cpufreq_policy *policy, const char *buf, size_t count)
 {
 	unsigned int ret = -EINVAL;
@@ -664,6 +714,10 @@ static ssize_t store_scaling_sched_screen_off(struct cpufreq_policy *policy,
 	ret = sscanf(buf, "%15s", scaling_sched_screen_off_sel);
 	return count;
 }
+=======
+store_one(scaling_min_freq, min);
+store_one(scaling_max_freq, max);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /**
  * show_cpuinfo_cur_freq - current CPU frequency as detected by hardware
@@ -723,8 +777,11 @@ static ssize_t store_scaling_governor(struct cpufreq_policy *policy,
 	policy->user_policy.policy = policy->policy;
 	policy->user_policy.governor = policy->governor;
 
+<<<<<<< HEAD
 	sysfs_notify(&policy->kobj, NULL, "scaling_governor");
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (ret)
 		return ret;
 	else
@@ -840,6 +897,7 @@ static ssize_t show_bios_limit(struct cpufreq_policy *policy, char *buf)
 	return sprintf(buf, "%u\n", policy->cpuinfo.max_freq);
 }
 
+<<<<<<< HEAD
 static ssize_t show_enable_auto_hotplug(struct cpufreq_policy *policy, char *buf)
 {
 	return sprintf(buf, "%u\n", Lenable_auto_hotplug);
@@ -875,6 +933,8 @@ static ssize_t store_freq_lock(struct cpufreq_policy *policy,
 	return count;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 cpufreq_freq_attr_ro_perm(cpuinfo_cur_freq, 0400);
 cpufreq_freq_attr_ro(cpuinfo_min_freq);
 cpufreq_freq_attr_ro(cpuinfo_max_freq);
@@ -885,11 +945,15 @@ cpufreq_freq_attr_ro(scaling_cur_freq);
 cpufreq_freq_attr_ro(bios_limit);
 cpufreq_freq_attr_ro(related_cpus);
 cpufreq_freq_attr_ro(affected_cpus);
+<<<<<<< HEAD
 cpufreq_freq_attr_ro(cpu_utilization);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 cpufreq_freq_attr_rw(scaling_min_freq);
 cpufreq_freq_attr_rw(scaling_max_freq);
 cpufreq_freq_attr_rw(scaling_governor);
 cpufreq_freq_attr_rw(scaling_setspeed);
+<<<<<<< HEAD
 cpufreq_freq_attr_rw(scaling_booted);
 cpufreq_freq_attr_rw(freq_lock);
 cpufreq_freq_attr_rw(UV_mV_table);
@@ -899,6 +963,8 @@ cpufreq_freq_attr_rw(screen_off_scaling_mhz);
 cpufreq_freq_attr_rw(scaling_governor_screen_off);
 cpufreq_freq_attr_rw(scaling_sched_screen_off);
 cpufreq_freq_attr_rw(enable_auto_hotplug);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static struct attribute *default_attrs[] = {
 	&cpuinfo_min_freq.attr,
@@ -907,12 +973,16 @@ static struct attribute *default_attrs[] = {
 	&scaling_min_freq.attr,
 	&scaling_max_freq.attr,
 	&affected_cpus.attr,
+<<<<<<< HEAD
 	&cpu_utilization.attr,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	&related_cpus.attr,
 	&scaling_governor.attr,
 	&scaling_driver.attr,
 	&scaling_available_governors.attr,
 	&scaling_setspeed.attr,
+<<<<<<< HEAD
 	&scaling_booted.attr,
 	&freq_lock.attr,
 	&UV_mV_table.attr,
@@ -922,6 +992,8 @@ static struct attribute *default_attrs[] = {
 	&scaling_governor_screen_off.attr,
 	&scaling_sched_screen_off.attr,
 	&enable_auto_hotplug.attr,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	NULL
 };
 
@@ -936,7 +1008,11 @@ static ssize_t show(struct kobject *kobj, struct attribute *attr, char *buf)
 	struct cpufreq_policy *policy = to_policy(kobj);
 	struct freq_attr *fattr = to_attr(attr);
 	ssize_t ret = -EINVAL;
+<<<<<<< HEAD
 	policy = cpufreq_cpu_get_sysfs(policy->cpu);
+=======
+	policy = cpufreq_cpu_get(policy->cpu);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!policy)
 		goto no_policy;
 
@@ -950,7 +1026,11 @@ static ssize_t show(struct kobject *kobj, struct attribute *attr, char *buf)
 
 	unlock_policy_rwsem_read(policy->cpu);
 fail:
+<<<<<<< HEAD
 	cpufreq_cpu_put_sysfs(policy);
+=======
+	cpufreq_cpu_put(policy);
+>>>>>>> remotes/linux2/linux-3.4.y
 no_policy:
 	return ret;
 }
@@ -961,7 +1041,11 @@ static ssize_t store(struct kobject *kobj, struct attribute *attr,
 	struct cpufreq_policy *policy = to_policy(kobj);
 	struct freq_attr *fattr = to_attr(attr);
 	ssize_t ret = -EINVAL;
+<<<<<<< HEAD
 	policy = cpufreq_cpu_get_sysfs(policy->cpu);
+=======
+	policy = cpufreq_cpu_get(policy->cpu);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!policy)
 		goto no_policy;
 
@@ -975,7 +1059,11 @@ static ssize_t store(struct kobject *kobj, struct attribute *attr,
 
 	unlock_policy_rwsem_write(policy->cpu);
 fail:
+<<<<<<< HEAD
 	cpufreq_cpu_put_sysfs(policy);
+=======
+	cpufreq_cpu_put(policy);
+>>>>>>> remotes/linux2/linux-3.4.y
 no_policy:
 	return ret;
 }
@@ -1015,12 +1103,17 @@ static int cpufreq_add_dev_policy(unsigned int cpu,
 #ifdef CONFIG_HOTPLUG_CPU
 	struct cpufreq_governor *gov;
 
+<<<<<<< HEAD
 	gov = __find_governor(per_cpu(cpufreq_policy_save, cpu).gov);
+=======
+	gov = __find_governor(per_cpu(cpufreq_cpu_governor, cpu));
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (gov) {
 		policy->governor = gov;
 		pr_debug("Restoring governor %s for cpu %d\n",
 		       policy->governor->name, cpu);
 	}
+<<<<<<< HEAD
 	if (per_cpu(cpufreq_policy_save, cpu).min) {
 		policy->min = per_cpu(cpufreq_policy_save, cpu).min;
 		policy->user_policy.min = policy->min;
@@ -1031,6 +1124,8 @@ static int cpufreq_add_dev_policy(unsigned int cpu,
 	}
 	pr_debug("Restoring CPU%d min %d and max %d\n",
 		cpu, policy->min, policy->max);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif
 
 	for_each_cpu(j, policy->cpus) {
@@ -1380,12 +1475,17 @@ static int __cpufreq_remove_dev(struct device *dev, struct subsys_interface *sif
 #ifdef CONFIG_SMP
 
 #ifdef CONFIG_HOTPLUG_CPU
+<<<<<<< HEAD
 	strncpy(per_cpu(cpufreq_policy_save, cpu).gov, data->governor->name,
 			CPUFREQ_NAME_LEN);
 	per_cpu(cpufreq_policy_save, cpu).min = data->min;
 	per_cpu(cpufreq_policy_save, cpu).max = data->max;
 	pr_debug("Saving CPU%d policy min %d and max %d\n",
 			cpu, data->min, data->max);
+=======
+	strncpy(per_cpu(cpufreq_cpu_governor, cpu), data->governor->name,
+			CPUFREQ_NAME_LEN);
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif
 
 	/* if we have other CPUs still registered, we need to unlink them,
@@ -1409,12 +1509,17 @@ static int __cpufreq_remove_dev(struct device *dev, struct subsys_interface *sif
 				continue;
 			pr_debug("removing link for cpu %u\n", j);
 #ifdef CONFIG_HOTPLUG_CPU
+<<<<<<< HEAD
 			strncpy(per_cpu(cpufreq_policy_save, j).gov,
 				data->governor->name, CPUFREQ_NAME_LEN);
 			per_cpu(cpufreq_policy_save, j).min = data->min;
 			per_cpu(cpufreq_policy_save, j).max = data->max;
 			pr_debug("Saving CPU%d policy min %d and max %d\n",
 					j, data->min, data->max);
+=======
+			strncpy(per_cpu(cpufreq_cpu_governor, j),
+				data->governor->name, CPUFREQ_NAME_LEN);
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif
 			cpu_dev = get_cpu_device(j);
 			kobj = &cpu_dev->kobj;
@@ -1790,6 +1895,7 @@ int __cpufreq_driver_target(struct cpufreq_policy *policy,
 	if (cpufreq_disabled())
 		return -ENODEV;
 
+<<<<<<< HEAD
 	//pr_alert("DO KTHERMAL 2 %u-%u-%u\n", target_freq, relation, policy->cpu);
 	
 	if (kthermal_limit > 0 && target_freq > kthermal_limit)
@@ -1805,6 +1911,13 @@ int __cpufreq_driver_target(struct cpufreq_policy *policy,
 		retval = cpufreq_driver->target(policy, target_freq, relation);
 	}
 	
+=======
+	pr_debug("target for CPU %u: %u kHz, relation %u\n", policy->cpu,
+		target_freq, relation);
+	if (cpu_online(policy->cpu) && cpufreq_driver->target)
+		retval = cpufreq_driver->target(policy, target_freq, relation);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return retval;
 }
 EXPORT_SYMBOL_GPL(__cpufreq_driver_target);
@@ -1941,11 +2054,16 @@ void cpufreq_unregister_governor(struct cpufreq_governor *governor)
 	for_each_present_cpu(cpu) {
 		if (cpu_online(cpu))
 			continue;
+<<<<<<< HEAD
 		if (!strcmp(per_cpu(cpufreq_policy_save, cpu).gov,
 					governor->name))
 			strcpy(per_cpu(cpufreq_policy_save, cpu).gov, "\0");
 		per_cpu(cpufreq_policy_save, cpu).min = 0;
 		per_cpu(cpufreq_policy_save, cpu).max = 0;
+=======
+		if (!strcmp(per_cpu(cpufreq_cpu_governor, cpu), governor->name))
+			strcpy(per_cpu(cpufreq_cpu_governor, cpu), "\0");
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 #endif
 
@@ -1986,6 +2104,7 @@ int cpufreq_get_policy(struct cpufreq_policy *policy, unsigned int cpu)
 }
 EXPORT_SYMBOL(cpufreq_get_policy);
 
+<<<<<<< HEAD
 void do_kthermal(unsigned int cpu, unsigned int freq)
 {
 	kthermal_limit = freq;
@@ -1995,6 +2114,8 @@ void do_kthermal(unsigned int cpu, unsigned int freq)
 		__cpufreq_driver_target(&trmlpolicy[cpu], freq, CPUFREQ_RELATION_H);
 	}
 }
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * data   : current policy.
@@ -2010,11 +2131,14 @@ static int __cpufreq_set_policy(struct cpufreq_policy *data,
 
 	memcpy(&policy->cpuinfo, &data->cpuinfo,
 				sizeof(struct cpufreq_cpuinfo));
+<<<<<<< HEAD
 	
 	memcpy(&trmlpolicy[policy->cpu], policy, sizeof(struct cpufreq_policy));
 	
 	if (vfreq_lock_tempOFF)
 		vfreq_lock = 1;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (policy->min > data->max || policy->max < data->min) {
 		ret = -EINVAL;
@@ -2026,6 +2150,7 @@ static int __cpufreq_set_policy(struct cpufreq_policy *data,
 	if (ret)
 		goto error_out;
 
+<<<<<<< HEAD
 	//Do KT checker
 	if (policy->cpuinfo.min_freq != GLOBALKT_MIN_FREQ_LIMIT || policy->cpuinfo.max_freq != GLOBALKT_MAX_FREQ_LIMIT)
 	{
@@ -2043,6 +2168,8 @@ static int __cpufreq_set_policy(struct cpufreq_policy *data,
 		policy->user_policy.max = GLOBALKT_MAX_FREQ_LIMIT;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* adjust if necessary - all reasons */
 	blocking_notifier_call_chain(&cpufreq_policy_notifier_list,
 			CPUFREQ_ADJUST, policy);
@@ -2057,6 +2184,7 @@ static int __cpufreq_set_policy(struct cpufreq_policy *data,
 	if (ret)
 		goto error_out;
 
+<<<<<<< HEAD
 	//Do KT checker
 	if (policy->cpuinfo.min_freq != GLOBALKT_MIN_FREQ_LIMIT || policy->cpuinfo.max_freq != GLOBALKT_MAX_FREQ_LIMIT)
 	{
@@ -2074,6 +2202,8 @@ static int __cpufreq_set_policy(struct cpufreq_policy *data,
 		policy->user_policy.max = GLOBALKT_MAX_FREQ_LIMIT;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* notification of the new policy */
 	blocking_notifier_call_chain(&cpufreq_policy_notifier_list,
 			CPUFREQ_NOTIFY, policy);
@@ -2178,6 +2308,7 @@ no_policy:
 }
 EXPORT_SYMBOL(cpufreq_update_policy);
 
+<<<<<<< HEAD
 int cpufreq_set_limit_defered(unsigned int flags, unsigned int value)
 {
 	unsigned int ret = -EINVAL;					
@@ -2300,6 +2431,8 @@ void set_cur_sched(const char *name)
 	ret = sscanf(name, "%15s", scaling_sched_screen_off_sel_prev);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static int __cpuinit cpufreq_cpu_callback(struct notifier_block *nfb,
 					unsigned long action, void *hcpu)
 {
@@ -2312,6 +2445,7 @@ static int __cpuinit cpufreq_cpu_callback(struct notifier_block *nfb,
 		case CPU_ONLINE:
 		case CPU_ONLINE_FROZEN:
 			cpufreq_add_dev(dev, NULL);
+<<<<<<< HEAD
 #ifdef CONFIG_SEC_DVFS
 			/* if min or max lock is set, online cpu needs to change it's own rate immediately after addind cpufreq_dev */
 			{
@@ -2334,6 +2468,8 @@ static int __cpuinit cpufreq_cpu_callback(struct notifier_block *nfb,
 				}
 			}
 #endif			
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			break;
 		case CPU_DOWN_PREPARE:
 		case CPU_DOWN_PREPARE_FROZEN:

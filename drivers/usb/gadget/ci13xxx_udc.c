@@ -48,23 +48,34 @@
  * - Handle requests which spawns into several TDs
  * - GET_STATUS(device) - always reports 0
  * - Gadget API (majority of optional features)
+<<<<<<< HEAD
+=======
+ * - Suspend & Remote Wakeup
+>>>>>>> remotes/linux2/linux-3.4.y
  */
 #include <linux/delay.h>
 #include <linux/device.h>
 #include <linux/dmapool.h>
 #include <linux/dma-mapping.h>
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/ratelimit.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/interrupt.h>
 #include <linux/io.h>
 #include <linux/irq.h>
 #include <linux/kernel.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/pm_runtime.h>
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
 #include <linux/usb/otg.h>
+<<<<<<< HEAD
 #include <linux/usb/msm_hsusb.h>
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 #include <linux/usb/composite.h>
@@ -74,15 +85,23 @@
 /* Turns on streaming. overrides CI13XXX_DISABLE_STREAMING */
 static unsigned int streaming;
 module_param(streaming, uint, S_IRUGO | S_IWUSR);
+=======
+
+#include "ci13xxx_udc.h"
+
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /******************************************************************************
  * DEFINE
  *****************************************************************************/
 
 #define DMA_ADDR_INVALID	(~(dma_addr_t)0)
+<<<<<<< HEAD
 #define USB_MAX_TIMEOUT		100 /* 100msec timeout */
 #define EP_PRIME_CHECK_DELAY	(jiffies + msecs_to_jiffies(1000))
 #define MAX_PRIME_CHECK_RETRY	3 /*Wait for 3sec for EP prime failure */
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* ctrl register bank access */
 static DEFINE_SPINLOCK(udc_lock);
@@ -168,7 +187,10 @@ static struct {
 #define CAP_ENDPTLISTADDR   (0x018UL)
 #define CAP_PORTSC          (0x044UL)
 #define CAP_DEVLC           (0x084UL)
+<<<<<<< HEAD
 #define CAP_ENDPTPIPEID     (0x0BCUL)
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #define CAP_USBMODE         (hw_bank.lpm ? 0x0C8UL : 0x068UL)
 #define CAP_ENDPTSETUPSTAT  (hw_bank.lpm ? 0x0D8UL : 0x06CUL)
 #define CAP_ENDPTPRIME      (hw_bank.lpm ? 0x0DCUL : 0x070UL)
@@ -178,12 +200,18 @@ static struct {
 #define CAP_ENDPTCTRL       (hw_bank.lpm ? 0x0ECUL : 0x080UL)
 #define CAP_LAST            (hw_bank.lpm ? 0x12CUL : 0x0C0UL)
 
+<<<<<<< HEAD
 #define REMOTE_WAKEUP_DELAY	msecs_to_jiffies(200)
 
 /* maximum number of enpoints: valid only after hw_device_reset() */
 static unsigned hw_ep_max;
 static void dbg_usb_op_fail(u8 addr, const char *name,
 				const struct ci13xxx_ep *mep);
+=======
+/* maximum number of enpoints: valid only after hw_device_reset() */
+static unsigned hw_ep_max;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  * hw_ep_bit: calculates the bit number
  * @num: endpoint number
@@ -324,7 +352,10 @@ static int hw_device_init(void __iomem *base)
  */
 static int hw_device_reset(struct ci13xxx *udc)
 {
+<<<<<<< HEAD
 	printk(KERN_INFO "usb:: %s\n", __func__);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* should flush & stop before reset */
 	hw_cwrite(CAP_ENDPTFLUSH, ~0, ~0);
 	hw_cwrite(CAP_USBCMD, USBCMD_RS, 0);
@@ -338,11 +369,18 @@ static int hw_device_reset(struct ci13xxx *udc)
 		udc->udc_driver->notify_event(udc,
 			CI13XXX_CONTROLLER_RESET_EVENT);
 
+<<<<<<< HEAD
+=======
+	if (udc->udc_driver->flags & CI13XXX_DISABLE_STREAMING)
+		hw_cwrite(CAP_USBMODE, USBMODE_SDIS, USBMODE_SDIS);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* USBMODE should be configured step by step */
 	hw_cwrite(CAP_USBMODE, USBMODE_CM, USBMODE_CM_IDLE);
 	hw_cwrite(CAP_USBMODE, USBMODE_CM, USBMODE_CM_DEVICE);
 	hw_cwrite(CAP_USBMODE, USBMODE_SLOM, USBMODE_SLOM);  /* HW >= 2.3 */
 
+<<<<<<< HEAD
 	/*
 	 * ITC (Interrupt Threshold Control) field is to set the maximum
 	 * rate at which the device controller will issue interrupts.
@@ -354,6 +392,8 @@ static int hw_device_reset(struct ci13xxx *udc)
 	if (udc->udc_driver->flags & CI13XXX_ZERO_ITC)
 		hw_cwrite(CAP_USBCMD, USBCMD_ITC_MASK, USBCMD_ITC(0));
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (hw_cread(CAP_USBMODE, USBMODE_CM) != USBMODE_CM_DEVICE) {
 		pr_err("cannot enter in device mode");
 		pr_err("lpm = %i", hw_bank.lpm);
@@ -372,6 +412,7 @@ static int hw_device_reset(struct ci13xxx *udc)
  */
 static int hw_device_state(u32 dma)
 {
+<<<<<<< HEAD
 	struct ci13xxx *udc = _udc;
 
 	printk(KERN_INFO "usb:: %s dma: %x\n", __func__, dma);
@@ -382,19 +423,26 @@ static int hw_device_state(u32 dma)
 		else
 			hw_cwrite(CAP_USBMODE, USBMODE_SDIS, USBMODE_SDIS);
 
+=======
+	if (dma) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		hw_cwrite(CAP_ENDPTLISTADDR, ~0, dma);
 		/* interrupt, error, port change, reset, sleep/suspend */
 		hw_cwrite(CAP_USBINTR, ~0,
 			     USBi_UI|USBi_UEI|USBi_PCI|USBi_URI|USBi_SLI);
 		hw_cwrite(CAP_USBCMD, USBCMD_RS, USBCMD_RS);
+<<<<<<< HEAD
 
 		printk(KERN_INFO "usb:: %s hw_read(CAP_ENDPTLISTADDR, ~0): %x\n",
 			__func__, hw_cread(CAP_ENDPTLISTADDR, ~0));
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	} else {
 		hw_cwrite(CAP_USBCMD, USBCMD_RS, 0);
 		hw_cwrite(CAP_USBINTR, ~0, 0);
 	}
+<<<<<<< HEAD
 
 	printk(KERN_INFO "usb:: %s hw_read(CAP_USBINTR, ~0): %x\n",
 			__func__, hw_cread(CAP_USBINTR, ~0));
@@ -425,6 +473,11 @@ static void debug_ept_flush_info(int ep_num, int dir)
 
 	dbg_usb_op_fail(0xFF, "FLUSHF", mep);
 }
+=======
+	return 0;
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  * hw_ep_flush: flush endpoint fifo (execute without interruption)
  * @num: endpoint number
@@ -434,6 +487,7 @@ static void debug_ept_flush_info(int ep_num, int dir)
  */
 static int hw_ep_flush(int num, int dir)
 {
+<<<<<<< HEAD
 	ktime_t start, diff;
 	int n = hw_ep_bit(num, dir);
 	struct ci13xxx_ep *mEp = &_udc->ci13xxx_ep[n];
@@ -459,6 +513,15 @@ static int hw_ep_flush(int num, int dir)
 				return 0;
 			}
 		}
+=======
+	int n = hw_ep_bit(num, dir);
+
+	do {
+		/* flush any pending transfer */
+		hw_cwrite(CAP_ENDPTFLUSH, BIT(n), BIT(n));
+		while (hw_cread(CAP_ENDPTFLUSH, BIT(n)))
+			cpu_relax();
+>>>>>>> remotes/linux2/linux-3.4.y
 	} while (hw_cread(CAP_ENDPTSTAT, BIT(n)));
 
 	return 0;
@@ -473,6 +536,10 @@ static int hw_ep_flush(int num, int dir)
  */
 static int hw_ep_disable(int num, int dir)
 {
+<<<<<<< HEAD
+=======
+	hw_ep_flush(num, dir);
+>>>>>>> remotes/linux2/linux-3.4.y
 	hw_cwrite(CAP_ENDPTCTRL + num * sizeof(u32),
 		  dir ? ENDPTCTRL_TXE : ENDPTCTRL_RXE, 0);
 	return 0;
@@ -510,10 +577,13 @@ static int hw_ep_enable(int num, int dir, int type)
 		data |= ENDPTCTRL_RXE;
 	}
 	hw_cwrite(CAP_ENDPTCTRL + num * sizeof(u32), mask, data);
+<<<<<<< HEAD
 
 	/* make sure endpoint is enabled before returning */
 	mb();
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -561,6 +631,11 @@ static int hw_ep_prime(int num, int dir, int is_ctrl)
 
 	hw_cwrite(CAP_ENDPTPRIME, BIT(n), BIT(n));
 
+<<<<<<< HEAD
+=======
+	while (hw_cread(CAP_ENDPTPRIME, BIT(n)))
+		cpu_relax();
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (is_ctrl && dir == RX  && hw_cread(CAP_ENDPTSETUPSTAT, BIT(num)))
 		return -EAGAIN;
 
@@ -579,18 +654,27 @@ static int hw_ep_prime(int num, int dir, int is_ctrl)
  */
 static int hw_ep_set_halt(int num, int dir, int value)
 {
+<<<<<<< HEAD
 	u32 addr, mask_xs, mask_xr;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (value != 0 && value != 1)
 		return -EINVAL;
 
 	do {
+<<<<<<< HEAD
 		if (hw_cread(CAP_ENDPTSETUPSTAT, BIT(num)))
 			return 0;
 
 		addr = CAP_ENDPTCTRL + num * sizeof(u32);
 		mask_xs = dir ? ENDPTCTRL_TXS : ENDPTCTRL_RXS;
 		mask_xr = dir ? ENDPTCTRL_TXR : ENDPTCTRL_RXR;
+=======
+		u32 addr = CAP_ENDPTCTRL + num * sizeof(u32);
+		u32 mask_xs = dir ? ENDPTCTRL_TXS : ENDPTCTRL_RXS;
+		u32 mask_xr = dir ? ENDPTCTRL_TXR : ENDPTCTRL_RXR;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		/* data toggle - reserved for EP0 but it's in ESS */
 		hw_cwrite(addr, mask_xs|mask_xr, value ? mask_xs : mask_xr);
@@ -942,6 +1026,7 @@ static void dbg_inc(unsigned *idx)
 	*idx = (*idx + 1) & (DBG_DATA_MAX-1);
 }
 
+<<<<<<< HEAD
 
 static unsigned int ep_addr_txdbg_mask;
 module_param(ep_addr_txdbg_mask, uint, S_IRUGO | S_IWUSR);
@@ -968,6 +1053,8 @@ static int allow_dbg_print(u8 addr)
 	return 0;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  * dbg_print:  prints the common part of the event
  * @addr:   endpoint address
@@ -981,9 +1068,12 @@ static void dbg_print(u8 addr, const char *name, int status, const char *extra)
 	unsigned int stamp;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (!allow_dbg_print(addr))
 		return;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	write_lock_irqsave(&dbg_data.lck, flags);
 
 	do_gettimeofday(&tval);
@@ -1067,6 +1157,7 @@ static void dbg_setup(u8 addr, const struct usb_ctrlrequest *req)
 }
 
 /**
+<<<<<<< HEAD
  * dbg_usb_op_fail: prints USB Operation FAIL event
  * @addr: endpoint address
  * @mEp:  endpoint structure
@@ -1106,6 +1197,8 @@ static void dbg_usb_op_fail(u8 addr, const char *name,
 }
 
 /**
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  * show_events: displays the event buffer
  *
  * Check "device.h" for details
@@ -1401,9 +1494,12 @@ static ssize_t show_registers(struct device *dev,
 		dev_err(dev, "[%s] EINVAL\n", __func__);
 		return 0;
 	}
+<<<<<<< HEAD
 	dump = kmalloc(2048, GFP_KERNEL);
 	if (dump == NULL)
 		return -ENOMEM;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	dump = kmalloc(sizeof(u32) * DUMP_ENTRIES, GFP_KERNEL);
 	if (!dump) {
@@ -1501,6 +1597,7 @@ static ssize_t show_requests(struct device *dev, struct device_attribute *attr,
 }
 static DEVICE_ATTR(requests, S_IRUSR, show_requests, NULL);
 
+<<<<<<< HEAD
 /* EP# and Direction */
 static ssize_t prime_ept(struct device *dev,
 			       struct device_attribute *attr,
@@ -1657,6 +1754,8 @@ static ssize_t usb_remote_wakeup(struct device *dev,
 }
 static DEVICE_ATTR(wakeup, S_IWUSR, 0, usb_remote_wakeup);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  * dbg_create_files: initializes the attribute interface
  * @dev: device
@@ -1693,6 +1792,7 @@ __maybe_unused static int dbg_create_files(struct device *dev)
 	retval = device_create_file(dev, &dev_attr_requests);
 	if (retval)
 		goto rm_registers;
+<<<<<<< HEAD
 	retval = device_create_file(dev, &dev_attr_wakeup);
 	if (retval)
 		goto rm_remote_wakeup;
@@ -1711,6 +1811,10 @@ rm_prime:
 	device_remove_file(dev, &dev_attr_prime);
 rm_remote_wakeup:
 	device_remove_file(dev, &dev_attr_wakeup);
+=======
+	return 0;
+
+>>>>>>> remotes/linux2/linux-3.4.y
  rm_registers:
 	device_remove_file(dev, &dev_attr_registers);
  rm_qheads:
@@ -1747,7 +1851,10 @@ __maybe_unused static int dbg_remove_files(struct device *dev)
 	device_remove_file(dev, &dev_attr_events);
 	device_remove_file(dev, &dev_attr_driver);
 	device_remove_file(dev, &dev_attr_device);
+<<<<<<< HEAD
 	device_remove_file(dev, &dev_attr_wakeup);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 
@@ -1763,6 +1870,7 @@ static inline u8 _usb_addr(struct ci13xxx_ep *ep)
 	return ((ep->dir == TX) ? USB_ENDPOINT_DIR_MASK : 0) | ep->num;
 }
 
+<<<<<<< HEAD
 static void ep_prime_timer_func(unsigned long data)
 {
 	struct ci13xxx_ep *mep = (struct ci13xxx_ep *)data;
@@ -1814,6 +1922,8 @@ out:
 
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  * _hardware_queue: configures a request at hardware level
  * @gadget: gadget
@@ -1826,7 +1936,10 @@ static int _hardware_enqueue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 	unsigned i;
 	int ret = 0;
 	unsigned length = mReq->req.length;
+<<<<<<< HEAD
 	struct ci13xxx *udc = _udc;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	trace("%p, %p", mEp, mReq);
 
@@ -1880,6 +1993,7 @@ static int _hardware_enqueue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 		if (!mReq->req.no_interrupt)
 			mReq->ptr->token  |= TD_IOC;
 	}
+<<<<<<< HEAD
 
 	/* MSM Specific: updating the request as required for
 	 * SPS mode. Enable MSM proprietary DMA engine acording
@@ -1898,11 +2012,14 @@ static int _hardware_enqueue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 		mReq->req.dma = 0;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	mReq->ptr->page[0]  = mReq->req.dma;
 	for (i = 1; i < 5; i++)
 		mReq->ptr->page[i] =
 			(mReq->req.dma + i * CI13XXX_PAGE_SIZE) & ~TD_RESERVED_MASK;
 
+<<<<<<< HEAD
 	/* Remote Wakeup */
 	if (udc->suspended) {
 		if (!udc->remote_wakeup) {
@@ -1915,11 +2032,16 @@ static int _hardware_enqueue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 		schedule_delayed_work(&udc->rw_work, REMOTE_WAKEUP_DELAY);
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!list_empty(&mEp->qh.queue)) {
 		struct ci13xxx_req *mReqPrev;
 		int n = hw_ep_bit(mEp->num, mEp->dir);
 		int tmp_stat;
+<<<<<<< HEAD
 		ktime_t start, diff;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		mReqPrev = list_entry(mEp->qh.queue.prev,
 				struct ci13xxx_req, queue);
@@ -1930,6 +2052,7 @@ static int _hardware_enqueue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 		wmb();
 		if (hw_cread(CAP_ENDPTPRIME, BIT(n)))
 			goto done;
+<<<<<<< HEAD
 		start = ktime_get();
 		do {
 			hw_cwrite(CAP_USBCMD, USBCMD_ATDTW, USBCMD_ATDTW);
@@ -1944,6 +2067,11 @@ static int _hardware_enqueue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 				 __func__, mEp->num, mEp->dir ? "IN" : "OUT");
 				return -EAGAIN;
 			}
+=======
+		do {
+			hw_cwrite(CAP_USBCMD, USBCMD_ATDTW, USBCMD_ATDTW);
+			tmp_stat = hw_cread(CAP_ENDPTSTAT, BIT(n));
+>>>>>>> remotes/linux2/linux-3.4.y
 		} while (!hw_cread(CAP_USBCMD, USBCMD_ATDTW));
 		hw_cwrite(CAP_USBCMD, USBCMD_ATDTW, 0);
 		if (tmp_stat)
@@ -1951,6 +2079,7 @@ static int _hardware_enqueue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 	}
 
 	/*  QH configuration */
+<<<<<<< HEAD
 	if (!list_empty(&mEp->qh.queue)) {
 		struct ci13xxx_req *mReq = \
 			list_entry(mEp->qh.queue.next,
@@ -2001,12 +2130,21 @@ static int _hardware_enqueue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 	mEp->qh.ptr->cap |=  QH_ZLT;
 
 prime:
+=======
+	mEp->qh.ptr->td.next   = mReq->dma;    /* TERMINATE = 0 */
+	mEp->qh.ptr->td.token &= ~TD_STATUS;   /* clear status */
+	mEp->qh.ptr->cap |=  QH_ZLT;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	wmb();   /* synchronize before ep prime */
 
 	ret = hw_ep_prime(mEp->num, mEp->dir,
 			   mEp->type == USB_ENDPOINT_XFER_CONTROL);
+<<<<<<< HEAD
 	if (!ret)
 		mod_timer(&mEp->prime_timer, EP_PRIME_CHECK_DELAY);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 done:
 	return ret;
 }
@@ -2025,6 +2163,7 @@ static int _hardware_dequeue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 	if (mReq->req.status != -EALREADY)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	/* clean speculative fetches on req->ptr->token */
 	mb();
 
@@ -2051,6 +2190,16 @@ static int _hardware_dequeue(struct ci13xxx_ep *mEp, struct ci13xxx_req *mReq)
 		udelay(10);
 #endif
 #endif
+=======
+	if ((TD_STATUS_ACTIVE & mReq->ptr->token) != 0)
+		return -EBUSY;
+
+	if (mReq->zptr) {
+		if ((TD_STATUS_ACTIVE & mReq->zptr->token) != 0)
+			return -EBUSY;
+		dma_pool_free(mEp->td_pool, mReq->zptr, mReq->zdma);
+		mReq->zptr = NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	mReq->req.status = 0;
@@ -2089,9 +2238,12 @@ static int _ep_nuke(struct ci13xxx_ep *mEp)
 __releases(mEp->lock)
 __acquires(mEp->lock)
 {
+<<<<<<< HEAD
 	struct ci13xxx_ep *mEpTemp = mEp;
 	unsigned val;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	trace("%p", mEp);
 
 	if (mEp == NULL)
@@ -2106,6 +2258,7 @@ __acquires(mEp->lock)
 			list_entry(mEp->qh.queue.next,
 				   struct ci13xxx_req, queue);
 		list_del_init(&mReq->queue);
+<<<<<<< HEAD
 
 		/* MSM Specific: Clear end point proprietary register */
 		if (CI13XX_REQ_VENDOR_ID(mReq->req.udc_priv) == MSM_VENDOR_ID) {
@@ -2139,6 +2292,13 @@ __acquires(mEp->lock)
 			mReq->req.complete(&mEpTemp->ep, &mReq->req);
 			if (mEp->type == USB_ENDPOINT_XFER_CONTROL)
 				mReq->req.complete = NULL;
+=======
+		mReq->req.status = -ESHUTDOWN;
+
+		if (mReq->req.complete != NULL) {
+			spin_unlock(mEp->lock);
+			mReq->req.complete(&mEp->ep, &mReq->req);
+>>>>>>> remotes/linux2/linux-3.4.y
 			spin_lock(mEp->lock);
 		}
 	}
@@ -2153,6 +2313,10 @@ __acquires(mEp->lock)
  */
 static int _gadget_stop_activity(struct usb_gadget *gadget)
 {
+<<<<<<< HEAD
+=======
+	struct usb_ep *ep;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct ci13xxx    *udc = container_of(gadget, struct ci13xxx, gadget);
 	unsigned long flags;
 
@@ -2165,6 +2329,7 @@ static int _gadget_stop_activity(struct usb_gadget *gadget)
 	udc->gadget.speed = USB_SPEED_UNKNOWN;
 	udc->remote_wakeup = 0;
 	udc->suspended = 0;
+<<<<<<< HEAD
 	udc->configured = 0;
 	spin_unlock_irqrestore(udc->lock, flags);
 
@@ -2177,6 +2342,24 @@ static int _gadget_stop_activity(struct usb_gadget *gadget)
 	usb_ep_fifo_flush(&udc->ep0out.ep);
 	usb_ep_fifo_flush(&udc->ep0in.ep);
 
+=======
+	spin_unlock_irqrestore(udc->lock, flags);
+
+	/* flush all endpoints */
+	gadget_for_each_ep(ep, gadget) {
+		usb_ep_fifo_flush(ep);
+	}
+	usb_ep_fifo_flush(&udc->ep0out.ep);
+	usb_ep_fifo_flush(&udc->ep0in.ep);
+
+	udc->driver->disconnect(gadget);
+
+	/* make sure to disable all endpoints */
+	gadget_for_each_ep(ep, gadget) {
+		usb_ep_disable(ep);
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (udc->status != NULL) {
 		usb_ep_free_request(&udc->ep0in.ep, udc->status);
 		udc->status = NULL;
@@ -2201,7 +2384,10 @@ __acquires(udc->lock)
 	int retval;
 
 	trace("%p", udc);
+<<<<<<< HEAD
 	printk(KERN_INFO "usb:: %s udc: %p\n", __func__, udc);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (udc == NULL) {
 		err("EINVAL");
@@ -2211,16 +2397,22 @@ __acquires(udc->lock)
 	dbg_event(0xFF, "BUS RST", 0);
 
 	spin_unlock(udc->lock);
+<<<<<<< HEAD
 
 	/*stop charging upon reset */
 	if (udc->transceiver && !udc->vbus_active)
 		usb_phy_set_power(udc->transceiver, 0);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	retval = _gadget_stop_activity(&udc->gadget);
 	if (retval)
 		goto done;
 
+<<<<<<< HEAD
 	_udc->skip_flush = false;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	retval = hw_usb_reset();
 	if (retval)
 		goto done;
@@ -2237,6 +2429,7 @@ __acquires(udc->lock)
 }
 
 /**
+<<<<<<< HEAD
  * isr_resume_handler: USB PCI interrupt handler
  * @udc: UDC device
  *
@@ -2282,6 +2475,8 @@ static void isr_suspend_handler(struct ci13xxx *udc)
 }
 
 /**
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  * isr_get_status_complete: get_status request complete function
  * @ep:  endpoint
  * @req: request handled
@@ -2338,6 +2533,7 @@ __acquires(mEp->lock)
 	}
 
 	if ((setup->bRequestType & USB_RECIP_MASK) == USB_RECIP_DEVICE) {
+<<<<<<< HEAD
 		if (setup->wIndex == OTG_STATUS_SELECTOR) {
 			*((u8 *)req->buf) = _udc->gadget.host_request <<
 						HOST_REQUEST_FLAG;
@@ -2347,6 +2543,10 @@ __acquires(mEp->lock)
 			*((u16 *)req->buf) = _udc->remote_wakeup << 1;
 		}
 		/* TODO: D1 - Remote Wakeup; D0 - Self Powered */
+=======
+		/* Assume that device is bus powered for now. */
+		*((u16 *)req->buf) = _udc->remote_wakeup << 1;
+>>>>>>> remotes/linux2/linux-3.4.y
 		retval = 0;
 	} else if ((setup->bRequestType & USB_RECIP_MASK) \
 		   == USB_RECIP_ENDPOINT) {
@@ -2412,11 +2612,16 @@ __acquires(mEp->lock)
 	trace("%p", udc);
 
 	mEp = (udc->ep0_dir == TX) ? &udc->ep0out : &udc->ep0in;
+<<<<<<< HEAD
 	if (udc->status) {
 		udc->status->context = udc;
 		udc->status->complete = isr_setup_status_complete;
 	} else
 		return -EINVAL;
+=======
+	udc->status->context = udc;
+	udc->status->complete = isr_setup_status_complete;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	spin_unlock(mEp->lock);
 	retval = usb_ep_queue(&mEp->ep, udc->status, GFP_ATOMIC);
@@ -2439,13 +2644,17 @@ __acquires(mEp->lock)
 	struct ci13xxx_req *mReq, *mReqTemp;
 	struct ci13xxx_ep *mEpTemp = mEp;
 	int uninitialized_var(retval);
+<<<<<<< HEAD
 	int req_dequeue = 1;
 	int dtd_delay_cnt = 10;
 	struct ci13xxx *udc = _udc;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	trace("%p", mEp);
 
 	if (list_empty(&mEp->qh.queue))
+<<<<<<< HEAD
 		return 0;
 
 	if (mEp->num == 0)
@@ -2477,6 +2686,15 @@ dequeue:
 		}
 
 		req_dequeue = 0;
+=======
+		return -EINVAL;
+
+	list_for_each_entry_safe(mReq, mReqTemp, &mEp->qh.queue,
+			queue) {
+		retval = _hardware_dequeue(mEp, mReq);
+		if (retval < 0)
+			break;
+>>>>>>> remotes/linux2/linux-3.4.y
 		list_del_init(&mReq->queue);
 		dbg_done(_usb_addr(mEp), mReq->ptr->token, retval);
 		if (mReq->req.complete != NULL) {
@@ -2561,8 +2779,11 @@ __acquires(udc->lock)
 		do {
 			hw_test_and_set_setup_guard();
 			memcpy(&req, &mEp->qh.ptr->setup, sizeof(req));
+<<<<<<< HEAD
 			/* Ensure buffer is read before acknowledging to h/w */
 			mb();
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		} while (!hw_test_and_clear_setup_guard());
 
 		type = req.bRequestType;
@@ -2608,7 +2829,12 @@ __acquires(udc->lock)
 			    type != (USB_DIR_IN|USB_RECIP_ENDPOINT) &&
 			    type != (USB_DIR_IN|USB_RECIP_INTERFACE))
 				goto delegate;
+<<<<<<< HEAD
 			if (le16_to_cpu(req.wValue)  != 0)
+=======
+			if (le16_to_cpu(req.wLength) != 2 ||
+			    le16_to_cpu(req.wValue)  != 0)
+>>>>>>> remotes/linux2/linux-3.4.y
 				break;
 			err = isr_get_status_response(udc, &req);
 			break;
@@ -2623,10 +2849,13 @@ __acquires(udc->lock)
 				break;
 			err = isr_setup_status_phase(udc);
 			break;
+<<<<<<< HEAD
 		case USB_REQ_SET_CONFIGURATION:
 			if (type == (USB_DIR_OUT|USB_TYPE_STANDARD))
 				udc->configured = !!req.wValue;
 			goto delegate;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		case USB_REQ_SET_FEATURE:
 			if (type == (USB_DIR_OUT|USB_RECIP_ENDPOINT) &&
 					le16_to_cpu(req.wValue) ==
@@ -2652,6 +2881,7 @@ __acquires(udc->lock)
 					udc->remote_wakeup = 1;
 					err = isr_setup_status_phase(udc);
 					break;
+<<<<<<< HEAD
 				case USB_DEVICE_B_HNP_ENABLE:
 					udc->gadget.b_hnp_enable = 1;
 					err = isr_setup_status_phase(udc);
@@ -2662,6 +2892,8 @@ __acquires(udc->lock)
 					break;
 				case USB_DEVICE_A_ALT_HNP_SUPPORT:
 					break;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 				case USB_DEVICE_TEST_MODE:
 					tmode = le16_to_cpu(req.wIndex) >> 8;
 					switch (tmode) {
@@ -2674,6 +2906,7 @@ __acquires(udc->lock)
 						err = isr_setup_status_phase(
 								udc);
 						break;
+<<<<<<< HEAD
 					case TEST_OTG_SRP_REQD:
 						udc->gadget.otg_srp_reqd = 1;
 						err = isr_setup_status_phase(
@@ -2684,11 +2917,17 @@ __acquires(udc->lock)
 						err = isr_setup_status_phase(
 								udc);
 						break;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 					default:
 						break;
 					}
 				default:
+<<<<<<< HEAD
 					break;
+=======
+					goto delegate;
+>>>>>>> remotes/linux2/linux-3.4.y
 				}
 			} else {
 				goto delegate;
@@ -2730,7 +2969,10 @@ static int ep_enable(struct usb_ep *ep,
 	struct ci13xxx_ep *mEp = container_of(ep, struct ci13xxx_ep, ep);
 	int retval = 0;
 	unsigned long flags;
+<<<<<<< HEAD
 	unsigned mult = 0;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	trace("%p, %p", ep, desc);
 
@@ -2756,6 +2998,7 @@ static int ep_enable(struct usb_ep *ep,
 
 	mEp->qh.ptr->cap = 0;
 
+<<<<<<< HEAD
 	if (mEp->type == USB_ENDPOINT_XFER_CONTROL) {
 		mEp->qh.ptr->cap |=  QH_IOS;
 	} else if (mEp->type == USB_ENDPOINT_XFER_ISOC) {
@@ -2765,14 +3008,25 @@ static int ep_enable(struct usb_ep *ep,
 	} else {
 		mEp->qh.ptr->cap |= QH_ZLT;
 	}
+=======
+	if (mEp->type == USB_ENDPOINT_XFER_CONTROL)
+		mEp->qh.ptr->cap |=  QH_IOS;
+	else if (mEp->type == USB_ENDPOINT_XFER_ISOC)
+		mEp->qh.ptr->cap &= ~QH_MULT;
+	else
+		mEp->qh.ptr->cap &= ~QH_ZLT;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	mEp->qh.ptr->cap |=
 		(mEp->ep.maxpacket << ffs_nr(QH_MAX_PKT)) & QH_MAX_PKT;
 	mEp->qh.ptr->td.next |= TD_TERMINATE;   /* needed? */
 
+<<<<<<< HEAD
 	/* complete all the updates to ept->head before enabling endpoint*/
 	mb();
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Enable endpoints in the HW other than ep0 as ep0
 	 * is always enabled
@@ -2806,8 +3060,11 @@ static int ep_disable(struct usb_ep *ep)
 
 	/* only internal SW should disable ctrl endpts */
 
+<<<<<<< HEAD
 	del_timer(&mEp->prime_timer);
 	mEp->prime_timer_count = 0;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	direction = mEp->dir;
 	do {
 		dbg_event(_usb_addr(mEp), "DISABLE", 0);
@@ -2906,13 +3163,17 @@ static int ep_queue(struct usb_ep *ep, struct usb_request *req,
 	struct ci13xxx_req *mReq = container_of(req, struct ci13xxx_req, req);
 	int retval = 0;
 	unsigned long flags;
+<<<<<<< HEAD
 	struct ci13xxx *udc = _udc;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	trace("%p, %p, %X", ep, req, gfp_flags);
 
 	if (ep == NULL || req == NULL || mEp->desc == NULL)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (!udc->softconnect)
 		return -ENODEV;
 
@@ -2927,6 +3188,10 @@ static int ep_queue(struct usb_ep *ep, struct usb_request *req,
 		return -ESHUTDOWN;
 	}
 
+=======
+	spin_lock_irqsave(mEp->lock, flags);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (mEp->type == USB_ENDPOINT_XFER_CONTROL) {
 		if (req->length)
 			mEp = (_udc->ep0_dir == RX) ?
@@ -2979,7 +3244,10 @@ static int ep_queue(struct usb_ep *ep, struct usb_request *req,
 static int ep_dequeue(struct usb_ep *ep, struct usb_request *req)
 {
 	struct ci13xxx_ep  *mEp  = container_of(ep,  struct ci13xxx_ep, ep);
+<<<<<<< HEAD
 	struct ci13xxx_ep *mEpTemp = mEp;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct ci13xxx_req *mReq = container_of(req, struct ci13xxx_req, req);
 	unsigned long flags;
 
@@ -2994,12 +3262,16 @@ static int ep_dequeue(struct usb_ep *ep, struct usb_request *req)
 
 	dbg_event(_usb_addr(mEp), "DEQUEUE", 0);
 
+<<<<<<< HEAD
 	if ((mEp->type == USB_ENDPOINT_XFER_CONTROL)) {
 		hw_ep_flush(_udc->ep0out.num, RX);
 		hw_ep_flush(_udc->ep0in.num, TX);
 	} else {
 		hw_ep_flush(mEp->num, mEp->dir);
 	}
+=======
+	hw_ep_flush(mEp->num, mEp->dir);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* pop request */
 	list_del_init(&mReq->queue);
@@ -3013,12 +3285,16 @@ static int ep_dequeue(struct usb_ep *ep, struct usb_request *req)
 
 	if (mReq->req.complete != NULL) {
 		spin_unlock(mEp->lock);
+<<<<<<< HEAD
 		if ((mEp->type == USB_ENDPOINT_XFER_CONTROL) &&
 				mReq->req.length)
 			mEpTemp = &_udc->ep0in;
 		mReq->req.complete(&mEpTemp->ep, &mReq->req);
 		if (mEp->type == USB_ENDPOINT_XFER_CONTROL)
 			mReq->req.complete = NULL;
+=======
+		mReq->req.complete(&mEp->ep, &mReq->req);
+>>>>>>> remotes/linux2/linux-3.4.y
 		spin_lock(mEp->lock);
 	}
 
@@ -3026,12 +3302,15 @@ static int ep_dequeue(struct usb_ep *ep, struct usb_request *req)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int is_sps_req(struct ci13xxx_req *mReq)
 {
 	return (CI13XX_REQ_VENDOR_ID(mReq->req.udc_priv) == MSM_VENDOR_ID &&
 			mReq->req.udc_priv & MSM_SPS_MODE);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /**
  * ep_set_halt: sets the endpoint halt feature
  *
@@ -3053,9 +3332,13 @@ static int ep_set_halt(struct usb_ep *ep, int value)
 #ifndef STALL_IN
 	/* g_file_storage MS compliant but g_zero fails chapter 9 compliance */
 	if (value && mEp->type == USB_ENDPOINT_XFER_BULK && mEp->dir == TX &&
+<<<<<<< HEAD
 		!list_empty(&mEp->qh.queue) &&
 		!is_sps_req(list_entry(mEp->qh.queue.next, struct ci13xxx_req,
 							   queue))){
+=======
+	    !list_empty(&mEp->qh.queue)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		spin_unlock_irqrestore(mEp->lock, flags);
 		return -EAGAIN;
 	}
@@ -3122,8 +3405,11 @@ static void ep_fifo_flush(struct usb_ep *ep)
 
 	spin_lock_irqsave(mEp->lock, flags);
 
+<<<<<<< HEAD
 	del_timer(&mEp->prime_timer);
 	mEp->prime_timer_count = 0;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	dbg_event(_usb_addr(mEp), "FFLUSH", 0);
 	hw_ep_flush(mEp->num, mEp->dir);
 
@@ -3154,12 +3440,16 @@ static int ci13xxx_vbus_session(struct usb_gadget *_gadget, int is_active)
 	struct ci13xxx *udc = container_of(_gadget, struct ci13xxx, gadget);
 	unsigned long flags;
 	int gadget_ready = 0;
+<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	struct usb_composite_dev *cdev;
 	cdev = get_gadget_data(_gadget);
 #endif
 
 	printk(KERN_INFO "usb:: %s,%d\n", __func__, __LINE__);
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!(udc->udc_driver->flags & CI13XXX_PULLUP_ON_VBUS))
 		return -EOPNOTSUPP;
 
@@ -3167,13 +3457,17 @@ static int ci13xxx_vbus_session(struct usb_gadget *_gadget, int is_active)
 	udc->vbus_active = is_active;
 	if (udc->driver)
 		gadget_ready = 1;
+<<<<<<< HEAD
 
 	printk(KERN_INFO "usb:: %s gadget_ready:%d, is_active:%d\n",
 		__func__, gadget_ready, is_active);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	spin_unlock_irqrestore(udc->lock, flags);
 
 	if (gadget_ready) {
 		if (is_active) {
+<<<<<<< HEAD
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 			if (cdev != NULL)
 				cdev->cable_connect = true;
@@ -3194,6 +3488,17 @@ static int ci13xxx_vbus_session(struct usb_gadget *_gadget, int is_active)
 			if (udc->udc_driver->notify_event)
 				udc->udc_driver->notify_event(udc,
 					CI13XXX_CONTROLLER_DISCONNECT_EVENT);
+=======
+			pm_runtime_get_sync(&_gadget->dev);
+			hw_device_reset(udc);
+			hw_device_state(udc->ep0out.qh.dma);
+		} else {
+			hw_device_state(0);
+			if (udc->udc_driver->notify_event)
+				udc->udc_driver->notify_event(udc,
+				CI13XXX_CONTROLLER_STOPPED_EVENT);
+			_gadget_stop_activity(&udc->gadget);
+>>>>>>> remotes/linux2/linux-3.4.y
 			pm_runtime_put_sync(&_gadget->dev);
 		}
 	}
@@ -3201,6 +3506,7 @@ static int ci13xxx_vbus_session(struct usb_gadget *_gadget, int is_active)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ci13xxx_vbus_draw(struct usb_gadget *_gadget, unsigned mA)
 {
 	struct ci13xxx *udc = container_of(_gadget, struct ci13xxx, gadget);
@@ -3239,6 +3545,40 @@ static int ci13xxx_pullup(struct usb_gadget *_gadget, int is_active)
 		hw_device_state(0);
 
 	return 0;
+=======
+static int ci13xxx_wakeup(struct usb_gadget *_gadget)
+{
+	struct ci13xxx *udc = container_of(_gadget, struct ci13xxx, gadget);
+	unsigned long flags;
+	int ret = 0;
+
+	trace();
+
+	spin_lock_irqsave(udc->lock, flags);
+	if (!udc->remote_wakeup) {
+		ret = -EOPNOTSUPP;
+		trace("remote wakeup feature is not enabled\n");
+		goto out;
+	}
+	if (!hw_cread(CAP_PORTSC, PORTSC_SUSP)) {
+		ret = -EINVAL;
+		trace("port is not suspended\n");
+		goto out;
+	}
+	hw_cwrite(CAP_PORTSC, PORTSC_FPR, PORTSC_FPR);
+out:
+	spin_unlock_irqrestore(udc->lock, flags);
+	return ret;
+}
+
+static int ci13xxx_vbus_draw(struct usb_gadget *_gadget, unsigned mA)
+{
+	struct ci13xxx *udc = container_of(_gadget, struct ci13xxx, gadget);
+
+	if (udc->transceiver)
+		return usb_phy_set_power(udc->transceiver, mA);
+	return -ENOTSUPP;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int ci13xxx_start(struct usb_gadget_driver *driver,
@@ -3253,7 +3593,10 @@ static const struct usb_gadget_ops usb_gadget_ops = {
 	.vbus_session	= ci13xxx_vbus_session,
 	.wakeup		= ci13xxx_wakeup,
 	.vbus_draw	= ci13xxx_vbus_draw,
+<<<<<<< HEAD
 	.pullup		= ci13xxx_pullup,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	.start		= ci13xxx_start,
 	.stop		= ci13xxx_stop,
 };
@@ -3273,7 +3616,10 @@ static int ci13xxx_start(struct usb_gadget_driver *driver,
 	unsigned long flags;
 	int i, j;
 	int retval = -ENOMEM;
+<<<<<<< HEAD
 	bool put = false;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	trace("%p", driver);
 
@@ -3324,8 +3670,12 @@ static int ci13xxx_start(struct usb_gadget_driver *driver,
 
 			mEp->ep.name      = mEp->name;
 			mEp->ep.ops       = &usb_ep_ops;
+<<<<<<< HEAD
 			mEp->ep.maxpacket =
 				k ? (unsigned short)~0 : CTRL_PAYLOAD_MAX;
+=======
+			mEp->ep.maxpacket = CTRL_PAYLOAD_MAX;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 			INIT_LIST_HEAD(&mEp->qh.queue);
 			spin_unlock_irqrestore(udc->lock, flags);
@@ -3362,10 +3712,15 @@ static int ci13xxx_start(struct usb_gadget_driver *driver,
 	/* bind gadget */
 	driver->driver.bus     = NULL;
 	udc->gadget.dev.driver = &driver->driver;
+<<<<<<< HEAD
 	udc->softconnect = 1;
 
 	spin_unlock_irqrestore(udc->lock, flags);
 	pm_runtime_get_sync(&udc->gadget.dev);
+=======
+
+	spin_unlock_irqrestore(udc->lock, flags);
+>>>>>>> remotes/linux2/linux-3.4.y
 	retval = bind(&udc->gadget);                /* MAY SLEEP */
 	spin_lock_irqsave(udc->lock, flags);
 
@@ -3375,16 +3730,25 @@ static int ci13xxx_start(struct usb_gadget_driver *driver,
 	}
 
 	udc->driver = driver;
+<<<<<<< HEAD
+=======
+	pm_runtime_get_sync(&udc->gadget.dev);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (udc->udc_driver->flags & CI13XXX_PULLUP_ON_VBUS) {
 		if (udc->vbus_active) {
 			if (udc->udc_driver->flags & CI13XXX_REGS_SHARED)
 				hw_device_reset(udc);
 		} else {
+<<<<<<< HEAD
 			put = true;
+=======
+			pm_runtime_put_sync(&udc->gadget.dev);
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto done;
 		}
 	}
 
+<<<<<<< HEAD
 	if (!udc->softconnect) {
 		put = true;
 		goto done;
@@ -3396,6 +3760,14 @@ static int ci13xxx_start(struct usb_gadget_driver *driver,
 	spin_unlock_irqrestore(udc->lock, flags);
 	if (retval || put)
 		pm_runtime_put_sync(&udc->gadget.dev);
+=======
+	retval = hw_device_state(udc->ep0out.qh.dma);
+	if (retval)
+		pm_runtime_put_sync(&udc->gadget.dev);
+
+ done:
+	spin_unlock_irqrestore(udc->lock, flags);
+>>>>>>> remotes/linux2/linux-3.4.y
 	return retval;
 }
 
@@ -3423,6 +3795,12 @@ static int ci13xxx_stop(struct usb_gadget_driver *driver)
 	if (!(udc->udc_driver->flags & CI13XXX_PULLUP_ON_VBUS) ||
 			udc->vbus_active) {
 		hw_device_state(0);
+<<<<<<< HEAD
+=======
+		if (udc->udc_driver->notify_event)
+			udc->udc_driver->notify_event(udc,
+			CI13XXX_CONTROLLER_STOPPED_EVENT);
+>>>>>>> remotes/linux2/linux-3.4.y
 		spin_unlock_irqrestore(udc->lock, flags);
 		_gadget_stop_activity(&udc->gadget);
 		spin_lock_irqsave(udc->lock, flags);
@@ -3508,7 +3886,18 @@ static irqreturn_t udc_irq(void)
 		}
 		if (USBi_PCI & intr) {
 			isr_statistics.pci++;
+<<<<<<< HEAD
 			isr_resume_handler(udc);
+=======
+			udc->gadget.speed = hw_port_is_high_speed() ?
+				USB_SPEED_HIGH : USB_SPEED_FULL;
+			if (udc->suspended && udc->driver->resume) {
+				spin_unlock(udc->lock);
+				udc->driver->resume(&udc->gadget);
+				spin_lock(udc->lock);
+				udc->suspended = 0;
+			}
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 		if (USBi_UEI & intr)
 			isr_statistics.uei++;
@@ -3517,7 +3906,17 @@ static irqreturn_t udc_irq(void)
 			isr_tr_complete_handler(udc);
 		}
 		if (USBi_SLI & intr) {
+<<<<<<< HEAD
 			isr_suspend_handler(udc);
+=======
+			if (udc->gadget.speed != USB_SPEED_UNKNOWN &&
+			    udc->driver->suspend) {
+				udc->suspended = 1;
+				spin_unlock(udc->lock);
+				udc->driver->suspend(&udc->gadget);
+				spin_lock(udc->lock);
+			}
+>>>>>>> remotes/linux2/linux-3.4.y
 			isr_statistics.sli++;
 		}
 		retval = IRQ_HANDLED;
@@ -3558,9 +3957,13 @@ static int udc_probe(struct ci13xxx_udc_driver *driver, struct device *dev,
 		void __iomem *regs)
 {
 	struct ci13xxx *udc;
+<<<<<<< HEAD
 	struct ci13xxx_platform_data *pdata =
 		(struct ci13xxx_platform_data *)(dev->platform_data);
 	int retval = 0, i;
+=======
+	int retval = 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	trace("%p, %p, %p", dev, regs, driver->name);
 
@@ -3579,32 +3982,50 @@ static int udc_probe(struct ci13xxx_udc_driver *driver, struct device *dev,
 	udc->gadget.ops          = &usb_gadget_ops;
 	udc->gadget.speed        = USB_SPEED_UNKNOWN;
 	udc->gadget.max_speed    = USB_SPEED_HIGH;
+<<<<<<< HEAD
 	if (udc->udc_driver->flags & CI13XXX_IS_OTG)
 		udc->gadget.is_otg       = 1;
 	else
 		udc->gadget.is_otg       = 0;
+=======
+	udc->gadget.is_otg       = 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 	udc->gadget.name         = driver->name;
 
 	INIT_LIST_HEAD(&udc->gadget.ep_list);
 	udc->gadget.ep0 = NULL;
 
+<<<<<<< HEAD
 	if (pdata)
 		udc->gadget.usb_core_id = pdata->usb_core_id;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	dev_set_name(&udc->gadget.dev, "gadget");
 	udc->gadget.dev.dma_mask = dev->dma_mask;
 	udc->gadget.dev.coherent_dma_mask = dev->coherent_dma_mask;
 	udc->gadget.dev.parent   = dev;
 	udc->gadget.dev.release  = udc_release;
 
+<<<<<<< HEAD
 	if (udc->udc_driver->flags & CI13XXX_REQUIRE_TRANSCEIVER) {
 		udc->transceiver = usb_get_transceiver();
+=======
+	retval = hw_device_init(regs);
+	if (retval < 0)
+		goto free_udc;
+
+	udc->transceiver = usb_get_transceiver();
+
+	if (udc->udc_driver->flags & CI13XXX_REQUIRE_TRANSCEIVER) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (udc->transceiver == NULL) {
 			retval = -ENODEV;
 			goto free_udc;
 		}
 	}
 
+<<<<<<< HEAD
 	INIT_DELAYED_WORK(&udc->rw_work, usb_do_remote_wakeup);
 
 	retval = hw_device_init(regs);
@@ -3618,6 +4039,8 @@ static int udc_probe(struct ci13xxx_udc_driver *driver, struct device *dev,
 			(unsigned long) mEp);
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!(udc->udc_driver->flags & CI13XXX_REGS_SHARED)) {
 		retval = hw_device_reset(udc);
 		if (retval)

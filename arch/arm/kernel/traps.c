@@ -36,6 +36,7 @@
 #include <asm/system_misc.h>
 
 #include "signal.h"
+<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG
 #include <mach/sec_debug.h>
 #endif
@@ -46,6 +47,11 @@ static const char *handler[]= { "prefetch abort", "data abort", "address excepti
 static int first_call_chain = 0;
 static int first_die = 1;
 #endif
+=======
+
+static const char *handler[]= { "prefetch abort", "data abort", "address exception", "interrupt" };
+
+>>>>>>> remotes/linux2/linux-3.4.y
 void *vectors_page;
 
 #ifdef CONFIG_DEBUG_USER
@@ -64,6 +70,7 @@ static void dump_mem(const char *, const char *, unsigned long, unsigned long);
 void dump_backtrace_entry(unsigned long where, unsigned long from, unsigned long frame)
 {
 #ifdef CONFIG_KALLSYMS
+<<<<<<< HEAD
 #ifdef CONFIG_LGE_CRASH_HANDLER
 	if (first_call_chain)
 		set_crash_store_enable();
@@ -72,6 +79,9 @@ void dump_backtrace_entry(unsigned long where, unsigned long from, unsigned long
 #ifdef CONFIG_LGE_CRASH_HANDLER
 	set_crash_store_disable();
 #endif
+=======
+	printk("[<%08lx>] (%pS) from [<%08lx>] (%pS)\n", where, (void *)where, from, (void *)from);
+>>>>>>> remotes/linux2/linux-3.4.y
 #else
 	printk("Function entered at [<%08lx>] from [<%08lx>]\n", where, from);
 #endif
@@ -253,6 +263,7 @@ static int __die(const char *str, int err, struct thread_info *thread, struct pt
 	static int die_counter;
 	int ret;
 
+<<<<<<< HEAD
 #ifdef CONFIG_LGE_CRASH_HANDLER
 	if (first_die) {
 		first_call_chain = 1;
@@ -269,6 +280,11 @@ static int __die(const char *str, int err, struct thread_info *thread, struct pt
 	set_crash_store_disable();
 #endif
 
+=======
+	printk(KERN_EMERG "Internal error: %s: %x [#%d]" S_PREEMPT S_SMP
+	       S_ISA "\n", str, err, ++die_counter);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* trap and error numbers are mostly meaningless on ARM */
 	ret = notify_die(DIE_OOPS, str, regs, err, tsk->thread.trap_no, SIGSEGV);
 	if (ret == NOTIFY_STOP)
@@ -284,9 +300,12 @@ static int __die(const char *str, int err, struct thread_info *thread, struct pt
 			 THREAD_SIZE + (unsigned long)task_stack_page(tsk));
 		dump_backtrace(regs, tsk);
 		dump_instr(KERN_EMERG, regs);
+<<<<<<< HEAD
 #ifdef CONFIG_LGE_CRASH_HANDLER
 		first_call_chain = 0;
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return ret;
@@ -306,9 +325,12 @@ void die(const char *str, struct pt_regs *regs, int err)
 	oops_enter();
 
 	raw_spin_lock_irq(&die_lock);
+<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG_SCHED_LOG
 	secdbg_sched_msg("!!die!!");
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	console_verbose();
 	bust_spinlocks(1);
 	if (!user_mode(regs))
@@ -316,9 +338,13 @@ void die(const char *str, struct pt_regs *regs, int err)
 	if (bug_type != BUG_TRAP_TYPE_NONE)
 		str = "Oops - BUG";
 	ret = __die(str, err, thread, regs);
+<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG_SUBSYS
 	sec_debug_save_die_info(str, regs);
 #endif
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (regs && kexec_should_crash(thread->task))
 		crash_kexec(regs);
 
@@ -405,11 +431,15 @@ static int call_undef_hook(struct pt_regs *regs, unsigned int instr)
 
 asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	unsigned int correction = thumb_mode(regs) ? 2 : 4;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int instr;
 	siginfo_t info;
 	void __user *pc;
 
+<<<<<<< HEAD
 	/*
 	 * According to the ARM ARM, PC is 2 or 4 bytes ahead,
 	 * depending whether we're in Thumb mode or not.
@@ -417,6 +447,8 @@ asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
 	 */
 	regs->ARM_pc -= correction;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	pc = (void __user *)instruction_pointer(regs);
 
 	if (processor_mode(regs) == SVC_MODE) {
@@ -431,6 +463,7 @@ asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
 #endif
 			instr = *(u32 *) pc;
 	} else if (thumb_mode(regs)) {
+<<<<<<< HEAD
 		get_user(instr, (u16 __user *)pc);
 		if (is_wide_instruction(instr)) {
 			unsigned int instr2;
@@ -440,11 +473,28 @@ asmlinkage void __exception do_undefinstr(struct pt_regs *regs)
 		}
 	} else {
 		get_user(instr, (u32 __user *)pc);
+=======
+		if (get_user(instr, (u16 __user *)pc))
+			goto die_sig;
+		if (is_wide_instruction(instr)) {
+			unsigned int instr2;
+			if (get_user(instr2, (u16 __user *)pc+1))
+				goto die_sig;
+			instr <<= 16;
+			instr |= instr2;
+		}
+	} else if (get_user(instr, (u32 __user *)pc)) {
+		goto die_sig;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	if (call_undef_hook(regs, instr) == 0)
 		return;
 
+<<<<<<< HEAD
+=======
+die_sig:
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_DEBUG_USER
 	if (user_debug & UDBG_UNDEFINED) {
 		printk(KERN_INFO "%s (%d): undefined instruction: pc=%p\n",

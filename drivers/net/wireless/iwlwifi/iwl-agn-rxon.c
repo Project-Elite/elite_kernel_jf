@@ -551,9 +551,12 @@ int iwlagn_mac_config(struct ieee80211_hw *hw, u32 changed)
 
 	mutex_lock(&priv->mutex);
 
+<<<<<<< HEAD
 	if (test_bit(STATUS_EXIT_PENDING, &priv->status))
 		goto out;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (unlikely(test_bit(STATUS_SCANNING, &priv->status))) {
 		IWL_DEBUG_MAC80211(priv, "leave - scanning\n");
 		goto out;

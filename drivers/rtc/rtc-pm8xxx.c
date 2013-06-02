@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -15,11 +19,16 @@
 #include <linux/rtc.h>
 #include <linux/pm.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include<linux/spinlock.h>
+=======
+#include <linux/spinlock.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <linux/mfd/pm8xxx/core.h>
 #include <linux/mfd/pm8xxx/rtc.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_RTC_AUTO_PWRON
 #include <linux/reboot.h>
 extern int poweroff_charging;
@@ -53,6 +62,33 @@ extern int poweroff_charging;
  * struct pm8xxx_rtc - rtc driver internal structure
  * @rtc: rtc device for this driver
  * @rtc_alarm_irq: rtc alarm irq number
+=======
+
+/* RTC Register offsets from RTC CTRL REG */
+#define PM8XXX_ALARM_CTRL_OFFSET	0x01
+#define PM8XXX_RTC_WRITE_OFFSET		0x02
+#define PM8XXX_RTC_READ_OFFSET		0x06
+#define PM8XXX_ALARM_RW_OFFSET		0x0A
+
+/* RTC_CTRL register bit fields */
+#define PM8xxx_RTC_ENABLE		BIT(7)
+#define PM8xxx_RTC_ALARM_ENABLE		BIT(1)
+#define PM8xxx_RTC_ALARM_CLEAR		BIT(0)
+
+#define NUM_8_BIT_RTC_REGS		0x4
+
+/**
+ * struct pm8xxx_rtc -  rtc driver internal structure
+ * @rtc:		rtc device for this driver.
+ * @rtc_alarm_irq:	rtc alarm irq number.
+ * @rtc_base:		address of rtc control register.
+ * @rtc_read_base:	base address of read registers.
+ * @rtc_write_base:	base address of write registers.
+ * @alarm_rw_base:	base address of alarm registers.
+ * @ctrl_reg:		rtc control register.
+ * @rtc_dev:		device structure.
+ * @ctrl_reg_lock:	spinlock protecting access to ctrl_reg.
+>>>>>>> remotes/linux2/linux-3.4.y
  */
 struct pm8xxx_rtc {
 	struct rtc_device *rtc;
@@ -66,6 +102,7 @@ struct pm8xxx_rtc {
 	spinlock_t ctrl_reg_lock;
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_RTC_AUTO_PWRON)
 #ifdef CONFIG_RTC_AUTO_PWRON_PARAM
 static struct workqueue_struct*	sapa_workq;
@@ -84,13 +121,20 @@ static void print_time(char* str, struct rtc_wkalrm *alarm)
 }
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * The RTC registers need to be read/written one byte at a time. This is a
  * hardware limitation.
  */
+<<<<<<< HEAD
 
 static int pm8xxx_read_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
 			int base, int count)
+=======
+static int pm8xxx_read_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
+		int base, int count)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	int i, rc;
 	struct device *parent = rtc_dd->rtc_dev->parent;
@@ -98,7 +142,11 @@ static int pm8xxx_read_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
 	for (i = 0; i < count; i++) {
 		rc = pm8xxx_readb(parent, base + i, &rtc_val[i]);
 		if (rc < 0) {
+<<<<<<< HEAD
 			dev_err(rtc_dd->rtc_dev, "PM8xxx read failed\n");
+=======
+			dev_err(rtc_dd->rtc_dev, "PMIC read failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 			return rc;
 		}
 	}
@@ -107,7 +155,11 @@ static int pm8xxx_read_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
 }
 
 static int pm8xxx_write_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
+<<<<<<< HEAD
 			int base, int count)
+=======
+		int base, int count)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	int i, rc;
 	struct device *parent = rtc_dd->rtc_dev->parent;
@@ -115,7 +167,11 @@ static int pm8xxx_write_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
 	for (i = 0; i < count; i++) {
 		rc = pm8xxx_writeb(parent, base + i, rtc_val[i]);
 		if (rc < 0) {
+<<<<<<< HEAD
 			dev_err(rtc_dd->rtc_dev, "PM8xxx write failed\n");
+=======
+			dev_err(rtc_dd->rtc_dev, "PMIC write failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 			return rc;
 		}
 	}
@@ -123,7 +179,10 @@ static int pm8xxx_write_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
 	return 0;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Steps to write the RTC registers.
  * 1. Disable alarm if enabled.
@@ -131,22 +190,39 @@ static int pm8xxx_write_wrapper(struct pm8xxx_rtc *rtc_dd, u8 *rtc_val,
  * 3. Write Byte[1], Byte[2], Byte[3] then Byte[0].
  * 4. Enable alarm if disabled in step 1.
  */
+<<<<<<< HEAD
 static int
 pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
 {
 	int rc;
 	unsigned long secs, irq_flags;
 	u8 value[4], reg = 0, alarm_enabled = 0, ctrl_reg;
+=======
+static int pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
+{
+	int rc, i;
+	unsigned long secs, irq_flags;
+	u8 value[NUM_8_BIT_RTC_REGS], reg = 0, alarm_enabled = 0, ctrl_reg;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
 
 	rtc_tm_to_time(tm, &secs);
 
+<<<<<<< HEAD
 	value[0] = secs & 0xFF;
 	value[1] = (secs >> 8) & 0xFF;
 	value[2] = (secs >> 16) & 0xFF;
 	value[3] = (secs >> 24) & 0xFF;
 
 	dev_info(dev, "Seconds value to be written to RTC = %lu\n", secs);
+=======
+	for (i = 0; i < NUM_8_BIT_RTC_REGS; i++) {
+		value[i] = secs & 0xFF;
+		secs >>= 8;
+	}
+
+	dev_dbg(dev, "Seconds value to be written to RTC = %lu\n", secs);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	spin_lock_irqsave(&rtc_dd->ctrl_reg_lock, irq_flags);
 	ctrl_reg = rtc_dd->ctrl_reg;
@@ -155,6 +231,7 @@ pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
 		alarm_enabled = 1;
 		ctrl_reg &= ~PM8xxx_RTC_ALARM_ENABLE;
 		rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base,
+<<<<<<< HEAD
 									1);
 		if (rc < 0) {
 			dev_err(dev, "PM8xxx write failed\n");
@@ -164,11 +241,27 @@ pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
 		spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
 
 	/* Write Byte[1], Byte[2], Byte[3], Byte[0] */
+=======
+				1);
+		if (rc < 0) {
+			dev_err(dev, "Write to RTC control register "
+								"failed\n");
+			goto rtc_rw_fail;
+		}
+		rtc_dd->ctrl_reg = ctrl_reg;
+	} else
+		spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Write 0 to Byte[0] */
 	reg = 0;
 	rc = pm8xxx_write_wrapper(rtc_dd, &reg, rtc_dd->rtc_write_base, 1);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(dev, "PM8xxx write failed\n");
+=======
+		dev_err(dev, "Write to RTC write data register failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto rtc_rw_fail;
 	}
 
@@ -176,14 +269,22 @@ pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
 	rc = pm8xxx_write_wrapper(rtc_dd, value + 1,
 					rtc_dd->rtc_write_base + 1, 3);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(dev, "Write to RTC registers failed\n");
+=======
+		dev_err(dev, "Write to RTC write data register failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto rtc_rw_fail;
 	}
 
 	/* Write Byte[0] */
 	rc = pm8xxx_write_wrapper(rtc_dd, value, rtc_dd->rtc_write_base, 1);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(dev, "Write to RTC register failed\n");
+=======
+		dev_err(dev, "Write to RTC write data register failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto rtc_rw_fail;
 	}
 
@@ -192,6 +293,7 @@ pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
 		rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base,
 									1);
 		if (rc < 0) {
+<<<<<<< HEAD
 			dev_err(dev, "PM8xxx write failed\n");
 			goto rtc_rw_fail;
 		}
@@ -205,6 +307,15 @@ pm8xxx_rtc_set_time(struct device *dev, struct rtc_time *tm)
 			tm->tm_mday, tm->tm_mon, tm->tm_year);
 #endif
 			
+=======
+			dev_err(dev, "Write to RTC control register "
+								"failed\n");
+			goto rtc_rw_fail;
+		}
+		rtc_dd->ctrl_reg = ctrl_reg;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 rtc_rw_fail:
 	if (alarm_enabled)
 		spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
@@ -212,18 +323,29 @@ rtc_rw_fail:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int
 pm8xxx_rtc_read_time(struct device *dev, struct rtc_time *tm)
 {
 	int rc;
 	u8 value[4], reg;
+=======
+static int pm8xxx_rtc_read_time(struct device *dev, struct rtc_time *tm)
+{
+	int rc;
+	u8 value[NUM_8_BIT_RTC_REGS], reg;
+>>>>>>> remotes/linux2/linux-3.4.y
 	unsigned long secs;
 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
 
 	rc = pm8xxx_read_wrapper(rtc_dd, value, rtc_dd->rtc_read_base,
 							NUM_8_BIT_RTC_REGS);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(dev, "RTC time read failed\n");
+=======
+		dev_err(dev, "RTC read data register failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		return rc;
 	}
 
@@ -233,7 +355,11 @@ pm8xxx_rtc_read_time(struct device *dev, struct rtc_time *tm)
 	 */
 	rc = pm8xxx_read_wrapper(rtc_dd, &reg, rtc_dd->rtc_read_base, 1);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(dev, "PM8xxx read failed\n");
+=======
+		dev_err(dev, "RTC read data register failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		return rc;
 	}
 
@@ -241,29 +367,47 @@ pm8xxx_rtc_read_time(struct device *dev, struct rtc_time *tm)
 		rc = pm8xxx_read_wrapper(rtc_dd, value,
 				rtc_dd->rtc_read_base, NUM_8_BIT_RTC_REGS);
 		if (rc < 0) {
+<<<<<<< HEAD
 			dev_err(dev, "RTC time read failed\n");
+=======
+			dev_err(dev, "RTC read data register failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 			return rc;
 		}
 	}
 
+<<<<<<< HEAD
 	secs = value[0] | (value[1] << 8) | (value[2] << 16) \
 						| (value[3] << 24);
+=======
+	secs = value[0] | (value[1] << 8) | (value[2] << 16) | (value[3] << 24);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	rtc_time_to_tm(secs, tm);
 
 	rc = rtc_valid_tm(tm);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(dev, "Invalid time read from PM8xxx\n");
+=======
+		dev_err(dev, "Invalid time read from RTC\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		return rc;
 	}
 
 	dev_dbg(dev, "secs = %lu, h:m:s == %d:%d:%d, d/m/y = %d/%d/%d\n",
+<<<<<<< HEAD
 			secs, tm->tm_hour, tm->tm_min, tm->tm_sec,
 			tm->tm_mday, tm->tm_mon, tm->tm_year);
+=======
+				secs, tm->tm_hour, tm->tm_min, tm->tm_sec,
+				tm->tm_mday, tm->tm_mon, tm->tm_year);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int
 pm8xxx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
 {
@@ -309,42 +453,83 @@ pm8xxx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
 	value[1] = (secs >> 8) & 0xFF;
 	value[2] = (secs >> 16) & 0xFF;
 	value[3] = (secs >> 24) & 0xFF;
+=======
+static int pm8xxx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+{
+	int rc, i;
+	u8 value[NUM_8_BIT_RTC_REGS], ctrl_reg;
+	unsigned long secs, irq_flags;
+	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
+
+	rtc_tm_to_time(&alarm->time, &secs);
+
+	for (i = 0; i < NUM_8_BIT_RTC_REGS; i++) {
+		value[i] = secs & 0xFF;
+		secs >>= 8;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	spin_lock_irqsave(&rtc_dd->ctrl_reg_lock, irq_flags);
 
 	rc = pm8xxx_write_wrapper(rtc_dd, value, rtc_dd->alarm_rw_base,
 							NUM_8_BIT_RTC_REGS);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(dev, "Write to RTC ALARM registers failed\n");
+=======
+		dev_err(dev, "Write to RTC ALARM register failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto rtc_rw_fail;
 	}
 
 	ctrl_reg = rtc_dd->ctrl_reg;
+<<<<<<< HEAD
 	ctrl_reg = (alarm->enabled) ? (ctrl_reg | PM8xxx_RTC_ALARM_ENABLE) :
+=======
+	ctrl_reg = alarm->enabled ? (ctrl_reg | PM8xxx_RTC_ALARM_ENABLE) :
+>>>>>>> remotes/linux2/linux-3.4.y
 					(ctrl_reg & ~PM8xxx_RTC_ALARM_ENABLE);
 
 	rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base, 1);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(dev, "PM8xxx write failed\n");
+=======
+		dev_err(dev, "Write to RTC control register failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto rtc_rw_fail;
 	}
 
 	rtc_dd->ctrl_reg = ctrl_reg;
 
+<<<<<<< HEAD
 	dev_info(dev, "Alarm Set for h:r:s=%d:%d:%d, d/m/y=%d/%d/%d\n",
 			alarm->time.tm_hour, alarm->time.tm_min,
 			alarm->time.tm_sec, alarm->time.tm_mday,
 			alarm->time.tm_mon, alarm->time.tm_year);
+=======
+	dev_dbg(dev, "Alarm Set for h:r:s=%d:%d:%d, d/m/y=%d/%d/%d\n",
+				alarm->time.tm_hour, alarm->time.tm_min,
+				alarm->time.tm_sec, alarm->time.tm_mday,
+				alarm->time.tm_mon, alarm->time.tm_year);
+>>>>>>> remotes/linux2/linux-3.4.y
 rtc_rw_fail:
 	spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
 	return rc;
 }
 
+<<<<<<< HEAD
 static int
 pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
 {
 	int rc;
 	u8 value[4];
+=======
+static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+{
+	int rc;
+	u8 value[NUM_8_BIT_RTC_REGS];
+>>>>>>> remotes/linux2/linux-3.4.y
 	unsigned long secs;
 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
 
@@ -355,28 +540,44 @@ pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
 		return rc;
 	}
 
+<<<<<<< HEAD
 	secs = value[0] | (value[1] << 8) | (value[2] << 16) | \
 						 (value[3] << 24);
+=======
+	secs = value[0] | (value[1] << 8) | (value[2] << 16) | (value[3] << 24);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	rtc_time_to_tm(secs, &alarm->time);
 
 	rc = rtc_valid_tm(&alarm->time);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(dev, "Invalid time read from PM8xxx\n");
+=======
+		dev_err(dev, "Invalid alarm time read from RTC\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		return rc;
 	}
 
 	dev_dbg(dev, "Alarm set for - h:r:s=%d:%d:%d, d/m/y=%d/%d/%d\n",
+<<<<<<< HEAD
 		alarm->time.tm_hour, alarm->time.tm_min,
+=======
+				alarm->time.tm_hour, alarm->time.tm_min,
+>>>>>>> remotes/linux2/linux-3.4.y
 				alarm->time.tm_sec, alarm->time.tm_mday,
 				alarm->time.tm_mon, alarm->time.tm_year);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 
 static int
 pm8xxx_rtc_alarm_irq_enable(struct device *dev, unsigned int enabled)
+=======
+static int pm8xxx_rtc_alarm_irq_enable(struct device *dev, unsigned int enable)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	int rc;
 	unsigned long irq_flags;
@@ -385,12 +586,20 @@ pm8xxx_rtc_alarm_irq_enable(struct device *dev, unsigned int enabled)
 
 	spin_lock_irqsave(&rtc_dd->ctrl_reg_lock, irq_flags);
 	ctrl_reg = rtc_dd->ctrl_reg;
+<<<<<<< HEAD
 	ctrl_reg = (enabled) ? (ctrl_reg | PM8xxx_RTC_ALARM_ENABLE) :
+=======
+	ctrl_reg = (enable) ? (ctrl_reg | PM8xxx_RTC_ALARM_ENABLE) :
+>>>>>>> remotes/linux2/linux-3.4.y
 				(ctrl_reg & ~PM8xxx_RTC_ALARM_ENABLE);
 
 	rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base, 1);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(dev, "PM8xxx write failed\n");
+=======
+		dev_err(dev, "Write to RTC control register failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto rtc_rw_fail;
 	}
 
@@ -401,6 +610,7 @@ rtc_rw_fail:
 	return rc;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_RTC_AUTO_PWRON
 #ifdef CONFIG_RTC_AUTO_PWRON_PARAM
 static void sapa_load_kparam(struct work_struct *work)
@@ -604,14 +814,19 @@ static int pm8xxx_rtc0_resetbootalarm(struct device *dev)
 }
 #endif /*CONFIG_RTC_AUTO_PWRON*/
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static struct rtc_class_ops pm8xxx_rtc_ops = {
 	.read_time	= pm8xxx_rtc_read_time,
 	.set_alarm	= pm8xxx_rtc_set_alarm,
 	.read_alarm	= pm8xxx_rtc_read_alarm,
+<<<<<<< HEAD
 #ifdef CONFIG_RTC_AUTO_PWRON
 	.read_bootalarm = sapa_rtc_getalarm,
 	.set_bootalarm  = sapa_rtc_setalarm,
 #endif /*CONFIG_RTC_AUTO_PWRON*/
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	.alarm_irq_enable = pm8xxx_rtc_alarm_irq_enable,
 };
 
@@ -622,9 +837,12 @@ static irqreturn_t pm8xxx_alarm_trigger(int irq, void *dev_id)
 	int rc;
 	unsigned long irq_flags;
 
+<<<<<<< HEAD
 #ifdef CONFIG_RTC_AUTO_PWRON
 	pr_info("##### ALARM TRIGGER #####\n");
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	rtc_update_irq(rtc_dd->rtc, 1, RTC_IRQF | RTC_AF);
 
 	spin_lock_irqsave(&rtc_dd->ctrl_reg_lock, irq_flags);
@@ -636,7 +854,12 @@ static irqreturn_t pm8xxx_alarm_trigger(int irq, void *dev_id)
 	rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base, 1);
 	if (rc < 0) {
 		spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
+<<<<<<< HEAD
 		dev_err(rtc_dd->rtc_dev, "PM8xxx write failed!\n");
+=======
+		dev_err(rtc_dd->rtc_dev, "Write to RTC control register "
+								"failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto rtc_alarm_handled;
 	}
 
@@ -647,7 +870,12 @@ static irqreturn_t pm8xxx_alarm_trigger(int irq, void *dev_id)
 	rc = pm8xxx_read_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base +
 						PM8XXX_ALARM_CTRL_OFFSET, 1);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(rtc_dd->rtc_dev, "PM8xxx write failed!\n");
+=======
+		dev_err(rtc_dd->rtc_dev, "RTC Alarm control register read "
+								"failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto rtc_alarm_handled;
 	}
 
@@ -655,6 +883,7 @@ static irqreturn_t pm8xxx_alarm_trigger(int irq, void *dev_id)
 	rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base +
 						PM8XXX_ALARM_CTRL_OFFSET, 1);
 	if (rc < 0)
+<<<<<<< HEAD
 		dev_err(rtc_dd->rtc_dev, "PM8xxx write failed!\n");
 
 #ifdef CONFIG_RTC_AUTO_PWRON
@@ -699,6 +928,11 @@ static irqreturn_t pm8xxx_alarm_trigger(int irq, void *dev_id)
 	}
 #endif
 #endif
+=======
+		dev_err(rtc_dd->rtc_dev, "Write to RTC Alarm control register"
+								" failed\n");
+
+>>>>>>> remotes/linux2/linux-3.4.y
 rtc_alarm_handled:
 	return IRQ_HANDLED;
 }
@@ -708,11 +942,18 @@ static int __devinit pm8xxx_rtc_probe(struct platform_device *pdev)
 	int rc;
 	u8 ctrl_reg;
 	bool rtc_write_enable = false;
+<<<<<<< HEAD
 
 	struct pm8xxx_rtc *rtc_dd;
 	struct resource *rtc_resource;
 	const struct pm8xxx_rtc_platform_data *pdata =
 		pdev->dev.platform_data;
+=======
+	struct pm8xxx_rtc *rtc_dd;
+	struct resource *rtc_resource;
+	const struct pm8xxx_rtc_platform_data *pdata =
+						dev_get_platdata(&pdev->dev);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (pdata != NULL)
 		rtc_write_enable = pdata->rtc_write_enable;
@@ -723,7 +964,11 @@ static int __devinit pm8xxx_rtc_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	/* Initialise spinlock to protect RTC cntrol register */
+=======
+	/* Initialise spinlock to protect RTC control register */
+>>>>>>> remotes/linux2/linux-3.4.y
 	spin_lock_init(&rtc_dd->ctrl_reg_lock);
 
 	rtc_dd->rtc_alarm_irq = platform_get_irq(pdev, 0);
@@ -748,12 +993,20 @@ static int __devinit pm8xxx_rtc_probe(struct platform_device *pdev)
 	rtc_dd->rtc_read_base = rtc_dd->rtc_base + PM8XXX_RTC_READ_OFFSET;
 	rtc_dd->alarm_rw_base = rtc_dd->rtc_base + PM8XXX_ALARM_RW_OFFSET;
 
+<<<<<<< HEAD
 	rtc_dd->rtc_dev = &(pdev->dev);
+=======
+	rtc_dd->rtc_dev = &pdev->dev;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Check if the RTC is on, else turn it on */
 	rc = pm8xxx_read_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base, 1);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(&pdev->dev, "PM8xxx read failed!\n");
+=======
+		dev_err(&pdev->dev, "RTC control register read failed!\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto fail_rtc_enable;
 	}
 
@@ -762,11 +1015,17 @@ static int __devinit pm8xxx_rtc_probe(struct platform_device *pdev)
 		rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base,
 									1);
 		if (rc < 0) {
+<<<<<<< HEAD
 			dev_err(&pdev->dev, "PM8xxx write failed!\n");
+=======
+			dev_err(&pdev->dev, "Write to RTC control register "
+								"failed\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto fail_rtc_enable;
 		}
 	}
 
+<<<<<<< HEAD
 	/* Enable abort enable feature */
 	ctrl_reg |= PM8xxx_RTC_ABORT_ENABLE;
 	rc = pm8xxx_write_wrapper(rtc_dd, &ctrl_reg, rtc_dd->rtc_base, 1);
@@ -775,6 +1034,8 @@ static int __devinit pm8xxx_rtc_probe(struct platform_device *pdev)
 		goto fail_rtc_enable;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	rtc_dd->ctrl_reg = ctrl_reg;
 	if (rtc_write_enable == true)
 		pm8xxx_rtc_ops.set_time = pm8xxx_rtc_set_time;
@@ -800,6 +1061,7 @@ static int __devinit pm8xxx_rtc_probe(struct platform_device *pdev)
 		goto fail_req_irq;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_RTC_AUTO_PWRON_PARAM
 	sapa_workq = create_singlethread_workqueue("pwron_alarm_resume");
 	if (sapa_workq == NULL) {
@@ -809,10 +1071,13 @@ static int __devinit pm8xxx_rtc_probe(struct platform_device *pdev)
 	wake_lock_init(&sapa_wakelock, WAKE_LOCK_SUSPEND, "alarm_trigger");
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	device_init_wakeup(&pdev->dev, 1);
 
 	dev_dbg(&pdev->dev, "Probe success !!\n");
 
+<<<<<<< HEAD
 #ifdef CONFIG_RTC_AUTO_PWRON_PARAM
 	/* To read saved power on alarm time */
 	if ( poweroff_charging ) {
@@ -821,6 +1086,8 @@ static int __devinit pm8xxx_rtc_probe(struct platform_device *pdev)
 	}
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 
 fail_req_irq:
@@ -831,6 +1098,7 @@ fail_rtc_enable:
 	return rc;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int pm8xxx_rtc_resume(struct device *dev)
 {
@@ -864,13 +1132,18 @@ static const struct dev_pm_ops pm8xxx_rtc_pm_ops = {
 	.resume = pm8xxx_rtc_resume,
 };
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static int __devexit pm8xxx_rtc_remove(struct platform_device *pdev)
 {
 	struct pm8xxx_rtc *rtc_dd = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 #ifdef CONFIG_RTC_AUTO_PWRON_PARAM
 	destroy_workqueue(sapa_workq);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	device_init_wakeup(&pdev->dev, 0);
 	free_irq(rtc_dd->rtc_alarm_irq, rtc_dd);
 	rtc_device_unregister(rtc_dd->rtc);
@@ -880,6 +1153,7 @@ static int __devexit pm8xxx_rtc_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_RTC_AUTO_PWRON
 static void pm8xxx_rtc_shutdown(struct platform_device *pdev)
 {
@@ -948,10 +1222,36 @@ fail_alarm_disable:
 	}
 }
 #endif /* CONFIG_RTC_AUTO_PWRON */
+=======
+#ifdef CONFIG_PM_SLEEP
+static int pm8xxx_rtc_resume(struct device *dev)
+{
+	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
+
+	if (device_may_wakeup(dev))
+		disable_irq_wake(rtc_dd->rtc_alarm_irq);
+
+	return 0;
+}
+
+static int pm8xxx_rtc_suspend(struct device *dev)
+{
+	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
+
+	if (device_may_wakeup(dev))
+		enable_irq_wake(rtc_dd->rtc_alarm_irq);
+
+	return 0;
+}
+#endif
+
+static SIMPLE_DEV_PM_OPS(pm8xxx_rtc_pm_ops, pm8xxx_rtc_suspend, pm8xxx_rtc_resume);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static struct platform_driver pm8xxx_rtc_driver = {
 	.probe		= pm8xxx_rtc_probe,
 	.remove		= __devexit_p(pm8xxx_rtc_remove),
+<<<<<<< HEAD
 	.shutdown	= pm8xxx_rtc_shutdown,
 	.driver	= {
 		.name	= PM8XXX_RTC_DEV_NAME,
@@ -973,6 +1273,16 @@ static void __exit pm8xxx_rtc_exit(void)
 	platform_driver_unregister(&pm8xxx_rtc_driver);
 }
 module_exit(pm8xxx_rtc_exit);
+=======
+	.driver	= {
+		.name	= PM8XXX_RTC_DEV_NAME,
+		.owner	= THIS_MODULE,
+		.pm	= &pm8xxx_rtc_pm_ops,
+	},
+};
+
+module_platform_driver(pm8xxx_rtc_driver);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 MODULE_ALIAS("platform:rtc-pm8xxx");
 MODULE_DESCRIPTION("PMIC8xxx RTC driver");

@@ -23,6 +23,7 @@
 
 #define CPUFREQ_NAME_LEN 16
 
+<<<<<<< HEAD
 extern int GLOBALKT_MIN_FREQ_LIMIT;
 extern int GLOBALKT_MAX_FREQ_LIMIT;
 #define FREQ_TABLE_SIZE		42
@@ -35,6 +36,8 @@ extern int GLOBALKT_MAX_FREQ_LIMIT;
 #define USER_MIN_START	1
 #define USER_MAX_START	2
 extern unsigned int kthermal_limit;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*********************************************************************
  *                     CPUFREQ NOTIFIER INTERFACE                    *
@@ -69,10 +72,13 @@ static inline void disable_cpufreq(void) { }
 #define CPUFREQ_POLICY_POWERSAVE	(1)
 #define CPUFREQ_POLICY_PERFORMANCE	(2)
 
+<<<<<<< HEAD
 /* Minimum frequency cutoff to notify the userspace about cpu utilization
  * changes */
 #define MIN_CPU_UTIL_NOTIFY   40
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* Frequency values here are CPU kHz so that hardware which doesn't run
  * with some frequencies can complain without having to guess what per
  * cent / per mille means.
@@ -113,7 +119,10 @@ struct cpufreq_policy {
 	unsigned int		max;    /* in kHz */
 	unsigned int		cur;    /* in kHz, only needed if cpufreq
 					 * governors are used */
+<<<<<<< HEAD
 	unsigned int            util;  /* CPU utilization at max frequency */
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int		policy; /* see above */
 	struct cpufreq_governor	*governor; /* see below */
 
@@ -217,8 +226,11 @@ extern int __cpufreq_driver_getavg(struct cpufreq_policy *policy,
 int cpufreq_register_governor(struct cpufreq_governor *governor);
 void cpufreq_unregister_governor(struct cpufreq_governor *governor);
 
+<<<<<<< HEAD
 int lock_policy_rwsem_write(int cpu);
 void unlock_policy_rwsem_write(int cpu);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*********************************************************************
  *                      CPUFREQ DRIVER INTERFACE                     *
@@ -273,8 +285,12 @@ int cpufreq_unregister_driver(struct cpufreq_driver *driver_data);
 
 
 void cpufreq_notify_transition(struct cpufreq_freqs *freqs, unsigned int state);
+<<<<<<< HEAD
 void cpufreq_notify_utilization(struct cpufreq_policy *policy,
 		unsigned int load);
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static inline void cpufreq_verify_within_limits(struct cpufreq_policy *policy, unsigned int min, unsigned int max)
 {
@@ -357,6 +373,7 @@ static inline unsigned int cpufreq_quick_get_max(unsigned int cpu)
 }
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_SEC_DVFS
 enum {
 	BOOT_CPU = 0,
@@ -403,6 +420,8 @@ void set_min_lock(int freq);
 void set_max_lock(int freq);
 
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*********************************************************************
  *                       CPUFREQ DEFAULT GOVERNOR                    *
@@ -430,9 +449,12 @@ extern struct cpufreq_governor cpufreq_gov_ondemand;
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_CONSERVATIVE)
 extern struct cpufreq_governor cpufreq_gov_conservative;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_conservative)
+<<<<<<< HEAD
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_INTERACTIVE)
 extern struct cpufreq_governor cpufreq_gov_interactive;
 #define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_interactive)
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif
 
 

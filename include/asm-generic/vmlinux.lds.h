@@ -645,11 +645,14 @@
 		*(.security_initcall.init)				\
 		VMLINUX_SYMBOL(__security_initcall_end) = .;
 
+<<<<<<< HEAD
 #define COMPAT_EXPORTS							\
 		VMLINUX_SYMBOL(__compat_exports_start) = .;		\
 		*(.exportcompat.init)					\
 		VMLINUX_SYMBOL(__compat_exports_end) = .;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_BLK_DEV_INITRD
 #define INIT_RAM_FS							\
 	. = ALIGN(4);							\

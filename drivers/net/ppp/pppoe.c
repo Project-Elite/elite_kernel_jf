@@ -576,7 +576,11 @@ static int pppoe_release(struct socket *sock)
 
 	po = pppox_sk(sk);
 
+<<<<<<< HEAD
 	if (sk->sk_state & (PPPOX_CONNECTED | PPPOX_BOUND)) {
+=======
+	if (sk->sk_state & (PPPOX_CONNECTED | PPPOX_BOUND | PPPOX_ZOMBIE)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		dev_put(po->pppoe_dev);
 		po->pppoe_dev = NULL;
 	}

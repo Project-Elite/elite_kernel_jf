@@ -413,6 +413,7 @@ int rtc_initialize_alarm(struct rtc_device *rtc, struct rtc_wkalrm *alarm)
 }
 EXPORT_SYMBOL_GPL(rtc_initialize_alarm);
 
+<<<<<<< HEAD
 #ifdef CONFIG_RTC_AUTO_PWRON
 int rtc_set_bootalarm(struct rtc_device *rtc, struct rtc_wkalrm *alarm)
 {
@@ -436,6 +437,9 @@ int rtc_set_bootalarm(struct rtc_device *rtc, struct rtc_wkalrm *alarm)
 }
 EXPORT_SYMBOL_GPL(rtc_set_bootalarm);
 #endif /* CONFIG_AUTO_PWRON */
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 
 int rtc_alarm_irq_enable(struct rtc_device *rtc, unsigned int enabled)
 {

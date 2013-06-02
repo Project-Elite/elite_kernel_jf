@@ -226,6 +226,11 @@ compose_mount_options_out:
 compose_mount_options_err:
 	kfree(mountdata);
 	mountdata = ERR_PTR(rc);
+<<<<<<< HEAD
+=======
+	kfree(*devname);
+	*devname = NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 	goto compose_mount_options_out;
 }
 

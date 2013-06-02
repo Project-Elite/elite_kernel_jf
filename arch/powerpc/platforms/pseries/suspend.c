@@ -16,6 +16,10 @@
   * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
   */
 
+<<<<<<< HEAD
+=======
+#include <linux/cpu.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/delay.h>
 #include <linux/suspend.h>
 #include <linux/stat.h>
@@ -126,11 +130,21 @@ static ssize_t store_hibernate(struct device *dev,
 			       struct device_attribute *attr,
 			       const char *buf, size_t count)
 {
+<<<<<<< HEAD
+=======
+	cpumask_var_t offline_mask;
+>>>>>>> remotes/linux2/linux-3.4.y
 	int rc;
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
 
+<<<<<<< HEAD
+=======
+	if (!alloc_cpumask_var(&offline_mask, GFP_TEMPORARY))
+		return -ENOMEM;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	stream_id = simple_strtoul(buf, NULL, 16);
 
 	do {
@@ -140,15 +154,41 @@ static ssize_t store_hibernate(struct device *dev,
 	} while (rc == -EAGAIN);
 
 	if (!rc) {
+<<<<<<< HEAD
 		stop_topology_update();
 		rc = pm_suspend(PM_SUSPEND_MEM);
 		start_topology_update();
+=======
+		/* All present CPUs must be online */
+		cpumask_andnot(offline_mask, cpu_present_mask,
+				cpu_online_mask);
+		rc = rtas_online_cpus_mask(offline_mask);
+		if (rc) {
+			pr_err("%s: Could not bring present CPUs online.\n",
+					__func__);
+			goto out;
+		}
+
+		stop_topology_update();
+		rc = pm_suspend(PM_SUSPEND_MEM);
+		start_topology_update();
+
+		/* Take down CPUs not online prior to suspend */
+		if (!rtas_offline_cpus_mask(offline_mask))
+			pr_warn("%s: Could not restore CPUs to offline "
+					"state.\n", __func__);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	stream_id = 0;
 
 	if (!rc)
 		rc = count;
+<<<<<<< HEAD
+=======
+out:
+	free_cpumask_var(offline_mask);
+>>>>>>> remotes/linux2/linux-3.4.y
 	return rc;
 }
 

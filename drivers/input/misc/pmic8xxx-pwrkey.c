@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -22,11 +26,14 @@
 
 #include <linux/mfd/pm8xxx/core.h>
 #include <linux/input/pmic8xxx-pwrkey.h>
+<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG
 #include <mach/sec_debug.h>
 #endif
 #include <linux/string.h>
 #include <linux/delay.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #define PON_CNTL_1 0x1C
 #define PON_CNTL_PULL_UP BIT(7)
@@ -35,20 +42,27 @@
 /**
  * struct pmic8xxx_pwrkey - pmic8xxx pwrkey information
  * @key_press_irq: key press irq number
+<<<<<<< HEAD
  * @pdata: platform data
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  */
 struct pmic8xxx_pwrkey {
 	struct input_dev *pwr;
 	int key_press_irq;
+<<<<<<< HEAD
 	u32	powerkey_state ;
 	int key_release_irq;
 	bool press;
 	const struct pm8xxx_pwrkey_platform_data *pdata;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static irqreturn_t pwrkey_press_irq(int irq, void *_pwrkey)
 {
 	struct pmic8xxx_pwrkey *pwrkey = _pwrkey;
+<<<<<<< HEAD
 	pwrkey->powerkey_state = 1;
 	if (pwrkey->press == true) {
 		pwrkey->press = false;
@@ -62,12 +76,19 @@ static irqreturn_t pwrkey_press_irq(int irq, void *_pwrkey)
 #ifdef CONFIG_SEC_DEBUG
 	sec_debug_check_crash_key(KEY_POWER, 1);
 #endif
+=======
+
+	input_report_key(pwrkey->pwr, KEY_POWER, 1);
+	input_sync(pwrkey->pwr);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return IRQ_HANDLED;
 }
 
 static irqreturn_t pwrkey_release_irq(int irq, void *_pwrkey)
 {
 	struct pmic8xxx_pwrkey *pwrkey = _pwrkey;
+<<<<<<< HEAD
 	pwrkey->powerkey_state = 0;
 	if (pwrkey->press == false) {
 		input_report_key(pwrkey->pwr, KEY_POWER, 1);
@@ -82,6 +103,12 @@ static irqreturn_t pwrkey_release_irq(int irq, void *_pwrkey)
 #ifdef CONFIG_SEC_DEBUG
 	sec_debug_check_crash_key(KEY_POWER, 0);
 #endif
+=======
+
+	input_report_key(pwrkey->pwr, KEY_POWER, 0);
+	input_sync(pwrkey->pwr);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return IRQ_HANDLED;
 }
 
@@ -90,10 +117,15 @@ static int pmic8xxx_pwrkey_suspend(struct device *dev)
 {
 	struct pmic8xxx_pwrkey *pwrkey = dev_get_drvdata(dev);
 
+<<<<<<< HEAD
 	if (device_may_wakeup(dev)) {
 		enable_irq_wake(pwrkey->key_press_irq);
 		enable_irq_wake(pwrkey->key_release_irq);
 	}
+=======
+	if (device_may_wakeup(dev))
+		enable_irq_wake(pwrkey->key_press_irq);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -102,10 +134,15 @@ static int pmic8xxx_pwrkey_resume(struct device *dev)
 {
 	struct pmic8xxx_pwrkey *pwrkey = dev_get_drvdata(dev);
 
+<<<<<<< HEAD
 	if (device_may_wakeup(dev)) {
 		disable_irq_wake(pwrkey->key_press_irq);
 		disable_irq_wake(pwrkey->key_release_irq);
 	}
+=======
+	if (device_may_wakeup(dev))
+		disable_irq_wake(pwrkey->key_press_irq);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -114,6 +151,7 @@ static int pmic8xxx_pwrkey_resume(struct device *dev)
 static SIMPLE_DEV_PM_OPS(pm8xxx_pwr_key_pm_ops,
 		pmic8xxx_pwrkey_suspend, pmic8xxx_pwrkey_resume);
 
+<<<<<<< HEAD
 
 static ssize_t  sysfs_powerkey_onoff_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -133,6 +171,8 @@ static ssize_t  sysfs_powerkey_onoff_show(struct device *dev,
 static DEVICE_ATTR(sec_powerkey_pressed, 0664 , sysfs_powerkey_onoff_show,
 	NULL);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 {
 	struct input_dev *pwr;
@@ -141,9 +181,13 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 	int err;
 	unsigned int delay;
 	u8 pon_cntl;
+<<<<<<< HEAD
 	int ret ;
 	struct pmic8xxx_pwrkey *pwrkey;
 	struct device *sec_powerkey;
+=======
+	struct pmic8xxx_pwrkey *pwrkey;
+>>>>>>> remotes/linux2/linux-3.4.y
 	const struct pm8xxx_pwrkey_platform_data *pdata =
 					dev_get_platdata(&pdev->dev);
 
@@ -152,9 +196,13 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	/* Valid range of pwr key trigger delay is 1/64 sec to 2 seconds. */
 	if (pdata->kpd_trigger_delay_us > USEC_PER_SEC * 2 ||
 		pdata->kpd_trigger_delay_us < USEC_PER_SEC / 64) {
+=======
+	if (pdata->kpd_trigger_delay_us > 62500) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		dev_err(&pdev->dev, "invalid power key trigger delay\n");
 		return -EINVAL;
 	}
@@ -163,8 +211,11 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 	if (!pwrkey)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	pwrkey->pdata = pdata;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	pwr = input_allocate_device();
 	if (!pwr) {
 		dev_dbg(&pdev->dev, "Can't allocate power button\n");
@@ -178,8 +229,13 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 	pwr->phys = "pmic8xxx_pwrkey/input0";
 	pwr->dev.parent = &pdev->dev;
 
+<<<<<<< HEAD
 	delay = (pdata->kpd_trigger_delay_us << 6) / USEC_PER_SEC;
 	delay = ilog2(delay);
+=======
+	delay = (pdata->kpd_trigger_delay_us << 10) / USEC_PER_SEC;
+	delay = 1 + ilog2(delay);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	err = pm8xxx_readb(pdev->dev.parent, PON_CNTL_1, &pon_cntl);
 	if (err < 0) {
@@ -207,11 +263,15 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 	}
 
 	pwrkey->key_press_irq = key_press_irq;
+<<<<<<< HEAD
 	pwrkey->key_release_irq = key_release_irq;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	pwrkey->pwr = pwr;
 
 	platform_set_drvdata(pdev, pwrkey);
 
+<<<<<<< HEAD
 	/* check power key status during boot */
 	err = pm8xxx_read_irq_stat(pdev->dev.parent, key_press_irq);
 	if (err < 0) {
@@ -226,6 +286,9 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 	}
 
 	err = request_any_context_irq(key_press_irq, pwrkey_press_irq,
+=======
+	err = request_irq(key_press_irq, pwrkey_press_irq,
+>>>>>>> remotes/linux2/linux-3.4.y
 		IRQF_TRIGGER_RISING, "pmic8xxx_pwrkey_press", pwrkey);
 	if (err < 0) {
 		dev_dbg(&pdev->dev, "Can't get %d IRQ for pwrkey: %d\n",
@@ -233,7 +296,11 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 		goto unreg_input_dev;
 	}
 
+<<<<<<< HEAD
 	err = request_any_context_irq(key_release_irq, pwrkey_release_irq,
+=======
+	err = request_irq(key_release_irq, pwrkey_release_irq,
+>>>>>>> remotes/linux2/linux-3.4.y
 		 IRQF_TRIGGER_RISING, "pmic8xxx_pwrkey_release", pwrkey);
 	if (err < 0) {
 		dev_dbg(&pdev->dev, "Can't get %d IRQ for pwrkey: %d\n",
@@ -241,6 +308,7 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 
 		goto free_press_irq;
 	}
+<<<<<<< HEAD
 	sec_powerkey = device_create(sec_class, NULL, 0, NULL,
 	"sec_powerkey");
 	 if (IS_ERR(sec_powerkey))
@@ -251,6 +319,9 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 		dev_attr_sec_powerkey_pressed.attr.name);
 	}
 	dev_set_drvdata(sec_powerkey, pwrkey);
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	device_init_wakeup(&pdev->dev, pdata->wakeup);
 
 	return 0;
@@ -294,6 +365,7 @@ static struct platform_driver pmic8xxx_pwrkey_driver = {
 		.pm	= &pm8xxx_pwr_key_pm_ops,
 	},
 };
+<<<<<<< HEAD
 
 static int __devinit pmic8xxx_pwrkey_init(void)
 {
@@ -301,6 +373,9 @@ static int __devinit pmic8xxx_pwrkey_init(void)
 }
 
 subsys_initcall(pmic8xxx_pwrkey_init);
+=======
+module_platform_driver(pmic8xxx_pwrkey_driver);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 MODULE_ALIAS("platform:pmic8xxx_pwrkey");
 MODULE_DESCRIPTION("PMIC8XXX Power Key driver");

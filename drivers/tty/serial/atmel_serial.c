@@ -159,7 +159,11 @@ struct atmel_uart_port {
 };
 
 static struct atmel_uart_port atmel_ports[ATMEL_MAX_UART];
+<<<<<<< HEAD
 static unsigned long atmel_ports_in_use;
+=======
+static DECLARE_BITMAP(atmel_ports_in_use, ATMEL_MAX_UART);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #ifdef SUPPORT_SYSRQ
 static struct console atmel_console;
@@ -1785,15 +1789,25 @@ static int __devinit atmel_serial_probe(struct platform_device *pdev)
 	if (ret < 0)
 		/* port id not found in platform data nor device-tree aliases:
 		 * auto-enumerate it */
+<<<<<<< HEAD
 		ret = find_first_zero_bit(&atmel_ports_in_use,
 				sizeof(atmel_ports_in_use));
 
 	if (ret > ATMEL_MAX_UART) {
+=======
+		ret = find_first_zero_bit(atmel_ports_in_use, ATMEL_MAX_UART);
+
+	if (ret >= ATMEL_MAX_UART) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		ret = -ENODEV;
 		goto err;
 	}
 
+<<<<<<< HEAD
 	if (test_and_set_bit(ret, &atmel_ports_in_use)) {
+=======
+	if (test_and_set_bit(ret, atmel_ports_in_use)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		/* port already in use */
 		ret = -EBUSY;
 		goto err;
@@ -1867,7 +1881,11 @@ static int __devexit atmel_serial_remove(struct platform_device *pdev)
 
 	/* "port" is allocated statically, so we shouldn't free it */
 
+<<<<<<< HEAD
 	clear_bit(port->line, &atmel_ports_in_use);
+=======
+	clear_bit(port->line, atmel_ports_in_use);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	clk_put(atmel_port->clk);
 

@@ -64,8 +64,12 @@ static void ath_tx_update_baw(struct ath_softc *sc, struct ath_atx_tid *tid,
 static struct ath_buf *ath_tx_setup_buffer(struct ath_softc *sc,
 					   struct ath_txq *txq,
 					   struct ath_atx_tid *tid,
+<<<<<<< HEAD
 					   struct sk_buff *skb,
 					   bool dequeue);
+=======
+					   struct sk_buff *skb);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 enum {
 	MCS_HT20,
@@ -201,7 +205,19 @@ static void ath_tx_flush_tid(struct ath_softc *sc, struct ath_atx_tid *tid)
 		fi = get_frame_info(skb);
 		bf = fi->bf;
 
+<<<<<<< HEAD
 		if (bf && fi->retries) {
+=======
+		if (!bf) {
+			bf = ath_tx_setup_buffer(sc, txq, tid, skb);
+			if (!bf) {
+				ieee80211_free_txskb(sc->hw, skb);
+				continue;
+			}
+		}
+
+		if (fi->retries) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			list_add_tail(&bf->list, &bf_head);
 			ath_tx_update_baw(sc, tid, bf->bf_state.seqno);
 			ath_tx_complete_buf(sc, bf, txq, &bf_head, &ts, 0);
@@ -330,6 +346,10 @@ static struct ath_buf *ath_tx_get_buffer(struct ath_softc *sc)
 	}
 
 	bf = list_first_entry(&sc->tx.txbuf, struct ath_buf, list);
+<<<<<<< HEAD
+=======
+	bf->bf_next = NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 	list_del(&bf->list);
 
 	spin_unlock_bh(&sc->tx.txbuflock);
@@ -411,7 +431,11 @@ static void ath_tx_complete_aggr(struct ath_softc *sc, struct ath_txq *txq,
 	u16 seq_st = 0, acked_cnt = 0, txfail_cnt = 0, seq_first;
 	u32 ba[WME_BA_BMP_SIZE >> 5];
 	int isaggr, txfail, txpending, sendbar = 0, needreset = 0, nbad = 0;
+<<<<<<< HEAD
 	bool rc_update = true;
+=======
+	bool rc_update = true, isba;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct ieee80211_tx_rate rates[4];
 	struct ath_frame_info *fi;
 	int nframes;
@@ -455,13 +479,25 @@ static void ath_tx_complete_aggr(struct ath_softc *sc, struct ath_txq *txq,
 	tidno = ieee80211_get_qos_ctl(hdr)[0] & IEEE80211_QOS_CTL_TID_MASK;
 	tid = ATH_AN_2_TID(an, tidno);
 	seq_first = tid->seq_start;
+<<<<<<< HEAD
+=======
+	isba = ts->ts_flags & ATH9K_TX_BA;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * The hardware occasionally sends a tx status for the wrong TID.
 	 * In this case, the BA status cannot be considered valid and all
 	 * subframes need to be retransmitted
+<<<<<<< HEAD
 	 */
 	if (tidno != ts->tid)
+=======
+	 *
+	 * Only BlockAcks have a TID and therefore normal Acks cannot be
+	 * checked
+	 */
+	if (isba && tidno != ts->tid)
+>>>>>>> remotes/linux2/linux-3.4.y
 		txok = false;
 
 	isaggr = bf_isaggr(bf);
@@ -812,10 +848,20 @@ static enum ATH_AGGR_STATUS ath_tx_form_aggr(struct ath_softc *sc,
 		fi = get_frame_info(skb);
 		bf = fi->bf;
 		if (!fi->bf)
+<<<<<<< HEAD
 			bf = ath_tx_setup_buffer(sc, txq, tid, skb, true);
 
 		if (!bf)
 			continue;
+=======
+			bf = ath_tx_setup_buffer(sc, txq, tid, skb);
+
+		if (!bf) {
+			__skb_unlink(skb, &tid->buf_q);
+			ieee80211_free_txskb(sc->hw, skb);
+			continue;
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		bf->bf_state.bf_type = BUF_AMPDU | BUF_AGGR;
 		seqno = bf->bf_state.seqno;
@@ -938,6 +984,10 @@ static void ath_buf_set_rate(struct ath_softc *sc, struct ath_buf *bf,
 	struct ieee80211_tx_rate *rates;
 	const struct ieee80211_rate *rate;
 	struct ieee80211_hdr *hdr;
+<<<<<<< HEAD
+=======
+	struct ath_frame_info *fi = get_frame_info(bf->bf_mpdu);
+>>>>>>> remotes/linux2/linux-3.4.y
 	int i;
 	u8 rix = 0;
 
@@ -948,6 +998,7 @@ static void ath_buf_set_rate(struct ath_softc *sc, struct ath_buf *bf,
 
 	/* set dur_update_en for l-sig computation except for PS-Poll frames */
 	info->dur_update = !ieee80211_is_pspoll(hdr->frame_control);
+<<<<<<< HEAD
 
 	/*
 	 * We check if Short Preamble is needed for the CTS rate by
@@ -960,6 +1011,9 @@ static void ath_buf_set_rate(struct ath_softc *sc, struct ath_buf *bf,
 	if (tx_info->control.vif &&
 	    tx_info->control.vif->bss_conf.use_short_preamble)
 		info->rtscts_rate |= rate->hw_value_short;
+=======
+	info->rtscts_rate = fi->rtscts_rate;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	for (i = 0; i < 4; i++) {
 		bool is_40, is_sgi, is_sp;
@@ -1001,13 +1055,20 @@ static void ath_buf_set_rate(struct ath_softc *sc, struct ath_buf *bf,
 		}
 
 		/* legacy rates */
+<<<<<<< HEAD
+=======
+		rate = &sc->sbands[tx_info->band].bitrates[rates[i].idx];
+>>>>>>> remotes/linux2/linux-3.4.y
 		if ((tx_info->band == IEEE80211_BAND_2GHZ) &&
 		    !(rate->flags & IEEE80211_RATE_ERP_G))
 			phy = WLAN_RC_PHY_CCK;
 		else
 			phy = WLAN_RC_PHY_OFDM;
 
+<<<<<<< HEAD
 		rate = &sc->sbands[tx_info->band].bitrates[rates[i].idx];
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		info->rates[i].Rate = rate->hw_value;
 		if (rate->hw_value_short) {
 			if (rates[i].flags & IEEE80211_TX_RC_USE_SHORT_PREAMBLE)
@@ -1727,9 +1788,17 @@ static void ath_tx_send_ampdu(struct ath_softc *sc, struct ath_atx_tid *tid,
 		return;
 	}
 
+<<<<<<< HEAD
 	bf = ath_tx_setup_buffer(sc, txctl->txq, tid, skb, false);
 	if (!bf)
 		return;
+=======
+	bf = ath_tx_setup_buffer(sc, txctl->txq, tid, skb);
+	if (!bf) {
+		ieee80211_free_txskb(sc->hw, skb);
+		return;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	bf->bf_state.bf_type = BUF_AMPDU;
 	INIT_LIST_HEAD(&bf_head);
@@ -1753,16 +1822,23 @@ static void ath_tx_send_normal(struct ath_softc *sc, struct ath_txq *txq,
 	struct ath_buf *bf;
 
 	bf = fi->bf;
+<<<<<<< HEAD
 	if (!bf)
 		bf = ath_tx_setup_buffer(sc, txq, tid, skb, false);
 
 	if (!bf)
 		return;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	INIT_LIST_HEAD(&bf_head);
 	list_add_tail(&bf->list, &bf_head);
 	bf->bf_state.bf_type = 0;
 
+<<<<<<< HEAD
+=======
+	bf->bf_next = NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 	bf->bf_lastbf = bf;
 	ath_tx_fill_desc(sc, bf, txq, fi->framelen);
 	ath_tx_txqaddbuf(sc, txq, &bf_head, false);
@@ -1776,10 +1852,29 @@ static void setup_frame_info(struct ieee80211_hw *hw, struct sk_buff *skb,
 	struct ieee80211_sta *sta = tx_info->control.sta;
 	struct ieee80211_key_conf *hw_key = tx_info->control.hw_key;
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+<<<<<<< HEAD
 	struct ath_frame_info *fi = get_frame_info(skb);
 	struct ath_node *an = NULL;
 	enum ath9k_key_type keytype;
 
+=======
+	const struct ieee80211_rate *rate;
+	struct ath_frame_info *fi = get_frame_info(skb);
+	struct ath_node *an = NULL;
+	enum ath9k_key_type keytype;
+	bool short_preamble = false;
+
+	/*
+	 * We check if Short Preamble is needed for the CTS rate by
+	 * checking the BSS's global flag.
+	 * But for the rate series, IEEE80211_TX_RC_USE_SHORT_PREAMBLE is used.
+	 */
+	if (tx_info->control.vif &&
+	    tx_info->control.vif->bss_conf.use_short_preamble)
+		short_preamble = true;
+
+	rate = ieee80211_get_rts_cts_rate(hw, tx_info);
+>>>>>>> remotes/linux2/linux-3.4.y
 	keytype = ath9k_cmn_get_hw_crypto_keytype(skb);
 
 	if (sta)
@@ -1794,6 +1889,12 @@ static void setup_frame_info(struct ieee80211_hw *hw, struct sk_buff *skb,
 		fi->keyix = ATH9K_TXKEYIX_INVALID;
 	fi->keytype = keytype;
 	fi->framelen = framelen;
+<<<<<<< HEAD
+=======
+	fi->rtscts_rate = rate->hw_value;
+	if (short_preamble)
+		fi->rtscts_rate |= rate->hw_value_short;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 u8 ath_txchainmask_reduction(struct ath_softc *sc, u8 chainmask, u32 rate)
@@ -1815,8 +1916,12 @@ u8 ath_txchainmask_reduction(struct ath_softc *sc, u8 chainmask, u32 rate)
 static struct ath_buf *ath_tx_setup_buffer(struct ath_softc *sc,
 					   struct ath_txq *txq,
 					   struct ath_atx_tid *tid,
+<<<<<<< HEAD
 					   struct sk_buff *skb,
 					   bool dequeue)
+=======
+					   struct sk_buff *skb)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct ath_common *common = ath9k_hw_common(sc->sc_ah);
 	struct ath_frame_info *fi = get_frame_info(skb);
@@ -1828,7 +1933,11 @@ static struct ath_buf *ath_tx_setup_buffer(struct ath_softc *sc,
 	bf = ath_tx_get_buffer(sc);
 	if (!bf) {
 		ath_dbg(common, XMIT, "TX buffers are full\n");
+<<<<<<< HEAD
 		goto error;
+=======
+		return NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	ATH_TXBUF_RESET(bf);
@@ -1857,18 +1966,25 @@ static struct ath_buf *ath_tx_setup_buffer(struct ath_softc *sc,
 		ath_err(ath9k_hw_common(sc->sc_ah),
 			"dma_mapping_error() on TX\n");
 		ath_tx_return_buffer(sc, bf);
+<<<<<<< HEAD
 		goto error;
+=======
+		return NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	fi->bf = bf;
 
 	return bf;
+<<<<<<< HEAD
 
 error:
 	if (dequeue)
 		__skb_unlink(skb, &tid->buf_q);
 	dev_kfree_skb_any(skb);
 	return NULL;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /* FIXME: tx power */
@@ -1897,9 +2013,20 @@ static void ath_tx_start_dma(struct ath_softc *sc, struct sk_buff *skb,
 		 */
 		ath_tx_send_ampdu(sc, tid, skb, txctl);
 	} else {
+<<<<<<< HEAD
 		bf = ath_tx_setup_buffer(sc, txctl->txq, tid, skb, false);
 		if (!bf)
 			return;
+=======
+		bf = ath_tx_setup_buffer(sc, txctl->txq, tid, skb);
+		if (!bf) {
+			if (txctl->paprd)
+				dev_kfree_skb_any(skb);
+			else
+				ieee80211_free_txskb(sc->hw, skb);
+			return;
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		bf->bf_state.bfs_paprd = txctl->paprd;
 

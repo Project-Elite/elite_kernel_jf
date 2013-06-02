@@ -16,12 +16,19 @@
 #include <linux/console.h>
 #include <linux/init.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/persistent_ram.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/platform_device.h>
 #include <linux/proc_fs.h>
 #include <linux/string.h>
 #include <linux/uaccess.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include "persistent_ram.h"
+>>>>>>> remotes/linux2/linux-3.4.y
 #include "ram_console.h"
 
 static struct persistent_ram_zone *ram_console_zone;
@@ -50,7 +57,11 @@ void ram_console_enable_console(int enabled)
 		ram_console.flags &= ~CON_ENABLED;
 }
 
+<<<<<<< HEAD
 static int __devinit ram_console_probe(struct platform_device *pdev)
+=======
+static int __init ram_console_probe(struct platform_device *pdev)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct ram_console_platform_data *pdata = pdev->dev.platform_data;
 	struct persistent_ram_zone *prz;
@@ -78,12 +89,19 @@ static struct platform_driver ram_console_driver = {
 	.driver		= {
 		.name	= "ram_console",
 	},
+<<<<<<< HEAD
 	.probe = ram_console_probe,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 static int __init ram_console_module_init(void)
 {
+<<<<<<< HEAD
 	return platform_driver_register(&ram_console_driver);
+=======
+	return platform_driver_probe(&ram_console_driver, ram_console_probe);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 #ifndef CONFIG_PRINTK
@@ -101,6 +119,12 @@ static ssize_t ram_console_read_old(struct file *file, char __user *buf,
 	char *str;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (dmesg_restrict && !capable(CAP_SYSLOG))
+		return -EPERM;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Main last_kmsg log */
 	if (pos < old_log_size) {
 		count = min(len, (size_t)(old_log_size - pos));

@@ -40,7 +40,14 @@ struct inet_peer {
 	u32			pmtu_orig;
 	u32			pmtu_learned;
 	struct inetpeer_addr_base redirect_learned;
+<<<<<<< HEAD
 	struct list_head	gc_list;
+=======
+	union {
+		struct list_head	gc_list;
+		struct rcu_head     gc_rcu;
+	};
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Once inet_peer is queued for deletion (refcnt == -1), following fields
 	 * are not available: rid, ip_id_count, tcp_ts, tcp_ts_stamp

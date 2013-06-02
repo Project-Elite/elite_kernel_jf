@@ -53,7 +53,11 @@ int __init omap_init_opp_table(struct omap_opp_def *opp_def,
 	omap_table_init = 1;
 
 	/* Lets now register with OPP library */
+<<<<<<< HEAD
 	for (i = 0; i < opp_def_size; i++) {
+=======
+	for (i = 0; i < opp_def_size; i++, opp_def++) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		struct omap_hwmod *oh;
 		struct device *dev;
 
@@ -86,7 +90,10 @@ int __init omap_init_opp_table(struct omap_opp_def *opp_def,
 					__func__, opp_def->freq,
 					opp_def->hwmod_name, i, r);
 		}
+<<<<<<< HEAD
 		opp_def++;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return 0;

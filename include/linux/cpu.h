@@ -75,8 +75,14 @@ enum {
 	/* migration should happen before other stuff but after perf */
 	CPU_PRI_PERF		= 20,
 	CPU_PRI_MIGRATION	= 10,
+<<<<<<< HEAD
 	/* prepare workqueues for other notifiers */
 	CPU_PRI_WORKQUEUE	= 5,
+=======
+	/* bring up workqueues before normal notifiers and down after */
+	CPU_PRI_WORKQUEUE_UP	= 5,
+	CPU_PRI_WORKQUEUE_DOWN	= -5,
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 #define CPU_ONLINE		0x0002 /* CPU (unsigned)v is up */
@@ -212,6 +218,7 @@ static inline int disable_nonboot_cpus(void) { return 0; }
 static inline void enable_nonboot_cpus(void) {}
 #endif /* !CONFIG_PM_SLEEP_SMP */
 
+<<<<<<< HEAD
 #define IDLE_START 1
 #define IDLE_END 2
 
@@ -219,4 +226,6 @@ void idle_notifier_register(struct notifier_block *n);
 void idle_notifier_unregister(struct notifier_block *n);
 void idle_notifier_call_chain(unsigned long val);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif /* _LINUX_CPU_H_ */

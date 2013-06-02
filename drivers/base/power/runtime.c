@@ -430,7 +430,10 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 		goto repeat;
 	}
 
+<<<<<<< HEAD
 	dev->power.deferred_resume = false;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (dev->power.no_callbacks)
 		goto no_callback;	/* Assume success. */
 
@@ -506,6 +509,10 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 	wake_up_all(&dev->power.wait_queue);
 
 	if (dev->power.deferred_resume) {
+<<<<<<< HEAD
+=======
+		dev->power.deferred_resume = false;
+>>>>>>> remotes/linux2/linux-3.4.y
 		rpm_resume(dev, 0);
 		retval = -EAGAIN;
 		goto out;
@@ -652,6 +659,10 @@ static int rpm_resume(struct device *dev, int rpmflags)
 		    || dev->parent->power.runtime_status == RPM_ACTIVE) {
 			atomic_inc(&dev->parent->power.child_count);
 			spin_unlock(&dev->parent->power.lock);
+<<<<<<< HEAD
+=======
+			retval = 1;
+>>>>>>> remotes/linux2/linux-3.4.y
 			goto no_callback;	/* Assume success. */
 		}
 		spin_unlock(&dev->parent->power.lock);
@@ -735,7 +746,11 @@ static int rpm_resume(struct device *dev, int rpmflags)
 	}
 	wake_up_all(&dev->power.wait_queue);
 
+<<<<<<< HEAD
 	if (!retval)
+=======
+	if (retval >= 0)
+>>>>>>> remotes/linux2/linux-3.4.y
 		rpm_idle(dev, RPM_ASYNC);
 
  out:

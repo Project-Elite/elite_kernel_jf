@@ -161,6 +161,11 @@ static int hash_recvmsg(struct kiocb *unused, struct socket *sock,
 	else if (len < ds)
 		msg->msg_flags |= MSG_TRUNC;
 
+<<<<<<< HEAD
+=======
+	msg->msg_namelen = 0;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	lock_sock(sk);
 	if (ctx->more) {
 		ctx->more = 0;

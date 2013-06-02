@@ -1435,7 +1435,11 @@ static snd_pcm_uframes_t snd_ali_pointer(struct snd_pcm_substream *substream)
 
 	spin_lock(&codec->reg_lock);
 	if (!pvoice->running) {
+<<<<<<< HEAD
 		spin_unlock_irq(&codec->reg_lock);
+=======
+		spin_unlock(&codec->reg_lock);
+>>>>>>> remotes/linux2/linux-3.4.y
 		return 0;
 	}
 	outb(pvoice->number, ALI_REG(codec, ALI_GC_CIR));

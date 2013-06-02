@@ -73,6 +73,7 @@ unsigned long node_memmap_size_bytes(int nid, unsigned long start_pfn,
 
 extern unsigned long highend_pfn, highstart_pfn;
 
+<<<<<<< HEAD
 #define LARGE_PAGE_BYTES (PTRS_PER_PTE * PAGE_SIZE)
 
 static void *node_remap_start_vaddr[MAX_NUMNODES];
@@ -234,6 +235,8 @@ void __init init_alloc_remap(int nid, u64 start, u64 end)
 	       nid, node_pa, node_pa + size, remap_va, remap_va + size);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 void __init initmem_init(void)
 {
 	x86_numa_init();

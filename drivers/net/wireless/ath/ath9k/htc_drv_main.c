@@ -1496,6 +1496,10 @@ static void ath9k_htc_bss_info_changed(struct ieee80211_hw *hw,
 			priv->num_sta_assoc_vif++ : priv->num_sta_assoc_vif--;
 
 		if (priv->ah->opmode == NL80211_IFTYPE_STATION) {
+<<<<<<< HEAD
+=======
+			ath9k_htc_choose_set_bssid(priv);
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (bss_conf->assoc && (priv->num_sta_assoc_vif == 1))
 				ath9k_htc_start_ani(priv);
 			else if (priv->num_sta_assoc_vif == 0)
@@ -1503,13 +1507,20 @@ static void ath9k_htc_bss_info_changed(struct ieee80211_hw *hw,
 		}
 	}
 
+<<<<<<< HEAD
 	if (changed & BSS_CHANGED_BSSID) {
+=======
+	if (changed & BSS_CHANGED_IBSS) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (priv->ah->opmode == NL80211_IFTYPE_ADHOC) {
 			common->curaid = bss_conf->aid;
 			memcpy(common->curbssid, bss_conf->bssid, ETH_ALEN);
 			ath9k_htc_set_bssid(priv);
+<<<<<<< HEAD
 		} else if (priv->ah->opmode == NL80211_IFTYPE_STATION) {
 			ath9k_htc_choose_set_bssid(priv);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 

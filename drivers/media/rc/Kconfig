@@ -24,6 +24,7 @@ config LIRC
 	   LIRC daemon handles protocol decoding for IR reception and
 	   encoding for IR transmitting (aka "blasting").
 
+<<<<<<< HEAD
 config USER_RC_INPUT
 	tristate "User Space Input device wrapper for Remote Control"
 	depends on RC_CORE
@@ -35,6 +36,8 @@ config USER_RC_INPUT
 	   To compile this driver as a module, choose M here: the module will
 	   be called user-rc-input.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 source "drivers/media/rc/keymaps/Kconfig"
 
 config IR_NEC_DECODER

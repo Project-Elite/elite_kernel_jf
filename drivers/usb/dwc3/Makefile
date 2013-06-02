@@ -1,13 +1,19 @@
 ccflags-$(CONFIG_USB_DWC3_DEBUG)	:= -DDEBUG
 ccflags-$(CONFIG_USB_DWC3_VERBOSE)	+= -DVERBOSE_DEBUG
+<<<<<<< HEAD
 ccflags-y += -Idrivers/usb/host
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 obj-$(CONFIG_USB_DWC3)			+= dwc3.o
 
 dwc3-y					:= core.o
 dwc3-y					+= host.o
 dwc3-y					+= gadget.o ep0.o
+<<<<<<< HEAD
 dwc3-y					+= dwc3_otg.o
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 ifneq ($(CONFIG_DEBUG_FS),)
 	dwc3-y				+= debugfs.o
@@ -28,9 +34,13 @@ endif
 # PCI doesn't provide nops if CONFIG_PCI isn't enabled.
 ##
 
+<<<<<<< HEAD
 
 obj-$(CONFIG_USB_DWC3_OMAP)	+= dwc3-omap.o
 obj-$(CONFIG_USB_DWC3_MSM)	+= dwc3-msm.o
+=======
+obj-$(CONFIG_USB_DWC3)		+= dwc3-omap.o
+>>>>>>> remotes/linux2/linux-3.4.y
 
 ##
 # REVISIT Samsung Exynos platform needs the clk API which isn't

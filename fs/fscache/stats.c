@@ -276,5 +276,9 @@ const struct file_operations fscache_stats_fops = {
 	.open		= fscache_stats_open,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
+<<<<<<< HEAD
 	.release	= seq_release,
+=======
+	.release        = single_release,
+>>>>>>> remotes/linux2/linux-3.4.y
 };

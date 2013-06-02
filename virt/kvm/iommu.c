@@ -242,7 +242,11 @@ int kvm_iommu_map_guest(struct kvm *kvm)
 
 	mutex_lock(&kvm->slots_lock);
 
+<<<<<<< HEAD
 	kvm->arch.iommu_domain = iommu_domain_alloc(&pci_bus_type, 0);
+=======
+	kvm->arch.iommu_domain = iommu_domain_alloc(&pci_bus_type);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!kvm->arch.iommu_domain) {
 		r = -ENOMEM;
 		goto out_unlock;

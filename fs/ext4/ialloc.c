@@ -296,10 +296,15 @@ out:
 		if (!fatal)
 			fatal = err;
 		ext4_mark_super_dirty(sb);
+<<<<<<< HEAD
 	} else {
 		print_bh(sb, bitmap_bh, 0, EXT4_BLOCK_SIZE(sb));
 		ext4_error(sb, "bit already cleared for inode %lu", ino);
 	}
+=======
+	} else
+		ext4_error(sb, "bit already cleared for inode %lu", ino);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 error_return:
 	brelse(bitmap_bh);
@@ -307,8 +312,13 @@ error_return:
 }
 
 struct orlov_stats {
+<<<<<<< HEAD
 	__u32 free_inodes;
 	__u32 free_clusters;
+=======
+	__u64 free_clusters;
+	__u32 free_inodes;
+>>>>>>> remotes/linux2/linux-3.4.y
 	__u32 used_dirs;
 };
 
@@ -325,7 +335,11 @@ static void get_orlov_stats(struct super_block *sb, ext4_group_t g,
 
 	if (flex_size > 1) {
 		stats->free_inodes = atomic_read(&flex_group[g].free_inodes);
+<<<<<<< HEAD
 		stats->free_clusters = atomic_read(&flex_group[g].free_clusters);
+=======
+		stats->free_clusters = atomic64_read(&flex_group[g].free_clusters);
+>>>>>>> remotes/linux2/linux-3.4.y
 		stats->used_dirs = atomic_read(&flex_group[g].used_dirs);
 		return;
 	}
@@ -680,6 +694,7 @@ got_group:
 		if (!gdp)
 			goto fail;
 
+<<<<<<< HEAD
 		if (inode_bitmap_bh) {
 			ext4_handle_release_buffer(handle, inode_bitmap_bh);
 			brelse(inode_bitmap_bh);
@@ -691,6 +706,12 @@ got_group:
 		err = ext4_journal_get_write_access(handle, inode_bitmap_bh);
 		if (err)
 			goto fail;
+=======
+		brelse(inode_bitmap_bh);
+		inode_bitmap_bh = ext4_read_inode_bitmap(sb, group);
+		if (!inode_bitmap_bh)
+			goto fail;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 repeat_in_this_group:
 		ino = ext4_find_next_zero_bit((unsigned long *)
@@ -706,6 +727,13 @@ repeat_in_this_group:
 				   "inode=%lu", ino + 1);
 			continue;
 		}
+<<<<<<< HEAD
+=======
+		BUFFER_TRACE(inode_bitmap_bh, "get_write_access");
+		err = ext4_journal_get_write_access(handle, inode_bitmap_bh);
+		if (err)
+			goto fail;
+>>>>>>> remotes/linux2/linux-3.4.y
 		ext4_lock_group(sb, group);
 		ret2 = ext4_test_and_set_bit(ino, inode_bitmap_bh->b_data);
 		ext4_unlock_group(sb, group);
@@ -715,7 +743,10 @@ repeat_in_this_group:
 		if (ino < EXT4_INODES_PER_GROUP(sb))
 			goto repeat_in_this_group;
 	}
+<<<<<<< HEAD
 	ext4_handle_release_buffer(handle, inode_bitmap_bh);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	err = -ENOSPC;
 	goto out;
 
@@ -740,7 +771,10 @@ got:
 
 		BUFFER_TRACE(block_bitmap_bh, "dirty block bitmap");
 		err = ext4_handle_dirty_metadata(handle, NULL, block_bitmap_bh);
+<<<<<<< HEAD
 		brelse(block_bitmap_bh);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		/* recheck and clear flag under lock if we still need to */
 		ext4_lock_group(sb, group);
@@ -752,6 +786,10 @@ got:
 								gdp);
 		}
 		ext4_unlock_group(sb, group);
+<<<<<<< HEAD
+=======
+		brelse(block_bitmap_bh);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		if (err)
 			goto fail;
@@ -1018,7 +1056,12 @@ unsigned long ext4_count_free_inodes(struct super_block *sb)
 		if (!bitmap_bh)
 			continue;
 
+<<<<<<< HEAD
 		x = ext4_count_free(bitmap_bh, EXT4_INODES_PER_GROUP(sb) / 8);
+=======
+		x = ext4_count_free(bitmap_bh->b_data,
+				    EXT4_INODES_PER_GROUP(sb) / 8);
+>>>>>>> remotes/linux2/linux-3.4.y
 		printk(KERN_DEBUG "group %lu: stored = %d, counted = %lu\n",
 			(unsigned long) i, ext4_free_inodes_count(sb, gdp), x);
 		bitmap_count += x;

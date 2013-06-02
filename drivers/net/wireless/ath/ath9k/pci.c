@@ -35,6 +35,10 @@ static DEFINE_PCI_DEVICE_TABLE(ath_pci_id_table) = {
 	{ PCI_VDEVICE(ATHEROS, 0x0032) }, /* PCI-E  AR9485 */
 	{ PCI_VDEVICE(ATHEROS, 0x0033) }, /* PCI-E  AR9580 */
 	{ PCI_VDEVICE(ATHEROS, 0x0034) }, /* PCI-E  AR9462 */
+<<<<<<< HEAD
+=======
+	{ PCI_VDEVICE(ATHEROS, 0x0037) }, /* PCI-E  AR1111/AR9485 */
+>>>>>>> remotes/linux2/linux-3.4.y
 	{ 0 }
 };
 
@@ -121,8 +125,14 @@ static void ath_pci_aspm_init(struct ath_common *common)
 	if (!parent)
 		return;
 
+<<<<<<< HEAD
 	if (ath9k_hw_get_btcoex_scheme(ah) != ATH_BTCOEX_CFG_NONE) {
 		/* Bluetooth coexistance requires disabling ASPM. */
+=======
+	if ((ath9k_hw_get_btcoex_scheme(ah) != ATH_BTCOEX_CFG_NONE) &&
+	    (AR_SREV_9285(ah))) {
+		/* Bluetooth coexistance requires disabling ASPM for AR9285. */
+>>>>>>> remotes/linux2/linux-3.4.y
 		pci_read_config_byte(pdev, pos + PCI_EXP_LNKCTL, &aspm);
 		aspm &= ~(PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
 		pci_write_config_byte(pdev, pos + PCI_EXP_LNKCTL, aspm);
@@ -148,6 +158,7 @@ static void ath_pci_aspm_init(struct ath_common *common)
 	}
 }
 
+<<<<<<< HEAD
 static void ath_pci_aspm_init(struct ath_common *common)
 {
 	struct ath_softc *sc = (struct ath_softc *) common->priv;
@@ -173,6 +184,8 @@ static void ath_pci_aspm_init(struct ath_common *common)
 	}
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static const struct ath_bus_ops ath_pci_bus_ops = {
 	.ath_bus_type = ATH_PCI,
 	.read_cachesize = ath_pci_read_cachesize,

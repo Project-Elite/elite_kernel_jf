@@ -47,7 +47,10 @@ extern bool shpchp_poll_mode;
 extern int shpchp_poll_time;
 extern bool shpchp_debug;
 extern struct workqueue_struct *shpchp_wq;
+<<<<<<< HEAD
 extern struct workqueue_struct *shpchp_ordered_wq;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #define dbg(format, arg...)						\
 do {									\

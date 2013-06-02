@@ -14,8 +14,11 @@ extern struct proto tcpv6_prot;
 
 struct flowi6;
 
+<<<<<<< HEAD
 extern void initialize_hashidentrnd(void);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* extension headers */
 extern int				ipv6_exthdrs_init(void);
 extern void				ipv6_exthdrs_exit(void);

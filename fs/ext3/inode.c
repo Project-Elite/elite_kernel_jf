@@ -3068,6 +3068,11 @@ static int ext3_do_update_inode(handle_t *handle,
 	struct ext3_inode_info *ei = EXT3_I(inode);
 	struct buffer_head *bh = iloc->bh;
 	int err = 0, rc, block;
+<<<<<<< HEAD
+=======
+	int need_datasync = 0;
+	__le32 disksize;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 again:
 	/* we can't allow multiple procs in here at once, its a bit racey */
@@ -3105,7 +3110,15 @@ again:
 		raw_inode->i_gid_high = 0;
 	}
 	raw_inode->i_links_count = cpu_to_le16(inode->i_nlink);
+<<<<<<< HEAD
 	raw_inode->i_size = cpu_to_le32(ei->i_disksize);
+=======
+	disksize = cpu_to_le32(ei->i_disksize);
+	if (disksize != raw_inode->i_size) {
+		need_datasync = 1;
+		raw_inode->i_size = disksize;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 	raw_inode->i_atime = cpu_to_le32(inode->i_atime.tv_sec);
 	raw_inode->i_ctime = cpu_to_le32(inode->i_ctime.tv_sec);
 	raw_inode->i_mtime = cpu_to_le32(inode->i_mtime.tv_sec);
@@ -3121,8 +3134,16 @@ again:
 	if (!S_ISREG(inode->i_mode)) {
 		raw_inode->i_dir_acl = cpu_to_le32(ei->i_dir_acl);
 	} else {
+<<<<<<< HEAD
 		raw_inode->i_size_high =
 			cpu_to_le32(ei->i_disksize >> 32);
+=======
+		disksize = cpu_to_le32(ei->i_disksize >> 32);
+		if (disksize != raw_inode->i_size_high) {
+			raw_inode->i_size_high = disksize;
+			need_datasync = 1;
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (ei->i_disksize > 0x7fffffffULL) {
 			struct super_block *sb = inode->i_sb;
 			if (!EXT3_HAS_RO_COMPAT_FEATURE(sb,
@@ -3175,6 +3196,11 @@ again:
 	ext3_clear_inode_state(inode, EXT3_STATE_NEW);
 
 	atomic_set(&ei->i_sync_tid, handle->h_transaction->t_tid);
+<<<<<<< HEAD
+=======
+	if (need_datasync)
+		atomic_set(&ei->i_datasync_tid, handle->h_transaction->t_tid);
+>>>>>>> remotes/linux2/linux-3.4.y
 out_brelse:
 	brelse (bh);
 	ext3_std_error(inode->i_sb, err);

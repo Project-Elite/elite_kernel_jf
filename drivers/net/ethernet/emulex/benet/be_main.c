@@ -571,6 +571,14 @@ static inline u16 be_get_tx_vlan_tag(struct be_adapter *adapter,
 	return vlan_tag;
 }
 
+<<<<<<< HEAD
+=======
+static int be_vlan_tag_chk(struct be_adapter *adapter, struct sk_buff *skb)
+{
+	return vlan_tx_tag_present(skb) || adapter->pvid;
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static void wrb_fill_hdr(struct be_adapter *adapter, struct be_eth_hdr_wrb *hdr,
 		struct sk_buff *skb, u32 wrb_cnt, u32 len)
 {
@@ -698,12 +706,34 @@ dma_err:
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static struct sk_buff *be_insert_vlan_in_pkt(struct be_adapter *adapter,
+					     struct sk_buff *skb)
+{
+	u16 vlan_tag = 0;
+
+	skb = skb_share_check(skb, GFP_ATOMIC);
+	if (unlikely(!skb))
+		return skb;
+
+	if (vlan_tx_tag_present(skb)) {
+		vlan_tag = be_get_tx_vlan_tag(adapter, skb);
+		__vlan_put_tag(skb, vlan_tag);
+		skb->vlan_tci = 0;
+	}
+
+	return skb;
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static netdev_tx_t be_xmit(struct sk_buff *skb,
 			struct net_device *netdev)
 {
 	struct be_adapter *adapter = netdev_priv(netdev);
 	struct be_tx_obj *txo = &adapter->tx_obj[skb_get_queue_mapping(skb)];
 	struct be_queue_info *txq = &txo->q;
+<<<<<<< HEAD
 	u32 wrb_cnt = 0, copied = 0;
 	u32 start = txq->head;
 	bool dummy_wrb, stopped = false;
@@ -725,12 +755,45 @@ static netdev_tx_t be_xmit(struct sk_buff *skb,
 			goto tx_drop;
 
 		skb->vlan_tci = 0;
+=======
+	struct iphdr *ip = NULL;
+	u32 wrb_cnt = 0, copied = 0;
+	u32 start = txq->head, eth_hdr_len;
+	bool dummy_wrb, stopped = false;
+
+	eth_hdr_len = ntohs(skb->protocol) == ETH_P_8021Q ?
+		VLAN_ETH_HLEN : ETH_HLEN;
+
+	/* HW has a bug which considers padding bytes as legal
+	 * and modifies the IPv4 hdr's 'tot_len' field
+	 */
+	if (skb->len <= 60 && be_vlan_tag_chk(adapter, skb) &&
+			is_ipv4_pkt(skb)) {
+		ip = (struct iphdr *)ip_hdr(skb);
+		pskb_trim(skb, eth_hdr_len + ntohs(ip->tot_len));
+	}
+
+	/* HW has a bug wherein it will calculate CSUM for VLAN
+	 * pkts even though it is disabled.
+	 * Manually insert VLAN in pkt.
+	 */
+	if (skb->ip_summed != CHECKSUM_PARTIAL &&
+			be_vlan_tag_chk(adapter, skb)) {
+		skb = be_insert_vlan_in_pkt(adapter, skb);
+		if (unlikely(!skb))
+			goto tx_drop;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	wrb_cnt = wrb_cnt_for_skb(adapter, skb, &dummy_wrb);
 
 	copied = make_tx_wrbs(adapter, txq, skb, wrb_cnt, dummy_wrb);
 	if (copied) {
+<<<<<<< HEAD
+=======
+		int gso_segs = skb_shinfo(skb)->gso_segs;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 		/* record the sent skb in the sent_skb table */
 		BUG_ON(txo->sent_skb_list[start]);
 		txo->sent_skb_list[start] = skb;
@@ -748,8 +811,12 @@ static netdev_tx_t be_xmit(struct sk_buff *skb,
 
 		be_txq_notify(adapter, txq->id, wrb_cnt);
 
+<<<<<<< HEAD
 		be_tx_stats_update(txo, wrb_cnt, copied,
 				skb_shinfo(skb)->gso_segs, stopped);
+=======
+		be_tx_stats_update(txo, wrb_cnt, copied, gso_segs, stopped);
+>>>>>>> remotes/linux2/linux-3.4.y
 	} else {
 		txq->head = start;
 		dev_kfree_skb_any(skb);

@@ -42,8 +42,13 @@ struct ipc_namespace {
 
 	size_t		shm_ctlmax;
 	size_t		shm_ctlall;
+<<<<<<< HEAD
 	int		shm_ctlmni;
 	int		shm_tot;
+=======
+	unsigned long	shm_tot;
+	int		shm_ctlmni;
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Defines whether IPC_RMID is forced for _all_ shm segments regardless
 	 * of shmctl()

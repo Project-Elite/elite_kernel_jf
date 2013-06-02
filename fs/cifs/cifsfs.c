@@ -557,6 +557,14 @@ cifs_get_root(struct smb_vol *vol, struct super_block *sb)
 			dentry = ERR_PTR(-ENOENT);
 			break;
 		}
+<<<<<<< HEAD
+=======
+		if (!S_ISDIR(dir->i_mode)) {
+			dput(dentry);
+			dentry = ERR_PTR(-ENOTDIR);
+			break;
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		/* skip separators */
 		while (*s == sep)

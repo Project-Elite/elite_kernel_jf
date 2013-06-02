@@ -213,7 +213,14 @@ static int slave_put(struct snd_kcontrol *kcontrol,
 	}
 	if (!changed)
 		return 0;
+<<<<<<< HEAD
 	return slave_put_val(slave, ucontrol);
+=======
+	err = slave_put_val(slave, ucontrol);
+	if (err < 0)
+		return err;
+	return 1;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int slave_tlv_cmd(struct snd_kcontrol *kcontrol,

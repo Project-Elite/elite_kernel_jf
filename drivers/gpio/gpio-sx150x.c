@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -8,6 +12,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+<<<<<<< HEAD
+=======
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
+>>>>>>> remotes/linux2/linux-3.4.y
  */
 #include <linux/gpio.h>
 #include <linux/i2c.h>
@@ -184,9 +196,15 @@ static int sx150x_get_io(struct sx150x_chip *chip, unsigned offset)
 	return err;
 }
 
+<<<<<<< HEAD
 static s32 sx150x_set_oscio(struct sx150x_chip *chip, int val)
 {
 	return sx150x_i2c_write(chip->client,
+=======
+static void sx150x_set_oscio(struct sx150x_chip *chip, int val)
+{
+	sx150x_i2c_write(chip->client,
+>>>>>>> remotes/linux2/linux-3.4.y
 			chip->dev_cfg->reg_clock,
 			(val ? 0x1f : 0x10));
 }
@@ -281,6 +299,7 @@ static int sx150x_gpio_direction_output(struct gpio_chip *gc,
 
 	chip = container_of(gc, struct sx150x_chip, gpio_chip);
 
+<<<<<<< HEAD
 	mutex_lock(&chip->lock);
 	if (offset_is_oscio(chip, offset))
 		status = sx150x_set_oscio(chip, val);
@@ -288,6 +307,13 @@ static int sx150x_gpio_direction_output(struct gpio_chip *gc,
 		status = sx150x_io_output(chip, offset, val);
 	mutex_unlock(&chip->lock);
 
+=======
+	if (!offset_is_oscio(chip, offset)) {
+		mutex_lock(&chip->lock);
+		status = sx150x_io_output(chip, offset, val);
+		mutex_unlock(&chip->lock);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 	return status;
 }
 

@@ -3,7 +3,11 @@
  *
  * Copyright 2003 José Fonseca.
  * Copyright 2003 Leif Delgass.
+<<<<<<< HEAD
  * Copyright (c) 2009, The Linux Foundation.
+=======
+ * Copyright (c) 2009, Code Aurora Forum.
+>>>>>>> remotes/linux2/linux-3.4.y
  * All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

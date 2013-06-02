@@ -88,6 +88,30 @@ static const char *get_reason_str(enum kmsg_dump_reason reason)
 	}
 }
 
+<<<<<<< HEAD
+=======
+bool pstore_cannot_block_path(enum kmsg_dump_reason reason)
+{
+	/*
+	 * In case of NMI path, pstore shouldn't be blocked
+	 * regardless of reason.
+	 */
+	if (in_nmi())
+		return true;
+
+	switch (reason) {
+	/* In panic case, other cpus are stopped by smp_send_stop(). */
+	case KMSG_DUMP_PANIC:
+	/* Emergency restart shouldn't be blocked by spin lock. */
+	case KMSG_DUMP_EMERG:
+		return true;
+	default:
+		return false;
+	}
+}
+EXPORT_SYMBOL_GPL(pstore_cannot_block_path);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * callback from kmsg_dump. (s2,l2) has the most recently
  * written bytes, older bytes are in (s1,l1). Save as much
@@ -111,10 +135,19 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 
 	why = get_reason_str(reason);
 
+<<<<<<< HEAD
 	if (in_nmi()) {
 		is_locked = spin_trylock(&psinfo->buf_lock);
 		if (!is_locked)
 			pr_err("pstore dump routine blocked in NMI, may corrupt error record\n");
+=======
+	if (pstore_cannot_block_path(reason)) {
+		is_locked = spin_trylock_irqsave(&psinfo->buf_lock, flags);
+		if (!is_locked) {
+			pr_err("pstore dump routine blocked in %s path, may corrupt error record\n"
+				       , in_nmi() ? "NMI" : why);
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 	} else
 		spin_lock_irqsave(&psinfo->buf_lock, flags);
 	oopscount++;
@@ -145,9 +178,15 @@ static void pstore_dump(struct kmsg_dumper *dumper,
 		total += l1_cpy + l2_cpy;
 		part++;
 	}
+<<<<<<< HEAD
 	if (in_nmi()) {
 		if (is_locked)
 			spin_unlock(&psinfo->buf_lock);
+=======
+	if (pstore_cannot_block_path(reason)) {
+		if (is_locked)
+			spin_unlock_irqrestore(&psinfo->buf_lock, flags);
+>>>>>>> remotes/linux2/linux-3.4.y
 	} else
 		spin_unlock_irqrestore(&psinfo->buf_lock, flags);
 }

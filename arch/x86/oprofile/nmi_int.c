@@ -55,7 +55,11 @@ u64 op_x86_get_ctrl(struct op_x86_model_spec const *model,
 	val |= counter_config->extra;
 	event &= model->event_mask ? model->event_mask : 0xFF;
 	val |= event & 0xFF;
+<<<<<<< HEAD
 	val |= (event & 0x0F00) << 24;
+=======
+	val |= (u64)(event & 0x0F00) << 24;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return val;
 }

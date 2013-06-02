@@ -111,7 +111,12 @@ static bool uac_clock_source_is_valid(struct snd_usb_audio *chip, int source_id)
 		return 0;
 
 	/* If a clock source can't tell us whether it's valid, we assume it is */
+<<<<<<< HEAD
 	if (!uac2_control_is_readable(cs_desc->bmControls, UAC2_CS_CONTROL_CLOCK_VALID))
+=======
+	if (!uac2_control_is_readable(cs_desc->bmControls,
+				      UAC2_CS_CONTROL_CLOCK_VALID - 1))
+>>>>>>> remotes/linux2/linux-3.4.y
 		return 1;
 
 	err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_CUR,

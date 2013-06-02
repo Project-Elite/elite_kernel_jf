@@ -343,7 +343,11 @@ int lookup_symbol_attrs(unsigned long addr, unsigned long *size,
 
 /* Look up a kernel symbol and return it in a text buffer. */
 static int __sprint_symbol(char *buffer, unsigned long address,
+<<<<<<< HEAD
 			   int symbol_offset, int add_offset)
+=======
+			   int symbol_offset)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	char *modname;
 	const char *name;
@@ -358,6 +362,7 @@ static int __sprint_symbol(char *buffer, unsigned long address,
 	if (name != buffer)
 		strcpy(buffer, name);
 	len = strlen(buffer);
+<<<<<<< HEAD
 	offset -= symbol_offset;
 
 	if (add_offset)
@@ -365,6 +370,15 @@ static int __sprint_symbol(char *buffer, unsigned long address,
 
 	if (modname)
 		len += sprintf(buffer + len, " [%s]", modname);
+=======
+	buffer += len;
+	offset -= symbol_offset;
+
+	if (modname)
+		len += sprintf(buffer, "+%#lx/%#lx [%s]", offset, size, modname);
+	else
+		len += sprintf(buffer, "+%#lx/%#lx", offset, size);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return len;
 }
@@ -382,6 +396,7 @@ static int __sprint_symbol(char *buffer, unsigned long address,
  */
 int sprint_symbol(char *buffer, unsigned long address)
 {
+<<<<<<< HEAD
 	return __sprint_symbol(buffer, address, 0, 1);
 }
 EXPORT_SYMBOL_GPL(sprint_symbol);
@@ -402,6 +417,12 @@ int sprint_symbol_no_offset(char *buffer, unsigned long address)
 	return __sprint_symbol(buffer, address, 0, 0);
 }
 EXPORT_SYMBOL_GPL(sprint_symbol_no_offset);
+=======
+	return __sprint_symbol(buffer, address, 0);
+}
+
+EXPORT_SYMBOL_GPL(sprint_symbol);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /**
  * sprint_backtrace - Look up a backtrace symbol and return it in a text buffer
@@ -419,7 +440,11 @@ EXPORT_SYMBOL_GPL(sprint_symbol_no_offset);
  */
 int sprint_backtrace(char *buffer, unsigned long address)
 {
+<<<<<<< HEAD
 	return __sprint_symbol(buffer, address, -1, 1);
+=======
+	return __sprint_symbol(buffer, address, -1);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /* Look up a kernel symbol and print it to the kernel messages. */

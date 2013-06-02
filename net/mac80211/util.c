@@ -592,6 +592,7 @@ u32 ieee802_11_parse_elems_crc(u8 *start, size_t len,
 			break;
 		}
 
+<<<<<<< HEAD
 		if (id != WLAN_EID_VENDOR_SPECIFIC &&
 		    id != WLAN_EID_QUIET &&
 		    test_bit(id, seen_elems)) {
@@ -599,6 +600,40 @@ u32 ieee802_11_parse_elems_crc(u8 *start, size_t len,
 			left -= elen;
 			pos += elen;
 			continue;
+=======
+		switch (id) {
+		case WLAN_EID_SSID:
+		case WLAN_EID_SUPP_RATES:
+		case WLAN_EID_FH_PARAMS:
+		case WLAN_EID_DS_PARAMS:
+		case WLAN_EID_CF_PARAMS:
+		case WLAN_EID_TIM:
+		case WLAN_EID_IBSS_PARAMS:
+		case WLAN_EID_CHALLENGE:
+		case WLAN_EID_RSN:
+		case WLAN_EID_ERP_INFO:
+		case WLAN_EID_EXT_SUPP_RATES:
+		case WLAN_EID_HT_CAPABILITY:
+		case WLAN_EID_MESH_ID:
+		case WLAN_EID_MESH_CONFIG:
+		case WLAN_EID_PEER_MGMT:
+		case WLAN_EID_PREQ:
+		case WLAN_EID_PREP:
+		case WLAN_EID_PERR:
+		case WLAN_EID_RANN:
+		case WLAN_EID_CHANNEL_SWITCH:
+		case WLAN_EID_EXT_CHANSWITCH_ANN:
+		case WLAN_EID_COUNTRY:
+		case WLAN_EID_PWR_CONSTRAINT:
+		case WLAN_EID_TIMEOUT_INTERVAL:
+			if (test_bit(id, seen_elems)) {
+				elems->parse_error = true;
+				left -= elen;
+				pos += elen;
+				continue;
+			}
+			break;
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 
 		if (calc_crc && id < 64 && (filter & (1ULL << id)))
@@ -1316,6 +1351,11 @@ int ieee80211_reconfig(struct ieee80211_local *local)
 		list_for_each_entry(sdata, &local->interfaces, list) {
 			if (sdata->vif.type != NL80211_IFTYPE_STATION)
 				continue;
+<<<<<<< HEAD
+=======
+			if (!sdata->u.mgd.associated)
+				continue;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 			ieee80211_send_nullfunc(local, sdata, 0);
 		}

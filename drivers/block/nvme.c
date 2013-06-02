@@ -1153,7 +1153,11 @@ static int nvme_user_admin_cmd(struct nvme_ns *ns,
 	struct nvme_admin_cmd cmd;
 	struct nvme_command c;
 	int status, length;
+<<<<<<< HEAD
 	struct nvme_iod *iod;
+=======
+	struct nvme_iod *uninitialized_var(iod);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EACCES;

@@ -304,6 +304,10 @@ static int lpc32xx_gpio_dir_output_p012(struct gpio_chip *chip, unsigned pin,
 {
 	struct lpc32xx_gpio_chip *group = to_lpc32xx_gpio(chip);
 
+<<<<<<< HEAD
+=======
+	__set_gpio_level_p012(group, pin, value);
+>>>>>>> remotes/linux2/linux-3.4.y
 	__set_gpio_dir_p012(group, pin, 0);
 
 	return 0;
@@ -314,6 +318,10 @@ static int lpc32xx_gpio_dir_output_p3(struct gpio_chip *chip, unsigned pin,
 {
 	struct lpc32xx_gpio_chip *group = to_lpc32xx_gpio(chip);
 
+<<<<<<< HEAD
+=======
+	__set_gpio_level_p3(group, pin, value);
+>>>>>>> remotes/linux2/linux-3.4.y
 	__set_gpio_dir_p3(group, pin, 0);
 
 	return 0;
@@ -322,6 +330,12 @@ static int lpc32xx_gpio_dir_output_p3(struct gpio_chip *chip, unsigned pin,
 static int lpc32xx_gpio_dir_out_always(struct gpio_chip *chip, unsigned pin,
 	int value)
 {
+<<<<<<< HEAD
+=======
+	struct lpc32xx_gpio_chip *group = to_lpc32xx_gpio(chip);
+
+	__set_gpo_level_p3(group, pin, value);
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 

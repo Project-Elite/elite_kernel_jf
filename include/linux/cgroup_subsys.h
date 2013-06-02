@@ -72,9 +72,12 @@ SUBSYS(net_prio)
 #endif
 
 /* */
+<<<<<<< HEAD
 
 #ifdef CONFIG_CGROUP_BFQIO
 SUBSYS(bfqio)
 #endif
 
 /* */
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

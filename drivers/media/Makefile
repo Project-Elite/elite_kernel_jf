@@ -12,5 +12,8 @@ obj-y += common/ rc/ video/
 
 obj-$(CONFIG_VIDEO_DEV) += radio/
 obj-$(CONFIG_DVB_CORE)  += dvb/
+<<<<<<< HEAD
 obj-$(CONFIG_TDMB)  += tdmb/
 obj-$(CONFIG_ISDBTMM)   += isdbtmm/
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

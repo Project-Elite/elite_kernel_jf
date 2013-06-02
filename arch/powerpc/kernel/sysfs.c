@@ -194,6 +194,17 @@ static ssize_t show_dscr_default(struct device *dev,
 	return sprintf(buf, "%lx\n", dscr_default);
 }
 
+<<<<<<< HEAD
+=======
+static void update_dscr(void *dummy)
+{
+	if (!current->thread.dscr_inherit) {
+		current->thread.dscr = dscr_default;
+		mtspr(SPRN_DSCR, dscr_default);
+	}
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static ssize_t __used store_dscr_default(struct device *dev,
 		struct device_attribute *attr, const char *buf,
 		size_t count)
@@ -206,6 +217,11 @@ static ssize_t __used store_dscr_default(struct device *dev,
 		return -EINVAL;
 	dscr_default = val;
 
+<<<<<<< HEAD
+=======
+	on_each_cpu(update_dscr, NULL, 1);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	return count;
 }
 

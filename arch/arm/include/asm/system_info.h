@@ -19,12 +19,15 @@ extern unsigned int system_rev;
 extern unsigned int system_serial_low;
 extern unsigned int system_serial_high;
 extern unsigned int mem_fclk_21285;
+<<<<<<< HEAD
 #ifdef CONFIG_SEC_DEBUG_SUBSYS
 extern const char *unit_name;
 extern int boost_uv;
 extern int speed_bin;
 extern int pvs_bin;
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 extern int __pure cpu_architecture(void);
 

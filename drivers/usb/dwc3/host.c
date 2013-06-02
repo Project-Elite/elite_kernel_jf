@@ -38,13 +38,28 @@
 #include <linux/platform_device.h>
 
 #include "core.h"
+<<<<<<< HEAD
 #include "xhci.h"
+=======
+
+static struct resource generic_resources[] = {
+	{
+		.flags = IORESOURCE_IRQ,
+	},
+	{
+		.flags = IORESOURCE_MEM,
+	},
+};
+>>>>>>> remotes/linux2/linux-3.4.y
 
 int dwc3_host_init(struct dwc3 *dwc)
 {
 	struct platform_device	*xhci;
 	int			ret;
+<<<<<<< HEAD
 	struct xhci_plat_data	pdata;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	xhci = platform_device_alloc("xhci-hcd", -1);
 	if (!xhci) {
@@ -60,6 +75,7 @@ int dwc3_host_init(struct dwc3 *dwc)
 	xhci->dev.dma_parms	= dwc->dev->dma_parms;
 
 	dwc->xhci = xhci;
+<<<<<<< HEAD
 	pdata.vendor = ((dwc->revision & DWC3_GSNPSID_MASK) >>
 			__ffs(DWC3_GSNPSID_MASK) & DWC3_GSNPSREV_MASK);
 	pdata.revision = dwc->revision & DWC3_GSNPSREV_MASK;
@@ -73,6 +89,17 @@ int dwc3_host_init(struct dwc3 *dwc)
 
 	ret = platform_device_add_resources(xhci, dwc->xhci_resources,
 						DWC3_XHCI_RESOURCES_NUM);
+=======
+
+	/* setup resources */
+	generic_resources[0].start = dwc->irq;
+
+	generic_resources[1].start = dwc->res->start;
+	generic_resources[1].end = dwc->res->start + 0x7fff;
+
+	ret = platform_device_add_resources(xhci, generic_resources,
+			ARRAY_SIZE(generic_resources));
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (ret) {
 		dev_err(dwc->dev, "couldn't add resources to xHCI device\n");
 		goto err1;

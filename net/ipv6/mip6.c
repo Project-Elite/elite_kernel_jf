@@ -84,6 +84,7 @@ static int mip6_mh_len(int type)
 
 static int mip6_mh_filter(struct sock *sk, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	struct ip6_mh *mh;
 
 	if (!pskb_may_pull(skb, (skb_transport_offset(skb)) + 8) ||
@@ -92,20 +93,42 @@ static int mip6_mh_filter(struct sock *sk, struct sk_buff *skb)
 		return -1;
 
 	mh = (struct ip6_mh *)skb_transport_header(skb);
+=======
+	struct ip6_mh _hdr;
+	const struct ip6_mh *mh;
+
+	mh = skb_header_pointer(skb, skb_transport_offset(skb),
+				sizeof(_hdr), &_hdr);
+	if (!mh)
+		return -1;
+
+	if (((mh->ip6mh_hdrlen + 1) << 3) > skb->len)
+		return -1;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (mh->ip6mh_hdrlen < mip6_mh_len(mh->ip6mh_type)) {
 		LIMIT_NETDEBUG(KERN_DEBUG "mip6: MH message too short: %d vs >=%d\n",
 			       mh->ip6mh_hdrlen, mip6_mh_len(mh->ip6mh_type));
+<<<<<<< HEAD
 		mip6_param_prob(skb, 0, ((&mh->ip6mh_hdrlen) -
 					 skb_network_header(skb)));
+=======
+		mip6_param_prob(skb, 0, offsetof(struct ip6_mh, ip6mh_hdrlen) +
+				skb_network_header_len(skb));
+>>>>>>> remotes/linux2/linux-3.4.y
 		return -1;
 	}
 
 	if (mh->ip6mh_proto != IPPROTO_NONE) {
 		LIMIT_NETDEBUG(KERN_DEBUG "mip6: MH invalid payload proto = %d\n",
 			       mh->ip6mh_proto);
+<<<<<<< HEAD
 		mip6_param_prob(skb, 0, ((&mh->ip6mh_proto) -
 					 skb_network_header(skb)));
+=======
+		mip6_param_prob(skb, 0, offsetof(struct ip6_mh, ip6mh_proto) +
+				skb_network_header_len(skb));
+>>>>>>> remotes/linux2/linux-3.4.y
 		return -1;
 	}
 

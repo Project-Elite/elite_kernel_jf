@@ -240,6 +240,11 @@ u32 ft_get_task_tag(struct se_cmd *se_cmd)
 {
 	struct ft_cmd *cmd = container_of(se_cmd, struct ft_cmd, se_cmd);
 
+<<<<<<< HEAD
+=======
+	if (cmd->aborted)
+		return ~0;
+>>>>>>> remotes/linux2/linux-3.4.y
 	return fc_seq_exch(cmd->seq)->rxid;
 }
 

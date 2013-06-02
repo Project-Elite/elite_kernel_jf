@@ -4066,7 +4066,10 @@ megasas_probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
 	spin_lock_init(&instance->cmd_pool_lock);
 	spin_lock_init(&instance->hba_lock);
 	spin_lock_init(&instance->completion_lock);
+<<<<<<< HEAD
 	spin_lock_init(&poll_aen_lock);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	mutex_init(&instance->aen_mutex);
 	mutex_init(&instance->reset_mutex);
@@ -5392,6 +5395,11 @@ static int __init megasas_init(void)
 	printk(KERN_INFO "megasas: %s %s\n", MEGASAS_VERSION,
 	       MEGASAS_EXT_VERSION);
 
+<<<<<<< HEAD
+=======
+	spin_lock_init(&poll_aen_lock);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	support_poll_for_event = 2;
 	support_device_change = 1;
 

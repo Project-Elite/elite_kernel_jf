@@ -100,6 +100,7 @@ const char *otg_state_string(enum usb_otg_state state)
 	}
 }
 EXPORT_SYMBOL(otg_state_string);
+<<<<<<< HEAD
 
 int otg_send_event(enum usb_otg_event event)
 {
@@ -115,3 +116,5 @@ int otg_send_event(enum usb_otg_event event)
 	return ret;
 }
 EXPORT_SYMBOL(otg_send_event);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

@@ -234,6 +234,10 @@ struct comedi_device_file_info {
 	struct comedi_device *device;
 	struct comedi_subdevice *read_subdevice;
 	struct comedi_subdevice *write_subdevice;
+<<<<<<< HEAD
+=======
+	struct device *hardware_device;
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 #ifdef CONFIG_COMEDI_DEBUG

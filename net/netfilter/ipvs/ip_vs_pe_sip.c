@@ -37,6 +37,7 @@ static int get_callid(const char *dptr, unsigned int dataoff,
 		if (ret > 0)
 			break;
 		if (!ret)
+<<<<<<< HEAD
 			return 0;
 		dataoff += *matchoff;
 	}
@@ -45,6 +46,12 @@ static int get_callid(const char *dptr, unsigned int dataoff,
 	if (!*matchlen)
 		return -EINVAL;
 
+=======
+			return -EINVAL;
+		dataoff += *matchoff;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Too large is useless */
 	if (*matchlen > IP_VS_PEDATA_MAXLEN)
 		return -EINVAL;

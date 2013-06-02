@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 config MTD_NAND_IDS
 	tristate "Include chip ids for known NAND devices."
 	depends on MTD
@@ -5,6 +6,8 @@ config MTD_NAND_IDS
 	  Useful for NAND drivers that do not use the NAND subsystem but
 	  still like to take advantage of the known chip information.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config MTD_NAND_ECC
 	tristate
 
@@ -122,6 +125,12 @@ config MTD_NAND_OMAP2
           Support for NAND flash on Texas Instruments OMAP2, OMAP3 and OMAP4
 	  platforms.
 
+<<<<<<< HEAD
+=======
+config MTD_NAND_IDS
+	tristate
+
+>>>>>>> remotes/linux2/linux-3.4.y
 config MTD_NAND_RICOH
 	tristate "Ricoh xD card reader"
 	default n

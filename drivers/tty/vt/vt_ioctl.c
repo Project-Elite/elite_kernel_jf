@@ -110,7 +110,20 @@ void vt_event_post(unsigned int event, unsigned int old, unsigned int new)
 		wake_up_interruptible(&vt_event_waitqueue);
 }
 
+<<<<<<< HEAD
 static void __vt_event_queue(struct vt_event_wait *vw)
+=======
+/**
+ *	vt_event_wait		-	wait for an event
+ *	@vw: our event
+ *
+ *	Waits for an event to occur which completes our vt_event_wait
+ *	structure. On return the structure has wv->done set to 1 for success
+ *	or 0 if some event such as a signal ended the wait.
+ */
+
+static void vt_event_wait(struct vt_event_wait *vw)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	unsigned long flags;
 	/* Prepare the event */
@@ -120,6 +133,7 @@ static void __vt_event_queue(struct vt_event_wait *vw)
 	spin_lock_irqsave(&vt_event_lock, flags);
 	list_add(&vw->list, &vt_events);
 	spin_unlock_irqrestore(&vt_event_lock, flags);
+<<<<<<< HEAD
 }
 
 static void __vt_event_wait(struct vt_event_wait *vw)
@@ -132,6 +146,10 @@ static void __vt_event_dequeue(struct vt_event_wait *vw)
 {
 	unsigned long flags;
 
+=======
+	/* Wait for it to pass */
+	wait_event_interruptible(vt_event_waitqueue, vw->done);
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Dequeue it */
 	spin_lock_irqsave(&vt_event_lock, flags);
 	list_del(&vw->list);
@@ -139,6 +157,7 @@ static void __vt_event_dequeue(struct vt_event_wait *vw)
 }
 
 /**
+<<<<<<< HEAD
  *	vt_event_wait		-	wait for an event
  *	@vw: our event
  *
@@ -155,6 +174,8 @@ static void vt_event_wait(struct vt_event_wait *vw)
 }
 
 /**
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  *	vt_event_wait_ioctl	-	event ioctl handler
  *	@arg: argument to ioctl
  *
@@ -194,6 +215,7 @@ int vt_waitactive(int n)
 {
 	struct vt_event_wait vw;
 	do {
+<<<<<<< HEAD
 		vw.event.event = VT_EVENT_SWITCH;
 		__vt_event_queue(&vw);
 		if (n == fg_console + 1) {
@@ -202,6 +224,12 @@ int vt_waitactive(int n)
 		}
 		__vt_event_wait(&vw);
 		__vt_event_dequeue(&vw);
+=======
+		if (n == fg_console + 1)
+			break;
+		vw.event.event = VT_EVENT_SWITCH;
+		vt_event_wait(&vw);
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (vw.done == 0)
 			return -EINTR;
 	} while (vw.event.newev != n);

@@ -290,6 +290,12 @@ static const struct hid_device_id hid_battery_quirks[] = {
 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_APPLE,
 			       USB_DEVICE_ID_APPLE_ALU_WIRELESS_2011_ANSI),
 	  HID_BATTERY_QUIRK_PERCENT | HID_BATTERY_QUIRK_FEATURE },
+<<<<<<< HEAD
+=======
+	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_APPLE,
+		USB_DEVICE_ID_APPLE_ALU_WIRELESS_ANSI),
+	  HID_BATTERY_QUIRK_PERCENT | HID_BATTERY_QUIRK_FEATURE },
+>>>>>>> remotes/linux2/linux-3.4.y
 	{}
 };
 
@@ -1201,9 +1207,12 @@ int hidinput_connect(struct hid_device *hid, unsigned int force)
 				 * UGCI) cram a lot of unrelated inputs into the
 				 * same interface. */
 				hidinput->report = report;
+<<<<<<< HEAD
 				if (hid->driver->input_register &&
 						hid->driver->input_register(hid, hidinput))
 					goto out_cleanup;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 				if (input_register_device(hidinput->input))
 					goto out_cleanup;
 				hidinput = NULL;
@@ -1218,10 +1227,13 @@ int hidinput_connect(struct hid_device *hid, unsigned int force)
 		goto out_unwind;
 	}
 
+<<<<<<< HEAD
 	if (hidinput && hid->driver->input_register &&
 			hid->driver->input_register(hid, hidinput))
 		goto out_cleanup;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (hidinput && input_register_device(hidinput->input))
 		goto out_cleanup;
 

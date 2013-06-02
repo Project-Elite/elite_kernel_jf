@@ -76,7 +76,10 @@ static inline int alarmtimer_callback_running(struct alarm *timer)
 }
 
 
+<<<<<<< HEAD
 /* Provide way to access the rtc device being used by alarmtimers */
 struct rtc_device *alarmtimer_get_rtcdev(void);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif

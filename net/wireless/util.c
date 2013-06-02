@@ -208,10 +208,13 @@ int cfg80211_validate_key_settings(struct cfg80211_registered_device *rdev,
 		if (params->key_len != WLAN_KEY_LEN_AES_CMAC)
 			return -EINVAL;
 		break;
+<<<<<<< HEAD
 	case WLAN_CIPHER_SUITE_SMS4:
 		if (params->key_len != WLAN_KEY_LEN_WAPI_SMS4)
 			return -EINVAL;
 		break;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	default:
 		/*
 		 * We don't know anything about this algorithm,
@@ -294,23 +297,38 @@ unsigned int ieee80211_get_hdrlen_from_skb(const struct sk_buff *skb)
 }
 EXPORT_SYMBOL(ieee80211_get_hdrlen_from_skb);
 
+<<<<<<< HEAD
 static int ieee80211_get_mesh_hdrlen(struct ieee80211s_hdr *meshhdr)
 {
 	int ae = meshhdr->flags & MESH_FLAGS_AE;
 	/* 7.1.3.5a.2 */
 	switch (ae) {
+=======
+unsigned int ieee80211_get_mesh_hdrlen(struct ieee80211s_hdr *meshhdr)
+{
+	int ae = meshhdr->flags & MESH_FLAGS_AE;
+	/* 802.11-2012, 8.2.4.7.3 */
+	switch (ae) {
+	default:
+>>>>>>> remotes/linux2/linux-3.4.y
 	case 0:
 		return 6;
 	case MESH_FLAGS_AE_A4:
 		return 12;
 	case MESH_FLAGS_AE_A5_A6:
 		return 18;
+<<<<<<< HEAD
 	case (MESH_FLAGS_AE_A4 | MESH_FLAGS_AE_A5_A6):
 		return 24;
 	default:
 		return 6;
 	}
 }
+=======
+	}
+}
+EXPORT_SYMBOL(ieee80211_get_mesh_hdrlen);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 int ieee80211_data_to_8023(struct sk_buff *skb, const u8 *addr,
 			   enum nl80211_iftype iftype)
@@ -358,6 +376,11 @@ int ieee80211_data_to_8023(struct sk_buff *skb, const u8 *addr,
 			/* make sure meshdr->flags is on the linear part */
 			if (!pskb_may_pull(skb, hdrlen + 1))
 				return -1;
+<<<<<<< HEAD
+=======
+			if (meshdr->flags & MESH_FLAGS_AE_A4)
+				return -1;
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (meshdr->flags & MESH_FLAGS_AE_A5_A6) {
 				skb_copy_bits(skb, hdrlen +
 					offsetof(struct ieee80211s_hdr, eaddr1),
@@ -382,6 +405,11 @@ int ieee80211_data_to_8023(struct sk_buff *skb, const u8 *addr,
 			/* make sure meshdr->flags is on the linear part */
 			if (!pskb_may_pull(skb, hdrlen + 1))
 				return -1;
+<<<<<<< HEAD
+=======
+			if (meshdr->flags & MESH_FLAGS_AE_A5_A6)
+				return -1;
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (meshdr->flags & MESH_FLAGS_AE_A4)
 				skb_copy_bits(skb, hdrlen +
 					offsetof(struct ieee80211s_hdr, eaddr1),
@@ -721,7 +749,11 @@ void cfg80211_upload_connect_keys(struct wireless_dev *wdev)
 	wdev->connect_keys = NULL;
 }
 
+<<<<<<< HEAD
 static void cfg80211_process_wdev_events(struct wireless_dev *wdev)
+=======
+void cfg80211_process_wdev_events(struct wireless_dev *wdev)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct cfg80211_event *ev;
 	unsigned long flags;
@@ -809,7 +841,11 @@ int cfg80211_change_iface(struct cfg80211_registered_device *rdev,
 	     ntype == NL80211_IFTYPE_P2P_CLIENT))
 		return -EBUSY;
 
+<<<<<<< HEAD
 	if (ntype != otype) {
+=======
+	if (ntype != otype && netif_running(dev)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		err = cfg80211_can_change_interface(rdev, dev->ieee80211_ptr,
 						    ntype);
 		if (err)
@@ -978,6 +1014,12 @@ int cfg80211_can_change_interface(struct cfg80211_registered_device *rdev,
 	}
 	mutex_unlock(&rdev->devlist_mtx);
 
+<<<<<<< HEAD
+=======
+	if (total == 1)
+		return 0;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	for (i = 0; i < rdev->wiphy.n_iface_combinations; i++) {
 		const struct ieee80211_iface_combination *c;
 		struct ieee80211_iface_limit *limits;
@@ -1055,6 +1097,10 @@ int ieee80211_get_ratemask(struct ieee80211_supported_band *sband,
 		if (!found)
 			return -EINVAL;
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * mask must have at least one bit set here since we
 	 * didn't accept a 0-length rates array nor allowed

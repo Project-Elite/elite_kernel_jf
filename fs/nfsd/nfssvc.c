@@ -11,6 +11,10 @@
 #include <linux/module.h>
 #include <linux/fs_struct.h>
 #include <linux/swap.h>
+<<<<<<< HEAD
+=======
+#include <linux/nsproxy.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <linux/sunrpc/stats.h>
 #include <linux/sunrpc/svcsock.h>
@@ -220,7 +224,11 @@ static int nfsd_startup(unsigned short port, int nrservs)
 	ret = nfsd_init_socks(port);
 	if (ret)
 		goto out_racache;
+<<<<<<< HEAD
 	ret = lockd_up();
+=======
+	ret = lockd_up(&init_net);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (ret)
 		goto out_racache;
 	ret = nfs4_state_start();
@@ -229,7 +237,11 @@ static int nfsd_startup(unsigned short port, int nrservs)
 	nfsd_up = true;
 	return 0;
 out_lockd:
+<<<<<<< HEAD
 	lockd_down();
+=======
+	lockd_down(&init_net);
+>>>>>>> remotes/linux2/linux-3.4.y
 out_racache:
 	nfsd_racache_shutdown();
 	return ret;
@@ -246,15 +258,22 @@ static void nfsd_shutdown(void)
 	if (!nfsd_up)
 		return;
 	nfs4_state_shutdown();
+<<<<<<< HEAD
 	lockd_down();
+=======
+	lockd_down(&init_net);
+>>>>>>> remotes/linux2/linux-3.4.y
 	nfsd_racache_shutdown();
 	nfsd_up = false;
 }
 
 static void nfsd_last_thread(struct svc_serv *serv, struct net *net)
 {
+<<<<<<< HEAD
 	/* When last nfsd thread exits we need to do some clean-up */
 	nfsd_serv = NULL;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	nfsd_shutdown();
 
 	svc_rpcb_cleanup(serv, net);
@@ -330,6 +349,12 @@ static int nfsd_get_default_max_blksize(void)
 
 int nfsd_create_serv(void)
 {
+<<<<<<< HEAD
+=======
+	int error;
+	struct net *net = current->nsproxy->net_ns;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	WARN_ON(!mutex_is_locked(&nfsd_mutex));
 	if (nfsd_serv) {
 		svc_get(nfsd_serv);
@@ -343,6 +368,15 @@ int nfsd_create_serv(void)
 	if (nfsd_serv == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	error = svc_bind(nfsd_serv, net);
+	if (error < 0) {
+		svc_destroy(nfsd_serv);
+		return error;
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	set_max_drc();
 	do_gettimeofday(&nfssvc_boot);		/* record boot time */
 	return 0;
@@ -373,6 +407,10 @@ int nfsd_set_nrthreads(int n, int *nthreads)
 	int i = 0;
 	int tot = 0;
 	int err = 0;
+<<<<<<< HEAD
+=======
+	struct net *net = &init_net;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	WARN_ON(!mutex_is_locked(&nfsd_mutex));
 
@@ -417,8 +455,12 @@ int nfsd_set_nrthreads(int n, int *nthreads)
 		if (err)
 			break;
 	}
+<<<<<<< HEAD
 	svc_destroy(nfsd_serv);
 
+=======
+	nfsd_destroy(net);
+>>>>>>> remotes/linux2/linux-3.4.y
 	return err;
 }
 
@@ -432,6 +474,10 @@ nfsd_svc(unsigned short port, int nrservs)
 {
 	int	error;
 	bool	nfsd_up_before;
+<<<<<<< HEAD
+=======
+	struct net *net = &init_net;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	mutex_lock(&nfsd_mutex);
 	dprintk("nfsd: creating service\n");
@@ -464,7 +510,11 @@ out_shutdown:
 	if (error < 0 && !nfsd_up_before)
 		nfsd_shutdown();
 out_destroy:
+<<<<<<< HEAD
 	svc_destroy(nfsd_serv);		/* Release server */
+=======
+	nfsd_destroy(net);		/* Release server */
+>>>>>>> remotes/linux2/linux-3.4.y
 out:
 	mutex_unlock(&nfsd_mutex);
 	return error;
@@ -547,9 +597,19 @@ nfsd(void *vrqstp)
 	nfsdstats.th_cnt --;
 
 out:
+<<<<<<< HEAD
 	/* Release the thread */
 	svc_exit_thread(rqstp);
 
+=======
+	rqstp->rq_server = NULL;
+
+	/* Release the thread */
+	svc_exit_thread(rqstp);
+
+	nfsd_destroy(&init_net);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Release module */
 	mutex_unlock(&nfsd_mutex);
 	module_put_and_exit(0);
@@ -637,7 +697,11 @@ nfsd_dispatch(struct svc_rqst *rqstp, __be32 *statp)
 	}
 
 	/* Store reply in cache. */
+<<<<<<< HEAD
 	nfsd_cache_update(rqstp, proc->pc_cachetype, statp + 1);
+=======
+	nfsd_cache_update(rqstp, rqstp->rq_cachetype, statp + 1);
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 1;
 }
 
@@ -659,9 +723,17 @@ int nfsd_pool_stats_open(struct inode *inode, struct file *file)
 int nfsd_pool_stats_release(struct inode *inode, struct file *file)
 {
 	int ret = seq_release(inode, file);
+<<<<<<< HEAD
 	mutex_lock(&nfsd_mutex);
 	/* this function really, really should have been called svc_put() */
 	svc_destroy(nfsd_serv);
+=======
+	struct net *net = &init_net;
+
+	mutex_lock(&nfsd_mutex);
+	/* this function really, really should have been called svc_put() */
+	nfsd_destroy(net);
+>>>>>>> remotes/linux2/linux-3.4.y
 	mutex_unlock(&nfsd_mutex);
 	return ret;
 }

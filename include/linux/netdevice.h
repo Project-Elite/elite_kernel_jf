@@ -232,9 +232,15 @@ struct netdev_hw_addr {
 #define NETDEV_HW_ADDR_T_SLAVE		3
 #define NETDEV_HW_ADDR_T_UNICAST	4
 #define NETDEV_HW_ADDR_T_MULTICAST	5
+<<<<<<< HEAD
 	bool			synced;
 	bool			global_use;
 	int			refcount;
+=======
+	bool			global_use;
+	int			refcount;
+	int			synced;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct rcu_head		rcu_head;
 };
 
@@ -1279,6 +1285,11 @@ struct net_device {
 	/* for setting kernel sock attribute on TCP connection setup */
 #define GSO_MAX_SIZE		65536
 	unsigned int		gso_max_size;
+<<<<<<< HEAD
+=======
+#define GSO_MAX_SEGS		65535
+	u16			gso_max_segs;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #ifdef CONFIG_DCB
 	/* Data Center Bridging netlink ops */
@@ -1494,6 +1505,11 @@ struct packet_type {
 	struct sk_buff		**(*gro_receive)(struct sk_buff **head,
 					       struct sk_buff *skb);
 	int			(*gro_complete)(struct sk_buff *skb);
+<<<<<<< HEAD
+=======
+	bool			(*id_match)(struct packet_type *ptype,
+					    struct sock *sk);
+>>>>>>> remotes/linux2/linux-3.4.y
 	void			*af_packet_priv;
 	struct list_head	list;
 };

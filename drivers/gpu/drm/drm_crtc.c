@@ -1028,15 +1028,25 @@ void drm_mode_config_cleanup(struct drm_device *dev)
 		fb->funcs->destroy(fb);
 	}
 
+<<<<<<< HEAD
 	list_for_each_entry_safe(crtc, ct, &dev->mode_config.crtc_list, head) {
 		crtc->funcs->destroy(crtc);
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	list_for_each_entry_safe(plane, plt, &dev->mode_config.plane_list,
 				 head) {
 		plane->funcs->destroy(plane);
 	}
 
+<<<<<<< HEAD
+=======
+	list_for_each_entry_safe(crtc, ct, &dev->mode_config.crtc_list, head) {
+		crtc->funcs->destroy(crtc);
+	}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	idr_remove_all(&dev->mode_config.crtc_idr);
 	idr_destroy(&dev->mode_config.crtc_idr);
 }
@@ -1981,7 +1991,11 @@ int drm_mode_cursor_ioctl(struct drm_device *dev,
 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (!req->flags)
+=======
+	if (!req->flags || (~DRM_MODE_CURSOR_FLAGS & req->flags))
+>>>>>>> remotes/linux2/linux-3.4.y
 		return -EINVAL;
 
 	mutex_lock(&dev->mode_config.mutex);
@@ -2023,7 +2037,11 @@ uint32_t drm_mode_legacy_fb_format(uint32_t bpp, uint32_t depth)
 
 	switch (bpp) {
 	case 8:
+<<<<<<< HEAD
 		fmt = DRM_FORMAT_RGB332;
+=======
+		fmt = DRM_FORMAT_C8;
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	case 16:
 		if (depth == 15)
@@ -3409,6 +3427,10 @@ void drm_fb_get_bpp_depth(uint32_t format, unsigned int *depth,
 			  int *bpp)
 {
 	switch (format) {
+<<<<<<< HEAD
+=======
+	case DRM_FORMAT_C8:
+>>>>>>> remotes/linux2/linux-3.4.y
 	case DRM_FORMAT_RGB332:
 	case DRM_FORMAT_BGR233:
 		*depth = 8;

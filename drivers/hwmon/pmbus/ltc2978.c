@@ -59,10 +59,17 @@ enum chips { ltc2978, ltc3880 };
 struct ltc2978_data {
 	enum chips id;
 	int vin_min, vin_max;
+<<<<<<< HEAD
 	int temp_min, temp_max;
 	int vout_min[8], vout_max[8];
 	int iout_max[2];
 	int temp2_max[2];
+=======
+	int temp_min, temp_max[2];
+	int vout_min[8], vout_max[8];
+	int iout_max[2];
+	int temp2_max;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct pmbus_driver_info info;
 };
 
@@ -113,9 +120,16 @@ static int ltc2978_read_word_data_common(struct i2c_client *client, int page,
 		ret = pmbus_read_word_data(client, page,
 					   LTC2978_MFR_TEMPERATURE_PEAK);
 		if (ret >= 0) {
+<<<<<<< HEAD
 			if (lin11_to_val(ret) > lin11_to_val(data->temp_max))
 				data->temp_max = ret;
 			ret = data->temp_max;
+=======
+			if (lin11_to_val(ret)
+			    > lin11_to_val(data->temp_max[page]))
+				data->temp_max[page] = ret;
+			ret = data->temp_max[page];
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 		break;
 	case PMBUS_VIRT_RESET_VOUT_HISTORY:
@@ -204,10 +218,16 @@ static int ltc3880_read_word_data(struct i2c_client *client, int page, int reg)
 		ret = pmbus_read_word_data(client, page,
 					   LTC3880_MFR_TEMPERATURE2_PEAK);
 		if (ret >= 0) {
+<<<<<<< HEAD
 			if (lin11_to_val(ret)
 			    > lin11_to_val(data->temp2_max[page]))
 				data->temp2_max[page] = ret;
 			ret = data->temp2_max[page];
+=======
+			if (lin11_to_val(ret) > lin11_to_val(data->temp2_max))
+				data->temp2_max = ret;
+			ret = data->temp2_max;
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 		break;
 	case PMBUS_VIRT_READ_VIN_MIN:
@@ -248,11 +268,19 @@ static int ltc2978_write_word_data(struct i2c_client *client, int page,
 
 	switch (reg) {
 	case PMBUS_VIRT_RESET_IOUT_HISTORY:
+<<<<<<< HEAD
 		data->iout_max[page] = 0x7fff;
 		ret = ltc2978_clear_peaks(client, page, data->id);
 		break;
 	case PMBUS_VIRT_RESET_TEMP2_HISTORY:
 		data->temp2_max[page] = 0x7fff;
+=======
+		data->iout_max[page] = 0x7c00;
+		ret = ltc2978_clear_peaks(client, page, data->id);
+		break;
+	case PMBUS_VIRT_RESET_TEMP2_HISTORY:
+		data->temp2_max = 0x7c00;
+>>>>>>> remotes/linux2/linux-3.4.y
 		ret = ltc2978_clear_peaks(client, page, data->id);
 		break;
 	case PMBUS_VIRT_RESET_VOUT_HISTORY:
@@ -262,12 +290,20 @@ static int ltc2978_write_word_data(struct i2c_client *client, int page,
 		break;
 	case PMBUS_VIRT_RESET_VIN_HISTORY:
 		data->vin_min = 0x7bff;
+<<<<<<< HEAD
 		data->vin_max = 0;
+=======
+		data->vin_max = 0x7c00;
+>>>>>>> remotes/linux2/linux-3.4.y
 		ret = ltc2978_clear_peaks(client, page, data->id);
 		break;
 	case PMBUS_VIRT_RESET_TEMP_HISTORY:
 		data->temp_min = 0x7bff;
+<<<<<<< HEAD
 		data->temp_max = 0x7fff;
+=======
+		data->temp_max[page] = 0x7c00;
+>>>>>>> remotes/linux2/linux-3.4.y
 		ret = ltc2978_clear_peaks(client, page, data->id);
 		break;
 	default:
@@ -321,12 +357,23 @@ static int ltc2978_probe(struct i2c_client *client,
 	info = &data->info;
 	info->write_word_data = ltc2978_write_word_data;
 
+<<<<<<< HEAD
 	data->vout_min[0] = 0xffff;
 	data->vin_min = 0x7bff;
 	data->temp_min = 0x7bff;
 	data->temp_max = 0x7fff;
 
 	switch (id->driver_data) {
+=======
+	data->vin_min = 0x7bff;
+	data->vin_max = 0x7c00;
+	data->temp_min = 0x7bff;
+	for (i = 0; i < ARRAY_SIZE(data->temp_max); i++)
+		data->temp_max[i] = 0x7c00;
+	data->temp2_max = 0x7c00;
+
+	switch (data->id) {
+>>>>>>> remotes/linux2/linux-3.4.y
 	case ltc2978:
 		info->read_word_data = ltc2978_read_word_data;
 		info->pages = 8;
@@ -336,7 +383,10 @@ static int ltc2978_probe(struct i2c_client *client,
 		for (i = 1; i < 8; i++) {
 			info->func[i] = PMBUS_HAVE_VOUT
 			  | PMBUS_HAVE_STATUS_VOUT;
+<<<<<<< HEAD
 			data->vout_min[i] = 0xffff;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 		break;
 	case ltc3880:
@@ -352,11 +402,21 @@ static int ltc2978_probe(struct i2c_client *client,
 		  | PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT
 		  | PMBUS_HAVE_POUT
 		  | PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP;
+<<<<<<< HEAD
 		data->vout_min[1] = 0xffff;
+=======
+		data->iout_max[0] = 0x7c00;
+		data->iout_max[1] = 0x7c00;
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	default:
 		return -ENODEV;
 	}
+<<<<<<< HEAD
+=======
+	for (i = 0; i < info->pages; i++)
+		data->vout_min[i] = 0xffff;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return pmbus_do_probe(client, id, info);
 }

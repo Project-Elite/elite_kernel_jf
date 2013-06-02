@@ -158,7 +158,11 @@ static int mwifiex_pcie_suspend(struct pci_dev *pdev, pm_message_t state)
 
 	if (pdev) {
 		card = (struct pcie_service_card *) pci_get_drvdata(pdev);
+<<<<<<< HEAD
 		if (!card || card->adapter) {
+=======
+		if (!card || !card->adapter) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			pr_err("Card or adapter structure is not valid\n");
 			return 0;
 		}
@@ -288,7 +292,11 @@ static int mwifiex_pm_wakeup_card(struct mwifiex_adapter *adapter)
 		i++;
 		usleep_range(10, 20);
 		/* 50ms max wait */
+<<<<<<< HEAD
 		if (i == 50000)
+=======
+		if (i == 5000)
+>>>>>>> remotes/linux2/linux-3.4.y
 			break;
 	}
 
@@ -1828,9 +1836,15 @@ static void mwifiex_pcie_cleanup(struct mwifiex_adapter *adapter)
 	if (pdev) {
 		pci_iounmap(pdev, card->pci_mmap);
 		pci_iounmap(pdev, card->pci_mmap1);
+<<<<<<< HEAD
 
 		pci_release_regions(pdev);
 		pci_disable_device(pdev);
+=======
+		pci_disable_device(pdev);
+		pci_release_region(pdev, 2);
+		pci_release_region(pdev, 0);
+>>>>>>> remotes/linux2/linux-3.4.y
 		pci_set_drvdata(pdev, NULL);
 	}
 }

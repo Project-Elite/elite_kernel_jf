@@ -16,7 +16,10 @@
 #include <linux/sched.h>
 #include "isdnloop.h"
 
+<<<<<<< HEAD
 static char *revision = "$Revision: 1.11.6.7 $";
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static char *isdnloop_id = "loop0";
 
 MODULE_DESCRIPTION("ISDN4Linux: Pseudo Driver that simulates an ISDN card");
@@ -1494,6 +1497,7 @@ isdnloop_addcard(char *id1)
 static int __init
 isdnloop_init(void)
 {
+<<<<<<< HEAD
 	char *p;
 	char rev[10];
 
@@ -1505,6 +1509,8 @@ isdnloop_init(void)
 		strcpy(rev, " ??? ");
 	printk(KERN_NOTICE "isdnloop-ISDN-driver Rev%s\n", rev);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (isdnloop_id)
 		return (isdnloop_addcard(isdnloop_id));
 

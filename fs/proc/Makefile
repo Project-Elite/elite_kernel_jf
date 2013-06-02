@@ -28,4 +28,7 @@ proc-$(CONFIG_PROC_VMCORE)	+= vmcore.o
 proc-$(CONFIG_PROC_DEVICETREE)	+= proc_devtree.o
 proc-$(CONFIG_PRINTK)	+= kmsg.o
 proc-$(CONFIG_PROC_PAGE_MONITOR)	+= page.o
+<<<<<<< HEAD
 proc-$(CONFIG_PROC_AVC) += proc_avc.o
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

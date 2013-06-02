@@ -50,7 +50,10 @@ struct dma_pool {		/* the pool */
 	size_t allocation;
 	size_t boundary;
 	char name[32];
+<<<<<<< HEAD
 	wait_queue_head_t waitq;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct list_head pools;
 };
 
@@ -62,8 +65,11 @@ struct dma_page {		/* cacheable header for 'allocation' bytes */
 	unsigned int offset;
 };
 
+<<<<<<< HEAD
 #define	POOL_TIMEOUT_JIFFIES	((100 /* msec */ * HZ) / 1000)
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static DEFINE_MUTEX(pools_lock);
 
 static ssize_t
@@ -172,7 +178,10 @@ struct dma_pool *dma_pool_create(const char *name, struct device *dev,
 	retval->size = size;
 	retval->boundary = boundary;
 	retval->allocation = allocation;
+<<<<<<< HEAD
 	init_waitqueue_head(&retval->waitq);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (dev) {
 		int ret;
@@ -227,7 +236,10 @@ static struct dma_page *pool_alloc_page(struct dma_pool *pool, gfp_t mem_flags)
 		memset(page->vaddr, POOL_POISON_FREED, pool->allocation);
 #endif
 		pool_initialise_page(pool, page);
+<<<<<<< HEAD
 		list_add(&page->page_list, &pool->page_list);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		page->in_use = 0;
 		page->offset = 0;
 	} else {
@@ -315,11 +327,15 @@ void *dma_pool_alloc(struct dma_pool *pool, gfp_t mem_flags,
 	might_sleep_if(mem_flags & __GFP_WAIT);
 
 	spin_lock_irqsave(&pool->lock, flags);
+<<<<<<< HEAD
  restart:
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	list_for_each_entry(page, &pool->page_list, page_list) {
 		if (page->offset < pool->allocation)
 			goto ready;
 	}
+<<<<<<< HEAD
 	page = pool_alloc_page(pool, GFP_ATOMIC);
 	if (!page) {
 		if (mem_flags & __GFP_WAIT) {
@@ -339,6 +355,19 @@ void *dma_pool_alloc(struct dma_pool *pool, gfp_t mem_flags,
 		goto done;
 	}
 
+=======
+
+	/* pool_alloc_page() might sleep, so temporarily drop &pool->lock */
+	spin_unlock_irqrestore(&pool->lock, flags);
+
+	page = pool_alloc_page(pool, mem_flags);
+	if (!page)
+		return NULL;
+
+	spin_lock_irqsave(&pool->lock, flags);
+
+	list_add(&page->page_list, &pool->page_list);
+>>>>>>> remotes/linux2/linux-3.4.y
  ready:
 	page->in_use++;
 	offset = page->offset;
@@ -348,7 +377,10 @@ void *dma_pool_alloc(struct dma_pool *pool, gfp_t mem_flags,
 #ifdef	DMAPOOL_DEBUG
 	memset(retval, POOL_POISON_ALLOCATED, pool->size);
 #endif
+<<<<<<< HEAD
  done:
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	spin_unlock_irqrestore(&pool->lock, flags);
 	return retval;
 }
@@ -435,8 +467,11 @@ void dma_pool_free(struct dma_pool *pool, void *vaddr, dma_addr_t dma)
 	page->in_use--;
 	*(int *)vaddr = page->offset;
 	page->offset = offset;
+<<<<<<< HEAD
 	if (waitqueue_active(&pool->waitq))
 		wake_up_locked(&pool->waitq);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * Resist a temptation to do
 	 *    if (!is_page_busy(page)) pool_free_page(pool, page);

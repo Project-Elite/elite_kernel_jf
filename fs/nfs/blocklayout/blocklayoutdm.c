@@ -55,7 +55,12 @@ static void dev_remove(struct net *net, dev_t dev)
 
 	bl_pipe_msg.bl_wq = &nn->bl_wq;
 	memset(msg, 0, sizeof(*msg));
+<<<<<<< HEAD
 	msg->data = kzalloc(1 + sizeof(bl_umount_request), GFP_NOFS);
+=======
+	msg->len = sizeof(bl_msg) + bl_msg.totallen;
+	msg->data = kzalloc(msg->len, GFP_NOFS);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!msg->data)
 		goto out;
 
@@ -66,7 +71,10 @@ static void dev_remove(struct net *net, dev_t dev)
 	memcpy(msg->data, &bl_msg, sizeof(bl_msg));
 	dataptr = (uint8_t *) msg->data;
 	memcpy(&dataptr[sizeof(bl_msg)], &bl_umount_request, sizeof(bl_umount_request));
+<<<<<<< HEAD
 	msg->len = sizeof(bl_msg) + bl_msg.totallen;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	add_wait_queue(&nn->bl_wq, &wq);
 	if (rpc_queue_upcall(nn->bl_device_pipe, msg) < 0) {

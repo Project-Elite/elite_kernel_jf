@@ -31,9 +31,15 @@
 #include <linux/random.h>
 #include <linux/hw_breakpoint.h>
 #include <linux/cpuidle.h>
+<<<<<<< HEAD
 #include <linux/console.h>
 
 #include <asm/cacheflush.h>
+=======
+
+#include <asm/cacheflush.h>
+#include <asm/leds.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <asm/processor.h>
 #include <asm/thread_notify.h>
 #include <asm/stacktrace.h>
@@ -60,6 +66,7 @@ extern void setup_mm_for_reboot(void);
 
 static volatile int hlt_counter;
 
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 void arch_trigger_all_cpu_backtrace(void)
 {
@@ -72,6 +79,8 @@ void arch_trigger_all_cpu_backtrace(void)
 }
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 void disable_hlt(void)
 {
 	hlt_counter++;
@@ -104,6 +113,7 @@ __setup("hlt", hlt_setup);
 extern void call_with_stack(void (*fn)(void *), void *arg, void *sp);
 typedef void (*phys_reset_t)(unsigned long);
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARM_FLUSH_CONSOLE_ON_RESTART
 void arm_machine_flush_console(void)
 {
@@ -129,6 +139,8 @@ void arm_machine_flush_console(void)
 }
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * A temporary stack to use for CPU reset. This is static so that we
  * don't clobber it with the identity mapping. When running with this
@@ -154,9 +166,12 @@ static void __soft_restart(void *addr)
 	/* Push out any further dirty data, and ensure cache is empty */
 	flush_cache_all();
 
+<<<<<<< HEAD
 	/* Push out the dirty data from external caches */
 	outer_disable();
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* Switch to the identity mapping. */
 	phys_reset = (phys_reset_t)(unsigned long)virt_to_phys(cpu_reset);
 	phys_reset((unsigned long)addr);
@@ -221,8 +236,12 @@ EXPORT_SYMBOL_GPL(cpu_idle_wait);
  * This is our default idle handler.
  */
 
+<<<<<<< HEAD
 extern void arch_idle(void);
 void (*arm_pm_idle)(void) = arch_idle;
+=======
+void (*arm_pm_idle)(void);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static void default_idle(void)
 {
@@ -236,10 +255,13 @@ static void default_idle(void)
 void (*pm_idle)(void) = default_idle;
 EXPORT_SYMBOL(pm_idle);
 
+<<<<<<< HEAD
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 extern void could_cswap(void);
 #endif /* CONFIG_ZRAM_FOR_ANDROID */
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * The idle thread, has rather strange semantics for calling pm_idle,
  * but this is what x86 does and we need to do the same, so that
@@ -252,10 +274,22 @@ void cpu_idle(void)
 
 	/* endless idle loop with no priority at all */
 	while (1) {
+<<<<<<< HEAD
 		idle_notifier_call_chain(IDLE_START);
 		tick_nohz_idle_enter();
 		rcu_idle_enter();
 		while (!need_resched()) {
+=======
+		tick_nohz_idle_enter();
+		rcu_idle_enter();
+		leds_event(led_idle_start);
+		while (!need_resched()) {
+#ifdef CONFIG_HOTPLUG_CPU
+			if (cpu_is_offline(smp_processor_id()))
+				cpu_die();
+#endif
+
+>>>>>>> remotes/linux2/linux-3.4.y
 			/*
 			 * We need to disable interrupts here
 			 * to ensure we don't miss a wakeup call.
@@ -264,11 +298,14 @@ void cpu_idle(void)
 #ifdef CONFIG_PL310_ERRATA_769419
 			wmb();
 #endif
+<<<<<<< HEAD
 
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 			could_cswap();
 #endif /* CONFIG_ZRAM_FOR_ANDROID */
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (hlt_counter) {
 				local_irq_enable();
 				cpu_relax();
@@ -285,6 +322,7 @@ void cpu_idle(void)
 			} else
 				local_irq_enable();
 		}
+<<<<<<< HEAD
 		rcu_idle_exit();
 		tick_nohz_idle_exit();
 		idle_notifier_call_chain(IDLE_END);
@@ -293,6 +331,12 @@ void cpu_idle(void)
 		if (cpu_is_offline(smp_processor_id()))
 			cpu_die();
 #endif
+=======
+		leds_event(led_idle_end);
+		rcu_idle_exit();
+		tick_nohz_idle_exit();
+		schedule_preempt_disabled();
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 }
 
@@ -308,6 +352,7 @@ __setup("reboot=", reboot_setup);
 
 void machine_shutdown(void)
 {
+<<<<<<< HEAD
 	preempt_disable();
 #ifdef CONFIG_SMP
 	/*
@@ -319,6 +364,9 @@ void machine_shutdown(void)
 	 */
 	preempt_disable();
 
+=======
+#ifdef CONFIG_SMP
+>>>>>>> remotes/linux2/linux-3.4.y
 	smp_send_stop();
 #endif
 }
@@ -326,6 +374,10 @@ void machine_shutdown(void)
 void machine_halt(void)
 {
 	machine_shutdown();
+<<<<<<< HEAD
+=======
+	local_irq_disable();
+>>>>>>> remotes/linux2/linux-3.4.y
 	while (1);
 }
 
@@ -340,10 +392,13 @@ void machine_restart(char *cmd)
 {
 	machine_shutdown();
 
+<<<<<<< HEAD
 	/* Flush the console to make sure all the relevant messages make it
 	 * out to the console drivers */
 	arm_machine_flush_console();
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	arm_pm_restart(reboot_mode, cmd);
 
 	/* Give a grace period for failure to restart of 1s */
@@ -351,6 +406,7 @@ void machine_restart(char *cmd)
 
 	/* Whoops - the platform was unable to reboot. Tell the user! */
 	printk("Reboot failed -- System halted\n");
+<<<<<<< HEAD
 	while (1);
 }
 
@@ -425,17 +481,26 @@ static void show_extra_register_data(struct pt_regs *regs, int nbytes)
 	set_fs(fs);
 }
 
+=======
+	local_irq_disable();
+	while (1);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 void __show_regs(struct pt_regs *regs)
 {
 	unsigned long flags;
 	char buf[64];
 
+<<<<<<< HEAD
 #ifdef CONFIG_LGE_CRASH_HANDLER
 #ifdef CONFIG_CPU_CP15_MMU
 	unsigned int c1, c2;
 #endif
 	set_crash_store_enable();
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	printk("CPU: %d    %s  (%s %.*s)\n",
 		raw_smp_processor_id(), print_tainted(),
 		init_utsname()->release,
@@ -443,11 +508,15 @@ void __show_regs(struct pt_regs *regs)
 		init_utsname()->version);
 	print_symbol("PC is at %s\n", instruction_pointer(regs));
 	print_symbol("LR is at %s\n", regs->ARM_lr);
+<<<<<<< HEAD
 #ifdef CONFIG_LGE_CRASH_HANDLER
 	printk("pc : <%08lx>    lr : <%08lx>    psr: %08lx\n"
 #else
 	printk("pc : [<%08lx>]    lr : [<%08lx>]    psr: %08lx\n"
 #endif
+=======
+	printk("pc : [<%08lx>]    lr : [<%08lx>]    psr: %08lx\n"
+>>>>>>> remotes/linux2/linux-3.4.y
 	       "sp : %08lx  ip : %08lx  fp : %08lx\n",
 		regs->ARM_pc, regs->ARM_lr, regs->ARM_cpsr,
 		regs->ARM_sp, regs->ARM_ip, regs->ARM_fp);
@@ -460,9 +529,12 @@ void __show_regs(struct pt_regs *regs)
 	printk("r3 : %08lx  r2 : %08lx  r1 : %08lx  r0 : %08lx\n",
 		regs->ARM_r3, regs->ARM_r2,
 		regs->ARM_r1, regs->ARM_r0);
+<<<<<<< HEAD
 #ifdef CONFIG_LGE_CRASH_HANDLER
 	set_crash_store_disable();
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	flags = regs->ARM_cpsr;
 	buf[0] = flags & PSR_N_BIT ? 'N' : 'n';
@@ -490,15 +562,19 @@ void __show_regs(struct pt_regs *regs)
 			    : "=r" (transbase), "=r" (dac));
 			snprintf(buf, sizeof(buf), "  Table: %08x  DAC: %08x",
 			  	transbase, dac);
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_CP15_MMU) && defined(CONFIG_LGE_CRASH_HANDLER)
 			c1 = transbase;
 			c2 = dac;
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 #endif
 		asm("mrc p15, 0, %0, c1, c0\n" : "=r" (ctrl));
 
 		printk("Control: %08x%s\n", ctrl, buf);
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_CP15_MMU) && defined(CONFIG_LGE_CRASH_HANDLER)
 		lge_save_ctx(regs, ctrl, c1, c2);
 #endif
@@ -506,6 +582,10 @@ void __show_regs(struct pt_regs *regs)
 #endif
 
 	show_extra_register_data(regs, 128);
+=======
+	}
+#endif
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 void show_regs(struct pt_regs * regs)

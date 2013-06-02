@@ -2343,6 +2343,7 @@ repeat:
 	if (page)
 		goto found;
 
+<<<<<<< HEAD
 retry:
 	page = __page_cache_alloc(gfp_mask & ~gfp_notmask);
 	if (!page)
@@ -2354,6 +2355,11 @@ retry:
 		goto retry;
 	}
 
+=======
+	page = __page_cache_alloc(gfp_mask & ~gfp_notmask);
+	if (!page)
+		return NULL;
+>>>>>>> remotes/linux2/linux-3.4.y
 	status = add_to_page_cache_lru(page, mapping, index,
 						GFP_KERNEL & ~gfp_notmask);
 	if (unlikely(status)) {

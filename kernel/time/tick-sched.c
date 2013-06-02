@@ -20,17 +20,23 @@
 #include <linux/profile.h>
 #include <linux/sched.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/rq_stats.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <asm/irq_regs.h>
 
 #include "tick-internal.h"
 
+<<<<<<< HEAD
 
 struct rq_data rq_info;
 struct workqueue_struct *rq_wq;
 spinlock_t rq_lock;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Per cpu nohz control structure
  */
@@ -151,6 +157,10 @@ static void tick_nohz_update_jiffies(ktime_t now)
 	tick_do_update_jiffies64(now);
 	local_irq_restore(flags);
 
+<<<<<<< HEAD
+=======
+	calc_load_exit_idle();
+>>>>>>> remotes/linux2/linux-3.4.y
 	touch_softlockup_watchdog();
 }
 
@@ -407,6 +417,10 @@ static void tick_nohz_stop_sched_tick(struct tick_sched *ts)
 		 */
 		if (!ts->tick_stopped) {
 			select_nohz_load_balancer(1);
+<<<<<<< HEAD
+=======
+			calc_load_enter_idle();
+>>>>>>> remotes/linux2/linux-3.4.y
 
 			ts->idle_tick = hrtimer_get_expires(&ts->sched_timer);
 			ts->tick_stopped = 1;
@@ -447,6 +461,10 @@ static void tick_nohz_stop_sched_tick(struct tick_sched *ts)
 out:
 	ts->next_jiffies = next_jiffies;
 	ts->last_jiffies = last_jiffies;
+<<<<<<< HEAD
+=======
+	ts->sleep_length = ktime_sub(dev->next_event, now);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /**
@@ -499,12 +517,24 @@ void tick_nohz_idle_enter(void)
  */
 void tick_nohz_irq_exit(void)
 {
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct tick_sched *ts = &__get_cpu_var(tick_cpu_sched);
 
 	if (!ts->inidle)
 		return;
 
+<<<<<<< HEAD
 	tick_nohz_stop_sched_tick(ts);
+=======
+	local_irq_save(flags);
+
+	tick_nohz_stop_sched_tick(ts);
+
+	local_irq_restore(flags);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /**
@@ -515,8 +545,13 @@ void tick_nohz_irq_exit(void)
 ktime_t tick_nohz_get_sleep_length(void)
 {
 	struct tick_sched *ts = &__get_cpu_var(tick_cpu_sched);
+<<<<<<< HEAD
 	struct clock_event_device *dev = __get_cpu_var(tick_cpu_device).evtdev;
 	return ktime_sub(dev->next_event, ts->idle_entrytime);
+=======
+
+	return ts->sleep_length;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static void tick_nohz_restart(struct tick_sched *ts, ktime_t now)
@@ -596,6 +631,10 @@ void tick_nohz_idle_exit(void)
 		account_idle_ticks(ticks);
 #endif
 
+<<<<<<< HEAD
+=======
+	calc_load_exit_idle();
+>>>>>>> remotes/linux2/linux-3.4.y
 	touch_softlockup_watchdog();
 	/*
 	 * Cancel the scheduled timer and restore the tick
@@ -765,6 +804,7 @@ void tick_check_idle(int cpu)
  * High resolution timer specific code
  */
 #ifdef CONFIG_HIGH_RES_TIMERS
+<<<<<<< HEAD
 static void update_rq_stats(void)
 {
 	unsigned long jiffy_gap = 0;
@@ -809,6 +849,8 @@ static void wakeup_user(void)
 		queue_work(rq_wq, &rq_info.def_timer_work);
 	}
 }
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * We rearm the timer until we get disabled by the idle code.
  * Called with interrupts disabled and timer->base->cpu_base->lock held.
@@ -856,6 +898,7 @@ static enum hrtimer_restart tick_sched_timer(struct hrtimer *timer)
 		}
 		update_process_times(user_mode(regs));
 		profile_tick(CPU_PROFILING);
+<<<<<<< HEAD
 
 		if ((rq_info.init == 1) && (tick_do_timer_cpu == cpu)) {
 
@@ -869,6 +912,8 @@ static enum hrtimer_restart tick_sched_timer(struct hrtimer *timer)
 			 */
 			wakeup_user();
 		}
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	hrtimer_forward(timer, now, tick_period);
@@ -920,7 +965,11 @@ void tick_cancel_sched_timer(int cpu)
 		hrtimer_cancel(&ts->sched_timer);
 # endif
 
+<<<<<<< HEAD
 	ts->nohz_mode = NOHZ_MODE_INACTIVE;
+=======
+	memset(ts, 0, sizeof(*ts));
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 #endif
 

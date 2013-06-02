@@ -251,8 +251,12 @@ static void ip_expire(unsigned long arg)
 		if (!head->dev)
 			goto out_rcu_unlock;
 
+<<<<<<< HEAD
 		/* skb dst is stale, drop it, and perform route lookup again */
 		skb_dst_drop(head);
+=======
+		/* skb has no dst, perform route lookup again */
+>>>>>>> remotes/linux2/linux-3.4.y
 		iph = ip_hdr(head);
 		err = ip_route_input_noref(head, iph->daddr, iph->saddr,
 					   iph->tos, head->dev);
@@ -295,6 +299,7 @@ static inline struct ipq *ip_find(struct net *net, struct iphdr *iph, u32 user)
 	hash = ipqhashfn(iph->id, iph->saddr, iph->daddr, iph->protocol);
 
 	q = inet_frag_find(&net->ipv4.frags, &ip4_frags, &arg, hash);
+<<<<<<< HEAD
 	if (q == NULL)
 		goto out_nomem;
 
@@ -303,6 +308,13 @@ static inline struct ipq *ip_find(struct net *net, struct iphdr *iph, u32 user)
 out_nomem:
 	LIMIT_NETDEBUG(KERN_ERR pr_fmt("ip_frag_create: no memory left !\n"));
 	return NULL;
+=======
+	if (IS_ERR_OR_NULL(q)) {
+		inet_frag_maybe_warn_overflow(q, pr_fmt());
+		return NULL;
+	}
+	return container_of(q, struct ipq, q);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /* Is the fragment too far ahead to be part of ipq? */
@@ -520,8 +532,21 @@ found:
 		qp->q.last_in |= INET_FRAG_FIRST_IN;
 
 	if (qp->q.last_in == (INET_FRAG_FIRST_IN | INET_FRAG_LAST_IN) &&
+<<<<<<< HEAD
 	    qp->q.meat == qp->q.len)
 		return ip_frag_reasm(qp, prev, dev);
+=======
+	    qp->q.meat == qp->q.len) {
+		unsigned long orefdst = skb->_skb_refdst;
+
+		skb->_skb_refdst = 0UL;
+		err = ip_frag_reasm(qp, prev, dev);
+		skb->_skb_refdst = orefdst;
+		return err;
+	}
+
+	skb_dst_drop(skb);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	write_lock(&ip4_frags.lock);
 	list_move_tail(&qp->q.lru_list, &qp->q.net->lru_list);
@@ -685,12 +710,17 @@ EXPORT_SYMBOL(ip_defrag);
 
 struct sk_buff *ip_check_defrag(struct sk_buff *skb, u32 user)
 {
+<<<<<<< HEAD
 	const struct iphdr *iph;
+=======
+	struct iphdr iph;
+>>>>>>> remotes/linux2/linux-3.4.y
 	u32 len;
 
 	if (skb->protocol != htons(ETH_P_IP))
 		return skb;
 
+<<<<<<< HEAD
 	if (!pskb_may_pull(skb, sizeof(struct iphdr)))
 		return skb;
 
@@ -707,6 +737,23 @@ struct sk_buff *ip_check_defrag(struct sk_buff *skb, u32 user)
 	if (ip_is_fragment(ip_hdr(skb))) {
 		skb = skb_share_check(skb, GFP_ATOMIC);
 		if (skb) {
+=======
+	if (!skb_copy_bits(skb, 0, &iph, sizeof(iph)))
+		return skb;
+
+	if (iph.ihl < 5 || iph.version != 4)
+		return skb;
+
+	len = ntohs(iph.tot_len);
+	if (skb->len < len || len < (iph.ihl * 4))
+		return skb;
+
+	if (ip_is_fragment(&iph)) {
+		skb = skb_share_check(skb, GFP_ATOMIC);
+		if (skb) {
+			if (!pskb_may_pull(skb, iph.ihl*4))
+				return skb;
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (pskb_trim_rcsum(skb, len))
 				return skb;
 			memset(IPCB(skb), 0, sizeof(struct inet_skb_parm));

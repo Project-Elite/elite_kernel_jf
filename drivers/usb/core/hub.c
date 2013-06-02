@@ -24,13 +24,18 @@
 #include <linux/kthread.h>
 #include <linux/mutex.h>
 #include <linux/freezer.h>
+<<<<<<< HEAD
 #include <linux/usb/otg.h>
+=======
+#include <linux/random.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <asm/uaccess.h>
 #include <asm/byteorder.h>
 
 #include "usb.h"
 
+<<<<<<< HEAD
 #if defined(CONFIG_USB_PEHCI_HCD) || defined(CONFIG_USB_PEHCI_HCD_MODULE)
 #include <linux/usb/hcd.h>
 #include <linux/usb/ch11.h>
@@ -56,6 +61,8 @@ EXPORT_SYMBOL(HostTest);
 #endif
 
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* if we are in debug mode, always announce new devices */
 #ifdef DEBUG
 #ifndef CONFIG_USB_ANNOUNCE_NEW_DEVICES
@@ -384,11 +391,16 @@ static int get_port_status(struct usb_device *hdev, int port1,
 {
 	int i, status = -ETIMEDOUT;
 
+<<<<<<< HEAD
 	/* ISP1763A HUB sometimes returns 2 bytes instead of 4 bytes, retry
 	 * if this happens
 	 */
 	for (i = 0; i < USB_STS_RETRIES &&
 			(status == -ETIMEDOUT || status == -EPIPE || status == 2); i++) {
+=======
+	for (i = 0; i < USB_STS_RETRIES &&
+			(status == -ETIMEDOUT || status == -EPIPE); i++) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		status = usb_control_msg(hdev, usb_rcvctrlpipe(hdev, 0),
 			USB_REQ_GET_STATUS, USB_DIR_IN | USB_RT_PORT, 0, port1,
 			data, sizeof(*data), USB_STS_TIMEOUT);
@@ -535,13 +547,23 @@ static void hub_tt_work(struct work_struct *work)
 	int			limit = 100;
 
 	spin_lock_irqsave (&hub->tt.lock, flags);
+<<<<<<< HEAD
 	while (--limit && !list_empty (&hub->tt.clear_list)) {
+=======
+	while (!list_empty(&hub->tt.clear_list)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		struct list_head	*next;
 		struct usb_tt_clear	*clear;
 		struct usb_device	*hdev = hub->hdev;
 		const struct hc_driver	*drv;
 		int			status;
 
+<<<<<<< HEAD
+=======
+		if (!hub->quiescing && --limit < 0)
+			break;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 		next = hub->tt.clear_list.next;
 		clear = list_entry (next, struct usb_tt_clear, clear_list);
 		list_del (&clear->clear_list);
@@ -669,6 +691,63 @@ static int hub_hub_status(struct usb_hub *hub,
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static int hub_set_port_link_state(struct usb_hub *hub, int port1,
+			unsigned int link_status)
+{
+	return set_port_feature(hub->hdev,
+			port1 | (link_status << 3),
+			USB_PORT_FEAT_LINK_STATE);
+}
+
+/*
+ * If USB 3.0 ports are placed into the Disabled state, they will no longer
+ * detect any device connects or disconnects.  This is generally not what the
+ * USB core wants, since it expects a disabled port to produce a port status
+ * change event when a new device connects.
+ *
+ * Instead, set the link state to Disabled, wait for the link to settle into
+ * that state, clear any change bits, and then put the port into the RxDetect
+ * state.
+ */
+static int hub_usb3_port_disable(struct usb_hub *hub, int port1)
+{
+	int ret;
+	int total_time;
+	u16 portchange, portstatus;
+
+	if (!hub_is_superspeed(hub->hdev))
+		return -EINVAL;
+
+	ret = hub_set_port_link_state(hub, port1, USB_SS_PORT_LS_SS_DISABLED);
+	if (ret) {
+		dev_err(hub->intfdev, "cannot disable port %d (err = %d)\n",
+				port1, ret);
+		return ret;
+	}
+
+	/* Wait for the link to enter the disabled state. */
+	for (total_time = 0; ; total_time += HUB_DEBOUNCE_STEP) {
+		ret = hub_port_status(hub, port1, &portstatus, &portchange);
+		if (ret < 0)
+			return ret;
+
+		if ((portstatus & USB_PORT_STAT_LINK_STATE) ==
+				USB_SS_PORT_LS_SS_DISABLED)
+			break;
+		if (total_time >= HUB_DEBOUNCE_TIMEOUT)
+			break;
+		msleep(HUB_DEBOUNCE_STEP);
+	}
+	if (total_time >= HUB_DEBOUNCE_TIMEOUT)
+		dev_warn(hub->intfdev, "Could not disable port %d after %d ms\n",
+				port1, total_time);
+
+	return hub_set_port_link_state(hub, port1, USB_SS_PORT_LS_RX_DETECT);
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static int hub_port_disable(struct usb_hub *hub, int port1, int set_state)
 {
 	struct usb_device *hdev = hub->hdev;
@@ -677,8 +756,18 @@ static int hub_port_disable(struct usb_hub *hub, int port1, int set_state)
 	if (hdev->children[port1-1] && set_state)
 		usb_set_device_state(hdev->children[port1-1],
 				USB_STATE_NOTATTACHED);
+<<<<<<< HEAD
 	if (!hub->error && !hub_is_superspeed(hub->hdev))
 		ret = clear_port_feature(hdev, port1, USB_PORT_FEAT_ENABLE);
+=======
+	if (!hub->error) {
+		if (hub_is_superspeed(hub->hdev))
+			ret = hub_usb3_port_disable(hub, port1);
+		else
+			ret = clear_port_feature(hdev, port1,
+					USB_PORT_FEAT_ENABLE);
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (ret)
 		dev_err(hub->intfdev, "cannot disable port %d (err = %d)\n",
 				port1, ret);
@@ -794,10 +883,13 @@ static void hub_activate(struct usb_hub *hub, enum hub_activation_type type)
 		 */
 		if (type == HUB_INIT) {
 			delay = hub_power_on(hub, false);
+<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG
 			if (hdev->bus->is_b_host)
 				goto init2;
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			PREPARE_DELAYED_WORK(&hub->init_work, hub_init_func2);
 			schedule_delayed_work(&hub->init_work,
 					msecs_to_jiffies(delay));
@@ -939,11 +1031,14 @@ static void hub_activate(struct usb_hub *hub, enum hub_activation_type type)
 	 * will see them later and handle them normally.
 	 */
 	if (need_debounce_delay) {
+<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG
 		if (hdev->bus->is_b_host && type == HUB_INIT)
 			goto init3;
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		delay = HUB_DEBOUNCE_STABLE;
 
 		/* Don't do a long sleep inside a workqueue routine */
@@ -1015,7 +1110,11 @@ static void hub_quiesce(struct usb_hub *hub, enum hub_quiescing_type type)
 	if (hub->has_indicators)
 		cancel_delayed_work_sync(&hub->leds);
 	if (hub->tt.hub)
+<<<<<<< HEAD
 		cancel_work_sync(&hub->tt.clear_work);
+=======
+		flush_work_sync(&hub->tt.clear_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 /* caller has locked the hub device */
@@ -1373,7 +1472,10 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
 #ifdef	CONFIG_USB_OTG_BLACKLIST_HUB
 	if (hdev->parent) {
 		dev_warn(&intf->dev, "ignoring external hub\n");
+<<<<<<< HEAD
 		otg_send_event(OTG_EVENT_HUB_NOT_SUPPORTED);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		return -ENODEV;
 	}
 #endif
@@ -1715,6 +1817,7 @@ void usb_disconnect(struct usb_device **pdev)
 	dev_info(&udev->dev, "USB disconnect, device number %d\n",
 			udev->devnum);
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG
 	if (udev->bus->hnp_support && udev->portnum == udev->bus->otg_port) {
 		cancel_delayed_work_sync(&udev->bus->hnp_polling);
@@ -1722,6 +1825,8 @@ void usb_disconnect(struct usb_device **pdev)
 	}
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	usb_lock_device(udev);
 
 	/* Free up all the children before we remove this device */
@@ -1803,7 +1908,10 @@ static int usb_enumerate_device_otg(struct usb_device *udev)
 	int err = 0;
 
 #ifdef	CONFIG_USB_OTG
+<<<<<<< HEAD
 	bool old_otg = false;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/*
 	 * OTG-aware devices on OTG-capable root hubs may be able to use SRP,
 	 * to wake us after we've powered off VBUS; and HNP, switching roles
@@ -1827,6 +1935,7 @@ static int usb_enumerate_device_otg(struct usb_device *udev)
 					(port1 == bus->otg_port)
 						? "" : "non-");
 
+<<<<<<< HEAD
 				/* a_alt_hnp_support is obsoleted */
 				if (port1 != bus->otg_port)
 					goto out;
@@ -1855,6 +1964,17 @@ static int usb_enumerate_device_otg(struct usb_device *udev)
 					usb_sndctrlpipe(udev, 0),
 					USB_REQ_SET_FEATURE, 0,
 					USB_DEVICE_A_HNP_SUPPORT,
+=======
+				/* enable HNP before suspend, it's simpler */
+				if (port1 == bus->otg_port)
+					bus->b_hnp_enable = 1;
+				err = usb_control_msg(udev,
+					usb_sndctrlpipe(udev, 0),
+					USB_REQ_SET_FEATURE, 0,
+					bus->b_hnp_enable
+						? USB_DEVICE_B_HNP_ENABLE
+						: USB_DEVICE_A_ALT_HNP_SUPPORT,
+>>>>>>> remotes/linux2/linux-3.4.y
 					0, NULL, 0, USB_CTRL_SET_TIMEOUT);
 				if (err < 0) {
 					/* OTG MESSAGE: report errors here,
@@ -1863,11 +1983,16 @@ static int usb_enumerate_device_otg(struct usb_device *udev)
 					dev_info(&udev->dev,
 						"can't set HNP mode: %d\n",
 						err);
+<<<<<<< HEAD
 					bus->hnp_support = 0;
+=======
+					bus->b_hnp_enable = 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 				}
 			}
 		}
 	}
+<<<<<<< HEAD
 out:
 	if ((udev->quirks & USB_QUIRK_OTG_PET)) {
 		if (le16_to_cpu(udev->descriptor.bcdDevice) &
@@ -1885,11 +2010,21 @@ out:
 		 * (Includes HNP test device.)
 		 */
 		if (udev->bus->hnp_support) {
+=======
+
+	if (!is_targeted(udev)) {
+
+		/* Maybe it can talk to us, though we can't talk to it.
+		 * (Includes HNP test device.)
+		 */
+		if (udev->bus->b_hnp_enable || udev->bus->is_b_host) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			err = usb_port_suspend(udev, PMSG_SUSPEND);
 			if (err < 0)
 				dev_dbg(&udev->dev, "HNP fail, %d\n", err);
 		}
 		err = -ENOTSUPP;
+<<<<<<< HEAD
 	} else if (udev->bus->hnp_support &&
 		udev->portnum == udev->bus->otg_port) {
 		/* HNP polling is introduced in OTG supplement Rev 2.0
@@ -1904,6 +2039,11 @@ out:
 			schedule_delayed_work(&udev->bus->hnp_polling,
 				msecs_to_jiffies(THOST_REQ_POLL));
 	}
+=======
+		goto fail;
+	}
+fail:
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif
 	return err;
 }
@@ -2038,6 +2178,17 @@ int usb_new_device(struct usb_device *udev)
 	/* Tell the world! */
 	announce_device(udev);
 
+<<<<<<< HEAD
+=======
+	if (udev->serial)
+		add_device_randomness(udev->serial, strlen(udev->serial));
+	if (udev->product)
+		add_device_randomness(udev->product, strlen(udev->product));
+	if (udev->manufacturer)
+		add_device_randomness(udev->manufacturer,
+				      strlen(udev->manufacturer));
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	device_enable_async_suspend(&udev->dev);
 
 	/*
@@ -2184,17 +2335,34 @@ static unsigned hub_is_wusb(struct usb_hub *hub)
 #define HUB_SHORT_RESET_TIME	10
 #define HUB_BH_RESET_TIME	50
 #define HUB_LONG_RESET_TIME	200
+<<<<<<< HEAD
 #define HUB_RESET_TIMEOUT	500
+=======
+#define HUB_RESET_TIMEOUT	800
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static int hub_port_reset(struct usb_hub *hub, int port1,
 			struct usb_device *udev, unsigned int delay, bool warm);
 
+<<<<<<< HEAD
 /* Is a USB 3.0 port in the Inactive state? */
 static bool hub_port_inactive(struct usb_hub *hub, u16 portstatus)
 {
 	return hub_is_superspeed(hub->hdev) &&
 		(portstatus & USB_PORT_STAT_LINK_STATE) ==
 		USB_SS_PORT_LS_SS_INACTIVE;
+=======
+/* Is a USB 3.0 port in the Inactive or Complinance Mode state?
+ * Port worm reset is required to recover
+ */
+static bool hub_port_warm_reset_required(struct usb_hub *hub, u16 portstatus)
+{
+	return hub_is_superspeed(hub->hdev) &&
+		(((portstatus & USB_PORT_STAT_LINK_STATE) ==
+		  USB_SS_PORT_LS_SS_INACTIVE) ||
+		 ((portstatus & USB_PORT_STAT_LINK_STATE) ==
+		  USB_SS_PORT_LS_COMP_MOD)) ;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int hub_port_wait_reset(struct usb_hub *hub, int port1,
@@ -2215,6 +2383,7 @@ static int hub_port_wait_reset(struct usb_hub *hub, int port1,
 		if (ret < 0)
 			return ret;
 
+<<<<<<< HEAD
 		/*
 		 * Some buggy devices require a warm reset to be issued even
 		 * when the port appears not to be connected.
@@ -2282,6 +2451,45 @@ static int hub_port_wait_reset(struct usb_hub *hub, int port1,
 				return 0;
 		}
 
+=======
+		/* The port state is unknown until the reset completes. */
+		if ((portstatus & USB_PORT_STAT_RESET))
+			goto delay;
+
+		if (hub_port_warm_reset_required(hub, portstatus))
+			return -ENOTCONN;
+
+		/* Device went away? */
+		if (!(portstatus & USB_PORT_STAT_CONNECTION))
+			return -ENOTCONN;
+
+		/* bomb out completely if the connection bounced.  A USB 3.0
+		 * connection may bounce if multiple warm resets were issued,
+		 * but the device may have successfully re-connected. Ignore it.
+		 */
+		if (!hub_is_superspeed(hub->hdev) &&
+				(portchange & USB_PORT_STAT_C_CONNECTION))
+			return -ENOTCONN;
+
+		if ((portstatus & USB_PORT_STAT_ENABLE)) {
+			if (!udev)
+				return 0;
+
+			if (hub_is_wusb(hub))
+				udev->speed = USB_SPEED_WIRELESS;
+			else if (hub_is_superspeed(hub->hdev))
+				udev->speed = USB_SPEED_SUPER;
+			else if (portstatus & USB_PORT_STAT_HIGH_SPEED)
+				udev->speed = USB_SPEED_HIGH;
+			else if (portstatus & USB_PORT_STAT_LOW_SPEED)
+				udev->speed = USB_SPEED_LOW;
+			else
+				udev->speed = USB_SPEED_FULL;
+			return 0;
+		}
+
+delay:
+>>>>>>> remotes/linux2/linux-3.4.y
 		/* switch to the long delay after two short delay failures */
 		if (delay_time >= 2 * HUB_SHORT_RESET_TIME)
 			delay = HUB_LONG_RESET_TIME;
@@ -2295,6 +2503,7 @@ static int hub_port_wait_reset(struct usb_hub *hub, int port1,
 }
 
 static void hub_port_finish_reset(struct usb_hub *hub, int port1,
+<<<<<<< HEAD
 			struct usb_device *udev, int *status, bool warm)
 {
 	switch (*status) {
@@ -2313,23 +2522,54 @@ static void hub_port_finish_reset(struct usb_hub *hub, int port1,
 					break;
 				}
 			}
+=======
+			struct usb_device *udev, int *status)
+{
+	switch (*status) {
+	case 0:
+		/* TRSTRCY = 10 ms; plus some extra */
+		msleep(10 + 40);
+		if (udev) {
+			struct usb_hcd *hcd = bus_to_hcd(udev->bus);
+
+			update_devnum(udev, 0);
+			/* The xHC may think the device is already reset,
+			 * so ignore the status.
+			 */
+			if (hcd->driver->reset_device)
+				hcd->driver->reset_device(hcd, udev);
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 		/* FALL THROUGH */
 	case -ENOTCONN:
 	case -ENODEV:
 		clear_port_feature(hub->hdev,
 				port1, USB_PORT_FEAT_C_RESET);
+<<<<<<< HEAD
 		/* FIXME need disconnect() for NOTATTACHED device */
 		if (warm) {
+=======
+		if (hub_is_superspeed(hub->hdev)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			clear_port_feature(hub->hdev, port1,
 					USB_PORT_FEAT_C_BH_PORT_RESET);
 			clear_port_feature(hub->hdev, port1,
 					USB_PORT_FEAT_C_PORT_LINK_STATE);
+<<<<<<< HEAD
 		} else {
 			usb_set_device_state(udev, *status
 					? USB_STATE_NOTATTACHED
 					: USB_STATE_DEFAULT);
 		}
+=======
+			clear_port_feature(hub->hdev, port1,
+					USB_PORT_FEAT_C_CONNECTION);
+		}
+		if (udev)
+			usb_set_device_state(udev, *status
+					? USB_STATE_NOTATTACHED
+					: USB_STATE_DEFAULT);
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	}
 }
@@ -2339,6 +2579,7 @@ static int hub_port_reset(struct usb_hub *hub, int port1,
 			struct usb_device *udev, unsigned int delay, bool warm)
 {
 	int i, status;
+<<<<<<< HEAD
 
 	if (!warm) {
 		/* Block EHCI CF initialization during the port reset.
@@ -2347,10 +2588,35 @@ static int hub_port_reset(struct usb_hub *hub, int port1,
 		down_read(&ehci_cf_port_reset_rwsem);
 	} else {
 		if (!hub_is_superspeed(hub->hdev)) {
+=======
+	u16 portchange, portstatus;
+
+	if (!hub_is_superspeed(hub->hdev)) {
+		if (warm) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			dev_err(hub->intfdev, "only USB3 hub support "
 						"warm reset\n");
 			return -EINVAL;
 		}
+<<<<<<< HEAD
+=======
+		/* Block EHCI CF initialization during the port reset.
+		 * Some companion controllers don't like it when they mix.
+		 */
+		down_read(&ehci_cf_port_reset_rwsem);
+	} else if (!warm) {
+		/*
+		 * If the caller hasn't explicitly requested a warm reset,
+		 * double check and see if one is needed.
+		 */
+		status = hub_port_status(hub, port1,
+					&portstatus, &portchange);
+		if (status < 0)
+			goto done;
+
+		if (hub_port_warm_reset_required(hub, portstatus))
+			warm = true;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	/* Reset the port */
@@ -2371,10 +2637,40 @@ static int hub_port_reset(struct usb_hub *hub, int port1,
 						status);
 		}
 
+<<<<<<< HEAD
 		/* return on disconnect or reset */
 		if (status == 0 || status == -ENOTCONN || status == -ENODEV) {
 			hub_port_finish_reset(hub, port1, udev, &status, warm);
 			goto done;
+=======
+		/* Check for disconnect or reset */
+		if (status == 0 || status == -ENOTCONN || status == -ENODEV) {
+			hub_port_finish_reset(hub, port1, udev, &status);
+
+			if (!hub_is_superspeed(hub->hdev))
+				goto done;
+
+			/*
+			 * If a USB 3.0 device migrates from reset to an error
+			 * state, re-issue the warm reset.
+			 */
+			if (hub_port_status(hub, port1,
+					&portstatus, &portchange) < 0)
+				goto done;
+
+			if (!hub_port_warm_reset_required(hub, portstatus))
+				goto done;
+
+			/*
+			 * If the port is in SS.Inactive or Compliance Mode, the
+			 * hot or warm reset failed.  Try another warm reset.
+			 */
+			if (!warm) {
+				dev_dbg(hub->intfdev, "hot reset failed, warm reset port %d\n",
+						port1);
+				warm = true;
+			}
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 
 		dev_dbg (hub->intfdev,
@@ -2388,7 +2684,11 @@ static int hub_port_reset(struct usb_hub *hub, int port1,
 		port1);
 
 done:
+<<<<<<< HEAD
 	if (!warm)
+=======
+	if (!hub_is_superspeed(hub->hdev))
+>>>>>>> remotes/linux2/linux-3.4.y
 		up_read(&ehci_cf_port_reset_rwsem);
 
 	return status;
@@ -2473,6 +2773,26 @@ static int check_port_resume_type(struct usb_device *udev,
 }
 
 #ifdef	CONFIG_USB_SUSPEND
+<<<<<<< HEAD
+=======
+/*
+ * usb_disable_function_remotewakeup - disable usb3.0
+ * device's function remote wakeup
+ * @udev: target device
+ *
+ * Assume there's only one function on the USB 3.0
+ * device and disable remote wake for the first
+ * interface. FIXME if the interface association
+ * descriptor shows there's more than one function.
+ */
+static int usb_disable_function_remotewakeup(struct usb_device *udev)
+{
+	return usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
+				USB_REQ_CLEAR_FEATURE, USB_RECIP_INTERFACE,
+				USB_INTRF_FUNC_SUSPEND,	0, NULL, 0,
+				USB_CTRL_SET_TIMEOUT);
+}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * usb_port_suspend - suspend a usb device's upstream port
@@ -2562,6 +2882,7 @@ int usb_port_suspend(struct usb_device *udev, pm_message_t msg)
 				return status;
 		}
 	}
+<<<<<<< HEAD
 #ifdef CONFIG_USB_OTG
 	if (!udev->bus->is_b_host && udev->bus->hnp_support &&
 		udev->portnum == udev->bus->otg_port) {
@@ -2578,6 +2899,8 @@ int usb_port_suspend(struct usb_device *udev, pm_message_t msg)
 		}
 	}
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* disable USB2 hardware LPM */
 	if (udev->usb2_hw_lpm_enabled == 1)
@@ -2595,12 +2918,28 @@ int usb_port_suspend(struct usb_device *udev, pm_message_t msg)
 		dev_dbg(hub->intfdev, "can't suspend port %d, status %d\n",
 				port1, status);
 		/* paranoia:  "should not happen" */
+<<<<<<< HEAD
 		if (udev->do_remote_wakeup)
 			(void) usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
 				USB_REQ_CLEAR_FEATURE, USB_RECIP_DEVICE,
 				USB_DEVICE_REMOTE_WAKEUP, 0,
 				NULL, 0,
 				USB_CTRL_SET_TIMEOUT);
+=======
+		if (udev->do_remote_wakeup) {
+			if (!hub_is_superspeed(hub->hdev)) {
+				(void) usb_control_msg(udev,
+						usb_sndctrlpipe(udev, 0),
+						USB_REQ_CLEAR_FEATURE,
+						USB_RECIP_DEVICE,
+						USB_DEVICE_REMOTE_WAKEUP, 0,
+						NULL, 0,
+						USB_CTRL_SET_TIMEOUT);
+			} else
+				(void) usb_disable_function_remotewakeup(udev);
+
+		}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		/* Try to enable USB2 hardware LPM again */
 		if (udev->usb2_hw_lpm_capable == 1)
@@ -2635,7 +2974,11 @@ int usb_port_suspend(struct usb_device *udev, pm_message_t msg)
 static int finish_port_resume(struct usb_device *udev)
 {
 	int	status = 0;
+<<<<<<< HEAD
 	u16	devstatus;
+=======
+	u16	devstatus = 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* caller owns the udev device lock */
 	dev_dbg(&udev->dev, "%s\n",
@@ -2680,6 +3023,7 @@ static int finish_port_resume(struct usb_device *udev)
 	if (status) {
 		dev_dbg(&udev->dev, "gone after usb resume? status %d\n",
 				status);
+<<<<<<< HEAD
 	} else if (udev->actconfig) {
 		le16_to_cpus(&devstatus);
 		if (devstatus & (1 << USB_DEVICE_REMOTE_WAKEUP)) {
@@ -2695,6 +3039,39 @@ static int finish_port_resume(struct usb_device *udev)
 					"disable remote wakeup, status %d\n",
 					status);
 		}
+=======
+	/*
+	 * There are a few quirky devices which violate the standard
+	 * by claiming to have remote wakeup enabled after a reset,
+	 * which crash if the feature is cleared, hence check for
+	 * udev->reset_resume
+	 */
+	} else if (udev->actconfig && !udev->reset_resume) {
+		if (!hub_is_superspeed(udev->parent)) {
+			le16_to_cpus(&devstatus);
+			if (devstatus & (1 << USB_DEVICE_REMOTE_WAKEUP))
+				status = usb_control_msg(udev,
+						usb_sndctrlpipe(udev, 0),
+						USB_REQ_CLEAR_FEATURE,
+						USB_RECIP_DEVICE,
+						USB_DEVICE_REMOTE_WAKEUP, 0,
+						NULL, 0,
+						USB_CTRL_SET_TIMEOUT);
+		} else {
+			status = usb_get_status(udev, USB_RECIP_INTERFACE, 0,
+					&devstatus);
+			le16_to_cpus(&devstatus);
+			if (!status && devstatus & (USB_INTRF_STAT_FUNC_RW_CAP
+					| USB_INTRF_STAT_FUNC_RW))
+				status =
+					usb_disable_function_remotewakeup(udev);
+		}
+
+		if (status)
+			dev_dbg(&udev->dev,
+				"disable remote wakeup, status %d\n",
+				status);
+>>>>>>> remotes/linux2/linux-3.4.y
 		status = 0;
 	}
 	return status;
@@ -2812,7 +3189,10 @@ int usb_port_resume(struct usb_device *udev, pm_message_t msg)
 int usb_remote_wakeup(struct usb_device *udev)
 {
 	int	status = 0;
+<<<<<<< HEAD
 	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (udev->state == USB_STATE_SUSPENDED) {
 		dev_dbg(&udev->dev, "usb %sresume\n", "wakeup-");
@@ -2821,11 +3201,15 @@ int usb_remote_wakeup(struct usb_device *udev)
 			/* Let the drivers do their thing, then... */
 			usb_autosuspend_device(udev);
 		}
+<<<<<<< HEAD
 	} else {
 		dev_dbg(&udev->dev, "usb not suspended\n");
 		clear_bit(HCD_FLAG_WAKEUP_PENDING, &hcd->flags);
 	}
 
+=======
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 	return status;
 }
 
@@ -3161,9 +3545,13 @@ hub_port_init (struct usb_hub *hub, struct usb_device *udev, int port1,
 	 * value.
 	 */
 	for (i = 0; i < GET_DESCRIPTOR_TRIES; (++i, msleep(100))) {
+<<<<<<< HEAD
 		if (USE_NEW_SCHEME(retry_counter) &&
 			!(hcd->driver->flags & HCD_USB3) &&
 			!(hcd->driver->flags & HCD_OLD_ENUM)) {
+=======
+		if (USE_NEW_SCHEME(retry_counter) && !(hcd->driver->flags & HCD_USB3)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			struct usb_device_descriptor *buf;
 			int r = 0;
 
@@ -3205,6 +3593,7 @@ hub_port_init (struct usb_hub *hub, struct usb_device *udev, int port1,
 					buf->bMaxPacketSize0;
 			kfree(buf);
 
+<<<<<<< HEAD
 			/*
 			 * If it is a HSET Test device, we don't issue a
 			 * second reset which results in failure due to
@@ -3221,6 +3610,16 @@ hub_port_init (struct usb_hub *hub, struct usb_device *udev, int port1,
 					retval = -ENODEV;
 					goto fail;
 				}
+=======
+			retval = hub_port_reset(hub, port1, udev, delay, false);
+			if (retval < 0)		/* error or disconnect */
+				goto fail;
+			if (oldspeed != udev->speed) {
+				dev_dbg(&udev->dev,
+					"device reset changed speed!\n");
+				retval = -ENODEV;
+				goto fail;
+>>>>>>> remotes/linux2/linux-3.4.y
 			}
 			if (r) {
 				dev_err(&udev->dev,
@@ -3263,9 +3662,13 @@ hub_port_init (struct usb_hub *hub, struct usb_device *udev, int port1,
 			 *  - read ep0 maxpacket even for high and low speed,
 			 */
 			msleep(10);
+<<<<<<< HEAD
 			if (USE_NEW_SCHEME(retry_counter) &&
 				!(hcd->driver->flags & HCD_USB3) &&
 				!(hcd->driver->flags & HCD_OLD_ENUM))
+=======
+			if (USE_NEW_SCHEME(retry_counter) && !(hcd->driver->flags & HCD_USB3))
+>>>>>>> remotes/linux2/linux-3.4.y
 				break;
   		}
 
@@ -3490,9 +3893,12 @@ static void hub_port_connect_change(struct usb_hub *hub, int port1,
 			(portchange & USB_PORT_STAT_C_CONNECTION))
 		clear_bit(port1, hub->removed_bits);
 
+<<<<<<< HEAD
 #if defined(CONFIG_USB_PEHCI_HCD) || defined(CONFIG_USB_PEHCI_HCD_MODULE)
 	if (Unwanted_SecondReset == 0)   /*stericsson*/
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (portchange & (USB_PORT_STAT_C_CONNECTION |
 				USB_PORT_STAT_C_ENABLE)) {
 		status = hub_port_debounce(hub, port1);
@@ -3631,6 +4037,7 @@ static void hub_port_connect_change(struct usb_hub *hub, int port1,
 		status = hub_power_remaining(hub);
 		if (status)
 			dev_dbg(hub_dev, "%dmA power budget left\n", status);
+<<<<<<< HEAD
 #if defined(CONFIG_USB_PEHCI_HCD) || defined(CONFIG_USB_PEHCI_HCD_MODULE)
 		if (HostComplianceTest == 1 && udev->devnum > 1) {
 			if (HostTest == 7) {	/*SINGLE_STEP_GET_DEV_DESC */
@@ -3657,6 +4064,9 @@ static void hub_port_connect_change(struct usb_hub *hub, int port1,
 			}
 		}
 #endif
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 		return;
 
 loop_disable:
@@ -3733,11 +4143,14 @@ static void hub_events(void)
 	u16 portstatus;
 	u16 portchange;
 	int i, ret;
+<<<<<<< HEAD
 #if defined(CONFIG_USB_PEHCI_HCD) || defined(CONFIG_USB_PEHCI_HCD_MODULE)
 	int j;
 	int otgport = 0;
 	struct usb_port_status port_status;
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	int connect_change, wakeup_change;
 
 	/*
@@ -3814,6 +4227,7 @@ static void hub_events(void)
 
 		/* deal with port status changes */
 		for (i = 1; i <= hub->descriptor->bNbrPorts; i++) {
+<<<<<<< HEAD
 #if defined(CONFIG_USB_PEHCI_HCD) || defined(CONFIG_USB_PEHCI_HCD_MODULE)
 			struct usb_port_status portsts;
 
@@ -3979,6 +4393,8 @@ static void hub_events(void)
 			 */
 			hdev->otgstate = 0;
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (test_bit(i, hub->busy_bits))
 				continue;
 			connect_change = test_bit(i, hub->change_bits);
@@ -4075,6 +4491,7 @@ static void hub_events(void)
 			/* Warm reset a USB3 protocol port if it's in
 			 * SS.Inactive state.
 			 */
+<<<<<<< HEAD
 			if (hub_is_superspeed(hub->hdev) &&
 				(portstatus & USB_PORT_STAT_LINK_STATE)
 					== USB_SS_PORT_LS_SS_INACTIVE) {
@@ -4096,6 +4513,31 @@ static void hub_events(void)
 				hub_port_connect_change(hub, i,
 						portstatus, portchange);
 				}
+=======
+			if (hub_port_warm_reset_required(hub, portstatus)) {
+				int status;
+				struct usb_device *udev =
+					hub->hdev->children[i - 1];
+
+				dev_dbg(hub_dev, "warm reset port %d\n", i);
+				if (!udev) {
+					status = hub_port_reset(hub, i,
+							NULL, HUB_BH_RESET_TIME,
+							true);
+					if (status < 0)
+						hub_port_disable(hub, i, 1);
+				} else {
+					usb_lock_device(udev);
+					status = usb_reset_device(udev);
+					usb_unlock_device(udev);
+				}
+				connect_change = 0;
+			}
+
+			if (connect_change)
+				hub_port_connect_change(hub, i,
+						portstatus, portchange);
+>>>>>>> remotes/linux2/linux-3.4.y
 		} /* end for i */
 
 		/* deal with hub status changes */
@@ -4127,6 +4569,7 @@ static void hub_events(void)
 						"condition\n");
 			}
 		}
+<<<<<<< HEAD
 #if defined(CONFIG_USB_PEHCI_HCD) || defined(CONFIG_USB_PEHCI_HCD_MODULE)
 		/* if we have something on otg */
 		if (otgport) {
@@ -4226,6 +4669,9 @@ static void hub_events(void)
 			}
 		}
 #endif
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
  loop_autopm:
 		/* Balance the usb_autopm_get_interface() above */
 		usb_autopm_put_interface_no_suspend(intf);

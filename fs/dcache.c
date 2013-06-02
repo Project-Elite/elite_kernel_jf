@@ -373,7 +373,11 @@ static struct dentry *d_kill(struct dentry *dentry, struct dentry *parent)
 	 * Inform try_to_ascend() that we are no longer attached to the
 	 * dentry tree
 	 */
+<<<<<<< HEAD
 	dentry->d_flags |= DCACHE_DISCONNECTED;
+=======
+	dentry->d_flags |= DCACHE_DENTRY_KILLED;
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (parent)
 		spin_unlock(&parent->d_lock);
 	dentry_iput(dentry);
@@ -1030,7 +1034,11 @@ static struct dentry *try_to_ascend(struct dentry *old, int locked, unsigned seq
 	 * or deletion
 	 */
 	if (new != old->d_parent ||
+<<<<<<< HEAD
 		 (old->d_flags & DCACHE_DISCONNECTED) ||
+=======
+		 (old->d_flags & DCACHE_DENTRY_KILLED) ||
+>>>>>>> remotes/linux2/linux-3.4.y
 		 (!locked && read_seqretry(&rename_lock, seq))) {
 		spin_unlock(&new->d_lock);
 		new = NULL;
@@ -1116,6 +1124,11 @@ positive:
 	return 1;
 
 rename_retry:
+<<<<<<< HEAD
+=======
+	if (locked)
+		goto again;
+>>>>>>> remotes/linux2/linux-3.4.y
 	locked = 1;
 	write_seqlock(&rename_lock);
 	goto again;
@@ -1218,6 +1231,11 @@ out:
 rename_retry:
 	if (found)
 		return found;
+<<<<<<< HEAD
+=======
+	if (locked)
+		goto again;
+>>>>>>> remotes/linux2/linux-3.4.y
 	locked = 1;
 	write_seqlock(&rename_lock);
 	goto again;
@@ -1234,8 +1252,15 @@ void shrink_dcache_parent(struct dentry * parent)
 	LIST_HEAD(dispose);
 	int found;
 
+<<<<<<< HEAD
 	while ((found = select_parent(parent, &dispose)) != 0)
 		shrink_dentry_list(&dispose);
+=======
+	while ((found = select_parent(parent, &dispose)) != 0) {
+		shrink_dentry_list(&dispose);
+		cond_resched();
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL(shrink_dcache_parent);
 
@@ -2963,6 +2988,11 @@ resume:
 	return;
 
 rename_retry:
+<<<<<<< HEAD
+=======
+	if (locked)
+		goto again;
+>>>>>>> remotes/linux2/linux-3.4.y
 	locked = 1;
 	write_seqlock(&rename_lock);
 	goto again;

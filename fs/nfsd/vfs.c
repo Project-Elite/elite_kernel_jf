@@ -1477,6 +1477,7 @@ do_nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
 		case NFS3_CREATE_EXCLUSIVE:
 			if (   dchild->d_inode->i_mtime.tv_sec == v_mtime
 			    && dchild->d_inode->i_atime.tv_sec == v_atime
+<<<<<<< HEAD
 			    && dchild->d_inode->i_size  == 0 )
 				break;
 		case NFS4_CREATE_EXCLUSIVE4_1:
@@ -1484,6 +1485,21 @@ do_nfsd_create(struct svc_rqst *rqstp, struct svc_fh *fhp,
 			    && dchild->d_inode->i_atime.tv_sec == v_atime
 			    && dchild->d_inode->i_size  == 0 )
 				goto set_attr;
+=======
+			    && dchild->d_inode->i_size  == 0 ) {
+				if (created)
+					*created = 1;
+				break;
+			}
+		case NFS4_CREATE_EXCLUSIVE4_1:
+			if (   dchild->d_inode->i_mtime.tv_sec == v_mtime
+			    && dchild->d_inode->i_atime.tv_sec == v_atime
+			    && dchild->d_inode->i_size  == 0 ) {
+				if (created)
+					*created = 1;
+				goto set_attr;
+			}
+>>>>>>> remotes/linux2/linux-3.4.y
 			 /* fallthru */
 		case NFS3_CREATE_GUARDED:
 			err = nfserr_exist;

@@ -471,6 +471,17 @@ static struct dmi_system_id __initdata pci_reboot_dmi_table[] = {
 			DMI_MATCH(DMI_PRODUCT_NAME, "OptiPlex 990"),
 		},
 	},
+<<<<<<< HEAD
+=======
+	{	/* Handle problems with rebooting on the Precision M6600. */
+		.callback = set_pci_reboot,
+		.ident = "Dell OptiPlex 990",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Precision M6600"),
+		},
+	},
+>>>>>>> remotes/linux2/linux-3.4.y
 	{ }
 };
 
@@ -611,7 +622,11 @@ static void native_machine_emergency_restart(void)
 			break;
 
 		case BOOT_EFI:
+<<<<<<< HEAD
 			if (efi_enabled)
+=======
+			if (efi_enabled(EFI_RUNTIME_SERVICES))
+>>>>>>> remotes/linux2/linux-3.4.y
 				efi.reset_system(reboot_mode ?
 						 EFI_RESET_WARM :
 						 EFI_RESET_COLD,

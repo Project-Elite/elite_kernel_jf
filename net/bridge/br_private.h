@@ -538,6 +538,10 @@ extern int (*br_fdb_test_addr_hook)(struct net_device *dev, unsigned char *addr)
 #endif
 
 /* br_netlink.c */
+<<<<<<< HEAD
+=======
+extern struct rtnl_link_ops br_link_ops;
+>>>>>>> remotes/linux2/linux-3.4.y
 extern int br_netlink_init(void);
 extern void br_netlink_fini(void);
 extern void br_ifinfo_notify(int event, struct net_bridge_port *port);

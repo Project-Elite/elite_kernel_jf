@@ -213,6 +213,7 @@ static void __nfs4_file_put_access(struct nfs4_file *fp, int oflag)
 {
 	if (atomic_dec_and_test(&fp->fi_access[oflag])) {
 		nfs4_file_put_fd(fp, oflag);
+<<<<<<< HEAD
 		/*
 		 * It's also safe to get rid of the RDWR open *if*
 		 * we no longer have need of the other kind of access
@@ -220,6 +221,9 @@ static void __nfs4_file_put_access(struct nfs4_file *fp, int oflag)
 		 */
 		if (fp->fi_fds[1-oflag]
 			|| atomic_read(&fp->fi_access[1 - oflag]) == 0)
+=======
+		if (atomic_read(&fp->fi_access[1 - oflag]) == 0)
+>>>>>>> remotes/linux2/linux-3.4.y
 			nfs4_file_put_fd(fp, O_RDWR);
 	}
 }
@@ -1053,6 +1057,11 @@ free_client(struct nfs4_client *clp)
 		put_group_info(clp->cl_cred.cr_group_info);
 	kfree(clp->cl_principal);
 	kfree(clp->cl_name.data);
+<<<<<<< HEAD
+=======
+	idr_remove_all(&clp->cl_stateids);
+	idr_destroy(&clp->cl_stateids);
+>>>>>>> remotes/linux2/linux-3.4.y
 	kfree(clp);
 }
 
@@ -2356,7 +2365,11 @@ nfsd4_init_slabs(void)
 	if (openowner_slab == NULL)
 		goto out_nomem;
 	lockowner_slab = kmem_cache_create("nfsd4_lockowners",
+<<<<<<< HEAD
 			sizeof(struct nfs4_openowner), 0, 0, NULL);
+=======
+			sizeof(struct nfs4_lockowner), 0, 0, NULL);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (lockowner_slab == NULL)
 		goto out_nomem;
 	file_slab = kmem_cache_create("nfsd4_files",
@@ -3783,6 +3796,10 @@ nfsd4_close(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate,
 	memcpy(&close->cl_stateid, &stp->st_stid.sc_stateid, sizeof(stateid_t));
 
 	nfsd4_close_open_stateid(stp);
+<<<<<<< HEAD
+=======
+	release_last_closed_stateid(oo);
+>>>>>>> remotes/linux2/linux-3.4.y
 	oo->oo_last_closed_stid = stp;
 
 	/* place unused nfs4_stateowners on so_close_lru list to be

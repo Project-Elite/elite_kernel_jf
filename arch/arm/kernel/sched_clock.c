@@ -84,11 +84,19 @@ static void notrace update_sched_clock(void)
 	 * detectable in cyc_to_fixed_sched_clock().
 	 */
 	raw_local_irq_save(flags);
+<<<<<<< HEAD
 	cd.epoch_cyc = cyc;
 	smp_wmb();
 	cd.epoch_ns = ns;
 	smp_wmb();
 	cd.epoch_cyc_copy = cyc;
+=======
+	cd.epoch_cyc_copy = cyc;
+	smp_wmb();
+	cd.epoch_ns = ns;
+	smp_wmb();
+	cd.epoch_cyc = cyc;
+>>>>>>> remotes/linux2/linux-3.4.y
 	raw_local_irq_restore(flags);
 }
 

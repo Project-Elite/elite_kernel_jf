@@ -16,7 +16,11 @@ if IOMMU_SUPPORT
 # MSM IOMMU support
 config MSM_IOMMU
 	bool "MSM IOMMU Support"
+<<<<<<< HEAD
 	depends on ARCH_MSM8X60 || ARCH_MSM8960 || ARCH_APQ8064 || ARCH_MSM8974
+=======
+	depends on ARCH_MSM8X60 || ARCH_MSM8960
+>>>>>>> remotes/linux2/linux-3.4.y
 	select IOMMU_API
 	help
 	  Support for the IOMMUs found on certain Qualcomm SOCs.
@@ -25,6 +29,7 @@ config MSM_IOMMU
 
 	  If unsure, say N here.
 
+<<<<<<< HEAD
 # MSM IOMMU CPU-GPU sync programming support
 config MSM_IOMMU_GPU_SYNC
 	bool "MSM IOMMU CPU-GPU Sync Support"
@@ -45,6 +50,11 @@ config IOMMU_PGTABLES_L2
          However, with large multimedia buffers, the TLB should mostly contain
          section mappings and TLB misses should be quite infrequent.
          Most people can probably say Y here.
+=======
+config IOMMU_PGTABLES_L2
+	def_bool y
+	depends on MSM_IOMMU && MMU && SMP && CPU_DCACHE_DISABLE=n
+>>>>>>> remotes/linux2/linux-3.4.y
 
 # AMD IOMMU support
 config AMD_IOMMU

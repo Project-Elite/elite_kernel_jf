@@ -407,8 +407,13 @@ struct kvm_vcpu_arch {
 	gpa_t time;
 	struct pvclock_vcpu_time_info hv_clock;
 	unsigned int hw_tsc_khz;
+<<<<<<< HEAD
 	unsigned int time_offset;
 	struct page *time_page;
+=======
+	struct gfn_to_hva_cache pv_time;
+	bool pv_time_enabled;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	struct {
 		u64 msr_val;

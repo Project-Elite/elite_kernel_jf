@@ -132,11 +132,14 @@ static int blk_ioctl_discard(struct block_device *bdev, uint64_t start,
 	return blkdev_issue_discard(bdev, start, len, GFP_KERNEL, flags);
 }
 
+<<<<<<< HEAD
 static int blk_ioctl_sanitize(struct block_device *bdev)
 {
 	return blkdev_issue_sanitize(bdev, GFP_KERNEL);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static int put_ushort(unsigned long arg, unsigned short val)
 {
 	return put_user(val, (unsigned short __user *)arg);
@@ -239,10 +242,13 @@ int blkdev_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
 		set_device_ro(bdev, n);
 		return 0;
 
+<<<<<<< HEAD
 	case BLKSANITIZE:
 		ret = blk_ioctl_sanitize(bdev);
 		break;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	case BLKDISCARD:
 	case BLKSECDISCARD: {
 		uint64_t range[2];

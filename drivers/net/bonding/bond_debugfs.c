@@ -6,7 +6,11 @@
 #include "bonding.h"
 #include "bond_alb.h"
 
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_FS
+=======
+#if defined(CONFIG_DEBUG_FS) && !defined(CONFIG_NET_NS)
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>

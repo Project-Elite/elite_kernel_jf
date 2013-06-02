@@ -24,6 +24,7 @@
 #include <linux/phy.h>
 
 /* platform_device configuration data, should be assigned to
+<<<<<<< HEAD
  * the platform_device's dev.platform_data
  * Provides 2 GPIO-related fields
  * reset_gpio to map the ETHERNET_RESET GPIO pin
@@ -32,6 +33,9 @@
  * Default would be zero if its not being assigned any value.
  * Both values would need to set in the appropriate board file
  */
+=======
+ * the platform_device's dev.platform_data */
+>>>>>>> remotes/linux2/linux-3.4.y
 struct smsc911x_platform_config {
 	unsigned int irq_polarity;
 	unsigned int irq_type;
@@ -39,8 +43,11 @@ struct smsc911x_platform_config {
 	unsigned int shift;
 	phy_interface_t phy_interface;
 	unsigned char mac[6];
+<<<<<<< HEAD
 	unsigned char has_reset_gpio;
 	unsigned int reset_gpio;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /* Constants for platform_device irq polarity configuration */

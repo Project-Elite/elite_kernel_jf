@@ -288,6 +288,7 @@ config CHARGER_MAX8998
 	  Say Y to enable support for the battery charger control sysfs and
 	  platform data of MAX8998/LP3974 PMICs.
 
+<<<<<<< HEAD
 config BATTERY_MSM
 	tristate "MSM battery"
 	depends on ARCH_MSM
@@ -415,6 +416,8 @@ config PM8921_BMS
 	help
 	  Say Y here to enable support for pm8921 chip bms subdevice
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config CHARGER_SMB347
 	tristate "Summit Microelectronics SMB347 Battery Charger"
 	depends on I2C
@@ -434,6 +437,7 @@ config AB8500_BATTERY_THERM_ON_BATCTRL
 	help
 	  Say Y to enable battery temperature measurements using
 	  thermistor connected on BATCTRL ADC.
+<<<<<<< HEAD
 
 config WIRELESS_CHARGER
 	bool "Wireless Charger Configuration"
@@ -454,4 +458,6 @@ config BATTERY_TEMP_CONTROL
 	  Say Y to enable battery temperature control for safty.
 	  It controls charging current depending on battery temperature.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 endif # POWER_SUPPLY

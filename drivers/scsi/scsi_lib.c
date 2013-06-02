@@ -406,10 +406,13 @@ static void scsi_run_queue(struct request_queue *q)
 	LIST_HEAD(starved_list);
 	unsigned long flags;
 
+<<<<<<< HEAD
 	/* if the device is dead, sdev will be NULL, so no queue to run */
 	if (!sdev)
 		return;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	shost = sdev->host;
 	if (scsi_target(sdev)->single_lun)
 		scsi_single_lun_run(sdev);
@@ -483,15 +486,35 @@ void scsi_requeue_run_queue(struct work_struct *work)
  */
 static void scsi_requeue_command(struct request_queue *q, struct scsi_cmnd *cmd)
 {
+<<<<<<< HEAD
 	struct request *req = cmd->request;
 	unsigned long flags;
 
+=======
+	struct scsi_device *sdev = cmd->device;
+	struct request *req = cmd->request;
+	unsigned long flags;
+
+	/*
+	 * We need to hold a reference on the device to avoid the queue being
+	 * killed after the unlock and before scsi_run_queue is invoked which
+	 * may happen because scsi_unprep_request() puts the command which
+	 * releases its reference on the device.
+	 */
+	get_device(&sdev->sdev_gendev);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	spin_lock_irqsave(q->queue_lock, flags);
 	scsi_unprep_request(req);
 	blk_requeue_request(q, req);
 	spin_unlock_irqrestore(q->queue_lock, flags);
 
 	scsi_run_queue(q);
+<<<<<<< HEAD
+=======
+
+	put_device(&sdev->sdev_gendev);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 void scsi_next_command(struct scsi_cmnd *cmd)
@@ -753,7 +776,10 @@ void scsi_io_completion(struct scsi_cmnd *cmd, unsigned int good_bytes)
 	}
 
 	if (req->cmd_type == REQ_TYPE_BLOCK_PC) { /* SG_IO ioctl from block level */
+<<<<<<< HEAD
 		req->errors = result;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (result) {
 			if (sense_valid && req->sense) {
 				/*
@@ -769,6 +795,13 @@ void scsi_io_completion(struct scsi_cmnd *cmd, unsigned int good_bytes)
 			if (!sense_deferred)
 				error = __scsi_error_from_host_byte(cmd, result);
 		}
+<<<<<<< HEAD
+=======
+		/*
+		 * __scsi_error_from_host_byte may have reset the host_byte
+		 */
+		req->errors = cmd->result;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		req->resid_len = scsi_get_resid(cmd);
 
@@ -1370,16 +1403,26 @@ static inline int scsi_host_queue_ready(struct request_queue *q,
  * may be changed after request stacking drivers call the function,
  * regardless of taking lock or not.
  *
+<<<<<<< HEAD
  * When scsi can't dispatch I/Os anymore and needs to kill I/Os
  * (e.g. !sdev), scsi needs to return 'not busy'.
  * Otherwise, request stacking drivers may hold requests forever.
+=======
+ * When scsi can't dispatch I/Os anymore and needs to kill I/Os scsi
+ * needs to return 'not busy'. Otherwise, request stacking drivers
+ * may hold requests forever.
+>>>>>>> remotes/linux2/linux-3.4.y
  */
 static int scsi_lld_busy(struct request_queue *q)
 {
 	struct scsi_device *sdev = q->queuedata;
 	struct Scsi_Host *shost;
 
+<<<<<<< HEAD
 	if (!sdev)
+=======
+	if (blk_queue_dead(q))
+>>>>>>> remotes/linux2/linux-3.4.y
 		return 0;
 
 	shost = sdev->host;
@@ -1490,12 +1533,15 @@ static void scsi_request_fn(struct request_queue *q)
 	struct scsi_cmnd *cmd;
 	struct request *req;
 
+<<<<<<< HEAD
 	if (!sdev) {
 		while ((req = blk_peek_request(q)) != NULL)
 			scsi_kill_request(req, q);
 		return;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if(!get_device(&sdev->sdev_gendev))
 		/* We must be tearing the block queue down already */
 		return;
@@ -1697,6 +1743,7 @@ struct request_queue *scsi_alloc_queue(struct scsi_device *sdev)
 	return q;
 }
 
+<<<<<<< HEAD
 void scsi_free_queue(struct request_queue *q)
 {
 	unsigned long flags;
@@ -1711,6 +1758,8 @@ void scsi_free_queue(struct request_queue *q)
 	blk_cleanup_queue(q);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * Function:    scsi_block_requests()
  *

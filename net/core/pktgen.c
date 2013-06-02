@@ -1802,10 +1802,20 @@ static ssize_t pktgen_thread_write(struct file *file,
 			return -EFAULT;
 		i += len;
 		mutex_lock(&pktgen_thread_lock);
+<<<<<<< HEAD
 		pktgen_add_device(t, f);
 		mutex_unlock(&pktgen_thread_lock);
 		ret = count;
 		sprintf(pg_result, "OK: add_device=%s", f);
+=======
+		ret = pktgen_add_device(t, f);
+		mutex_unlock(&pktgen_thread_lock);
+		if (!ret) {
+			ret = count;
+			sprintf(pg_result, "OK: add_device=%s", f);
+		} else
+			sprintf(pg_result, "ERROR: can not add device %s", f);
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto out;
 	}
 
@@ -2932,7 +2942,11 @@ static struct sk_buff *fill_packet_ipv6(struct net_device *odev,
 		  sizeof(struct ipv6hdr) - sizeof(struct udphdr) -
 		  pkt_dev->pkt_overhead;
 
+<<<<<<< HEAD
 	if (datalen < sizeof(struct pktgen_hdr)) {
+=======
+	if (datalen < 0 || datalen < sizeof(struct pktgen_hdr)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		datalen = sizeof(struct pktgen_hdr);
 		if (net_ratelimit())
 			pr_info("increased datalen to %d\n", datalen);

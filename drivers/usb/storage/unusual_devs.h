@@ -396,7 +396,11 @@ UNUSUAL_DEV(  0x04da, 0x2372, 0x0000, 0x9999,
 		"Panasonic",
 		"DMC-LCx Camera",
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
+<<<<<<< HEAD
 		/*US_FL_FIX_CAPACITY |*/US_FL_NOT_LOCKABLE),
+=======
+		US_FL_FIX_CAPACITY | US_FL_NOT_LOCKABLE ),
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* Reported by Simeon Simeonov <simeonov_2000@yahoo.com> */
 UNUSUAL_DEV(  0x04da, 0x2373, 0x0000, 0x9999,
@@ -488,6 +492,16 @@ UNUSUAL_DEV(  0x04e8, 0x5122, 0x0000, 0x9999,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
 		US_FL_MAX_SECTORS_64 | US_FL_BULK_IGNORE_TAG),
 
+<<<<<<< HEAD
+=======
+/* Added by Dmitry Artamonow <mad_soft@inbox.ru> */
+UNUSUAL_DEV(  0x04e8, 0x5136, 0x0000, 0x9999,
+		"Samsung",
+		"YP-Z3",
+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
+		US_FL_MAX_SECTORS_64),
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /* Entry and supporting patch by Theodore Kilgore <kilgota@auburn.edu>.
  * Device uses standards-violating 32-byte Bulk Command Block Wrappers and
  * reports itself as "Proprietary SCSI Bulk." Cf. device entry 0x084d:0x0011.
@@ -1004,6 +1018,15 @@ UNUSUAL_DEV( 0x07cf, 0x1001, 0x1000, 0x9999,
 		USB_SC_8070, USB_PR_CB, NULL,
 		US_FL_NEED_OVERRIDE | US_FL_FIX_INQUIRY ),
 
+<<<<<<< HEAD
+=======
+/* Submitted by Oleksandr Chumachenko <ledest@gmail.com> */
+UNUSUAL_DEV( 0x07cf, 0x1167, 0x0100, 0x0100,
+		"Casio",
+		"EX-N1 DigitalCamera",
+		USB_SC_8070, USB_PR_DEVICE, NULL, 0),
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /* Submitted by Hartmut Wahl <hwahl@hwahl.de>*/
 UNUSUAL_DEV( 0x0839, 0x000a, 0x0001, 0x0001,
 		"Samsung",
@@ -1107,6 +1130,7 @@ UNUSUAL_DEV( 0x090a, 0x1200, 0x0000, 0x9999,
 		USB_SC_RBC, USB_PR_BULK, NULL,
 		0 ),
 
+<<<<<<< HEAD
 /* Feiya QDI U2 DISK, reported by Hans de Goede <hdegoede@redhat.com> */
 UNUSUAL_DEV( 0x090c, 0x1000, 0x0000, 0xffff,
 		"Feiya",
@@ -1114,6 +1138,8 @@ UNUSUAL_DEV( 0x090c, 0x1000, 0x0000, 0xffff,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
 		US_FL_NO_READ_CAPACITY_16 ),
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* aeb */
 UNUSUAL_DEV( 0x090c, 0x1132, 0x0000, 0xffff,
 		"Feiya",

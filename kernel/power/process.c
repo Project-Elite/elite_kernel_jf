@@ -17,8 +17,11 @@
 #include <linux/delay.h>
 #include <linux/workqueue.h>
 #include <linux/kmod.h>
+<<<<<<< HEAD
 #include <linux/wakelock.h>
 #include "power.h"
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* 
  * Timeout for stopping processes
@@ -71,10 +74,13 @@ static int try_to_freeze_tasks(bool user_only)
 			todo += wq_busy;
 		}
 
+<<<<<<< HEAD
 		if (todo && has_wake_lock(WAKE_LOCK_SUSPEND)) {
 			wakeup = 1;
 			break;
 		}
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		if (!todo || time_after(jiffies, end_time))
 			break;
 
@@ -96,6 +102,7 @@ static int try_to_freeze_tasks(bool user_only)
 	elapsed_csecs = elapsed_csecs64;
 
 	if (todo) {
+<<<<<<< HEAD
 		/* This does not unfreeze processes that are already frozen
 		 * (we have slightly ugly calling convention in that respect,
 		 * and caller must call thaw_processes() if something fails),
@@ -114,13 +121,25 @@ static int try_to_freeze_tasks(bool user_only)
 			       elapsed_csecs / 100, elapsed_csecs % 100,
 			       todo - wq_busy, wq_busy);
 		}
+=======
+		printk("\n");
+		printk(KERN_ERR "Freezing of tasks %s after %d.%02d seconds "
+		       "(%d tasks refusing to freeze, wq_busy=%d):\n",
+		       wakeup ? "aborted" : "failed",
+		       elapsed_csecs / 100, elapsed_csecs % 100,
+		       todo - wq_busy, wq_busy);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		if (!wakeup) {
 			read_lock(&tasklist_lock);
 			do_each_thread(g, p) {
 				if (p != current && !freezer_should_skip(p)
+<<<<<<< HEAD
 				    && freezing(p) && !frozen(p) &&
 				    elapsed_csecs > 100)
+=======
+				    && freezing(p) && !frozen(p))
+>>>>>>> remotes/linux2/linux-3.4.y
 					sched_show_task(p);
 			} while_each_thread(g, p);
 			read_unlock(&tasklist_lock);
@@ -177,10 +196,13 @@ int freeze_kernel_threads(void)
 {
 	int error;
 
+<<<<<<< HEAD
 	error = suspend_sys_sync_wait();
 	if (error)
 		return error;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	printk("Freezing remaining freezable tasks ... ");
 	pm_nosig_freezing = true;
 	error = try_to_freeze_tasks(false);

@@ -51,11 +51,17 @@
 #ifndef __SND_COMPRESS_PARAMS_H
 #define __SND_COMPRESS_PARAMS_H
 
+<<<<<<< HEAD
+=======
+#include <linux/types.h>
+
+>>>>>>> remotes/linux2/linux-3.4.y
 /* AUDIO CODECS SUPPORTED */
 #define MAX_NUM_CODECS 32
 #define MAX_NUM_CODEC_DESCRIPTORS 32
 #define MAX_NUM_BITRATES 32
 
+<<<<<<< HEAD
 /* compressed TX */
 #define MAX_NUM_FRAMES_PER_BUFFER 1
 #define COMPRESSED_META_DATA_MODE 0x10
@@ -65,6 +71,8 @@
 #define Q6_DTS		0x00010D88
 #define Q6_DTS_LBR	0x00010DBB
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* Codecs are listed linearly to allow for extensibility */
 #define SND_AUDIOCODEC_PCM                   ((__u32) 0x00000001)
 #define SND_AUDIOCODEC_MP3                   ((__u32) 0x00000002)
@@ -79,6 +87,7 @@
 #define SND_AUDIOCODEC_IEC61937              ((__u32) 0x0000000B)
 #define SND_AUDIOCODEC_G723_1                ((__u32) 0x0000000C)
 #define SND_AUDIOCODEC_G729                  ((__u32) 0x0000000D)
+<<<<<<< HEAD
 #define SND_AUDIOCODEC_AC3                   ((__u32) 0x0000000E)
 #define SND_AUDIOCODEC_DTS                   ((__u32) 0x0000000F)
 #define SND_AUDIOCODEC_AC3_PASS_THROUGH      ((__u32) 0x00000010)
@@ -86,6 +95,8 @@
 #define SND_AUDIOCODEC_DTS_PASS_THROUGH      ((__u32) 0x00000012)
 #define SND_AUDIOCODEC_DTS_LBR               ((__u32) 0x00000013)
 #define SND_AUDIOCODEC_DTS_TRANSCODE_LOOPBACK ((__u32) 0x00000014)
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * Profile and modes are listed with bit masks. This allows for a
@@ -251,11 +262,14 @@
 
 struct snd_enc_wma {
 	__u32 super_block_align; /* WMA Type-specific data */
+<<<<<<< HEAD
 	__u32 bits_per_sample;
 	__u32 channelmask;
 	__u32 encodeopt;
 	__u32 encodeopt1;
 	__u32 encodeopt2;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 

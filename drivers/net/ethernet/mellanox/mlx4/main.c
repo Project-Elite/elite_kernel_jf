@@ -1526,6 +1526,7 @@ static void mlx4_enable_msi_x(struct mlx4_dev *dev)
 	int i;
 
 	if (msi_x) {
+<<<<<<< HEAD
 		/* In multifunction mode each function gets 2 msi-X vectors
 		 * one for data path completions anf the other for asynch events
 		 * or command completions */
@@ -1535,6 +1536,10 @@ static void mlx4_enable_msi_x(struct mlx4_dev *dev)
 			nreq = min_t(int, dev->caps.num_eqs -
 				     dev->caps.reserved_eqs, nreq);
 		}
+=======
+		nreq = min_t(int, dev->caps.num_eqs - dev->caps.reserved_eqs,
+			     nreq);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		entries = kcalloc(nreq, sizeof *entries, GFP_KERNEL);
 		if (!entries)

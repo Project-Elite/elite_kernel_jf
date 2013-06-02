@@ -72,6 +72,10 @@ struct net;
 #define SOCK_NOSPACE		2
 #define SOCK_PASSCRED		3
 #define SOCK_PASSSEC		4
+<<<<<<< HEAD
+=======
+#define SOCK_EXTERNALLY_ALLOCATED 5
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #ifndef ARCH_HAS_SOCKET_TYPES
 /**

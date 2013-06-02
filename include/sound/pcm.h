@@ -80,7 +80,10 @@ struct snd_pcm_ops {
 			     unsigned long offset);
 	int (*mmap)(struct snd_pcm_substream *substream, struct vm_area_struct *vma);
 	int (*ack)(struct snd_pcm_substream *substream);
+<<<<<<< HEAD
 	int (*restart)(struct snd_pcm_substream *substream);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /*
@@ -111,12 +114,15 @@ struct snd_pcm_ops {
 
 #define SNDRV_PCM_POS_XRUN		((snd_pcm_uframes_t)-1)
 
+<<<<<<< HEAD
 #define SNDRV_DMA_MODE          (0)
 #define SNDRV_NON_DMA_MODE      (1 << 0)
 #define SNDRV_RENDER_STOPPED    (1 << 1)
 #define SNDRV_RENDER_RUNNING    (1 << 2)
 
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* If you change this don't forget to change rates[] table in pcm_native.c */
 #define SNDRV_PCM_RATE_5512		(1<<0)		/* 5512Hz */
 #define SNDRV_PCM_RATE_8000		(1<<1)		/* 8000Hz */
@@ -271,7 +277,11 @@ struct snd_pcm_hw_constraint_ratdens {
 
 struct snd_pcm_hw_constraint_list {
 	unsigned int count;
+<<<<<<< HEAD
 	unsigned int *list;
+=======
+	const unsigned int *list;
+>>>>>>> remotes/linux2/linux-3.4.y
 	unsigned int mask;
 };
 
@@ -306,7 +316,10 @@ struct snd_pcm_runtime {
 	unsigned int rate_num;
 	unsigned int rate_den;
 	unsigned int no_period_wakeup: 1;
+<<<<<<< HEAD
 	unsigned int render_flag;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* -- SW params -- */
 	int tstamp_mode;		/* mmap timestamp is updated */
@@ -421,7 +434,10 @@ struct snd_pcm_substream {
 #endif
 	/* misc flags */
 	unsigned int hw_opened: 1;
+<<<<<<< HEAD
 	unsigned int hw_no_buffer: 1; /* substream may not have a buffer */
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 #define SUBSTREAM_BUSY(substream) ((substream)->ref_count > 0)
@@ -463,6 +479,10 @@ struct snd_pcm {
 	void *private_data;
 	void (*private_free) (struct snd_pcm *pcm);
 	struct device *dev; /* actual hw device this belongs to */
+<<<<<<< HEAD
+=======
+	bool internal; /* pcm is for internal use only */
+>>>>>>> remotes/linux2/linux-3.4.y
 #if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
 	struct snd_pcm_oss oss;
 #endif
@@ -484,9 +504,15 @@ extern const struct file_operations snd_pcm_f_ops[2];
 int snd_pcm_new(struct snd_card *card, const char *id, int device,
 		int playback_count, int capture_count,
 		struct snd_pcm **rpcm);
+<<<<<<< HEAD
 int snd_pcm_new_soc_be(struct snd_card *card, const char *id, int device,
 		int playback_count, int capture_count,
 		struct snd_pcm ** rpcm);
+=======
+int snd_pcm_new_internal(struct snd_card *card, const char *id, int device,
+		int playback_count, int capture_count,
+		struct snd_pcm **rpcm);
+>>>>>>> remotes/linux2/linux-3.4.y
 int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count);
 
 int snd_pcm_notify(struct snd_pcm_notify *notify, int nfree);
@@ -793,7 +819,12 @@ void snd_interval_muldivk(const struct snd_interval *a, const struct snd_interva
 			  unsigned int k, struct snd_interval *c);
 void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
 			  const struct snd_interval *b, struct snd_interval *c);
+<<<<<<< HEAD
 int snd_interval_list(struct snd_interval *i, unsigned int count, unsigned int *list, unsigned int mask);
+=======
+int snd_interval_list(struct snd_interval *i, unsigned int count,
+		      const unsigned int *list, unsigned int mask);
+>>>>>>> remotes/linux2/linux-3.4.y
 int snd_interval_ratnum(struct snd_interval *i,
 			unsigned int rats_count, struct snd_ratnum *rats,
 			unsigned int *nump, unsigned int *denp);

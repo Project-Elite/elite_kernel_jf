@@ -462,6 +462,12 @@
 	GPIO76_LCD_PCLK,	\
 	GPIO77_LCD_BIAS
 
+<<<<<<< HEAD
+=======
+/* these enable a work-around for a hw bug in pxa27x during ac97 warm reset */
+#define GPIO113_AC97_nRESET_GPIO_HIGH MFP_CFG_OUT(GPIO113, AF0, DEFAULT)
+#define GPIO95_AC97_nRESET_GPIO_HIGH MFP_CFG_OUT(GPIO95, AF0, DEFAULT)
+>>>>>>> remotes/linux2/linux-3.4.y
 
 extern int keypad_set_wake(unsigned int on);
 #endif /* __ASM_ARCH_MFP_PXA27X_H */

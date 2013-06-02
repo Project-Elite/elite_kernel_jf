@@ -13,7 +13,10 @@
 #ifndef __LINUX_POWER_SUPPLY_H__
 #define __LINUX_POWER_SUPPLY_H__
 
+<<<<<<< HEAD
 #include <linux/wakelock.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <linux/workqueue.h>
 #include <linux/leds.h>
 
@@ -45,7 +48,10 @@ enum {
 	POWER_SUPPLY_CHARGE_TYPE_NONE,
 	POWER_SUPPLY_CHARGE_TYPE_TRICKLE,
 	POWER_SUPPLY_CHARGE_TYPE_FAST,
+<<<<<<< HEAD
 	POWER_SUPPLY_CHARGE_TYPE_SLOW,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 enum {
@@ -56,7 +62,10 @@ enum {
 	POWER_SUPPLY_HEALTH_OVERVOLTAGE,
 	POWER_SUPPLY_HEALTH_UNSPEC_FAILURE,
 	POWER_SUPPLY_HEALTH_COLD,
+<<<<<<< HEAD
 	POWER_SUPPLY_HEALTH_UNDERVOLTAGE,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 enum {
@@ -142,6 +151,7 @@ enum power_supply_type {
 	POWER_SUPPLY_TYPE_USB_DCP,	/* Dedicated Charging Port */
 	POWER_SUPPLY_TYPE_USB_CDP,	/* Charging Downstream Port */
 	POWER_SUPPLY_TYPE_USB_ACA,	/* Accessory Charger Adapters */
+<<<<<<< HEAD
 	POWER_SUPPLY_TYPE_MISC,
 	POWER_SUPPLY_TYPE_CARDOCK,
 #ifdef CONFIG_WIRELESS_CHARGER
@@ -189,6 +199,9 @@ enum online_power_type {
 	ONLINE_POWER_TYPE_MHL_1500,
 };
 /* EXTENDED_ONLINE_TYPE */
+=======
+};
+>>>>>>> remotes/linux2/linux-3.4.y
 
 union power_supply_propval {
 	int intval;
@@ -221,9 +234,12 @@ struct power_supply {
 	/* private */
 	struct device *dev;
 	struct work_struct changed_work;
+<<<<<<< HEAD
 	spinlock_t changed_lock;
 	bool changed;
 	struct wake_lock work_wake_lock;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #ifdef CONFIG_LEDS_TRIGGERS
 	struct led_trigger *charging_full_trig;
@@ -258,11 +274,15 @@ struct power_supply_info {
 	int use_for_apm;
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_POWER_SUPPLY) || defined(CONFIG_POWER_SUPPLY_MODULE)
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 extern struct power_supply *power_supply_get_by_name(char *name);
 extern void power_supply_changed(struct power_supply *psy);
 extern int power_supply_am_i_supplied(struct power_supply *psy);
 extern int power_supply_set_battery_charged(struct power_supply *psy);
+<<<<<<< HEAD
 extern int power_supply_set_current_limit(struct power_supply *psy, int limit);
 extern int power_supply_set_online(struct power_supply *psy, bool enable);
 extern int power_supply_set_scope(struct power_supply *psy, int scope);
@@ -292,6 +312,12 @@ static inline int power_supply_set_charge_type(struct power_supply *psy,
 static inline int power_supply_set_supply_type(struct power_supply *psy,
 					enum power_supply_type supply_type);
 							{ return -ENOSYS; }
+=======
+
+#if defined(CONFIG_POWER_SUPPLY) || defined(CONFIG_POWER_SUPPLY_MODULE)
+extern int power_supply_is_system_supplied(void);
+#else
+>>>>>>> remotes/linux2/linux-3.4.y
 static inline int power_supply_is_system_supplied(void) { return -ENOSYS; }
 #endif
 

@@ -84,8 +84,11 @@ source "drivers/staging/zram/Kconfig"
 
 source "drivers/staging/zcache/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/staging/qcache/Kconfig"
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 source "drivers/staging/zsmalloc/Kconfig"
 
 source "drivers/staging/wlags49_h2/Kconfig"

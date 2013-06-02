@@ -671,6 +671,15 @@ static void set_operstate(struct net_device *dev, unsigned char transition)
 	}
 }
 
+<<<<<<< HEAD
+=======
+static unsigned int rtnl_dev_get_flags(const struct net_device *dev)
+{
+	return (dev->flags & ~(IFF_PROMISC | IFF_ALLMULTI)) |
+	       (dev->gflags & (IFF_PROMISC | IFF_ALLMULTI));
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static unsigned int rtnl_dev_combine_flags(const struct net_device *dev,
 					   const struct ifinfomsg *ifm)
 {
@@ -679,7 +688,11 @@ static unsigned int rtnl_dev_combine_flags(const struct net_device *dev,
 	/* bugwards compatibility: ifi_change == 0 is treated as ~0 */
 	if (ifm->ifi_change)
 		flags = (flags & ifm->ifi_change) |
+<<<<<<< HEAD
 			(dev->flags & ~ifm->ifi_change);
+=======
+			(rtnl_dev_get_flags(dev) & ~ifm->ifi_change);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return flags;
 }
@@ -969,6 +982,10 @@ static int rtnl_fill_ifinfo(struct sk_buff *skb, struct net_device *dev,
 			 * report anything.
 			 */
 			ivi.spoofchk = -1;
+<<<<<<< HEAD
+=======
+			memset(ivi.mac, 0, sizeof(ivi.mac));
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (dev->netdev_ops->ndo_get_vf_config(dev, i, &ivi))
 				break;
 			vf_mac.vf =
@@ -1059,7 +1076,11 @@ static int rtnl_dump_ifinfo(struct sk_buff *skb, struct netlink_callback *cb)
 	rcu_read_lock();
 	cb->seq = net->dev_base_seq;
 
+<<<<<<< HEAD
 	if (nlmsg_parse(cb->nlh, sizeof(struct rtgenmsg), tb, IFLA_MAX,
+=======
+	if (nlmsg_parse(cb->nlh, sizeof(struct ifinfomsg), tb, IFLA_MAX,
+>>>>>>> remotes/linux2/linux-3.4.y
 			ifla_policy) >= 0) {
 
 		if (tb[IFLA_EXT_MASK])
@@ -1370,6 +1391,10 @@ static int do_setlink(struct net_device *dev, struct ifinfomsg *ifm,
 			goto errout;
 		send_addr_notify = 1;
 		modified = 1;
+<<<<<<< HEAD
+=======
+		add_device_randomness(dev->dev_addr, dev->addr_len);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	if (tb[IFLA_MTU]) {
@@ -1902,7 +1927,11 @@ static u16 rtnl_calcit(struct sk_buff *skb, struct nlmsghdr *nlh)
 	u32 ext_filter_mask = 0;
 	u16 min_ifinfo_dump_size = 0;
 
+<<<<<<< HEAD
 	if (nlmsg_parse(nlh, sizeof(struct rtgenmsg), tb, IFLA_MAX,
+=======
+	if (nlmsg_parse(nlh, sizeof(struct ifinfomsg), tb, IFLA_MAX,
+>>>>>>> remotes/linux2/linux-3.4.y
 			ifla_policy) >= 0) {
 		if (tb[IFLA_EXT_MASK])
 			ext_filter_mask = nla_get_u32(tb[IFLA_EXT_MASK]);
@@ -2042,7 +2071,11 @@ static int rtnetlink_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
 		struct rtattr *attr = (void *)nlh + NLMSG_ALIGN(min_len);
 
 		while (RTA_OK(attr, attrlen)) {
+<<<<<<< HEAD
 			unsigned flavor = attr->rta_type;
+=======
+			unsigned int flavor = attr->rta_type & NLA_TYPE_MASK;
+>>>>>>> remotes/linux2/linux-3.4.y
 			if (flavor) {
 				if (flavor > rta_max[sz_idx])
 					return -EINVAL;

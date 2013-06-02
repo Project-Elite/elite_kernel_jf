@@ -68,6 +68,7 @@ static int uvc_ioctl_ctrl_map(struct uvc_video_chain *chain,
 			goto done;
 		}
 
+<<<<<<< HEAD
 		/* Prevent excessive memory consumption, as well as integer
 		 * overflows.
 		 */
@@ -77,6 +78,8 @@ static int uvc_ioctl_ctrl_map(struct uvc_video_chain *chain,
 			goto done;
 		}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		size = xmap->menu_count * sizeof(*map->menu_info);
 		map->menu_info = kmalloc(size, GFP_KERNEL);
 		if (map->menu_info == NULL) {

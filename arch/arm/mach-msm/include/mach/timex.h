@@ -18,8 +18,11 @@
 
 #define CLOCK_TICK_RATE		1000000
 
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_ARCH_HAS_CURRENT_TIMER
 #define ARCH_HAS_READ_CURRENT_TIMER
 #endif
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif

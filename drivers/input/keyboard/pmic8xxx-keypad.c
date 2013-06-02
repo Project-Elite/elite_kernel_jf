@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2009-2011, Code Aurora Forum. All rights reserved.
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -116,9 +120,12 @@ static int pmic8xxx_kp_write_u8(struct pmic8xxx_kp *kp,
 	int rc;
 
 	rc = pm8xxx_writeb(kp->dev->parent, reg, data);
+<<<<<<< HEAD
 	if (rc < 0)
 		dev_warn(kp->dev, "Error writing pmic8xxx: %X - ret %X\n",
 				reg, rc);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return rc;
 }
 
@@ -128,10 +135,13 @@ static int pmic8xxx_kp_read(struct pmic8xxx_kp *kp,
 	int rc;
 
 	rc = pm8xxx_read_buf(kp->dev->parent, reg, data, num_bytes);
+<<<<<<< HEAD
 	if (rc < 0)
 		dev_warn(kp->dev, "Error reading pmic8xxx: %X - ret %X\n",
 				reg, rc);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return rc;
 }
 
@@ -141,9 +151,12 @@ static int pmic8xxx_kp_read_u8(struct pmic8xxx_kp *kp,
 	int rc;
 
 	rc = pmic8xxx_kp_read(kp, data, reg, 1);
+<<<<<<< HEAD
 	if (rc < 0)
 		dev_warn(kp->dev, "Error reading pmic8xxx: %X - ret %X\n",
 				reg, rc);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return rc;
 }
 
@@ -473,7 +486,11 @@ static int  __devinit pmic8xxx_kp_config_gpio(int gpio_start, int num_gpios,
 					__func__, gpio_start + i, rc);
 			return rc;
 		}
+<<<<<<< HEAD
 	}
+=======
+	 }
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -542,7 +559,11 @@ static int __devinit pmic8xxx_kp_probe(struct platform_device *pdev)
 		.output_buffer	= PM_GPIO_OUT_BUF_OPEN_DRAIN,
 		.output_value	= 0,
 		.pull		= PM_GPIO_PULL_NO,
+<<<<<<< HEAD
 		.vin_sel	= PM_GPIO_VIN_S4,
+=======
+		.vin_sel	= PM_GPIO_VIN_S3,
+>>>>>>> remotes/linux2/linux-3.4.y
 		.out_strength	= PM_GPIO_STRENGTH_LOW,
 		.function	= PM_GPIO_FUNC_1,
 		.inv_int_pol	= 1,
@@ -551,7 +572,11 @@ static int __devinit pmic8xxx_kp_probe(struct platform_device *pdev)
 	struct pm_gpio kypd_sns = {
 		.direction	= PM_GPIO_DIR_IN,
 		.pull		= PM_GPIO_PULL_UP_31P5,
+<<<<<<< HEAD
 		.vin_sel	= PM_GPIO_VIN_S4,
+=======
+		.vin_sel	= PM_GPIO_VIN_S3,
+>>>>>>> remotes/linux2/linux-3.4.y
 		.out_strength	= PM_GPIO_STRENGTH_NO,
 		.function	= PM_GPIO_FUNC_NORMAL,
 		.inv_int_pol	= 1,

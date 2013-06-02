@@ -30,7 +30,10 @@ obj-$(CONFIG_REGULATOR_MAX8925) += max8925-regulator.o
 obj-$(CONFIG_REGULATOR_MAX8952) += max8952.o
 obj-$(CONFIG_REGULATOR_MAX8997) += max8997.o
 obj-$(CONFIG_REGULATOR_MAX8998) += max8998.o
+<<<<<<< HEAD
 obj-$(CONFIG_REGULATOR_MAX77693) += max77693-regulator.o
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 obj-$(CONFIG_REGULATOR_MC13783) += mc13783-regulator.o
 obj-$(CONFIG_REGULATOR_MC13892) += mc13892-regulator.o
 obj-$(CONFIG_REGULATOR_MC13XXX_CORE) +=  mc13xxx-regulator-core.o
@@ -45,6 +48,7 @@ obj-$(CONFIG_REGULATOR_TPS65217) += tps65217-regulator.o
 obj-$(CONFIG_REGULATOR_TPS6524X) += tps6524x-regulator.o
 obj-$(CONFIG_REGULATOR_TPS6586X) += tps6586x-regulator.o
 obj-$(CONFIG_REGULATOR_TPS65910) += tps65910-regulator.o
+<<<<<<< HEAD
 obj-$(CONFIG_REGULATOR_AAT2870) += aat2870-regulator.o
 obj-$(CONFIG_REGULATOR_PMIC8058) += pmic8058-regulator.o
 obj-$(CONFIG_REGULATOR_PMIC8901) += pmic8901-regulator.o
@@ -52,6 +56,8 @@ obj-$(CONFIG_REGULATOR_MSM_GPIO) += msm-gpio-regulator.o
 obj-$(CONFIG_REGULATOR_PM8058_XO) += pm8058-xo.o
 obj-$(CONFIG_REGULATOR_PM8XXX) += pm8xxx-regulator.o
 obj-$(CONFIG_REGULATOR_STUB) += stub-regulator.o
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 obj-$(CONFIG_REGULATOR_TPS65912) += tps65912-regulator.o
 obj-$(CONFIG_REGULATOR_TWL4030) += twl-regulator.o
 obj-$(CONFIG_REGULATOR_WM831X) += wm831x-dcdc.o
@@ -60,6 +66,10 @@ obj-$(CONFIG_REGULATOR_WM831X) += wm831x-ldo.o
 obj-$(CONFIG_REGULATOR_WM8350) += wm8350-regulator.o
 obj-$(CONFIG_REGULATOR_WM8400) += wm8400-regulator.o
 obj-$(CONFIG_REGULATOR_WM8994) += wm8994-regulator.o
+<<<<<<< HEAD
 obj-$(CONFIG_REGULATOR_QPNP) += qpnp-regulator.o
+=======
+
+>>>>>>> remotes/linux2/linux-3.4.y
 
 ccflags-$(CONFIG_REGULATOR_DEBUG) += -DDEBUG

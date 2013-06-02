@@ -581,10 +581,13 @@ struct device_dma_parameters {
  * @mutex:	Mutex to synchronize calls to its driver.
  * @bus:	Type of bus device is on.
  * @driver:	Which driver has allocated this
+<<<<<<< HEAD
  * @deferred_probe: entry in deferred_probe_list which is used to retry the
  * 		binding of drivers which were unable to get all the resources
  * 		needed by the device; typically because it depends on another
  * 		driver getting probed first.
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  * @platform_data: Platform data specific to the device.
  * 		Example: For devices on custom boards, as typical of embedded
  * 		and SOC based hardware, Linux often uses platform_data to point
@@ -644,7 +647,10 @@ struct device {
 	struct bus_type	*bus;		/* type of bus device is on */
 	struct device_driver *driver;	/* which driver has allocated this
 					   device */
+<<<<<<< HEAD
 	struct list_head	deferred_probe;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	void		*platform_data;	/* Platform specific data, device
 					   core doesn't touch it */
 	struct dev_pm_info	power;
@@ -666,10 +672,13 @@ struct device {
 
 	struct dma_coherent_mem	*dma_mem; /* internal for coherent mem
 					     override */
+<<<<<<< HEAD
 #ifdef CONFIG_CMA
 	struct cma *cma_area;		/* contiguous memory area for dma
 					   allocations */
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* arch specific additions */
 	struct dev_archdata	archdata;
 

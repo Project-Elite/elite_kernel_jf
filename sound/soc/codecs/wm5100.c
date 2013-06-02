@@ -1296,6 +1296,7 @@ static int wm5100_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	case SND_SOC_DAIFMT_DSP_A:
 		mask = 0;
 		break;
+<<<<<<< HEAD
 	case SND_SOC_DAIFMT_DSP_B:
 		mask = 1;
 		break;
@@ -1305,6 +1306,11 @@ static int wm5100_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	case SND_SOC_DAIFMT_LEFT_J:
 		mask = 3;
 		break;
+=======
+	case SND_SOC_DAIFMT_I2S:
+		mask = 2;
+		break;
+>>>>>>> remotes/linux2/linux-3.4.y
 	default:
 		dev_err(codec->dev, "Unsupported DAI format %d\n",
 			fmt & SND_SOC_DAIFMT_FORMAT_MASK);

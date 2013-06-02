@@ -50,9 +50,12 @@
 
 #define EFI_DEBUG	1
 
+<<<<<<< HEAD
 int efi_enabled;
 EXPORT_SYMBOL(efi_enabled);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 struct efi __read_mostly efi = {
 	.mps        = EFI_INVALID_TABLE_ADDR,
 	.acpi       = EFI_INVALID_TABLE_ADDR,
@@ -68,6 +71,7 @@ EXPORT_SYMBOL(efi);
 
 struct efi_memory_map memmap;
 
+<<<<<<< HEAD
 bool efi_64bit;
 static bool efi_native;
 
@@ -77,6 +81,31 @@ static efi_system_table_t efi_systab __initdata;
 static int __init setup_noefi(char *arg)
 {
 	efi_enabled = 0;
+=======
+static struct efi efi_phys __initdata;
+static efi_system_table_t efi_systab __initdata;
+
+static inline bool efi_is_native(void)
+{
+	return IS_ENABLED(CONFIG_X86_64) == efi_enabled(EFI_64BIT);
+}
+
+unsigned long x86_efi_facility;
+
+/*
+ * Returns 1 if 'facility' is enabled, 0 otherwise.
+ */
+int efi_enabled(int facility)
+{
+	return test_bit(facility, &x86_efi_facility) != 0;
+}
+EXPORT_SYMBOL(efi_enabled);
+
+static bool disable_runtime = false;
+static int __init setup_noefi(char *arg)
+{
+	disable_runtime = true;
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 early_param("noefi", setup_noefi);
@@ -419,10 +448,29 @@ void __init efi_reserve_boot_services(void)
 	}
 }
 
+<<<<<<< HEAD
 static void __init efi_free_boot_services(void)
 {
 	void *p;
 
+=======
+void __init efi_unmap_memmap(void)
+{
+	clear_bit(EFI_MEMMAP, &x86_efi_facility);
+	if (memmap.map) {
+		early_iounmap(memmap.map, memmap.nr_map * memmap.desc_size);
+		memmap.map = NULL;
+	}
+}
+
+void __init efi_free_boot_services(void)
+{
+	void *p;
+
+	if (!efi_is_native())
+		return;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
 		efi_memory_desc_t *md = p;
 		unsigned long long start = md->phys_addr;
@@ -438,11 +486,20 @@ static void __init efi_free_boot_services(void)
 
 		free_bootmem_late(start, size);
 	}
+<<<<<<< HEAD
+=======
+
+	efi_unmap_memmap();
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int __init efi_systab_init(void *phys)
 {
+<<<<<<< HEAD
 	if (efi_64bit) {
+=======
+	if (efi_enabled(EFI_64BIT)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		efi_system_table_64_t *systab64;
 		u64 tmp = 0;
 
@@ -534,7 +591,11 @@ static int __init efi_config_init(u64 tables, int nr_tables)
 	void *config_tables, *tablep;
 	int i, sz;
 
+<<<<<<< HEAD
 	if (efi_64bit)
+=======
+	if (efi_enabled(EFI_64BIT))
+>>>>>>> remotes/linux2/linux-3.4.y
 		sz = sizeof(efi_config_table_64_t);
 	else
 		sz = sizeof(efi_config_table_32_t);
@@ -554,7 +615,11 @@ static int __init efi_config_init(u64 tables, int nr_tables)
 		efi_guid_t guid;
 		unsigned long table;
 
+<<<<<<< HEAD
 		if (efi_64bit) {
+=======
+		if (efi_enabled(EFI_64BIT)) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			u64 table64;
 			guid = ((efi_config_table_64_t *)tablep)->guid;
 			table64 = ((efi_config_table_64_t *)tablep)->table;
@@ -666,15 +731,22 @@ void __init efi_init(void)
 	if (boot_params.efi_info.efi_systab_hi ||
 	    boot_params.efi_info.efi_memmap_hi) {
 		pr_info("Table located above 4GB, disabling EFI.\n");
+<<<<<<< HEAD
 		efi_enabled = 0;
 		return;
 	}
 	efi_phys.systab = (efi_system_table_t *)boot_params.efi_info.efi_systab;
 	efi_native = !efi_64bit;
+=======
+		return;
+	}
+	efi_phys.systab = (efi_system_table_t *)boot_params.efi_info.efi_systab;
+>>>>>>> remotes/linux2/linux-3.4.y
 #else
 	efi_phys.systab = (efi_system_table_t *)
 			  (boot_params.efi_info.efi_systab |
 			  ((__u64)boot_params.efi_info.efi_systab_hi<<32));
+<<<<<<< HEAD
 	efi_native = efi_64bit;
 #endif
 
@@ -682,6 +754,14 @@ void __init efi_init(void)
 		efi_enabled = 0;
 		return;
 	}
+=======
+#endif
+
+	if (efi_systab_init(efi_phys.systab))
+		return;
+
+	set_bit(EFI_SYSTEM_TABLES, &x86_efi_facility);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Show what we know for posterity
@@ -699,16 +779,24 @@ void __init efi_init(void)
 		efi.systab->hdr.revision >> 16,
 		efi.systab->hdr.revision & 0xffff, vendor);
 
+<<<<<<< HEAD
 	if (efi_config_init(efi.systab->tables, efi.systab->nr_tables)) {
 		efi_enabled = 0;
 		return;
 	}
+=======
+	if (efi_config_init(efi.systab->tables, efi.systab->nr_tables))
+		return;
+
+	set_bit(EFI_CONFIG_TABLES, &x86_efi_facility);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * Note: We currently don't support runtime services on an EFI
 	 * that doesn't match the kernel 32/64-bit mode.
 	 */
 
+<<<<<<< HEAD
 	if (!efi_native)
 		pr_info("No EFI runtime due to 32/64-bit mismatch with kernel\n");
 	else if (efi_runtime_init()) {
@@ -722,6 +810,23 @@ void __init efi_init(void)
 	}
 #ifdef CONFIG_X86_32
 	if (efi_native) {
+=======
+	if (!efi_is_native())
+		pr_info("No EFI runtime due to 32/64-bit mismatch with kernel\n");
+	else {
+		if (disable_runtime || efi_runtime_init())
+			return;
+		set_bit(EFI_RUNTIME_SERVICES, &x86_efi_facility);
+	}
+
+	if (efi_memmap_init())
+		return;
+
+	set_bit(EFI_MEMMAP, &x86_efi_facility);
+
+#ifdef CONFIG_X86_32
+	if (efi_is_native()) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		x86_platform.get_wallclock = efi_get_time;
 		x86_platform.set_wallclock = efi_set_rtc_mmss;
 	}
@@ -787,8 +892,15 @@ void __init efi_enter_virtual_mode(void)
 	 * non-native EFI
 	 */
 
+<<<<<<< HEAD
 	if (!efi_native)
 		goto out;
+=======
+	if (!efi_is_native()) {
+		efi_unmap_memmap();
+		return;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Merge contiguous regions of the same type and attribute */
 	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
@@ -878,6 +990,7 @@ void __init efi_enter_virtual_mode(void)
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Thankfully, it does seem that no runtime services other than
 	 * SetVirtualAddressMap() will touch boot services code, so we can
 	 * get rid of it all at this point
@@ -885,11 +998,17 @@ void __init efi_enter_virtual_mode(void)
 	efi_free_boot_services();
 
 	/*
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	 * Now that EFI is in virtual mode, update the function
 	 * pointers in the runtime service table to the new virtual addresses.
 	 *
 	 * Call EFI services through wrapper functions.
 	 */
+<<<<<<< HEAD
+=======
+	efi.runtime_version = efi_systab.hdr.revision;
+>>>>>>> remotes/linux2/linux-3.4.y
 	efi.get_time = virt_efi_get_time;
 	efi.set_time = virt_efi_set_time;
 	efi.get_wakeup_time = virt_efi_get_wakeup_time;
@@ -906,9 +1025,12 @@ void __init efi_enter_virtual_mode(void)
 	if (__supported_pte_mask & _PAGE_NX)
 		runtime_code_page_mkexec();
 
+<<<<<<< HEAD
 out:
 	early_iounmap(memmap.map, memmap.nr_map * memmap.desc_size);
 	memmap.map = NULL;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	kfree(new_memmap);
 }
 
@@ -935,6 +1057,12 @@ u64 efi_mem_attributes(unsigned long phys_addr)
 	efi_memory_desc_t *md;
 	void *p;
 
+<<<<<<< HEAD
+=======
+	if (!efi_enabled(EFI_MEMMAP))
+		return 0;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
 		md = p;
 		if ((md->phys_addr <= phys_addr) &&

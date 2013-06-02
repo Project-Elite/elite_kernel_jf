@@ -213,6 +213,10 @@ struct ath_frame_info {
 	enum ath9k_key_type keytype;
 	u8 keyix;
 	u8 retries;
+<<<<<<< HEAD
+=======
+	u8 rtscts_rate;
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 struct ath_buf_state {

@@ -124,6 +124,7 @@ config GPIO_MSM_V2
 	  Qualcomm MSM chips.  Most of the pins on the MSM can be
 	  selected for GPIO, and are controlled by this driver.
 
+<<<<<<< HEAD
 config GPIO_MSM_V3
 	tristate "Qualcomm MSM GPIO v3"
 	depends on GPIOLIB && ARCH_MSM
@@ -141,6 +142,8 @@ config GPIO_FSM9XXX
 	  Most of the pins on the MSM can be selected for GPIO, and are
 	  controlled by this driver.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config GPIO_MXC
 	def_bool y
 	depends on ARCH_MXC
@@ -531,6 +534,7 @@ config GPIO_TPS65910
 	help
 	  Select this option to enable GPIO driver for the TPS65910
 	  chip family.
+<<<<<<< HEAD
 
 config GPIO_PM8XXX
 	tristate "Qualcomm PM8xxx GPIO support"
@@ -575,4 +579,6 @@ config GPIO_QPNP_PIN_DEBUG
 	help
 	  Say 'y' here to include debug support for the Qualcomm
 	  QPNP gpio driver.
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 endif

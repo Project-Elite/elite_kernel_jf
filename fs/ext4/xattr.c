@@ -495,7 +495,11 @@ ext4_xattr_release_block(handle_t *handle, struct inode *inode,
 		error = ext4_handle_dirty_metadata(handle, inode, bh);
 		if (IS_SYNC(inode))
 			ext4_handle_sync(handle);
+<<<<<<< HEAD
 		dquot_free_block(inode, 1);
+=======
+		dquot_free_block(inode, EXT4_C2B(EXT4_SB(inode->i_sb), 1));
+>>>>>>> remotes/linux2/linux-3.4.y
 		ea_bdebug(bh, "refcount now=%d; releasing",
 			  le32_to_cpu(BHDR(bh)->h_refcount));
 	}
@@ -784,7 +788,12 @@ inserted:
 			else {
 				/* The old block is released after updating
 				   the inode. */
+<<<<<<< HEAD
 				error = dquot_alloc_block(inode, 1);
+=======
+				error = dquot_alloc_block(inode,
+						EXT4_C2B(EXT4_SB(sb), 1));
+>>>>>>> remotes/linux2/linux-3.4.y
 				if (error)
 					goto cleanup;
 				error = ext4_journal_get_write_access(handle,
@@ -880,7 +889,11 @@ cleanup:
 	return error;
 
 cleanup_dquot:
+<<<<<<< HEAD
 	dquot_free_block(inode, 1);
+=======
+	dquot_free_block(inode, EXT4_C2B(EXT4_SB(sb), 1));
+>>>>>>> remotes/linux2/linux-3.4.y
 	goto cleanup;
 
 bad_block:

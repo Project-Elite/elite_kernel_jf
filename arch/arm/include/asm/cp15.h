@@ -52,6 +52,7 @@ static inline unsigned int get_cr(void)
 	return val;
 }
 
+<<<<<<< HEAD
 #ifdef TIMA_ENABLED
 void tima_dump_log2(void);
 void tima_verify_state(unsigned long pmdp, unsigned long val, unsigned long rd_only, unsigned long caller);
@@ -70,6 +71,8 @@ static inline void tima_send_cmd (unsigned int r2val, unsigned int cmdid)
         "ldmfd   sp!, {r0-r3, r11}" : : "r" (r2val), "r" (cmdid) : "r0","r2","r11","cc");
 }
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static inline void set_cr(unsigned int val)
 {
 	asm volatile("mcr p15, 0, %0, c1, c0, 0	@ set CR"

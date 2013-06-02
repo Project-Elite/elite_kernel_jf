@@ -522,6 +522,12 @@ void sock_release(struct socket *sock)
 	if (rcu_dereference_protected(sock->wq, 1)->fasync_list)
 		printk(KERN_ERR "sock_release: fasync list not empty!\n");
 
+<<<<<<< HEAD
+=======
+	if (test_bit(SOCK_EXTERNALLY_ALLOCATED, &sock->flags))
+		return;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	percpu_sub(sockets_in_use, 1);
 	if (!sock->file) {
 		iput(SOCK_INODE(sock));
@@ -2602,7 +2608,11 @@ static int do_siocgstamp(struct net *net, struct socket *sock,
 	err = sock_do_ioctl(net, sock, cmd, (unsigned long)&ktv);
 	set_fs(old_fs);
 	if (!err)
+<<<<<<< HEAD
 		err = compat_put_timeval(up, &ktv);
+=======
+		err = compat_put_timeval(&ktv, up);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return err;
 }
@@ -2618,7 +2628,11 @@ static int do_siocgstampns(struct net *net, struct socket *sock,
 	err = sock_do_ioctl(net, sock, cmd, (unsigned long)&kts);
 	set_fs(old_fs);
 	if (!err)
+<<<<<<< HEAD
 		err = compat_put_timespec(up, &kts);
+=======
+		err = compat_put_timespec(&kts, up);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return err;
 }
@@ -2655,6 +2669,10 @@ static int dev_ifconf(struct net *net, struct compat_ifconf __user *uifc32)
 	if (copy_from_user(&ifc32, uifc32, sizeof(struct compat_ifconf)))
 		return -EFAULT;
 
+<<<<<<< HEAD
+=======
+	memset(&ifc, 0, sizeof(ifc));
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (ifc32.ifcbuf == 0) {
 		ifc32.ifc_len = 0;
 		ifc.ifc_len = 0;

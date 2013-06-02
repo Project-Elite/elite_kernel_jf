@@ -170,7 +170,11 @@ static int iwl6000_hw_channel_switch(struct iwl_priv *priv,
 	 * See iwlagn_mac_channel_switch.
 	 */
 	struct iwl_rxon_context *ctx = &priv->contexts[IWL_RXON_CTX_BSS];
+<<<<<<< HEAD
 	struct iwl6000_channel_switch_cmd cmd;
+=======
+	struct iwl6000_channel_switch_cmd *cmd;
+>>>>>>> remotes/linux2/linux-3.4.y
 	const struct iwl_channel_info *ch_info;
 	u32 switch_time_in_usec, ucode_switch_time;
 	u16 ch;
@@ -180,6 +184,7 @@ static int iwl6000_hw_channel_switch(struct iwl_priv *priv,
 	struct ieee80211_vif *vif = ctx->vif;
 	struct iwl_host_cmd hcmd = {
 		.id = REPLY_CHANNEL_SWITCH,
+<<<<<<< HEAD
 		.len = { sizeof(cmd), },
 		.flags = CMD_SYNC,
 		.data = { &cmd, },
@@ -192,6 +197,27 @@ static int iwl6000_hw_channel_switch(struct iwl_priv *priv,
 	cmd.channel = cpu_to_le16(ch);
 	cmd.rxon_flags = ctx->staging.flags;
 	cmd.rxon_filter_flags = ctx->staging.filter_flags;
+=======
+		.len = { sizeof(*cmd), },
+		.flags = CMD_SYNC,
+		.dataflags[0] = IWL_HCMD_DFL_NOCOPY,
+	};
+	int err;
+
+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
+	if (!cmd)
+		return -ENOMEM;
+
+	hcmd.data[0] = cmd;
+
+	cmd->band = priv->band == IEEE80211_BAND_2GHZ;
+	ch = ch_switch->channel->hw_value;
+	IWL_DEBUG_11H(priv, "channel switch from %u to %u\n",
+		      ctx->active.channel, ch);
+	cmd->channel = cpu_to_le16(ch);
+	cmd->rxon_flags = ctx->staging.flags;
+	cmd->rxon_filter_flags = ctx->staging.filter_flags;
+>>>>>>> remotes/linux2/linux-3.4.y
 	switch_count = ch_switch->count;
 	tsf_low = ch_switch->timestamp & 0x0ffffffff;
 	/*
@@ -207,30 +233,51 @@ static int iwl6000_hw_channel_switch(struct iwl_priv *priv,
 			switch_count = 0;
 	}
 	if (switch_count <= 1)
+<<<<<<< HEAD
 		cmd.switch_time = cpu_to_le32(priv->ucode_beacon_time);
+=======
+		cmd->switch_time = cpu_to_le32(priv->ucode_beacon_time);
+>>>>>>> remotes/linux2/linux-3.4.y
 	else {
 		switch_time_in_usec =
 			vif->bss_conf.beacon_int * switch_count * TIME_UNIT;
 		ucode_switch_time = iwl_usecs_to_beacons(priv,
 							 switch_time_in_usec,
 							 beacon_interval);
+<<<<<<< HEAD
 		cmd.switch_time = iwl_add_beacon_time(priv,
+=======
+		cmd->switch_time = iwl_add_beacon_time(priv,
+>>>>>>> remotes/linux2/linux-3.4.y
 						      priv->ucode_beacon_time,
 						      ucode_switch_time,
 						      beacon_interval);
 	}
 	IWL_DEBUG_11H(priv, "uCode time for the switch is 0x%x\n",
+<<<<<<< HEAD
 		      cmd.switch_time);
 	ch_info = iwl_get_channel_info(priv, priv->band, ch);
 	if (ch_info)
 		cmd.expect_beacon = is_channel_radar(ch_info);
+=======
+		      cmd->switch_time);
+	ch_info = iwl_get_channel_info(priv, priv->band, ch);
+	if (ch_info)
+		cmd->expect_beacon = is_channel_radar(ch_info);
+>>>>>>> remotes/linux2/linux-3.4.y
 	else {
 		IWL_ERR(priv, "invalid channel switch from %u to %u\n",
 			ctx->active.channel, ch);
 		return -EFAULT;
 	}
 
+<<<<<<< HEAD
 	return iwl_dvm_send_cmd(priv, &hcmd);
+=======
+	err = iwl_dvm_send_cmd(priv, &hcmd);
+	kfree(cmd);
+	return err;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static struct iwl_lib_ops iwl6000_lib = {

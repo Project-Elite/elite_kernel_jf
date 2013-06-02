@@ -1,16 +1,22 @@
 config ARM_GIC
 	select IRQ_DOMAIN
 	select MULTI_IRQ_HANDLER
+<<<<<<< HEAD
 	select MSM_SHOW_RESUME_IRQ
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	bool
 
 config GIC_NON_BANKED
 	bool
 
+<<<<<<< HEAD
 config GIC_SECURE
 	bool
 	depends on ARM_GIC
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config ARM_VIC
 	select IRQ_DOMAIN
 	select MULTI_IRQ_HANDLER
@@ -45,6 +51,7 @@ config SHARP_PARAM
 
 config SHARP_SCOOP
 	bool
+<<<<<<< HEAD
 
 config FIQ_GLUE
 	bool
@@ -95,3 +102,5 @@ config FIQ_DEBUGGER_CONSOLE_DEFAULT_ENABLE
 	help
 	  If enabled, this puts the fiq debugger into console mode by default.
 	  Otherwise, the fiq debugger will start out in debug mode.
+=======
+>>>>>>> remotes/linux2/linux-3.4.y

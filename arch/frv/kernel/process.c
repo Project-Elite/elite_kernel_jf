@@ -25,6 +25,10 @@
 #include <linux/reboot.h>
 #include <linux/interrupt.h>
 #include <linux/pagemap.h>
+<<<<<<< HEAD
+=======
+#include <linux/rcupdate.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <asm/asm-offsets.h>
 #include <asm/uaccess.h>
@@ -84,12 +88,20 @@ void cpu_idle(void)
 {
 	/* endless idle loop with no priority at all */
 	while (1) {
+<<<<<<< HEAD
+=======
+		rcu_idle_enter();
+>>>>>>> remotes/linux2/linux-3.4.y
 		while (!need_resched()) {
 			check_pgt_cache();
 
 			if (!frv_dma_inprogress && idle)
 				idle();
 		}
+<<<<<<< HEAD
+=======
+		rcu_idle_exit();
+>>>>>>> remotes/linux2/linux-3.4.y
 
 		schedule_preempt_disabled();
 	}

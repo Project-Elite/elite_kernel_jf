@@ -157,6 +157,10 @@ static const struct sdhci_pci_fixes sdhci_ene_714 = {
 static const struct sdhci_pci_fixes sdhci_cafe = {
 	.quirks		= SDHCI_QUIRK_NO_SIMULT_VDD_AND_POWER |
 			  SDHCI_QUIRK_NO_BUSY_IRQ |
+<<<<<<< HEAD
+=======
+			  SDHCI_QUIRK_BROKEN_CARD_DETECTION |
+>>>>>>> remotes/linux2/linux-3.4.y
 			  SDHCI_QUIRK_BROKEN_TIMEOUT_VAL,
 };
 
@@ -367,8 +371,11 @@ static int o2_probe(struct sdhci_pci_chip *chip)
 		pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch);
 	}
 
+<<<<<<< HEAD
 	slot->host->mmc->caps2 = MMC_CAP2_BOOTPART_NOACC;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 

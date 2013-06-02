@@ -26,7 +26,10 @@
 #include <linux/slab.h>
 #include <linux/errno.h>
 #include <linux/iommu.h>
+<<<<<<< HEAD
 #include <linux/scatterlist.h>
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static ssize_t show_iommu_group(struct device *dev,
 				struct device_attribute *attr, char *buf)
@@ -136,7 +139,11 @@ void iommu_set_fault_handler(struct iommu_domain *domain,
 }
 EXPORT_SYMBOL_GPL(iommu_set_fault_handler);
 
+<<<<<<< HEAD
 struct iommu_domain *iommu_domain_alloc(struct bus_type *bus, int flags)
+=======
+struct iommu_domain *iommu_domain_alloc(struct bus_type *bus)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct iommu_domain *domain;
 	int ret;
@@ -150,7 +157,11 @@ struct iommu_domain *iommu_domain_alloc(struct bus_type *bus, int flags)
 
 	domain->ops = bus->iommu_ops;
 
+<<<<<<< HEAD
 	ret = domain->ops->domain_init(domain, flags);
+=======
+	ret = domain->ops->domain_init(domain);
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (ret)
 		goto out_free;
 
@@ -334,6 +345,7 @@ size_t iommu_unmap(struct iommu_domain *domain, unsigned long iova, size_t size)
 }
 EXPORT_SYMBOL_GPL(iommu_unmap);
 
+<<<<<<< HEAD
 int iommu_map_range(struct iommu_domain *domain, unsigned int iova,
 		    struct scatterlist *sg, unsigned int len, int prot)
 {
@@ -367,6 +379,8 @@ phys_addr_t iommu_get_pt_base_addr(struct iommu_domain *domain)
 }
 EXPORT_SYMBOL_GPL(iommu_get_pt_base_addr);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 int iommu_device_group(struct device *dev, unsigned int *groupid)
 {
 	if (iommu_present(dev->bus) && dev->bus->iommu_ops->device_group)

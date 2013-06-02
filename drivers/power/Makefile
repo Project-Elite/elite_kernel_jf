@@ -43,6 +43,7 @@ obj-$(CONFIG_CHARGER_GPIO)	+= gpio-charger.o
 obj-$(CONFIG_CHARGER_MANAGER)	+= charger-manager.o
 obj-$(CONFIG_CHARGER_MAX8997)	+= max8997_charger.o
 obj-$(CONFIG_CHARGER_MAX8998)	+= max8998_charger.o
+<<<<<<< HEAD
 obj-$(CONFIG_BATTERY_MSM)       += msm_battery.o
 obj-$(CONFIG_BATTERY_MSM8X60)   += msm_charger.o
 obj-$(CONFIG_PM8058_CHARGER)    += pmic8058-charger.o
@@ -60,3 +61,6 @@ obj-$(CONFIG_LTC4088_CHARGER)	+= ltc4088-charger.o
 obj-$(CONFIG_CHARGER_SMB347)	+= smb347-charger.o
 obj-$(CONFIG_BQ51051B_CHARGER)	+= bq51051b_charger.o
 obj-$(CONFIG_BATTERY_TEMP_CONTROL) += battery_temp_ctrl.o
+=======
+obj-$(CONFIG_CHARGER_SMB347)	+= smb347-charger.o
+>>>>>>> remotes/linux2/linux-3.4.y

@@ -670,6 +670,10 @@
 #define GPIOCSR_BIT5			FIELD32(0x00000020)
 #define GPIOCSR_BIT6			FIELD32(0x00000040)
 #define GPIOCSR_BIT7			FIELD32(0x00000080)
+<<<<<<< HEAD
+=======
+#define GPIOCSR_BIT8			FIELD32(0x00000100)
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /*
  * BBPPCSR: BBP Pin control register.

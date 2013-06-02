@@ -293,6 +293,7 @@ sci_phy_link_layer_initialization(struct isci_phy *iphy,
 
 	writel(sp_timeouts, &llr->sas_phy_timeouts);
 
+<<<<<<< HEAD
 	sp_timeouts = readl(&iphy->link_layer_registers->sas_phy_timeouts);
 
 	/* Clear the default 0x36 (54us) RATE_CHANGE timeout value. */
@@ -305,6 +306,8 @@ sci_phy_link_layer_initialization(struct isci_phy *iphy,
 
 	writel(sp_timeouts, &iphy->link_layer_registers->sas_phy_timeouts);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (is_a2(ihost->pdev)) {
 		/* Program the max ARB time for the PHY to 700us so we
 		 * inter-operate with the PMC expander which shuts down

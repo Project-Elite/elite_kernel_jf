@@ -37,6 +37,11 @@ struct memblock memblock __initdata_memblock = {
 
 int memblock_debug __initdata_memblock;
 static int memblock_can_resize __initdata_memblock;
+<<<<<<< HEAD
+=======
+static int memblock_memory_in_slab __initdata_memblock = 0;
+static int memblock_reserved_in_slab __initdata_memblock = 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* inline so we don't get a warning when pr_debug is compiled out */
 static inline const char *memblock_type_name(struct memblock_type *type)
@@ -141,6 +146,7 @@ phys_addr_t __init_memblock memblock_find_in_range(phys_addr_t start,
 					   MAX_NUMNODES);
 }
 
+<<<<<<< HEAD
 /*
  * Free memblock.reserved.regions
  */
@@ -165,6 +171,8 @@ int __init_memblock memblock_reserve_reserved_regions(void)
 		 sizeof(struct memblock_region) * memblock.reserved.max);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static void __init_memblock memblock_remove_region(struct memblock_type *type, unsigned long r)
 {
 	type->total_size -= type->regions[r].size;
@@ -182,11 +190,50 @@ static void __init_memblock memblock_remove_region(struct memblock_type *type, u
 	}
 }
 
+<<<<<<< HEAD
 static int __init_memblock memblock_double_array(struct memblock_type *type)
 {
 	struct memblock_region *new_array, *old_array;
 	phys_addr_t old_size, new_size, addr;
 	int use_slab = slab_is_available();
+=======
+phys_addr_t __init_memblock get_allocated_memblock_reserved_regions_info(
+					phys_addr_t *addr)
+{
+	if (memblock.reserved.regions == memblock_reserved_init_regions)
+		return 0;
+
+	*addr = __pa(memblock.reserved.regions);
+
+	return PAGE_ALIGN(sizeof(struct memblock_region) *
+			  memblock.reserved.max);
+}
+
+/**
+ * memblock_double_array - double the size of the memblock regions array
+ * @type: memblock type of the regions array being doubled
+ * @new_area_start: starting address of memory range to avoid overlap with
+ * @new_area_size: size of memory range to avoid overlap with
+ *
+ * Double the size of the @type regions array. If memblock is being used to
+ * allocate memory for a new reserved regions array and there is a previously
+ * allocated memory range [@new_area_start,@new_area_start+@new_area_size]
+ * waiting to be reserved, ensure the memory used by the new array does
+ * not overlap.
+ *
+ * RETURNS:
+ * 0 on success, -1 on failure.
+ */
+static int __init_memblock memblock_double_array(struct memblock_type *type,
+						phys_addr_t new_area_start,
+						phys_addr_t new_area_size)
+{
+	struct memblock_region *new_array, *old_array;
+	phys_addr_t old_alloc_size, new_alloc_size;
+	phys_addr_t old_size, new_size, addr;
+	int use_slab = slab_is_available();
+	int *in_slab;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* We don't allow resizing until we know about the reserved regions
 	 * of memory that aren't suitable for allocation
@@ -197,6 +244,21 @@ static int __init_memblock memblock_double_array(struct memblock_type *type)
 	/* Calculate new doubled size */
 	old_size = type->max * sizeof(struct memblock_region);
 	new_size = old_size << 1;
+<<<<<<< HEAD
+=======
+	/*
+	 * We need to allocated new one align to PAGE_SIZE,
+	 *   so we can free them completely later.
+	 */
+	old_alloc_size = PAGE_ALIGN(old_size);
+	new_alloc_size = PAGE_ALIGN(new_size);
+
+	/* Retrieve the slab flag */
+	if (type == &memblock.memory)
+		in_slab = &memblock_memory_in_slab;
+	else
+		in_slab = &memblock_reserved_in_slab;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/* Try to find some space for it.
 	 *
@@ -212,14 +274,35 @@ static int __init_memblock memblock_double_array(struct memblock_type *type)
 	if (use_slab) {
 		new_array = kmalloc(new_size, GFP_KERNEL);
 		addr = new_array ? __pa(new_array) : 0;
+<<<<<<< HEAD
 	} else
 		addr = memblock_find_in_range(0, MEMBLOCK_ALLOC_ACCESSIBLE, new_size, sizeof(phys_addr_t));
+=======
+	} else {
+		/* only exclude range when trying to double reserved.regions */
+		if (type != &memblock.reserved)
+			new_area_start = new_area_size = 0;
+
+		addr = memblock_find_in_range(new_area_start + new_area_size,
+						memblock.current_limit,
+						new_alloc_size, PAGE_SIZE);
+		if (!addr && new_area_size)
+			addr = memblock_find_in_range(0,
+					min(new_area_start, memblock.current_limit),
+					new_alloc_size, PAGE_SIZE);
+
+		new_array = addr ? __va(addr) : 0;
+	}
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!addr) {
 		pr_err("memblock: Failed to double %s array from %ld to %ld entries !\n",
 		       memblock_type_name(type), type->max, type->max * 2);
 		return -1;
 	}
+<<<<<<< HEAD
 	new_array = __va(addr);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	memblock_dbg("memblock: %s array is doubled to %ld at [%#010llx-%#010llx]",
 		 memblock_type_name(type), type->max * 2, (u64)addr, (u64)addr + new_size - 1);
@@ -234,6 +317,7 @@ static int __init_memblock memblock_double_array(struct memblock_type *type)
 	type->regions = new_array;
 	type->max <<= 1;
 
+<<<<<<< HEAD
 	/* If we use SLAB that's it, we are done */
 	if (use_slab)
 		return 0;
@@ -249,6 +333,25 @@ static int __init_memblock memblock_double_array(struct memblock_type *type)
 	if (old_array != memblock_memory_init_regions &&
 	    old_array != memblock_reserved_init_regions)
 		memblock_free(__pa(old_array), old_size);
+=======
+	/* Free old array. We needn't free it if the array is the
+	 * static one
+	 */
+	if (*in_slab)
+		kfree(old_array);
+	else if (old_array != memblock_memory_init_regions &&
+		 old_array != memblock_reserved_init_regions)
+		memblock_free(__pa(old_array), old_alloc_size);
+
+	/* Reserve the new array if that comes from the memblock.
+	 * Otherwise, we needn't do it
+	 */
+	if (!use_slab)
+		BUG_ON(memblock_reserve(addr, new_alloc_size));
+
+	/* Update slab flag */
+	*in_slab = use_slab;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -387,7 +490,11 @@ repeat:
 	 */
 	if (!insert) {
 		while (type->cnt + nr_new > type->max)
+<<<<<<< HEAD
 			if (memblock_double_array(type) < 0)
+=======
+			if (memblock_double_array(type, obase, size) < 0)
+>>>>>>> remotes/linux2/linux-3.4.y
 				return -ENOMEM;
 		insert = true;
 		goto repeat;
@@ -438,7 +545,11 @@ static int __init_memblock memblock_isolate_range(struct memblock_type *type,
 
 	/* we'll create at most two more regions */
 	while (type->cnt + 2 > type->max)
+<<<<<<< HEAD
 		if (memblock_double_array(type) < 0)
+=======
+		if (memblock_double_array(type, base, size) < 0)
+>>>>>>> remotes/linux2/linux-3.4.y
 			return -ENOMEM;
 
 	for (i = 0; i < type->cnt; i++) {
@@ -867,18 +978,48 @@ int __init_memblock memblock_is_region_memory(phys_addr_t base, phys_addr_t size
 		 memblock.memory.regions[idx].size) >= end;
 }
 
+<<<<<<< HEAD
 int __init_memblock memblock_overlaps_memory(phys_addr_t base, phys_addr_t size)
 {
 	memblock_cap_size(base, &size);
 	return memblock_overlaps_region(&memblock.memory, base, size) >= 0;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 int __init_memblock memblock_is_region_reserved(phys_addr_t base, phys_addr_t size)
 {
 	memblock_cap_size(base, &size);
 	return memblock_overlaps_region(&memblock.reserved, base, size) >= 0;
 }
 
+<<<<<<< HEAD
+=======
+void __init_memblock memblock_trim_memory(phys_addr_t align)
+{
+	int i;
+	phys_addr_t start, end, orig_start, orig_end;
+	struct memblock_type *mem = &memblock.memory;
+
+	for (i = 0; i < mem->cnt; i++) {
+		orig_start = mem->regions[i].base;
+		orig_end = mem->regions[i].base + mem->regions[i].size;
+		start = round_up(orig_start, align);
+		end = round_down(orig_end, align);
+
+		if (start == orig_start && end == orig_end)
+			continue;
+
+		if (start < end) {
+			mem->regions[i].base = start;
+			mem->regions[i].size = end - start;
+		} else {
+			memblock_remove_region(mem, i);
+			i--;
+		}
+	}
+}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 void __init_memblock memblock_set_current_limit(phys_addr_t limit)
 {

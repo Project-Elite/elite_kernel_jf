@@ -1740,9 +1740,15 @@ pch_gbe_clean_rx(struct pch_gbe_adapter *adapter,
 
 			skb->protocol = eth_type_trans(skb, netdev);
 			if (tcp_ip_status & PCH_GBE_RXD_ACC_STAT_TCPIPOK)
+<<<<<<< HEAD
 				skb->ip_summed = CHECKSUM_NONE;
 			else
 				skb->ip_summed = CHECKSUM_UNNECESSARY;
+=======
+				skb->ip_summed = CHECKSUM_UNNECESSARY;
+			else
+				skb->ip_summed = CHECKSUM_NONE;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 			napi_gro_receive(&adapter->napi, skb);
 			(*work_done)++;

@@ -3,7 +3,10 @@
  *
  * Copyright (C) 2010 Samsung Electronics Co.Ltd
  * Author: Joonyoung Shim <jy0922.shim@samsung.com>
+<<<<<<< HEAD
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -21,6 +24,7 @@
 #include <linux/input/mt.h>
 #include <linux/interrupt.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/gpio.h>
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
@@ -39,12 +43,15 @@
 #define MXT336S_ID	0x82
 #define MXT1386_ID	0xA0
 #define MXT1664S_ID	0xA2
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* Version */
 #define MXT_VER_20		20
 #define MXT_VER_21		21
 #define MXT_VER_22		22
 
+<<<<<<< HEAD
 /* I2C slave address pairs */
 struct mxt_address_pair {
 	int bootloader;
@@ -63,14 +70,24 @@ static const struct mxt_address_pair mxt_slave_addresses[] = {
 };
 
 enum mxt_device_state { INIT, APPMODE, BOOTLOADER };
+=======
+/* Slave addresses */
+#define MXT_APP_LOW		0x4a
+#define MXT_APP_HIGH		0x4b
+#define MXT_BOOT_LOW		0x24
+#define MXT_BOOT_HIGH		0x25
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* Firmware */
 #define MXT_FW_NAME		"maxtouch.fw"
 
+<<<<<<< HEAD
 /* Firmware frame size including frame data and CRC */
 #define MXT_SINGLE_FW_MAX_FRAME_SIZE	278
 #define MXT_CHIPSET_FW_MAX_FRAME_SIZE	534
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* Registers */
 #define MXT_FAMILY_ID		0x00
 #define MXT_VARIANT_ID		0x01
@@ -96,16 +113,22 @@ enum mxt_device_state { INIT, APPMODE, BOOTLOADER };
 #define MXT_TOUCH_PROXKEY_T52		52
 #define MXT_PROCI_GRIPFACE_T20		20
 #define MXT_PROCG_NOISE_T22		22
+<<<<<<< HEAD
 #define MXT_PROCG_NOISE_T62		62
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #define MXT_PROCI_ONETOUCH_T24		24
 #define MXT_PROCI_TWOTOUCH_T27		27
 #define MXT_PROCI_GRIP_T40		40
 #define MXT_PROCI_PALM_T41		41
 #define MXT_PROCI_TOUCHSUPPRESSION_T42	42
 #define MXT_PROCI_STYLUS_T47		47
+<<<<<<< HEAD
 #define MXT_PROCI_ADAPTIVETHRESHOLD_T55 55
 #define MXT_PROCI_SHIELDLESS_T56	56
 #define MXT_PROCI_EXTRATSDATA_T57	57
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #define MXT_PROCG_NOISESUPPRESSION_T48	48
 #define MXT_SPT_COMMSCONFIG_T18		18
 #define MXT_SPT_GPIOPWM_T19		19
@@ -115,7 +138,10 @@ enum mxt_device_state { INIT, APPMODE, BOOTLOADER };
 #define MXT_SPT_DIGITIZER_T43		43
 #define MXT_SPT_MESSAGECOUNT_T44	44
 #define MXT_SPT_CTECONFIG_T46		46
+<<<<<<< HEAD
 #define MXT_SPT_TIMER_T61		61
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* MXT_GEN_COMMAND_T6 field */
 #define MXT_COMMAND_RESET	0
@@ -138,7 +164,11 @@ enum mxt_device_state { INIT, APPMODE, BOOTLOADER };
 #define MXT_ACQUIRE_ATCHCALST	6
 #define MXT_ACQUIRE_ATCHCALSTHR	7
 
+<<<<<<< HEAD
 /* MXT_TOUCH_MULT_T9 field */
+=======
+/* MXT_TOUCH_MULTI_T9 field */
+>>>>>>> remotes/linux2/linux-3.4.y
 #define MXT_TOUCH_CTRL		0
 #define MXT_TOUCH_XORIGIN	1
 #define MXT_TOUCH_YORIGIN	2
@@ -213,6 +243,7 @@ enum mxt_device_state { INIT, APPMODE, BOOTLOADER };
 #define MXT_VOLTAGE_DEFAULT	2700000
 #define MXT_VOLTAGE_STEP	10000
 
+<<<<<<< HEAD
 /* Analog voltage @2.7 V */
 #define MXT_VTG_MIN_UV		2700000
 #define MXT_VTG_MAX_UV		3300000
@@ -229,10 +260,13 @@ enum mxt_device_state { INIT, APPMODE, BOOTLOADER };
 #define MXT_I2C_LOAD_UA		10000
 #define MXT_I2C_LPM_LOAD_UA	10
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* Define for MXT_GEN_COMMAND_T6 */
 #define MXT_BOOT_VALUE		0xa5
 #define MXT_BACKUP_VALUE	0x55
 #define MXT_BACKUP_TIME		25	/* msec */
+<<<<<<< HEAD
 #define MXT224_RESET_TIME	65	/* msec */
 #define MXT224E_RESET_TIME	150	/* msec */
 #define MXT1386_RESET_TIME	250	/* msec */
@@ -244,6 +278,11 @@ enum mxt_device_state { INIT, APPMODE, BOOTLOADER };
 #define MXT_FWRESET_TIME	1000	/* msec */
 
 #define MXT_WAKE_TIME		25
+=======
+#define MXT_RESET_TIME		65	/* msec */
+
+#define MXT_FWRESET_TIME	175	/* msec */
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* Command to unlock bootloader */
 #define MXT_UNLOCK_CMD_MSB	0xaa
@@ -257,8 +296,11 @@ enum mxt_device_state { INIT, APPMODE, BOOTLOADER };
 #define MXT_FRAME_CRC_PASS	0x04
 #define MXT_APP_CRC_FAIL	0x40	/* valid 7 8 bit only */
 #define MXT_BOOT_STATUS_MASK	0x3f
+<<<<<<< HEAD
 #define MXT_BOOT_EXTENDED_ID	(1 << 5)
 #define MXT_BOOT_ID_MASK	0x1f
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 /* Touch status */
 #define MXT_SUPPRESS		(1 << 1)
@@ -274,14 +316,18 @@ enum mxt_device_state { INIT, APPMODE, BOOTLOADER };
 #define MXT_X_INVERT		(1 << 1)
 #define MXT_Y_INVERT		(1 << 2)
 
+<<<<<<< HEAD
 /* Touch suppression */
 #define MXT_TCHSUP_ACTIVE      (1 << 0)
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* Touchscreen absolute values */
 #define MXT_MAX_AREA		0xff
 
 #define MXT_MAX_FINGER		10
 
+<<<<<<< HEAD
 #define T7_DATA_SIZE		3
 #define MXT_MAX_RW_TRIES	3
 #define MXT_BLOCK_SIZE		256
@@ -295,6 +341,8 @@ enum mxt_device_state { INIT, APPMODE, BOOTLOADER };
 #define MXT_DEBUGFS_DIR		"atmel_mxt_ts"
 #define MXT_DEBUGFS_FILE	"object"
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 struct mxt_info {
 	u8 family_id;
 	u8 variant_id;
@@ -335,12 +383,16 @@ struct mxt_data {
 	struct i2c_client *client;
 	struct input_dev *input_dev;
 	const struct mxt_platform_data *pdata;
+<<<<<<< HEAD
 	const struct mxt_config_info *config_info;
 	enum mxt_device_state state;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct mxt_object *object_table;
 	struct mxt_info info;
 	struct mxt_finger finger[MXT_MAX_FINGER];
 	unsigned int irq;
+<<<<<<< HEAD
 	struct regulator *vcc_ana;
 	struct regulator *vcc_dig;
 	struct regulator *vcc_i2c;
@@ -367,6 +419,12 @@ struct mxt_data {
 
 static struct dentry *debug_base;
 
+=======
+	unsigned int max_x;
+	unsigned int max_y;
+};
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static bool mxt_object_readable(unsigned int type)
 {
 	switch (type) {
@@ -381,15 +439,21 @@ static bool mxt_object_readable(unsigned int type)
 	case MXT_TOUCH_PROXKEY_T52:
 	case MXT_PROCI_GRIPFACE_T20:
 	case MXT_PROCG_NOISE_T22:
+<<<<<<< HEAD
 	case MXT_PROCG_NOISE_T62:
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	case MXT_PROCI_ONETOUCH_T24:
 	case MXT_PROCI_TWOTOUCH_T27:
 	case MXT_PROCI_GRIP_T40:
 	case MXT_PROCI_PALM_T41:
 	case MXT_PROCI_TOUCHSUPPRESSION_T42:
 	case MXT_PROCI_STYLUS_T47:
+<<<<<<< HEAD
 	case MXT_PROCI_SHIELDLESS_T56:
 	case MXT_PROCI_EXTRATSDATA_T57:
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	case MXT_PROCG_NOISESUPPRESSION_T48:
 	case MXT_SPT_COMMSCONFIG_T18:
 	case MXT_SPT_GPIOPWM_T19:
@@ -398,8 +462,11 @@ static bool mxt_object_readable(unsigned int type)
 	case MXT_SPT_USERDATA_T38:
 	case MXT_SPT_DIGITIZER_T43:
 	case MXT_SPT_CTECONFIG_T46:
+<<<<<<< HEAD
 	case MXT_SPT_TIMER_T61:
 	case MXT_PROCI_ADAPTIVETHRESHOLD_T55:
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		return true;
 	default:
 		return false;
@@ -418,25 +485,36 @@ static bool mxt_object_writable(unsigned int type)
 	case MXT_TOUCH_PROXKEY_T52:
 	case MXT_PROCI_GRIPFACE_T20:
 	case MXT_PROCG_NOISE_T22:
+<<<<<<< HEAD
 	case MXT_PROCG_NOISE_T62:
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	case MXT_PROCI_ONETOUCH_T24:
 	case MXT_PROCI_TWOTOUCH_T27:
 	case MXT_PROCI_GRIP_T40:
 	case MXT_PROCI_PALM_T41:
 	case MXT_PROCI_TOUCHSUPPRESSION_T42:
 	case MXT_PROCI_STYLUS_T47:
+<<<<<<< HEAD
 	case MXT_PROCI_SHIELDLESS_T56:
 	case MXT_PROCI_EXTRATSDATA_T57:
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	case MXT_PROCG_NOISESUPPRESSION_T48:
 	case MXT_SPT_COMMSCONFIG_T18:
 	case MXT_SPT_GPIOPWM_T19:
 	case MXT_SPT_SELFTEST_T25:
 	case MXT_SPT_CTECONFIG_T28:
+<<<<<<< HEAD
 	case MXT_SPT_USERDATA_T38:
 	case MXT_SPT_DIGITIZER_T43:
 	case MXT_SPT_CTECONFIG_T46:
 	case MXT_SPT_TIMER_T61:
 	case MXT_PROCI_ADAPTIVETHRESHOLD_T55:
+=======
+	case MXT_SPT_DIGITIZER_T43:
+	case MXT_SPT_CTECONFIG_T46:
+>>>>>>> remotes/linux2/linux-3.4.y
 		return true;
 	default:
 		return false;
@@ -457,6 +535,7 @@ static void mxt_dump_message(struct device *dev,
 	dev_dbg(dev, "checksum:\t0x%x\n", message->checksum);
 }
 
+<<<<<<< HEAD
 static int mxt_switch_to_bootloader_address(struct mxt_data *data)
 {
 	int i;
@@ -567,6 +646,10 @@ static int mxt_get_bootloader_id(struct i2c_client *client)
 
 static int mxt_check_bootloader(struct i2c_client *client,
 				unsigned int state)
+=======
+static int mxt_check_bootloader(struct i2c_client *client,
+				     unsigned int state)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	u8 val;
 
@@ -578,28 +661,39 @@ recheck:
 
 	switch (state) {
 	case MXT_WAITING_BOOTLOAD_CMD:
+<<<<<<< HEAD
 		val = mxt_get_bootloader_version(client, val);
 		val &= ~MXT_BOOT_STATUS_MASK;
 		break;
 	case MXT_WAITING_FRAME_DATA:
 	case MXT_APP_CRC_FAIL:
+=======
+	case MXT_WAITING_FRAME_DATA:
+>>>>>>> remotes/linux2/linux-3.4.y
 		val &= ~MXT_BOOT_STATUS_MASK;
 		break;
 	case MXT_FRAME_CRC_PASS:
 		if (val == MXT_FRAME_CRC_CHECK)
 			goto recheck;
+<<<<<<< HEAD
 		if (val == MXT_FRAME_CRC_FAIL) {
 			dev_err(&client->dev, "Bootloader CRC fail\n");
 			return -EINVAL;
 		}
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		break;
 	default:
 		return -EINVAL;
 	}
 
 	if (val != state) {
+<<<<<<< HEAD
 		dev_err(&client->dev, "Invalid bootloader mode state %X\n",
 			val);
+=======
+		dev_err(&client->dev, "Unvalid bootloader mode state\n");
+>>>>>>> remotes/linux2/linux-3.4.y
 		return -EINVAL;
 	}
 
@@ -622,7 +716,11 @@ static int mxt_unlock_bootloader(struct i2c_client *client)
 }
 
 static int mxt_fw_write(struct i2c_client *client,
+<<<<<<< HEAD
 			const u8 *data, unsigned int frame_size)
+=======
+			     const u8 *data, unsigned int frame_size)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	if (i2c_master_send(client, data, frame_size) != frame_size) {
 		dev_err(&client->dev, "%s: i2c send failed\n", __func__);
@@ -637,7 +735,10 @@ static int __mxt_read_reg(struct i2c_client *client,
 {
 	struct i2c_msg xfer[2];
 	u8 buf[2];
+<<<<<<< HEAD
 	int i = 0;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	buf[0] = reg & 0xff;
 	buf[1] = (reg >> 8) & 0xff;
@@ -654,6 +755,7 @@ static int __mxt_read_reg(struct i2c_client *client,
 	xfer[1].len = len;
 	xfer[1].buf = val;
 
+<<<<<<< HEAD
 	do {
 		if (i2c_transfer(client->adapter, xfer, 2) == 2)
 			return 0;
@@ -662,6 +764,14 @@ static int __mxt_read_reg(struct i2c_client *client,
 
 	dev_err(&client->dev, "%s: i2c transfer failed\n", __func__);
 	return -EIO;
+=======
+	if (i2c_transfer(client->adapter, xfer, 2) != 2) {
+		dev_err(&client->dev, "%s: i2c transfer failed\n", __func__);
+		return -EIO;
+	}
+
+	return 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int mxt_read_reg(struct i2c_client *client, u16 reg, u8 *val)
@@ -669,6 +779,7 @@ static int mxt_read_reg(struct i2c_client *client, u16 reg, u8 *val)
 	return __mxt_read_reg(client, reg, 1, val);
 }
 
+<<<<<<< HEAD
 static int __mxt_write_reg(struct i2c_client *client,
 		    u16 addr, u16 length, u8 *value)
 {
@@ -696,6 +807,22 @@ static int __mxt_write_reg(struct i2c_client *client,
 static int mxt_write_reg(struct i2c_client *client, u16 reg, u8 val)
 {
 	return __mxt_write_reg(client, reg, 1, &val);
+=======
+static int mxt_write_reg(struct i2c_client *client, u16 reg, u8 val)
+{
+	u8 buf[3];
+
+	buf[0] = reg & 0xff;
+	buf[1] = (reg >> 8) & 0xff;
+	buf[2] = val;
+
+	if (i2c_master_send(client, buf, 3) != 3) {
+		dev_err(&client->dev, "%s: i2c send failed\n", __func__);
+		return -EIO;
+	}
+
+	return 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static int mxt_read_object_table(struct i2c_client *client,
@@ -750,6 +877,7 @@ static int mxt_read_object(struct mxt_data *data,
 	return __mxt_read_reg(data->client, reg + offset, 1, val);
 }
 
+<<<<<<< HEAD
 static int mxt_get_object_address(struct device *dev, u8 type)
 {
 	struct mxt_data *data = dev_get_drvdata(dev);
@@ -780,6 +908,8 @@ static int mxt_get_object_address(struct device *dev, u8 type)
 
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static int mxt_write_object(struct mxt_data *data,
 				 u8 type, u8 offset, u8 val)
 {
@@ -807,6 +937,7 @@ static void mxt_input_report(struct mxt_data *data, int single_id)
 			continue;
 
 		input_mt_slot(input_dev, id);
+<<<<<<< HEAD
 		/* Firmware reports min/max values when the touch is
 		 * outside screen area. Send a release event in
 		 * such cases to avoid unwanted touches.
@@ -818,6 +949,8 @@ static void mxt_input_report(struct mxt_data *data, int single_id)
 			finger[id].status = MXT_RELEASE;
 		}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		input_mt_report_slot_state(input_dev, MT_TOOL_FINGER,
 				finger[id].status != MXT_RELEASE);
 
@@ -830,7 +963,11 @@ static void mxt_input_report(struct mxt_data *data, int single_id)
 			input_report_abs(input_dev, ABS_MT_POSITION_Y,
 					finger[id].y);
 			input_report_abs(input_dev, ABS_MT_PRESSURE,
+<<<<<<< HEAD
 					 finger[id].pressure);
+=======
+					finger[id].pressure);
+>>>>>>> remotes/linux2/linux-3.4.y
 		} else {
 			finger[id].status = 0;
 		}
@@ -838,6 +975,7 @@ static void mxt_input_report(struct mxt_data *data, int single_id)
 
 	input_report_key(input_dev, BTN_TOUCH, finger_num > 0);
 
+<<<<<<< HEAD
 	if (finger[single_id].x <= data->pdata->panel_minx ||
 		finger[single_id].x >= data->pdata->panel_maxx ||
 		finger[single_id].y <= data->pdata->panel_miny ||
@@ -845,11 +983,17 @@ static void mxt_input_report(struct mxt_data *data, int single_id)
 		status = MXT_RELEASE;
 	}
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (status != MXT_RELEASE) {
 		input_report_abs(input_dev, ABS_X, finger[single_id].x);
 		input_report_abs(input_dev, ABS_Y, finger[single_id].y);
 		input_report_abs(input_dev,
+<<<<<<< HEAD
 			ABS_PRESSURE, finger[single_id].pressure);
+=======
+				 ABS_PRESSURE, finger[single_id].pressure);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	input_sync(input_dev);
@@ -883,9 +1027,15 @@ static void mxt_input_touchevent(struct mxt_data *data,
 
 	x = (message->message[1] << 4) | ((message->message[3] >> 4) & 0xf);
 	y = (message->message[2] << 4) | ((message->message[3] & 0xf));
+<<<<<<< HEAD
 	if (data->pdata->panel_maxx < 1024)
 		x = x >> 2;
 	if (data->pdata->panel_maxy < 1024)
+=======
+	if (data->max_x < 1024)
+		x = x >> 2;
+	if (data->max_y < 1024)
+>>>>>>> remotes/linux2/linux-3.4.y
 		y = y >> 2;
 
 	area = message->message[4];
@@ -905,6 +1055,7 @@ static void mxt_input_touchevent(struct mxt_data *data,
 	mxt_input_report(data, id);
 }
 
+<<<<<<< HEAD
 static void mxt_handle_key_array(struct mxt_data *data,
 				struct mxt_message *message)
 {
@@ -959,10 +1110,13 @@ static void mxt_handle_touch_supression(struct mxt_data *data, u8 status)
 		mxt_release_all(data);
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static irqreturn_t mxt_interrupt(int irq, void *dev_id)
 {
 	struct mxt_data *data = dev_id;
 	struct mxt_message message;
+<<<<<<< HEAD
 	struct device *dev = &data->client->dev;
 	int id;
 	u8 reportid;
@@ -971,12 +1125,21 @@ static irqreturn_t mxt_interrupt(int irq, void *dev_id)
 		dev_err(dev, "Ignoring IRQ - not in APPMODE state\n");
 		return IRQ_HANDLED;
 	}
+=======
+	struct mxt_object *object;
+	struct device *dev = &data->client->dev;
+	int id;
+	u8 reportid;
+	u8 max_reportid;
+	u8 min_reportid;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	do {
 		if (mxt_read_message(data, &message)) {
 			dev_err(dev, "Failed to read message\n");
 			goto end;
 		}
+<<<<<<< HEAD
 		reportid = message.reportid;
 
 		if (!reportid) {
@@ -996,6 +1159,22 @@ static irqreturn_t mxt_interrupt(int irq, void *dev_id)
 		else if (reportid >= data->t42_min_reportid &&
 					reportid <= data->t42_max_reportid)
 			mxt_handle_touch_supression(data, message.message[0]);
+=======
+
+		reportid = message.reportid;
+
+		/* whether reportid is thing of MXT_TOUCH_MULTI_T9 */
+		object = mxt_get_object(data, MXT_TOUCH_MULTI_T9);
+		if (!object)
+			goto end;
+
+		max_reportid = object->max_reportid;
+		min_reportid = max_reportid - object->num_report_ids + 1;
+		id = reportid - min_reportid;
+
+		if (reportid >= min_reportid && reportid <= max_reportid)
+			mxt_input_touchevent(data, &message, id);
+>>>>>>> remotes/linux2/linux-3.4.y
 		else
 			mxt_dump_message(dev, &message);
 	} while (reportid != 0xff);
@@ -1006,13 +1185,21 @@ end:
 
 static int mxt_check_reg_init(struct mxt_data *data)
 {
+<<<<<<< HEAD
 	const struct mxt_config_info *config_info = data->config_info;
+=======
+	const struct mxt_platform_data *pdata = data->pdata;
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct mxt_object *object;
 	struct device *dev = &data->client->dev;
 	int index = 0;
 	int i, j, config_offset;
 
+<<<<<<< HEAD
 	if (!config_info) {
+=======
+	if (!pdata->config) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		dev_dbg(dev, "No cfg data defined, skipping reg init\n");
 		return 0;
 	}
@@ -1023,16 +1210,30 @@ static int mxt_check_reg_init(struct mxt_data *data)
 		if (!mxt_object_writable(object->type))
 			continue;
 
+<<<<<<< HEAD
 		for (j = 0; j < object->size + 1; j++) {
 			config_offset = index + j;
 			if (config_offset > config_info->config_length) {
+=======
+		for (j = 0;
+		     j < (object->size + 1) * (object->instances + 1);
+		     j++) {
+			config_offset = index + j;
+			if (config_offset > pdata->config_length) {
+>>>>>>> remotes/linux2/linux-3.4.y
 				dev_err(dev, "Not enough config data!\n");
 				return -EINVAL;
 			}
 			mxt_write_object(data, object->type, j,
+<<<<<<< HEAD
 					 config_info->config[config_offset]);
 		}
 		index += object->size + 1;
+=======
+					 pdata->config[config_offset]);
+		}
+		index += (object->size + 1) * (object->instances + 1);
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return 0;
@@ -1060,6 +1261,57 @@ static int mxt_make_highchg(struct mxt_data *data)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void mxt_handle_pdata(struct mxt_data *data)
+{
+	const struct mxt_platform_data *pdata = data->pdata;
+	u8 voltage;
+
+	/* Set touchscreen lines */
+	mxt_write_object(data, MXT_TOUCH_MULTI_T9, MXT_TOUCH_XSIZE,
+			pdata->x_line);
+	mxt_write_object(data, MXT_TOUCH_MULTI_T9, MXT_TOUCH_YSIZE,
+			pdata->y_line);
+
+	/* Set touchscreen orient */
+	mxt_write_object(data, MXT_TOUCH_MULTI_T9, MXT_TOUCH_ORIENT,
+			pdata->orient);
+
+	/* Set touchscreen burst length */
+	mxt_write_object(data, MXT_TOUCH_MULTI_T9,
+			MXT_TOUCH_BLEN, pdata->blen);
+
+	/* Set touchscreen threshold */
+	mxt_write_object(data, MXT_TOUCH_MULTI_T9,
+			MXT_TOUCH_TCHTHR, pdata->threshold);
+
+	/* Set touchscreen resolution */
+	mxt_write_object(data, MXT_TOUCH_MULTI_T9,
+			MXT_TOUCH_XRANGE_LSB, (pdata->x_size - 1) & 0xff);
+	mxt_write_object(data, MXT_TOUCH_MULTI_T9,
+			MXT_TOUCH_XRANGE_MSB, (pdata->x_size - 1) >> 8);
+	mxt_write_object(data, MXT_TOUCH_MULTI_T9,
+			MXT_TOUCH_YRANGE_LSB, (pdata->y_size - 1) & 0xff);
+	mxt_write_object(data, MXT_TOUCH_MULTI_T9,
+			MXT_TOUCH_YRANGE_MSB, (pdata->y_size - 1) >> 8);
+
+	/* Set touchscreen voltage */
+	if (pdata->voltage) {
+		if (pdata->voltage < MXT_VOLTAGE_DEFAULT) {
+			voltage = (MXT_VOLTAGE_DEFAULT - pdata->voltage) /
+				MXT_VOLTAGE_STEP;
+			voltage = 0xff - voltage + 1;
+		} else
+			voltage = (pdata->voltage - MXT_VOLTAGE_DEFAULT) /
+				MXT_VOLTAGE_STEP;
+
+		mxt_write_object(data, MXT_SPT_CTECONFIG_T28,
+				MXT_CTE_VOLTAGE, voltage);
+	}
+}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static int mxt_get_info(struct mxt_data *data)
 {
 	struct i2c_client *client = data->client;
@@ -1102,7 +1354,10 @@ static int mxt_get_object_table(struct mxt_data *data)
 	u16 reg;
 	u8 reportid = 0;
 	u8 buf[MXT_OBJECT_SIZE];
+<<<<<<< HEAD
 	bool found_t38 = false;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	for (i = 0; i < data->info.object_num; i++) {
 		struct mxt_object *object = data->object_table + i;
@@ -1123,6 +1378,7 @@ static int mxt_get_object_table(struct mxt_data *data)
 					(object->instances + 1);
 			object->max_reportid = reportid;
 		}
+<<<<<<< HEAD
 
 		/* Calculate index for config major version in config array.
 		 * Major version is the first byte in object T38.
@@ -1133,11 +1389,14 @@ static int mxt_get_object_table(struct mxt_data *data)
 		}
 		if (!found_t38 && mxt_object_writable(object->type))
 			data->cfg_version_idx += object->size + 1;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int compare_versions(const u8 *v1, const u8 *v2)
 {
 	int i;
@@ -1583,11 +1842,142 @@ static int strtobyte(const char *data, u8 *value)
 }
 
 static int mxt_load_fw(struct device *dev, const char *fn)
+=======
+static int mxt_initialize(struct mxt_data *data)
+{
+	struct i2c_client *client = data->client;
+	struct mxt_info *info = &data->info;
+	int error;
+	u8 val;
+
+	error = mxt_get_info(data);
+	if (error)
+		return error;
+
+	data->object_table = kcalloc(info->object_num,
+				     sizeof(struct mxt_object),
+				     GFP_KERNEL);
+	if (!data->object_table) {
+		dev_err(&client->dev, "Failed to allocate memory\n");
+		return -ENOMEM;
+	}
+
+	/* Get object table information */
+	error = mxt_get_object_table(data);
+	if (error)
+		return error;
+
+	/* Check register init values */
+	error = mxt_check_reg_init(data);
+	if (error)
+		return error;
+
+	mxt_handle_pdata(data);
+
+	/* Backup to memory */
+	mxt_write_object(data, MXT_GEN_COMMAND_T6,
+			MXT_COMMAND_BACKUPNV,
+			MXT_BACKUP_VALUE);
+	msleep(MXT_BACKUP_TIME);
+
+	/* Soft reset */
+	mxt_write_object(data, MXT_GEN_COMMAND_T6,
+			MXT_COMMAND_RESET, 1);
+	msleep(MXT_RESET_TIME);
+
+	/* Update matrix size at info struct */
+	error = mxt_read_reg(client, MXT_MATRIX_X_SIZE, &val);
+	if (error)
+		return error;
+	info->matrix_xsize = val;
+
+	error = mxt_read_reg(client, MXT_MATRIX_Y_SIZE, &val);
+	if (error)
+		return error;
+	info->matrix_ysize = val;
+
+	dev_info(&client->dev,
+			"Family ID: %d Variant ID: %d Version: %d Build: %d\n",
+			info->family_id, info->variant_id, info->version,
+			info->build);
+
+	dev_info(&client->dev,
+			"Matrix X Size: %d Matrix Y Size: %d Object Num: %d\n",
+			info->matrix_xsize, info->matrix_ysize,
+			info->object_num);
+
+	return 0;
+}
+
+static void mxt_calc_resolution(struct mxt_data *data)
+{
+	unsigned int max_x = data->pdata->x_size - 1;
+	unsigned int max_y = data->pdata->y_size - 1;
+
+	if (data->pdata->orient & MXT_XY_SWITCH) {
+		data->max_x = max_y;
+		data->max_y = max_x;
+	} else {
+		data->max_x = max_x;
+		data->max_y = max_y;
+	}
+}
+
+static ssize_t mxt_object_show(struct device *dev,
+				    struct device_attribute *attr, char *buf)
+{
+	struct mxt_data *data = dev_get_drvdata(dev);
+	struct mxt_object *object;
+	int count = 0;
+	int i, j;
+	int error;
+	u8 val;
+
+	for (i = 0; i < data->info.object_num; i++) {
+		object = data->object_table + i;
+
+		count += snprintf(buf + count, PAGE_SIZE - count,
+				"Object[%d] (Type %d)\n",
+				i + 1, object->type);
+		if (count >= PAGE_SIZE)
+			return PAGE_SIZE - 1;
+
+		if (!mxt_object_readable(object->type)) {
+			count += snprintf(buf + count, PAGE_SIZE - count,
+					"\n");
+			if (count >= PAGE_SIZE)
+				return PAGE_SIZE - 1;
+			continue;
+		}
+
+		for (j = 0; j < object->size + 1; j++) {
+			error = mxt_read_object(data,
+						object->type, j, &val);
+			if (error)
+				return error;
+
+			count += snprintf(buf + count, PAGE_SIZE - count,
+					"\t[%2d]: %02x (%d)\n", j, val, val);
+			if (count >= PAGE_SIZE)
+				return PAGE_SIZE - 1;
+		}
+
+		count += snprintf(buf + count, PAGE_SIZE - count, "\n");
+		if (count >= PAGE_SIZE)
+			return PAGE_SIZE - 1;
+	}
+
+	return count;
+}
+
+static int mxt_load_fw(struct device *dev, const char *fn)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	struct mxt_data *data = dev_get_drvdata(dev);
 	struct i2c_client *client = data->client;
 	const struct firmware *fw = NULL;
 	unsigned int frame_size;
+<<<<<<< HEAD
 	unsigned int retry = 0;
 	unsigned int pos = 0;
 	int ret, i, max_frame_size;
@@ -2398,10 +2788,144 @@ static int mxt_parse_config(struct device *dev, struct device_node *np,
 
 	memcpy(temp_cfg, prop->value, info->config_length);
 	info->config = temp_cfg;
+=======
+	unsigned int pos = 0;
+	int ret;
+
+	ret = request_firmware(&fw, fn, dev);
+	if (ret) {
+		dev_err(dev, "Unable to open firmware %s\n", fn);
+		return ret;
+	}
+
+	/* Change to the bootloader mode */
+	mxt_write_object(data, MXT_GEN_COMMAND_T6,
+			MXT_COMMAND_RESET, MXT_BOOT_VALUE);
+	msleep(MXT_RESET_TIME);
+
+	/* Change to slave address of bootloader */
+	if (client->addr == MXT_APP_LOW)
+		client->addr = MXT_BOOT_LOW;
+	else
+		client->addr = MXT_BOOT_HIGH;
+
+	ret = mxt_check_bootloader(client, MXT_WAITING_BOOTLOAD_CMD);
+	if (ret)
+		goto out;
+
+	/* Unlock bootloader */
+	mxt_unlock_bootloader(client);
+
+	while (pos < fw->size) {
+		ret = mxt_check_bootloader(client,
+						MXT_WAITING_FRAME_DATA);
+		if (ret)
+			goto out;
+
+		frame_size = ((*(fw->data + pos) << 8) | *(fw->data + pos + 1));
+
+		/* We should add 2 at frame size as the the firmware data is not
+		 * included the CRC bytes.
+		 */
+		frame_size += 2;
+
+		/* Write one frame to device */
+		mxt_fw_write(client, fw->data + pos, frame_size);
+
+		ret = mxt_check_bootloader(client,
+						MXT_FRAME_CRC_PASS);
+		if (ret)
+			goto out;
+
+		pos += frame_size;
+
+		dev_dbg(dev, "Updated %d bytes / %zd bytes\n", pos, fw->size);
+	}
+
+out:
+	release_firmware(fw);
+
+	/* Change to slave address of application */
+	if (client->addr == MXT_BOOT_LOW)
+		client->addr = MXT_APP_LOW;
+	else
+		client->addr = MXT_APP_HIGH;
+
+	return ret;
+}
+
+static ssize_t mxt_update_fw_store(struct device *dev,
+					struct device_attribute *attr,
+					const char *buf, size_t count)
+{
+	struct mxt_data *data = dev_get_drvdata(dev);
+	int error;
+
+	disable_irq(data->irq);
+
+	error = mxt_load_fw(dev, MXT_FW_NAME);
+	if (error) {
+		dev_err(dev, "The firmware update failed(%d)\n", error);
+		count = error;
+	} else {
+		dev_dbg(dev, "The firmware update succeeded\n");
+
+		/* Wait for reset */
+		msleep(MXT_FWRESET_TIME);
+
+		kfree(data->object_table);
+		data->object_table = NULL;
+
+		mxt_initialize(data);
+	}
+
+	enable_irq(data->irq);
+
+	error = mxt_make_highchg(data);
+	if (error)
+		return error;
+
+	return count;
+}
+
+static DEVICE_ATTR(object, 0444, mxt_object_show, NULL);
+static DEVICE_ATTR(update_fw, 0664, NULL, mxt_update_fw_store);
+
+static struct attribute *mxt_attrs[] = {
+	&dev_attr_object.attr,
+	&dev_attr_update_fw.attr,
+	NULL
+};
+
+static const struct attribute_group mxt_attr_group = {
+	.attrs = mxt_attrs,
+};
+
+static void mxt_start(struct mxt_data *data)
+{
+	/* Touch enable */
+	mxt_write_object(data,
+			MXT_TOUCH_MULTI_T9, MXT_TOUCH_CTRL, 0x83);
+}
+
+static void mxt_stop(struct mxt_data *data)
+{
+	/* Touch disable */
+	mxt_write_object(data,
+			MXT_TOUCH_MULTI_T9, MXT_TOUCH_CTRL, 0);
+}
+
+static int mxt_input_open(struct input_dev *dev)
+{
+	struct mxt_data *data = input_get_drvdata(dev);
+
+	mxt_start(data);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int mxt_parse_dt(struct device *dev, struct mxt_platform_data *pdata)
 {
 	int rc;
@@ -2525,10 +3049,19 @@ static int mxt_parse_dt(struct device *dev, struct mxt_platform_data *pdata)
 	return -ENODEV;
 }
 #endif
+=======
+static void mxt_input_close(struct input_dev *dev)
+{
+	struct mxt_data *data = input_get_drvdata(dev);
+
+	mxt_stop(data);
+}
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static int __devinit mxt_probe(struct i2c_client *client,
 		const struct i2c_device_id *id)
 {
+<<<<<<< HEAD
 	struct mxt_platform_data *pdata;
 	struct mxt_data *data;
 	struct input_dev *input_dev;
@@ -2547,6 +3080,12 @@ static int __devinit mxt_probe(struct i2c_client *client,
 			return error;
 	} else
 		pdata = client->dev.platform_data;
+=======
+	const struct mxt_platform_data *pdata = client->dev.platform_data;
+	struct mxt_data *data;
+	struct input_dev *input_dev;
+	int error;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!pdata)
 		return -EINVAL;
@@ -2559,8 +3098,12 @@ static int __devinit mxt_probe(struct i2c_client *client,
 		goto err_free_mem;
 	}
 
+<<<<<<< HEAD
 	data->state = INIT;
 	input_dev->name = "atmel_mxt_ts";
+=======
+	input_dev->name = "Atmel maXTouch Touchscreen";
+>>>>>>> remotes/linux2/linux-3.4.y
 	input_dev->id.bustype = BUS_I2C;
 	input_dev->dev.parent = &client->dev;
 	input_dev->open = mxt_input_open;
@@ -2569,10 +3112,17 @@ static int __devinit mxt_probe(struct i2c_client *client,
 	data->client = client;
 	data->input_dev = input_dev;
 	data->pdata = pdata;
+<<<<<<< HEAD
+=======
+	data->irq = client->irq;
+
+	mxt_calc_resolution(data);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	__set_bit(EV_ABS, input_dev->evbit);
 	__set_bit(EV_KEY, input_dev->evbit);
 	__set_bit(BTN_TOUCH, input_dev->keybit);
+<<<<<<< HEAD
 	__set_bit(INPUT_PROP_DIRECT, input_dev->propbit);
 
 	/* For single touch */
@@ -2580,6 +3130,14 @@ static int __devinit mxt_probe(struct i2c_client *client,
 			pdata->disp_minx, pdata->disp_maxx, 0, 0);
 	input_set_abs_params(input_dev, ABS_Y,
 			pdata->disp_miny, pdata->disp_maxy, 0, 0);
+=======
+
+	/* For single touch */
+	input_set_abs_params(input_dev, ABS_X,
+			     0, data->max_x, 0, 0);
+	input_set_abs_params(input_dev, ABS_Y,
+			     0, data->max_y, 0, 0);
+>>>>>>> remotes/linux2/linux-3.4.y
 	input_set_abs_params(input_dev, ABS_PRESSURE,
 			     0, 255, 0, 0);
 
@@ -2588,6 +3146,7 @@ static int __devinit mxt_probe(struct i2c_client *client,
 	input_set_abs_params(input_dev, ABS_MT_TOUCH_MAJOR,
 			     0, MXT_MAX_AREA, 0, 0);
 	input_set_abs_params(input_dev, ABS_MT_POSITION_X,
+<<<<<<< HEAD
 			pdata->disp_minx, pdata->disp_maxx, 0, 0);
 	input_set_abs_params(input_dev, ABS_MT_POSITION_Y,
 			pdata->disp_miny, pdata->disp_maxy, 0, 0);
@@ -2667,6 +3226,21 @@ static int __devinit mxt_probe(struct i2c_client *client,
 	error = mxt_initialize(data);
 	if (error)
 		goto err_reset_gpio_req;
+=======
+			     0, data->max_x, 0, 0);
+	input_set_abs_params(input_dev, ABS_MT_POSITION_Y,
+			     0, data->max_y, 0, 0);
+	input_set_abs_params(input_dev, ABS_MT_PRESSURE,
+			     0, 255, 0, 0);
+
+	input_set_drvdata(input_dev, data);
+	i2c_set_clientdata(client, data);
+
+	error = mxt_initialize(data);
+	if (error)
+		goto err_free_object;
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	error = request_threaded_irq(client->irq, NULL, mxt_interrupt,
 			pdata->irqflags, client->dev.driver->name, data);
 	if (error) {
@@ -2674,6 +3248,7 @@ static int __devinit mxt_probe(struct i2c_client *client,
 		goto err_free_object;
 	}
 
+<<<<<<< HEAD
 	if (data->state == APPMODE) {
 		error = mxt_make_highchg(data);
 		if (error) {
@@ -2681,6 +3256,11 @@ static int __devinit mxt_probe(struct i2c_client *client,
 			goto err_free_irq;
 		}
 	}
+=======
+	error = mxt_make_highchg(data);
+	if (error)
+		goto err_free_irq;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	error = input_register_device(input_dev);
 	if (error)
@@ -2690,6 +3270,7 @@ static int __devinit mxt_probe(struct i2c_client *client,
 	if (error)
 		goto err_unregister_device;
 
+<<<<<<< HEAD
 #if defined(CONFIG_HAS_EARLYSUSPEND)
 	data->early_suspend.level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN +
 						MXT_SUSPEND_LEVEL;
@@ -2700,6 +3281,8 @@ static int __devinit mxt_probe(struct i2c_client *client,
 
 	mxt_debugfs_init(data);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 
 err_unregister_device:
@@ -2709,6 +3292,7 @@ err_free_irq:
 	free_irq(client->irq, data);
 err_free_object:
 	kfree(data->object_table);
+<<<<<<< HEAD
 err_reset_gpio_req:
 	if (gpio_is_valid(pdata->reset_gpio))
 		gpio_free(pdata->reset_gpio);
@@ -2725,6 +3309,8 @@ err_regulator_on:
 		pdata->init_hw(false);
 	else
 		mxt_regulator_configure(data, false);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 err_free_mem:
 	input_free_device(input_dev);
 	kfree(data);
@@ -2738,6 +3324,7 @@ static int __devexit mxt_remove(struct i2c_client *client)
 	sysfs_remove_group(&client->dev.kobj, &mxt_attr_group);
 	free_irq(data->irq, data);
 	input_unregister_device(data->input_dev);
+<<<<<<< HEAD
 #if defined(CONFIG_HAS_EARLYSUSPEND)
 	unregister_early_suspend(&data->early_suspend);
 #endif
@@ -2762,10 +3349,62 @@ static int __devexit mxt_remove(struct i2c_client *client)
 	kfree(data);
 
 	debugfs_remove_recursive(debug_base);
+=======
+	kfree(data->object_table);
+	kfree(data);
 
 	return 0;
 }
 
+#ifdef CONFIG_PM
+static int mxt_suspend(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+	struct mxt_data *data = i2c_get_clientdata(client);
+	struct input_dev *input_dev = data->input_dev;
+
+	mutex_lock(&input_dev->mutex);
+
+	if (input_dev->users)
+		mxt_stop(data);
+
+	mutex_unlock(&input_dev->mutex);
+
+	return 0;
+}
+
+static int mxt_resume(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+	struct mxt_data *data = i2c_get_clientdata(client);
+	struct input_dev *input_dev = data->input_dev;
+
+	/* Soft reset */
+	mxt_write_object(data, MXT_GEN_COMMAND_T6,
+			MXT_COMMAND_RESET, 1);
+
+	msleep(MXT_RESET_TIME);
+
+	mutex_lock(&input_dev->mutex);
+
+	if (input_dev->users)
+		mxt_start(data);
+
+	mutex_unlock(&input_dev->mutex);
+>>>>>>> remotes/linux2/linux-3.4.y
+
+	return 0;
+}
+
+<<<<<<< HEAD
+=======
+static const struct dev_pm_ops mxt_pm_ops = {
+	.suspend	= mxt_suspend,
+	.resume		= mxt_resume,
+};
+#endif
+
+>>>>>>> remotes/linux2/linux-3.4.y
 static const struct i2c_device_id mxt_id[] = {
 	{ "qt602240_ts", 0 },
 	{ "atmel_mxt_ts", 0 },
@@ -2773,6 +3412,7 @@ static const struct i2c_device_id mxt_id[] = {
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, mxt_id);
+<<<<<<< HEAD
 #ifdef OF_CONFIG
 static struct of_device_id mxt_match_table[] = {
 	{ .compatible = "atmel,mxt-ts",},
@@ -2781,12 +3421,17 @@ static struct of_device_id mxt_match_table[] = {
 #else
 #define mxt_match_table NULL
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 static struct i2c_driver mxt_driver = {
 	.driver = {
 		.name	= "atmel_mxt_ts",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 		.of_match_table = mxt_match_table,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_PM
 		.pm	= &mxt_pm_ops,
 #endif

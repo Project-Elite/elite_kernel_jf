@@ -123,6 +123,7 @@ config IP_NF_TARGET_REJECT
 
 	  To compile it as a module, choose M here.  If unsure, say N.
 
+<<<<<<< HEAD
 config IP_NF_TARGET_REJECT_SKERR
 	bool "Force socket error when rejecting with icmp*"
 	depends on IP_NF_TARGET_REJECT
@@ -135,6 +136,8 @@ config IP_NF_TARGET_REJECT_SKERR
 
 	  If unsure, say N.
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 config IP_NF_TARGET_ULOG
 	tristate "ULOG target support"
 	default m if NETFILTER_ADVANCED=n

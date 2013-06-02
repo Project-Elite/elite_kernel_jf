@@ -198,7 +198,11 @@ static void virtscsi_map_sgl(struct scatterlist *sg, unsigned int *p_idx,
 	int i;
 
 	for_each_sg(table->sgl, sg_elem, table->nents, i)
+<<<<<<< HEAD
 		sg_set_buf(&sg[idx++], sg_virt(sg_elem), sg_elem->length);
+=======
+		sg[idx++] = *sg_elem;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	*p_idx = idx;
 }

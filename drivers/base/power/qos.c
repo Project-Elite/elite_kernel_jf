@@ -446,7 +446,11 @@ int dev_pm_qos_add_ancestor_request(struct device *dev,
 	if (ancestor)
 		error = dev_pm_qos_add_request(ancestor, req, value);
 
+<<<<<<< HEAD
 	if (error)
+=======
+	if (error < 0)
+>>>>>>> remotes/linux2/linux-3.4.y
 		req->dev = NULL;
 
 	return error;

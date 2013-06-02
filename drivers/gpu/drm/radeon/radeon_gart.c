@@ -289,8 +289,14 @@ int radeon_vm_manager_init(struct radeon_device *rdev)
 	rdev->vm_manager.enabled = false;
 
 	/* mark first vm as always in use, it's the system one */
+<<<<<<< HEAD
 	r = radeon_sa_bo_manager_init(rdev, &rdev->vm_manager.sa_manager,
 				      rdev->vm_manager.max_pfn * 8,
+=======
+	/* allocate enough for 2 full VM pts */
+	r = radeon_sa_bo_manager_init(rdev, &rdev->vm_manager.sa_manager,
+				      rdev->vm_manager.max_pfn * 8 * 2,
+>>>>>>> remotes/linux2/linux-3.4.y
 				      RADEON_GEM_DOMAIN_VRAM);
 	if (r) {
 		dev_err(rdev->dev, "failed to allocate vm bo (%dKB)\n",
@@ -635,7 +641,19 @@ int radeon_vm_init(struct radeon_device *rdev, struct radeon_vm *vm)
 	mutex_init(&vm->mutex);
 	INIT_LIST_HEAD(&vm->list);
 	INIT_LIST_HEAD(&vm->va);
+<<<<<<< HEAD
 	vm->last_pfn = 0;
+=======
+	/* SI requires equal sized PTs for all VMs, so always set
+	 * last_pfn to max_pfn.  cayman allows variable sized
+	 * pts so we can grow then as needed.  Once we switch
+	 * to two level pts we can unify this again.
+	 */
+	if (rdev->family >= CHIP_TAHITI)
+		vm->last_pfn = rdev->vm_manager.max_pfn;
+	else
+		vm->last_pfn = 0;
+>>>>>>> remotes/linux2/linux-3.4.y
 	/* map the ib pool buffer at 0 in virtual address space, set
 	 * read only
 	 */

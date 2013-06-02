@@ -8,10 +8,14 @@
 #include <asm/thread_info.h>
 #include <asm/memory.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 #ifdef CONFIG_STRICT_MEMORY_RWX
 #include <asm/pgtable.h>
 #endif
 
+=======
+	
+>>>>>>> remotes/linux2/linux-3.4.y
 #define PROC_INFO							\
 	. = ALIGN(4);							\
 	VMLINUX_SYMBOL(__proc_info_begin) = .;				\
@@ -93,7 +97,10 @@ SECTIONS
 		_text = .;
 		HEAD_TEXT
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	.text : {			/* Real text segment		*/
 		_stext = .;		/* Text and read-only data	*/
 			__exception_text_start = .;
@@ -115,9 +122,12 @@ SECTIONS
 		*(.got)			/* Global offset table		*/
 			ARM_CPU_KEEP(PROC_INFO)
 	}
+<<<<<<< HEAD
 #ifdef CONFIG_STRICT_MEMORY_RWX
 	. = ALIGN(1<<SECTION_SHIFT);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	RO_DATA(PAGE_SIZE)
 
@@ -141,11 +151,15 @@ SECTIONS
 	_etext = .;			/* End of text and rodata section */
 
 #ifndef CONFIG_XIP_KERNEL
+<<<<<<< HEAD
 #ifdef CONFIG_STRICT_MEMORY_RWX
 	. = ALIGN(1<<SECTION_SHIFT);
 #else
 	. = ALIGN(PAGE_SIZE);
 #endif
+=======
+	. = ALIGN(PAGE_SIZE);
+>>>>>>> remotes/linux2/linux-3.4.y
 	__init_begin = .;
 #endif
 
@@ -185,23 +199,32 @@ SECTIONS
 		INIT_SETUP(16)
 		INIT_CALLS
 		CON_INITCALL
+<<<<<<< HEAD
 		COMPAT_EXPORTS
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		SECURITY_INITCALL
 		INIT_RAM_FS
 	}
 #ifndef CONFIG_XIP_KERNEL
+<<<<<<< HEAD
 #ifdef CONFIG_STRICT_MEMORY_RWX
 	. = ALIGN(1<<SECTION_SHIFT);
 #endif
 	__init_data = .;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	.exit.data : {
 		ARM_EXIT_KEEP(EXIT_DATA)
 	}
 #endif
 
+<<<<<<< HEAD
 #if !defined(CONFIG_SMP) && !defined(CONFIG_XIP_KERNEL)
 	. = ALIGN(THREAD_SIZE);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	PERCPU_SECTION(L1_CACHE_BYTES)
 
 #ifdef CONFIG_XIP_KERNEL
@@ -239,7 +262,11 @@ SECTIONS
 		/*
 		 * The exception fixup table (might need resorting at runtime)
 		 */
+<<<<<<< HEAD
 		. = ALIGN(L1_CACHE_BYTES);
+=======
+		. = ALIGN(4);
+>>>>>>> remotes/linux2/linux-3.4.y
 		__start___ex_table = .;
 #ifdef CONFIG_MMU
 		*(__ex_table)

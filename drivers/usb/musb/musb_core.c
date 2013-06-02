@@ -2400,10 +2400,14 @@ static int __init musb_init(void)
 	if (usb_disabled())
 		return 0;
 
+<<<<<<< HEAD
 	pr_info("%s: version " MUSB_VERSION ", "
 		"?dma?"
 		", "
 		"otg (peripheral+host)",
+=======
+	pr_info("%s: version " MUSB_VERSION ", ?dma?, otg (peripheral+host)\n",
+>>>>>>> remotes/linux2/linux-3.4.y
 		musb_driver_name);
 	return platform_driver_register(&musb_driver);
 }

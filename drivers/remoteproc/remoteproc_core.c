@@ -643,6 +643,7 @@ static int rproc_handle_carveout(struct rproc *rproc,
 	dev_dbg(dev, "carveout rsc: da %x, pa %x, len %x, flags %x\n",
 			rsc->da, rsc->pa, rsc->len, rsc->flags);
 
+<<<<<<< HEAD
 	mapping = kzalloc(sizeof(*mapping), GFP_KERNEL);
 	if (!mapping) {
 		dev_err(dev, "kzalloc mapping failed\n");
@@ -654,6 +655,12 @@ static int rproc_handle_carveout(struct rproc *rproc,
 		dev_err(dev, "kzalloc carveout failed\n");
 		ret = -ENOMEM;
 		goto free_mapping;
+=======
+	carveout = kzalloc(sizeof(*carveout), GFP_KERNEL);
+	if (!carveout) {
+		dev_err(dev, "kzalloc carveout failed\n");
+		return -ENOMEM;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	va = dma_alloc_coherent(dev, rsc->len, &dma, GFP_KERNEL);
@@ -683,11 +690,25 @@ static int rproc_handle_carveout(struct rproc *rproc,
 	 * physical address in this case.
 	 */
 	if (rproc->domain) {
+<<<<<<< HEAD
+=======
+		mapping = kzalloc(sizeof(*mapping), GFP_KERNEL);
+		if (!mapping) {
+			dev_err(dev, "kzalloc mapping failed\n");
+			ret = -ENOMEM;
+			goto dma_free;
+		}
+
+>>>>>>> remotes/linux2/linux-3.4.y
 		ret = iommu_map(rproc->domain, rsc->da, dma, rsc->len,
 								rsc->flags);
 		if (ret) {
 			dev_err(dev, "iommu_map failed: %d\n", ret);
+<<<<<<< HEAD
 			goto dma_free;
+=======
+			goto free_mapping;
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 
 		/*
@@ -728,12 +749,20 @@ static int rproc_handle_carveout(struct rproc *rproc,
 
 	return 0;
 
+<<<<<<< HEAD
+=======
+free_mapping:
+	kfree(mapping);
+>>>>>>> remotes/linux2/linux-3.4.y
 dma_free:
 	dma_free_coherent(dev, rsc->len, va, dma);
 free_carv:
 	kfree(carveout);
+<<<<<<< HEAD
 free_mapping:
 	kfree(mapping);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return ret;
 }
 

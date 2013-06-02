@@ -15,6 +15,7 @@
 #include <linux/workqueue.h>
 #include <linux/debugfs.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
 #include <linux/hrtimer.h>
 
 #include "power.h"
@@ -23,6 +24,10 @@
 #endif
 
 #define MAX_BUF 100
+=======
+
+#include "power.h"
+>>>>>>> remotes/linux2/linux-3.4.y
 
 DEFINE_MUTEX(pm_mutex);
 
@@ -32,6 +37,7 @@ DEFINE_MUTEX(pm_mutex);
 
 static BLOCKING_NOTIFIER_HEAD(pm_chain_head);
 
+<<<<<<< HEAD
 static void touch_event_fn(struct work_struct *work);
 static DECLARE_WORK(touch_event_struct, touch_event_fn);
 
@@ -39,6 +45,8 @@ static struct hrtimer tc_ev_timer;
 static int tc_ev_processed;
 static ktime_t touch_evt_timer_val;
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 int register_pm_notifier(struct notifier_block *nb)
 {
 	return blocking_notifier_chain_register(&pm_chain_head, nb);
@@ -84,6 +92,7 @@ static ssize_t pm_async_store(struct kobject *kobj, struct kobj_attribute *attr,
 
 power_attr(pm_async);
 
+<<<<<<< HEAD
 static ssize_t
 touch_event_show(struct kobject *kobj,
 		 struct kobj_attribute *attr, char *buf)
@@ -159,6 +168,8 @@ static enum hrtimer_restart tc_ev_stop(struct hrtimer *hrtimer)
 	return HRTIMER_NORESTART;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 #ifdef CONFIG_PM_DEBUG
 int pm_test_level = TEST_NONE;
 
@@ -361,11 +372,15 @@ static ssize_t state_store(struct kobject *kobj, struct kobj_attribute *attr,
 			   const char *buf, size_t n)
 {
 #ifdef CONFIG_SUSPEND
+<<<<<<< HEAD
 #ifdef CONFIG_EARLYSUSPEND
 	suspend_state_t state = PM_SUSPEND_ON;
 #else
 	suspend_state_t state = PM_SUSPEND_STANDBY;
 #endif
+=======
+	suspend_state_t state = PM_SUSPEND_STANDBY;
+>>>>>>> remotes/linux2/linux-3.4.y
 	const char * const *s;
 #endif
 	char *p;
@@ -384,6 +399,7 @@ static ssize_t state_store(struct kobject *kobj, struct kobj_attribute *attr,
 #ifdef CONFIG_SUSPEND
 	for (s = &pm_states[state]; state < PM_SUSPEND_MAX; s++, state++) {
 		if (*s && len == strlen(*s) && !strncmp(buf, *s, len)) {
+<<<<<<< HEAD
 #ifdef CONFIG_EARLYSUSPEND
 			if (state == PM_SUSPEND_ON || valid_state(state)) {
 				error = 0;
@@ -393,6 +409,10 @@ static ssize_t state_store(struct kobject *kobj, struct kobj_attribute *attr,
 #else
 			error = pm_suspend(state);
 #endif
+=======
+			error = pm_suspend(state);
+			break;
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 	}
 #endif
@@ -499,6 +519,7 @@ power_attr(pm_trace_dev_match);
 
 #endif /* CONFIG_PM_TRACE */
 
+<<<<<<< HEAD
 #ifdef CONFIG_USER_WAKELOCK
 power_attr(wake_lock);
 power_attr(wake_unlock);
@@ -712,6 +733,9 @@ power_attr(cpufreq_table);
 #endif
 
 static struct attribute *g[] = {
+=======
+static struct attribute * g[] = {
+>>>>>>> remotes/linux2/linux-3.4.y
 	&state_attr.attr,
 #ifdef CONFIG_PM_TRACE
 	&pm_trace_attr.attr,
@@ -720,6 +744,7 @@ static struct attribute *g[] = {
 #ifdef CONFIG_PM_SLEEP
 	&pm_async_attr.attr,
 	&wakeup_count_attr.attr,
+<<<<<<< HEAD
 	&touch_event_attr.attr,
 	&touch_event_timer_attr.attr,
 #ifdef CONFIG_PM_DEBUG
@@ -734,6 +759,11 @@ static struct attribute *g[] = {
 	&cpufreq_min_limit_attr.attr,
 	&cpufreq_max_limit_attr.attr,
 	&cpufreq_table_attr.attr,
+=======
+#ifdef CONFIG_PM_DEBUG
+	&pm_test_attr.attr,
+#endif
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif
 	NULL,
 };
@@ -763,6 +793,7 @@ static int __init pm_init(void)
 		return error;
 	hibernate_image_size_init();
 	hibernate_reserved_size_init();
+<<<<<<< HEAD
 
 	touch_evt_timer_val = ktime_set(2, 0);
 	hrtimer_init(&tc_ev_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
@@ -780,6 +811,11 @@ static int __init pm_init(void)
 	thermald_max_freq = MAX_FREQ_LIMIT;
 #endif
 
+=======
+	power_kobj = kobject_create_and_add("power", NULL);
+	if (!power_kobj)
+		return -ENOMEM;
+>>>>>>> remotes/linux2/linux-3.4.y
 	return sysfs_create_group(power_kobj, &attr_group);
 }
 

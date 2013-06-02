@@ -15,8 +15,11 @@ enum dma_attr {
 	DMA_ATTR_WEAK_ORDERING,
 	DMA_ATTR_WRITE_COMBINE,
 	DMA_ATTR_NON_CONSISTENT,
+<<<<<<< HEAD
 	DMA_ATTR_NO_KERNEL_MAPPING,
 	DMA_ATTR_STRONGLY_ORDERED,
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	DMA_ATTR_MAX,
 };
 

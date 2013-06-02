@@ -46,6 +46,7 @@ void __init_rwsem(struct rw_semaphore *sem, const char *name,
 	sem->activity = 0;
 	raw_spin_lock_init(&sem->wait_lock);
 	INIT_LIST_HEAD(&sem->wait_list);
+<<<<<<< HEAD
 
 #ifdef CONFIG_SEC_FORKHANG_DEBUG
 	sem->owner = NULL;
@@ -56,6 +57,8 @@ void __init_rwsem(struct rw_semaphore *sem, const char *name,
 	sem->owner_comm[3] = 'L';
 	sem->caller = NULL;
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 EXPORT_SYMBOL(__init_rwsem);
 
@@ -94,6 +97,7 @@ __rwsem_do_wake(struct rw_semaphore *sem, int wakewrite)
 		tsk = waiter->task;
 		/* Don't touch waiter after ->task has been NULLed */
 		smp_mb();
+<<<<<<< HEAD
 		
 #ifdef CONFIG_SEC_FORKHANG_DEBUG
 		sem->owner = waiter->task;
@@ -101,6 +105,8 @@ __rwsem_do_wake(struct rw_semaphore *sem, int wakewrite)
 		memcpy(sem->owner_comm, waiter->task->comm, 16);
 		sem->caller = __builtin_return_address(0);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		waiter->task = NULL;
 		wake_up_process(tsk);
 		put_task_struct(tsk);
@@ -146,6 +152,7 @@ __rwsem_wake_one_writer(struct rw_semaphore *sem)
 	list_del(&waiter->list);
 
 	tsk = waiter->task;
+<<<<<<< HEAD
 
 #ifdef CONFIG_SEC_FORKHANG_DEBUG
 	sem->owner = waiter->task;
@@ -153,6 +160,8 @@ __rwsem_wake_one_writer(struct rw_semaphore *sem)
 	memcpy(sem->owner_comm, waiter->task->comm, 16);
 	sem->caller = __builtin_return_address(0);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	smp_mb();
 	waiter->task = NULL;
 	wake_up_process(tsk);
@@ -242,6 +251,7 @@ void __sched __down_write_nested(struct rw_semaphore *sem, int subclass)
 		/* granted */
 		sem->activity = -1;
 		raw_spin_unlock_irqrestore(&sem->wait_lock, flags);
+<<<<<<< HEAD
 		
 #ifdef CONFIG_SEC_FORKHANG_DEBUG
 		sem->owner = current;
@@ -249,6 +259,8 @@ void __sched __down_write_nested(struct rw_semaphore *sem, int subclass)
 		memcpy(sem->owner_comm, current->comm, 16);
 		sem->caller = __builtin_return_address(0);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		goto out;
 	}
 
@@ -296,6 +308,7 @@ int __down_write_trylock(struct rw_semaphore *sem)
 	if (sem->activity == 0 && list_empty(&sem->wait_list)) {
 		/* granted */
 		sem->activity = -1;
+<<<<<<< HEAD
 
 #ifdef CONFIG_SEC_FORKHANG_DEBUG
 		sem->owner = current;
@@ -303,6 +316,8 @@ int __down_write_trylock(struct rw_semaphore *sem)
 		memcpy(sem->owner_comm, current->comm, 16);
 		sem->caller = __builtin_return_address(0);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		ret = 1;
 	}
 
@@ -320,10 +335,13 @@ void __up_read(struct rw_semaphore *sem)
 
 	raw_spin_lock_irqsave(&sem->wait_lock, flags);
 
+<<<<<<< HEAD
 #ifdef CONFIG_SEC_FORKHANG_DEBUG
 	if (sem->activity == 0)
 		panic("Reader is making sem as writer locked state by mistake");
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (--sem->activity == 0 && !list_empty(&sem->wait_list))
 		sem = __rwsem_wake_one_writer(sem);
 
@@ -340,6 +358,7 @@ void __up_write(struct rw_semaphore *sem)
 	raw_spin_lock_irqsave(&sem->wait_lock, flags);
 
 	sem->activity = 0;
+<<<<<<< HEAD
 	
 #ifdef CONFIG_SEC_FORKHANG_DEBUG
 	sem->owner = current;
@@ -347,6 +366,8 @@ void __up_write(struct rw_semaphore *sem)
 	memcpy(sem->owner_comm, current->comm, 16);
 	sem->caller = __builtin_return_address(0);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!list_empty(&sem->wait_list))
 		sem = __rwsem_do_wake(sem, 1);
 
@@ -364,6 +385,7 @@ void __downgrade_write(struct rw_semaphore *sem)
 	raw_spin_lock_irqsave(&sem->wait_lock, flags);
 
 	sem->activity = 1;
+<<<<<<< HEAD
 
 #ifdef CONFIG_SEC_FORKHANG_DEBUG
 	sem->owner = current;
@@ -371,6 +393,8 @@ void __downgrade_write(struct rw_semaphore *sem)
 	memcpy(sem->owner_comm, current->comm, 16);
 	sem->caller = __builtin_return_address(0);
 #endif
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	if (!list_empty(&sem->wait_list))
 		sem = __rwsem_do_wake(sem, 0);
 

@@ -166,6 +166,10 @@ that only one external action is invoked at a time.
 #include <net/lib80211.h>
 
 #include "ipw2100.h"
+<<<<<<< HEAD
+=======
+#include "ipw.h"
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #define IPW2100_VERSION "git-1.2.2"
 
@@ -1946,6 +1950,12 @@ static int ipw2100_wdev_init(struct net_device *dev)
 		wdev->wiphy->bands[IEEE80211_BAND_2GHZ] = bg_band;
 	}
 
+<<<<<<< HEAD
+=======
+	wdev->wiphy->cipher_suites = ipw_cipher_suites;
+	wdev->wiphy->n_cipher_suites = ARRAY_SIZE(ipw_cipher_suites);
+
+>>>>>>> remotes/linux2/linux-3.4.y
 	set_wiphy_dev(wdev->wiphy, &priv->pci_dev->dev);
 	if (wiphy_register(wdev->wiphy)) {
 		ipw2100_down(priv);

@@ -20,6 +20,10 @@
 #include <linux/sh_dma.h>
 #include <linux/slab.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include <linux/workqueue.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 #include <sound/soc.h>
 #include <sound/sh_fsi.h>
 
@@ -199,7 +203,11 @@ struct fsi_stream {
 	 */
 	struct dma_chan		*chan;
 	struct sh_dmae_slave	slave; /* see fsi_handler_init() */
+<<<<<<< HEAD
 	struct tasklet_struct	tasklet;
+=======
+	struct work_struct	work;
+>>>>>>> remotes/linux2/linux-3.4.y
 	dma_addr_t		dma;
 };
 
@@ -968,9 +976,15 @@ static dma_addr_t fsi_dma_get_area(struct fsi_stream *io)
 	return io->dma + samples_to_bytes(runtime, io->buff_sample_pos);
 }
 
+<<<<<<< HEAD
 static void fsi_dma_do_tasklet(unsigned long data)
 {
 	struct fsi_stream *io = (struct fsi_stream *)data;
+=======
+static void fsi_dma_do_work(struct work_struct *work)
+{
+	struct fsi_stream *io = container_of(work, struct fsi_stream, work);
+>>>>>>> remotes/linux2/linux-3.4.y
 	struct fsi_priv *fsi = fsi_stream_to_priv(io);
 	struct dma_chan *chan;
 	struct snd_soc_dai *dai;
@@ -1023,7 +1037,11 @@ static void fsi_dma_do_tasklet(unsigned long data)
 	 * FIXME
 	 *
 	 * In DMAEngine case, codec and FSI cannot be started simultaneously
+<<<<<<< HEAD
 	 * since FSI is using tasklet.
+=======
+	 * since FSI is using the scheduler work queue.
+>>>>>>> remotes/linux2/linux-3.4.y
 	 * Therefore, in capture case, probably FSI FIFO will have got
 	 * overflow error in this point.
 	 * in that case, DMA cannot start transfer until error was cleared.
@@ -1047,7 +1065,11 @@ static bool fsi_dma_filter(struct dma_chan *chan, void *param)
 
 static int fsi_dma_transfer(struct fsi_priv *fsi, struct fsi_stream *io)
 {
+<<<<<<< HEAD
 	tasklet_schedule(&io->tasklet);
+=======
+	schedule_work(&io->work);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
@@ -1087,14 +1109,22 @@ static int fsi_dma_probe(struct fsi_priv *fsi, struct fsi_stream *io)
 	if (!io->chan)
 		return -EIO;
 
+<<<<<<< HEAD
 	tasklet_init(&io->tasklet, fsi_dma_do_tasklet, (unsigned long)io);
+=======
+	INIT_WORK(&io->work, fsi_dma_do_work);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return 0;
 }
 
 static int fsi_dma_remove(struct fsi_priv *fsi, struct fsi_stream *io)
 {
+<<<<<<< HEAD
 	tasklet_kill(&io->tasklet);
+=======
+	cancel_work_sync(&io->work);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	fsi_stream_stop(fsi, io);
 

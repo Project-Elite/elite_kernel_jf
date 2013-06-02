@@ -181,7 +181,11 @@ int nfs_mount(struct nfs_mount_request *info)
 	else
 		msg.rpc_proc = &mnt_clnt->cl_procinfo[MOUNTPROC_MNT];
 
+<<<<<<< HEAD
 	status = rpc_call_sync(mnt_clnt, &msg, 0);
+=======
+	status = rpc_call_sync(mnt_clnt, &msg, RPC_TASK_SOFT|RPC_TASK_TIMEOUT);
+>>>>>>> remotes/linux2/linux-3.4.y
 	rpc_shutdown_client(mnt_clnt);
 
 	if (status < 0)

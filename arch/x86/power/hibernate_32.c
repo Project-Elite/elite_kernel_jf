@@ -129,8 +129,11 @@ static int resume_physical_mapping_init(pgd_t *pgd_base)
 		}
 	}
 
+<<<<<<< HEAD
 	resume_map_numa_kva(pgd_base);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	return 0;
 }
 

@@ -35,6 +35,7 @@ enum usb_otg_state {
 	OTG_STATE_A_VBUS_ERR,
 };
 
+<<<<<<< HEAD
 enum usb_otg_event {
 	/* Device is not connected within
 	 * TA_WAIT_BCON or not responding.
@@ -63,6 +64,8 @@ enum usb_otg_event {
 	OTG_EVENT_NO_RESP_FOR_SRP,
 };
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 enum usb_phy_events {
 	USB_EVENT_NONE,         /* no events or cable disconnected */
 	USB_EVENT_VBUS,         /* vbus valid event */
@@ -104,10 +107,13 @@ struct usb_otg {
 	/* start or continue HNP role switch */
 	int	(*start_hnp)(struct usb_otg *otg);
 
+<<<<<<< HEAD
 	/* send events to user space */
 	int	(*send_event)(struct usb_otg *otg,
 			enum usb_otg_event event);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 };
 
 /*
@@ -202,10 +208,13 @@ usb_phy_shutdown(struct usb_phy *x)
 		x->shutdown(x);
 }
 
+<<<<<<< HEAD
 /* for USB core, host and peripheral controller drivers */
 /* Context: can sleep */
 extern int otg_send_event(enum usb_otg_event event);
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 /* for usb host and peripheral controller drivers */
 #ifdef CONFIG_USB_OTG_UTILS
 extern struct usb_phy *usb_get_transceiver(void);

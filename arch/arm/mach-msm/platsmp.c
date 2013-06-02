@@ -1,13 +1,18 @@
 /*
  *  Copyright (C) 2002 ARM Ltd.
  *  All Rights Reserved
+<<<<<<< HEAD
  *  Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+=======
+ *  Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+>>>>>>> remotes/linux2/linux-3.4.y
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/cpumask.h>
@@ -15,6 +20,15 @@
 #include <linux/interrupt.h>
 #include <linux/io.h>
 #include <linux/regulator/krait-regulator.h>
+=======
+#include <linux/init.h>
+#include <linux/errno.h>
+#include <linux/delay.h>
+#include <linux/device.h>
+#include <linux/jiffies.h>
+#include <linux/smp.h>
+#include <linux/io.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #include <asm/hardware/gic.h>
 #include <asm/cacheflush.h>
@@ -22,6 +36,7 @@
 #include <asm/mach-types.h>
 #include <asm/smp_plat.h>
 
+<<<<<<< HEAD
 #include <mach/socinfo.h>
 #include <mach/hardware.h>
 #include <mach/msm_iomap.h>
@@ -29,13 +44,25 @@
 #include "pm.h"
 #include "scm-boot.h"
 #include "spm.h"
+=======
+#include <mach/msm_iomap.h>
+
+#include "scm-boot.h"
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #define VDD_SC1_ARRAY_CLAMP_GFS_CTL 0x15A0
 #define SCSS_CPU1CORE_RESET 0xD80
 #define SCSS_DBG_STATUS_CORE_PWRDUP 0xE64
 
+<<<<<<< HEAD
 extern void msm_secondary_startup(void);
 
+=======
+/* Mask for edge trigger PPIs except AVS_SVICINT and AVS_SVICINTSWDONE */
+#define GIC_PPI_EDGE_MASK 0xFFFFD7FF
+
+extern void msm_secondary_startup(void);
+>>>>>>> remotes/linux2/linux-3.4.y
 /*
  * control for which core is the next to come out of the secondary
  * boot "holding pen".
@@ -44,9 +71,22 @@ volatile int pen_release = -1;
 
 static DEFINE_SPINLOCK(boot_lock);
 
+<<<<<<< HEAD
 void __cpuinit platform_secondary_init(unsigned int cpu)
 {
 	WARN_ON(msm_platform_secondary_init(cpu));
+=======
+static inline int get_core_count(void)
+{
+	/* 1 + the PART[1:0] field of MIDR */
+	return ((read_cpuid_id() >> 4) & 3) + 1;
+}
+
+void __cpuinit platform_secondary_init(unsigned int cpu)
+{
+	/* Configure edge-triggered PPIs */
+	writel(GIC_PPI_EDGE_MASK, MSM_QGIC_DIST_BASE + GIC_DIST_CONFIG + 4);
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	/*
 	 * if any interrupts are already enabled for the primary
@@ -56,12 +96,23 @@ void __cpuinit platform_secondary_init(unsigned int cpu)
 	gic_secondary_init(0);
 
 	/*
+<<<<<<< HEAD
+=======
+	 * let the primary processor know we're out of the
+	 * pen, then head off into the C entry point
+	 */
+	pen_release = -1;
+	smp_wmb();
+
+	/*
+>>>>>>> remotes/linux2/linux-3.4.y
 	 * Synchronise with the boot thread.
 	 */
 	spin_lock(&boot_lock);
 	spin_unlock(&boot_lock);
 }
 
+<<<<<<< HEAD
 static int __cpuinit scorpion_release_secondary(void)
 {
 	void *base_ptr = ioremap_nocache(0x00902000, SZ_4K*2);
@@ -204,6 +255,36 @@ int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
 			printk(KERN_DEBUG "Failed to set secondary core boot "
 					  "address\n");
 		per_cpu(cold_boot_done, cpu) = true;
+=======
+static __cpuinit void prepare_cold_cpu(unsigned int cpu)
+{
+	int ret;
+	ret = scm_set_boot_addr(virt_to_phys(msm_secondary_startup),
+				SCM_FLAG_COLDBOOT_CPU1);
+	if (ret == 0) {
+		void __iomem *sc1_base_ptr;
+		sc1_base_ptr = ioremap_nocache(0x00902000, SZ_4K*2);
+		if (sc1_base_ptr) {
+			writel(0, sc1_base_ptr + VDD_SC1_ARRAY_CLAMP_GFS_CTL);
+			writel(0, sc1_base_ptr + SCSS_CPU1CORE_RESET);
+			writel(3, sc1_base_ptr + SCSS_DBG_STATUS_CORE_PWRDUP);
+			iounmap(sc1_base_ptr);
+		}
+	} else
+		printk(KERN_DEBUG "Failed to set secondary core boot "
+				  "address\n");
+}
+
+int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
+{
+	unsigned long timeout;
+	static int cold_boot_done;
+
+	/* Only need to bring cpu out of reset this way once */
+	if (cold_boot_done == false) {
+		prepare_cold_cpu(cpu);
+		cold_boot_done = true;
+>>>>>>> remotes/linux2/linux-3.4.y
 	}
 
 	/*
@@ -237,8 +318,11 @@ int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
 		if (pen_release == -1)
 			break;
 
+<<<<<<< HEAD
 		dmac_inv_range((char *)&pen_release,
 			       (char *)&pen_release + sizeof(pen_release));
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 		udelay(10);
 	}
 
@@ -250,9 +334,18 @@ int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
 
 	return pen_release != -1 ? -ENOSYS : 0;
 }
+<<<<<<< HEAD
 /*
  * Initialise the CPU possible map early - this describes the CPUs
  * which may be present or become present in the system.
+=======
+
+/*
+ * Initialise the CPU possible map early - this describes the CPUs
+ * which may be present or become present in the system. The msm8x60
+ * does not support the ARM SCU, so just set the possible cpu mask to
+ * NR_CPUS.
+>>>>>>> remotes/linux2/linux-3.4.y
  */
 void __init smp_init_cpus(void)
 {
@@ -267,7 +360,11 @@ void __init smp_init_cpus(void)
 	for (i = 0; i < ncores; i++)
 		set_cpu_possible(i, true);
 
+<<<<<<< HEAD
 	set_smp_cross_call(gic_raise_softirq);
+=======
+        set_smp_cross_call(gic_raise_softirq);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 void __init platform_smp_prepare_cpus(unsigned int max_cpus)

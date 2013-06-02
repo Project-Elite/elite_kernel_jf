@@ -166,6 +166,10 @@ static int chap_server_compute_md5(
 {
 	char *endptr;
 	unsigned long id;
+<<<<<<< HEAD
+=======
+	unsigned char id_as_uchar;
+>>>>>>> remotes/linux2/linux-3.4.y
 	unsigned char digest[MD5_SIGNATURE_SIZE];
 	unsigned char type, response[MD5_SIGNATURE_SIZE * 2 + 2];
 	unsigned char identifier[10], *challenge = NULL;
@@ -355,7 +359,13 @@ static int chap_server_compute_md5(
 		goto out;
 	}
 
+<<<<<<< HEAD
 	sg_init_one(&sg, &id, 1);
+=======
+	/* To handle both endiannesses */
+	id_as_uchar = id;
+	sg_init_one(&sg, &id_as_uchar, 1);
+>>>>>>> remotes/linux2/linux-3.4.y
 	ret = crypto_hash_update(&desc, &sg, 1);
 	if (ret < 0) {
 		pr_err("crypto_hash_update() failed for id\n");

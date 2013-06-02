@@ -16,7 +16,14 @@
  * In the debug case, 1 means unlocked, 0 means locked. (the values
  * are inverted, to catch initialization bugs)
  *
+<<<<<<< HEAD
  * No atomicity anywhere, we are on UP.
+=======
+ * No atomicity anywhere, we are on UP. However, we still need
+ * the compiler barriers, because we do not want the compiler to
+ * move potentially faulting instructions (notably user accesses)
+ * into the locked sequence, resulting in non-atomic execution.
+>>>>>>> remotes/linux2/linux-3.4.y
  */
 
 #ifdef CONFIG_DEBUG_SPINLOCK
@@ -25,6 +32,10 @@
 static inline void arch_spin_lock(arch_spinlock_t *lock)
 {
 	lock->slock = 0;
+<<<<<<< HEAD
+=======
+	barrier();
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static inline void
@@ -32,6 +43,10 @@ arch_spin_lock_flags(arch_spinlock_t *lock, unsigned long flags)
 {
 	local_irq_save(flags);
 	lock->slock = 0;
+<<<<<<< HEAD
+=======
+	barrier();
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 static inline int arch_spin_trylock(arch_spinlock_t *lock)
@@ -39,32 +54,56 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
 	char oldval = lock->slock;
 
 	lock->slock = 0;
+<<<<<<< HEAD
+=======
+	barrier();
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return oldval > 0;
 }
 
 static inline void arch_spin_unlock(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
+=======
+	barrier();
+>>>>>>> remotes/linux2/linux-3.4.y
 	lock->slock = 1;
 }
 
 /*
  * Read-write spinlocks. No debug version.
  */
+<<<<<<< HEAD
 #define arch_read_lock(lock)		do { (void)(lock); } while (0)
 #define arch_write_lock(lock)		do { (void)(lock); } while (0)
 #define arch_read_trylock(lock)	({ (void)(lock); 1; })
 #define arch_write_trylock(lock)	({ (void)(lock); 1; })
 #define arch_read_unlock(lock)		do { (void)(lock); } while (0)
 #define arch_write_unlock(lock)	do { (void)(lock); } while (0)
+=======
+#define arch_read_lock(lock)		do { barrier(); (void)(lock); } while (0)
+#define arch_write_lock(lock)		do { barrier(); (void)(lock); } while (0)
+#define arch_read_trylock(lock)	({ barrier(); (void)(lock); 1; })
+#define arch_write_trylock(lock)	({ barrier(); (void)(lock); 1; })
+#define arch_read_unlock(lock)		do { barrier(); (void)(lock); } while (0)
+#define arch_write_unlock(lock)	do { barrier(); (void)(lock); } while (0)
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #else /* DEBUG_SPINLOCK */
 #define arch_spin_is_locked(lock)	((void)(lock), 0)
 /* for sched.c and kernel_lock.c: */
+<<<<<<< HEAD
 # define arch_spin_lock(lock)		do { (void)(lock); } while (0)
 # define arch_spin_lock_flags(lock, flags)	do { (void)(lock); } while (0)
 # define arch_spin_unlock(lock)	do { (void)(lock); } while (0)
 # define arch_spin_trylock(lock)	({ (void)(lock); 1; })
+=======
+# define arch_spin_lock(lock)		do { barrier(); (void)(lock); } while (0)
+# define arch_spin_lock_flags(lock, flags)	do { barrier(); (void)(lock); } while (0)
+# define arch_spin_unlock(lock)	do { barrier(); (void)(lock); } while (0)
+# define arch_spin_trylock(lock)	({ barrier(); (void)(lock); 1; })
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif /* DEBUG_SPINLOCK */
 
 #define arch_spin_is_contended(lock)	(((void)(lock), 0))

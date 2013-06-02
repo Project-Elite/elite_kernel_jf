@@ -53,5 +53,9 @@ struct mmc_ioc_cmd {
  * is enforced per ioctl call.  For larger data transfers, use the normal
  * block device operations.
  */
+<<<<<<< HEAD
 #define MMC_IOC_MAX_BYTES  (512L * 512)
+=======
+#define MMC_IOC_MAX_BYTES  (512L * 256)
+>>>>>>> remotes/linux2/linux-3.4.y
 #endif /* LINUX_MMC_IOCTL_H */

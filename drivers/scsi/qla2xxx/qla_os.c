@@ -3735,9 +3735,15 @@ qla2x00_do_dpc(void *data)
 			    "ISP abort end.\n");
 		}
 
+<<<<<<< HEAD
 		if (test_bit(FCPORT_UPDATE_NEEDED, &base_vha->dpc_flags)) {
 			qla2x00_update_fcports(base_vha);
 			clear_bit(FCPORT_UPDATE_NEEDED, &base_vha->dpc_flags);
+=======
+		if (test_and_clear_bit(FCPORT_UPDATE_NEEDED,
+		    &base_vha->dpc_flags)) {
+			qla2x00_update_fcports(base_vha);
+>>>>>>> remotes/linux2/linux-3.4.y
 		}
 
 		if (test_bit(ISP_QUIESCE_NEEDED, &base_vha->dpc_flags)) {

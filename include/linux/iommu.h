@@ -19,9 +19,13 @@
 #ifndef __LINUX_IOMMU_H
 #define __LINUX_IOMMU_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/errno.h>
 #include <linux/scatterlist.h>
+=======
+#include <linux/errno.h>
+>>>>>>> remotes/linux2/linux-3.4.y
 
 #define IOMMU_READ	(1)
 #define IOMMU_WRITE	(2)
@@ -64,7 +68,11 @@ struct iommu_domain {
  * @pgsize_bitmap: bitmap of supported page sizes
  */
 struct iommu_ops {
+<<<<<<< HEAD
 	int (*domain_init)(struct iommu_domain *domain, int flags);
+=======
+	int (*domain_init)(struct iommu_domain *domain);
+>>>>>>> remotes/linux2/linux-3.4.y
 	void (*domain_destroy)(struct iommu_domain *domain);
 	int (*attach_dev)(struct iommu_domain *domain, struct device *dev);
 	void (*detach_dev)(struct iommu_domain *domain, struct device *dev);
@@ -72,22 +80,32 @@ struct iommu_ops {
 		   phys_addr_t paddr, size_t size, int prot);
 	size_t (*unmap)(struct iommu_domain *domain, unsigned long iova,
 		     size_t size);
+<<<<<<< HEAD
 	int (*map_range)(struct iommu_domain *domain, unsigned int iova,
 		    struct scatterlist *sg, unsigned int len, int prot);
 	int (*unmap_range)(struct iommu_domain *domain, unsigned int iova,
 		      unsigned int len);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	phys_addr_t (*iova_to_phys)(struct iommu_domain *domain,
 				    unsigned long iova);
 	int (*domain_has_cap)(struct iommu_domain *domain,
 			      unsigned long cap);
+<<<<<<< HEAD
 	phys_addr_t (*get_pt_base_addr)(struct iommu_domain *domain);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 	int (*device_group)(struct device *dev, unsigned int *groupid);
 	unsigned long pgsize_bitmap;
 };
 
 extern int bus_set_iommu(struct bus_type *bus, struct iommu_ops *ops);
 extern bool iommu_present(struct bus_type *bus);
+<<<<<<< HEAD
 extern struct iommu_domain *iommu_domain_alloc(struct bus_type *bus, int flags);
+=======
+extern struct iommu_domain *iommu_domain_alloc(struct bus_type *bus);
+>>>>>>> remotes/linux2/linux-3.4.y
 extern void iommu_domain_free(struct iommu_domain *domain);
 extern int iommu_attach_device(struct iommu_domain *domain,
 			       struct device *dev);
@@ -97,15 +115,21 @@ extern int iommu_map(struct iommu_domain *domain, unsigned long iova,
 		     phys_addr_t paddr, size_t size, int prot);
 extern size_t iommu_unmap(struct iommu_domain *domain, unsigned long iova,
 		       size_t size);
+<<<<<<< HEAD
 extern int iommu_map_range(struct iommu_domain *domain, unsigned int iova,
 		    struct scatterlist *sg, unsigned int len, int prot);
 extern int iommu_unmap_range(struct iommu_domain *domain, unsigned int iova,
 		      unsigned int len);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 extern phys_addr_t iommu_iova_to_phys(struct iommu_domain *domain,
 				      unsigned long iova);
 extern int iommu_domain_has_cap(struct iommu_domain *domain,
 				unsigned long cap);
+<<<<<<< HEAD
 extern phys_addr_t iommu_get_pt_base_addr(struct iommu_domain *domain);
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 extern void iommu_set_fault_handler(struct iommu_domain *domain,
 					iommu_fault_handler_t handler);
 extern int iommu_device_group(struct device *dev, unsigned int *groupid);
@@ -158,7 +182,11 @@ static inline bool iommu_present(struct bus_type *bus)
 	return false;
 }
 
+<<<<<<< HEAD
 static inline struct iommu_domain *iommu_domain_alloc(struct bus_type *bus, int flags)
+=======
+static inline struct iommu_domain *iommu_domain_alloc(struct bus_type *bus)
+>>>>>>> remotes/linux2/linux-3.4.y
 {
 	return NULL;
 }
@@ -190,6 +218,7 @@ static inline int iommu_unmap(struct iommu_domain *domain, unsigned long iova,
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static inline int iommu_map_range(struct iommu_domain *domain,
 				  unsigned int iova, struct scatterlist *sg,
 				  unsigned int len, int prot)
@@ -203,6 +232,8 @@ static inline int iommu_unmap_range(struct iommu_domain *domain,
 	return -ENODEV;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static inline phys_addr_t iommu_iova_to_phys(struct iommu_domain *domain,
 					     unsigned long iova)
 {
@@ -215,11 +246,14 @@ static inline int domain_has_cap(struct iommu_domain *domain,
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline phys_addr_t iommu_get_pt_base_addr(struct iommu_domain *domain)
 {
 	return 0;
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 static inline void iommu_set_fault_handler(struct iommu_domain *domain,
 					iommu_fault_handler_t handler)
 {

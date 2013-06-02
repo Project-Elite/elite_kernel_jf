@@ -1,5 +1,8 @@
 
+<<<<<<< HEAD
 %name-prefix "parse_events_"
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 %parse-param {struct list_head *list_all}
 %parse-param {struct list_head *list_event}
 %parse-param {int *idx}
@@ -24,7 +27,11 @@ do { \
 
 %}
 
+<<<<<<< HEAD
 %token PE_VALUE PE_VALUE_SYM PE_RAW PE_SH_RAW PE_FAB_RAW PE_TERM
+=======
+%token PE_VALUE PE_VALUE_SYM PE_RAW PE_TERM
+>>>>>>> remotes/linux2/linux-3.4.y
 %token PE_NAME
 %token PE_MODIFIER_EVENT PE_MODIFIER_BP
 %token PE_NAME_CACHE_TYPE PE_NAME_CACHE_OP_RESULT
@@ -33,8 +40,11 @@ do { \
 %type <num> PE_VALUE
 %type <num> PE_VALUE_SYM
 %type <num> PE_RAW
+<<<<<<< HEAD
 %type <num> PE_SH_RAW
 %type <num> PE_FAB_RAW
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 %type <num> PE_TERM
 %type <str> PE_NAME
 %type <str> PE_NAME_CACHE_TYPE
@@ -79,9 +89,13 @@ event_def: event_pmu |
 	   event_legacy_mem |
 	   event_legacy_tracepoint sep_dc |
 	   event_legacy_numeric sep_dc |
+<<<<<<< HEAD
 	   event_legacy_raw sep_dc |
 	   event_legacy_shared_raw sep_dc |
 	   event_legacy_fabric_raw sep_dc
+=======
+	   event_legacy_raw sep_dc
+>>>>>>> remotes/linux2/linux-3.4.y
 
 event_pmu:
 PE_NAME '/' event_config '/'
@@ -153,6 +167,7 @@ PE_RAW
 	ABORT_ON(parse_events_add_numeric(list_event, idx, PERF_TYPE_RAW, $1, NULL));
 }
 
+<<<<<<< HEAD
 event_legacy_shared_raw:
 PE_SH_RAW
 {
@@ -165,6 +180,8 @@ PE_FAB_RAW
 	ABORT_ON(parse_events_add_numeric_legacy(list_event, idx, "msm-busmon", $1, NULL));
 }
 
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 event_config:
 event_config ',' event_term
 {

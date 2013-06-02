@@ -1180,6 +1180,10 @@ void mce_notify_process(void)
 {
 	unsigned long pfn;
 	struct mce_info *mi = mce_find_info();
+<<<<<<< HEAD
+=======
+	int flags = MF_ACTION_REQUIRED;
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	if (!mi)
 		mce_panic("Lost physical address for unconsumed uncorrectable error", NULL, NULL);
@@ -1194,8 +1198,14 @@ void mce_notify_process(void)
 	 * doomed. We still need to mark the page as poisoned and alert any
 	 * other users of the page.
 	 */
+<<<<<<< HEAD
 	if (memory_failure(pfn, MCE_VECTOR, MF_ACTION_REQUIRED) < 0 ||
 			   mi->restartable == 0) {
+=======
+	if (!mi->restartable)
+		flags |= MF_MUST_KILL;
+	if (memory_failure(pfn, MCE_VECTOR, flags) < 0) {
+>>>>>>> remotes/linux2/linux-3.4.y
 		pr_err("Memory error not recovered");
 		force_sig(SIGBUS, current);
 	}

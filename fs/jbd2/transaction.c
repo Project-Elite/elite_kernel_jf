@@ -100,8 +100,11 @@ jbd2_get_transaction(journal_t *journal, transaction_t *transaction)
 	journal->j_running_transaction = transaction;
 	transaction->t_max_wait = 0;
 	transaction->t_start = jiffies;
+<<<<<<< HEAD
 	transaction->t_callbacked = 0;
 	transaction->t_dropped = 0;
+=======
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	return transaction;
 }
@@ -211,11 +214,16 @@ repeat:
 		if (!new_transaction)
 			goto alloc_transaction;
 		write_lock(&journal->j_state_lock);
+<<<<<<< HEAD
 		if (journal->j_barrier_count) {
 			write_unlock(&journal->j_state_lock);
 			goto repeat;
 		}
 		if (!journal->j_running_transaction) {
+=======
+		if (!journal->j_running_transaction &&
+		    !journal->j_barrier_count) {
+>>>>>>> remotes/linux2/linux-3.4.y
 			jbd2_get_transaction(journal, new_transaction);
 			new_transaction = NULL;
 		}
@@ -1052,9 +1060,18 @@ out:
 void jbd2_journal_set_triggers(struct buffer_head *bh,
 			       struct jbd2_buffer_trigger_type *type)
 {
+<<<<<<< HEAD
 	struct journal_head *jh = bh2jh(bh);
 
 	jh->b_triggers = type;
+=======
+	struct journal_head *jh = jbd2_journal_grab_journal_head(bh);
+
+	if (WARN_ON(!jh))
+		return;
+	jh->b_triggers = type;
+	jbd2_journal_put_journal_head(jh);
+>>>>>>> remotes/linux2/linux-3.4.y
 }
 
 void jbd2_buffer_frozen_trigger(struct journal_head *jh, void *mapped_data,
@@ -1106,6 +1123,7 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
 {
 	transaction_t *transaction = handle->h_transaction;
 	journal_t *journal = transaction->t_journal;
+<<<<<<< HEAD
 	struct journal_head *jh = bh2jh(bh);
 	int ret = 0;
 
@@ -1117,6 +1135,20 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
 		ret = -EUCLEAN;
 		goto out;
 	}
+=======
+	struct journal_head *jh;
+	int ret = 0;
+
+	if (is_handle_aborted(handle))
+		goto out;
+	jh = jbd2_journal_grab_journal_head(bh);
+	if (!jh) {
+		ret = -EUCLEAN;
+		goto out;
+	}
+	jbd_debug(5, "journal_head %p\n", jh);
+	JBUFFER_TRACE(jh, "entry");
+>>>>>>> remotes/linux2/linux-3.4.y
 
 	jbd_lock_bh_state(bh);
 
@@ -1207,6 +1239,10 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
 	spin_unlock(&journal->j_list_lock);
 out_unlock_bh:
 	jbd_unlock_bh_state(bh);
+<<<<<<< HEAD
+=======
+	jbd2_journal_put_journal_head(jh);
+>>>>>>> remotes/linux2/linux-3.4.y
 out:
 	JBUFFER_TRACE(jh, "exit");
 	WARN_ON(ret);	/* All errors are bugs, so dump the stack */
