@@ -10,9 +10,9 @@ export USE_CCACHE=1
 #Enable FIPS mode
 export USE_SEC_FIPS_MODE=true
 export ARCH=arm
-echo "### T-MOBILE KERNEL BUILD ###"
+echo "### VZW KERNEL BUILD ###"
 echo "Setting compiler toolchain..."
-export CROSS_COMPILE=/home/albinoman887/android/system/prebuilt/linux-x86/toolchain/linaro/bin/arm-eabi-
+export CROSS_COMPILE=/home/forrest/kernel/android-toolchain-eabi/bin/arm-eabi-
 
 
 time_start=$(date +%s.%N)
@@ -43,7 +43,7 @@ rm $PACKAGEDIR/zImage > /dev/null 2>&1
 rm arch/arm/boot/zImage > /dev/null 2>&1
 
 echo "Make the kernel"
-make VARIANT_DEFCONFIG=jf_vzw_defconfig SELINUX_DEFCONFIG=jfselinux_defconfig SELINUX_LOG_DEFCONFIG=jfselinux_log_defconfig chronic_jf_defconfig
+make VARIANT_DEFCONFIG=jf_vzw_defconfig SELINUX_DEFCONFIG=jfselinux_defconfig SELINUX_LOG_DEFCONFIG=jfselinux_log_defconfig Elite_Kernel_JF
 
 HOST_CHECK=`uname -n`
 if [ $HOST_CHECK = 'ktoonsez-VirtualBox' ] || [ $HOST_CHECK = 'task650-Underwear' ]; then
@@ -74,7 +74,7 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	cp -R ../META-INF-SEC ./META-INF
 	rm ramdisk.gz
 	rm zImage
-	zip -r ../ChronicKernel-JFvzw-$curdate.zip ..
+	zip -r ../EliteKernel-JFvzw-$curdate.zip ..
 	cd $KERNELDIR
 else
 	echo "KERNEL DID NOT BUILD! no zImage exist"
