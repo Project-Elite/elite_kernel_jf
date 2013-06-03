@@ -11,7 +11,7 @@ export USE_CCACHE=1
 export USE_SEC_FIPS_MODE=true
 export ARCH=arm
 echo "Setting compiler toolchain..."
-export CROSS_COMPILE=/home/albinoman887/android/system/prebuilt/linux-x86/toolchain/linaro/bin/arm-unknown-linux-gnueabi-
+export CROSS_COMPILE=$PARENT_DIR/android-toolchain-eabi/bin/arm-eabi-
 
 time_start=$(date +%s.%N)
 
@@ -39,7 +39,7 @@ rm $PACKAGEDIR/zImage > /dev/null 2>&1
 rm arch/arm/boot/zImage > /dev/null 2>&1
 
 echo "Make the kernel"
-make VARIANT_DEFCONFIG=jf_eur_defconfig SELINUX_DEFCONFIG=jfselinux_defconfig SELINUX_LOG_DEFCONFIG=jfselinux_log_defconfig KT_jf_defconfig
+make VARIANT_DEFCONFIG=jf_eur_defconfig SELINUX_DEFCONFIG=jfselinux_defconfig SELINUX_LOG_DEFCONFIG=jfselinux_log_defconfig Elite_Kernel_JF
 
 HOST_CHECK=`uname -n`
 if [ $HOST_CHECK = 'ktoonsez-VirtualBox' ] || [ $HOST_CHECK = 'task650-Underwear' ]; then

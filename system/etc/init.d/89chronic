@@ -1,0 +1,47 @@
+#!/system/bin/sh
+#Script originally made by Axetilen. Modified by Sultan (android1234567)
+#Updated for albinoman887's ChronicKernel (98% of the credit goes to android1234567. Thanks so much man :)
+#Updated for ChronicKernel-pyramid-linaro
+#adapted for Galaxy S4 kernel
+
+# Configure your options here #
+
+
+# Config 3D GPU clock
+# 320000000 = 320mhz (underclocked)
+# 400000000 = 400mhz (default)
+# 450000000 = 450mhz (Recomended For balance of Performance and Battery life)
+# 500000000 = 500mhz (performance)
+GPU=450000000
+
+
+# Enable Fastcharge
+# 0 = disabled
+# 1 = substitute AC to USB charging always
+# 2 = substitute AC to USB charging only if there is no USB peripheral detected
+FASTCHARGE=0
+
+
+# dyn Fsync Control
+# Enabled by default (recomended)
+# 0 = dyn Fsync disabled
+# 1 = dyn Fsync enabled
+DYNFSYNC=1
+
+
+# End of configurable options #
+
+
+################# DON'T CHANGE ANYTHING BELOW THIS LINE #################
+
+
+# Config 3D GPU setting
+    echo $GPU > /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/max_gpuclk
+
+
+# Config USB forced fastcharge
+    echo "$FASTCHARGE" > /sys/kernel/fast_charge/force_fast_charge
+
+
+# Config dyn Fsync
+    echo $DYNFSYNC > sys/kernel/dyn_fsync/Dyn_fsync_active
