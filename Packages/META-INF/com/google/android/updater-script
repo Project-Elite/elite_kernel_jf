@@ -1,5 +1,4 @@
-ui_print("faux123 SGS4 Kernel...");
-assert(getprop("ro.product.device") == "jfltevzw");
+ui_print("Project Elite SGS4 Kernel...");
 ui_print("Mount /System Folder...");
 run_program("/sbin/busybox", "mount", "/system");
 ui_print("Extracting System Files...");
