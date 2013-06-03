@@ -43,7 +43,7 @@ rm $PACKAGEDIR/zImage > /dev/null 2>&1
 rm arch/arm/boot/zImage > /dev/null 2>&1
 
 echo "Make the kernel"
-make VARIANT_DEFCONFIG=jf_vzw_defconfig SELINUX_DEFCONFIG=jfselinux_defconfig SELINUX_LOG_DEFCONFIG=jfselinux_log_defconfig Elite_Kernel_JF
+make VARIANT_DEFCONFIG=jf_vzw_defconfig SELINUX_DEFCONFIG=jfselinux_defconfig SELINUX_LOG_DEFCONFIG=jfselinux_log_defconfig elite_kernel_defconfig
 
 HOST_CHECK=`uname -n`
 if [ $HOST_CHECK = 'ktoonsez-VirtualBox' ] || [ $HOST_CHECK = 'task650-Underwear' ]; then
