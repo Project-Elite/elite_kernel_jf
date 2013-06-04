@@ -2,7 +2,7 @@
 export KERNELDIR=`readlink -f .`
 export PARENT_DIR=`readlink -f ..`
 export INITRAMFS_DEST=$KERNELDIR/kernel/usr/initramfs
-export INITRAMFS_SOURCE=`readlink -f ..`/Ramdisks/AOSP_VZW
+export INITRAMFS_SOURCE=`readlink -f ..`/elite_kernel_jf/Ramdisks/AOSP_VZW
 export CONFIG_AOSP_BUILD=y
 export PACKAGEDIR=$KERNELDIR/Packages/AOSP
 # enable ccache
@@ -56,7 +56,6 @@ fi;
 
 echo "Copy modules to Package"
 cp -a $(find . -name *.ko -print |grep -v initramfs) $PACKAGEDIR/system/lib/modules/
-cp Packages/89chronic $PACKAGEDIR/system/etc/init.d/89chronic
 
 if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	echo "Copy zImage to Package"
@@ -71,10 +70,10 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	rm $PACKAGEDIR/boot.img
 	#cp loki_flash $PACKAGEDIR/loki_flash
 	cd $PACKAGEDIR
-	cp -R ../META-INF-SEC ./META-INF
+	cp -R ../META-INF ./META-INF
 	rm ramdisk.gz
 	rm zImage
-	zip -r ../EliteKernel-JFvzw-$curdate.zip ..
+	zip -r ../EliteKernel-JFvzw-$curdate.zip .
 	cd $KERNELDIR
 else
 	echo "KERNEL DID NOT BUILD! no zImage exist"

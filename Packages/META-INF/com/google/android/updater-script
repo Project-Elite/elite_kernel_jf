@@ -1,12 +1,18 @@
+
 ui_print("Project Elite SGS4 Kernel...");
-ui_print("Mount /System Folder...");
+ui_print("mounting system");
 run_program("/sbin/busybox", "mount", "/system");
-ui_print("Extracting System Files...");
+ui_print("copying modules");
+ui_print("");
 package_extract_dir("system", "/system");
-set_perm_recursive(0, 0, 0755, 0644, "/system/lib/modules");
-ui_print("VZW detected. Flashing Lokified boot!");
+
+ui_print("unmounting system");
+ui_print("");
+unmount("/system");
+
+ui_print("Flashing Kernel");
+ui_print("");
+
 package_extract_file("boot.lok", "/dev/block/platform/msm_sdcc.1/by-name/boot");
-ui_print("***********************************");
-ui_print("* Kernel Installation Completed!  *");
-ui_print("***********************************");
+
 show_progress(0.100000, 0);
