@@ -2,7 +2,7 @@
 export KERNELDIR=`readlink -f .`
 export PARENT_DIR=`readlink -f ..`
 export INITRAMFS_DEST=$KERNELDIR/kernel/usr/initramfs
-export INITRAMFS_SOURCE=`readlink -f ..`/Ramdisks/AOSP_INTL
+export INITRAMFS_SOURCE=`readlink -f ..`/elite_kernel_jf/Ramdisks/AOSP_INTL
 export CONFIG_AOSP_BUILD=y
 export PACKAGEDIR=$KERNELDIR/Packages/AOSP
 # enable ccache
@@ -10,8 +10,9 @@ export USE_CCACHE=1
 #Enable FIPS mode
 export USE_SEC_FIPS_MODE=true
 export ARCH=arm
+echo "### EUR KERNEL BUILD ###"
 echo "Setting compiler toolchain..."
-export CROSS_COMPILE=$PARENT_DIR/android-toolchain-eabi/bin/arm-eabi-
+export CROSS_COMPILE=/home/forrest/kernel/android-toolchain-eabi/bin/arm-eabi-
 
 time_start=$(date +%s.%N)
 
@@ -39,7 +40,7 @@ rm $PACKAGEDIR/zImage > /dev/null 2>&1
 rm arch/arm/boot/zImage > /dev/null 2>&1
 
 echo "Make the kernel"
-make VARIANT_DEFCONFIG=jf_eur_defconfig SELINUX_DEFCONFIG=jfselinux_defconfig SELINUX_LOG_DEFCONFIG=jfselinux_log_defconfig Elite_Kernel_JF
+make VARIANT_DEFCONFIG=jf_eur_defconfig SELINUX_DEFCONFIG=jfselinux_defconfig SELINUX_LOG_DEFCONFIG=jfselinux_log_defconfig elite_kernel_defconfig
 
 HOST_CHECK=`uname -n`
 if [ $HOST_CHECK = 'ktoonsez-VirtualBox' ] || [ $HOST_CHECK = 'task650-Underwear' ]; then
@@ -52,9 +53,6 @@ fi;
 
 echo "Copy modules to Package"
 cp -a $(find . -name *.ko -print |grep -v initramfs) $PACKAGEDIR/system/lib/modules/
-cp 00post-init.sh $PACKAGEDIR/system/etc/init.d/00post-init.sh
-cp $PACKAGEDIR../89chronic $PACKAGEDIR/system/etc/init.d/89chronic
-cp ../Ramdisks/libsqlite.so $PACKAGEDIR/system/lib/libsqlite.so
 
 if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	echo "Copy zImage to Package"
@@ -65,10 +63,10 @@ if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	./mkbootimg --cmdline 'console = null androidboot.hardware=qcom user_debug=31 zcache' --kernel $PACKAGEDIR/zImage --ramdisk $PACKAGEDIR/ramdisk.gz --base 0x80200000 --pagesize 2048 --ramdisk_offset 0x02000000 --output $PACKAGEDIR/boot.img 
 	export curdate=`date "+%m-%d-%Y"`
 	cd $PACKAGEDIR
-	cp -R ../META-INF .
+	cp -R ../META-INF-NOLOKI ./META-INF
 	rm ramdisk.gz
 	rm zImage
-	zip -r ../ChronicKernel-JFeur-$curdate.zip .
+	zip -r ../EliteKernel-JFeur-$curdate.zip .
 	cd $KERNELDIR
 else
 	echo "KERNEL DID NOT BUILD! no zImage exist"
