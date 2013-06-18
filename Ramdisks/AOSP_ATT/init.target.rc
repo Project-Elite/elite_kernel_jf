@@ -392,10 +392,6 @@ on post-fs-data
     chmod 0660 /sys/vibrator/pwm_val
     chown system system /sys/vibrator/pwm_val
 
-    # Panel color temperature
-    chmod 0660 /sys/class/lcd/panel/panel_colors
-    chown system system /sys/class/lcd/panel/panel_colors
-
 service prepare_param /system/bin/prepare_param.sh /dev/block/platform/msm_sdcc.1/by-name/param
     class main
     user root
@@ -408,14 +404,14 @@ service qcamerasvr /system/bin/mm-qcamera-daemon
     user media
     group system camera inet input graphics
 
-service thermald /system/bin/thermald
-    class main
-    user root
-    group root
+#service thermald /system/bin/thermald
+#    class main
+#    user root
+#    group root
 
-service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
-    user root
-    disabled
+#service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
+#    user root
+#    disabled
 
 service kickstart /system/bin/qcks -i /firmware-mdm/image/
     user root
