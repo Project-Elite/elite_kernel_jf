@@ -770,7 +770,7 @@ static struct attribute *acpuclock8064_attributes[] = {
 
 static struct attribute_group acpuclock8064_attr_group = {
 	.attrs = acpuclock8064_attributes,
-	.name = "ktoonsez",
+	.name = "elite",
 };
 
 static int __init acpuclk_8064_probe(struct platform_device *pdev)
