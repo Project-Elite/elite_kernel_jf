@@ -11,6 +11,5 @@ echo "interactive" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor;
 echo "interactive" > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor;
 echo "interactive" > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor;
 echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_booted;
-echo 1 > /sys/devices/system/cpu/cpufreq/elite/enable_oc;
 
 echo $(date) END of post-init.sh
