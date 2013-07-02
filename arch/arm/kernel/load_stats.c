@@ -96,11 +96,18 @@ static inline cputime64_t get_cpu_idle_time(unsigned int cpu,
 
 static int update_average_load(unsigned int freq, unsigned int cpu)
 {
-
+	struct cpufreq_policy cpu_policy;
 	struct cpu_load_data *pcpu = &per_cpu(cpuload, cpu);
 	cputime64_t cur_wall_time, cur_idle_time, cur_iowait_time;
 	unsigned int idle_time, wall_time, iowait_time;
 	unsigned int cur_load, load_at_max_freq;
+
+	cpufreq_get_policy(&cpu_policy, cpu);
+
+	/* if max freq is changed by the user this load calculator
+	   needs to adjust itself otherwise its going to be all wrong */
+	if (unlikely(pcpu->policy_max != cpu_policy.max))
+		pcpu->policy_max = cpu_policy.max;
 
 	cur_idle_time = get_cpu_idle_time(cpu, &cur_wall_time);
 	cur_iowait_time = get_cpu_iowait_time(cpu, &cur_wall_time);
@@ -151,7 +158,6 @@ unsigned int report_load_at_max_freq()
 	int cpu = 0;
 	struct cpu_load_data *pcpu;
 	unsigned int total_load = 0;
-
 	pcpu = &per_cpu(cpuload, cpu);
 	update_average_load(acpuclk_get_rate(cpu), cpu);
 	total_load = pcpu->avg_load_maxfreq;
@@ -168,7 +174,7 @@ static int __init msm_rq_stats_init(void)
 
 	cpufreq_get_policy(&cpu_policy, cpu);
 
-	pcpu->policy_max = cpu_policy.cpuinfo.max_freq;
+	pcpu->policy_max = cpu_policy.max;
 	pcpu->cur_freq = acpuclk_get_rate(cpu);
 
 	cpumask_copy(pcpu->related_cpus, cpu_policy.cpus);
