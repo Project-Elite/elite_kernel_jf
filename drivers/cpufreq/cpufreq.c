@@ -833,6 +833,9 @@ static ssize_t store_scaling_governor(struct cpufreq_policy *policy,
 	unsigned int ret = -EINVAL;
 	char	str_governor[16];
 	struct cpufreq_policy new_policy;
+	char *envp[3];
+	char buf1[64];
+	char buf2[64];
 
 	ret = cpufreq_get_policy(&new_policy, policy->cpu);
 	if (ret)
@@ -854,6 +857,13 @@ static ssize_t store_scaling_governor(struct cpufreq_policy *policy,
 	policy->user_policy.governor = policy->governor;
 
 	sysfs_notify(&policy->kobj, NULL, "scaling_governor");
+
+	snprintf(buf1, sizeof(buf1), "GOV=%s", policy->governor->name);
+	snprintf(buf2, sizeof(buf2), "CPU=%u", policy->cpu);
+	envp[0] = buf1;
+	envp[1] = buf2;
+	envp[2] = NULL;
+	kobject_uevent_env(cpufreq_global_kobject, KOBJ_ADD, envp);
 
 	if (ret)
 		return ret;
@@ -1393,7 +1403,8 @@ static int cpufreq_add_dev_policy(unsigned int cpu,
 
 			spin_lock_irqsave(&cpufreq_driver_lock, flags);
 			cpumask_copy(managed_policy->cpus, policy->cpus);
-			cpumask_and(managed_policy->cpus, managed_policy->cpus, cpu_online_mask);
+			cpumask_and(managed_policy->cpus,
+					managed_policy->cpus, cpu_online_mask);
 			per_cpu(cpufreq_cpu_data, cpu) = managed_policy;
 			spin_unlock_irqrestore(&cpufreq_driver_lock, flags);
 
