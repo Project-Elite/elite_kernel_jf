@@ -681,20 +681,11 @@ static int kgsl_pwrctrl_gpu_available_frequencies_show(
 		return 0;
 	pwr = &device->pwrctrl;
 	for (index = 0; index < pwr->num_pwrlevels - 1; index++)
-		if (index == 0)
-		{
-			num_chars += snprintf(buf + num_chars, PAGE_SIZE, "%d ",627000000);
-			num_chars += snprintf(buf + num_chars, PAGE_SIZE, "%d ",600000000);
-			num_chars += snprintf(buf + num_chars, PAGE_SIZE, "%d ",545000000);
-			num_chars += snprintf(buf + num_chars, PAGE_SIZE, "%d ",504000000);
-			num_chars += snprintf(buf + num_chars, PAGE_SIZE, "%d ",450000000);
-		}
-		else
-			num_chars += snprintf(buf + num_chars, PAGE_SIZE, "%d ",pwr->pwrlevels[index].gpu_freq);
+		num_chars += snprintf(buf + num_chars, PAGE_SIZE, "%d ",
+		pwr->pwrlevels[index].gpu_freq);
 	buf[num_chars++] = '\n';
 	return num_chars;
 }
-
 DEVICE_ATTR(gpuclk, 0644, kgsl_pwrctrl_gpuclk_show, kgsl_pwrctrl_gpuclk_store);
 DEVICE_ATTR(max_gpuclk, 0644, kgsl_pwrctrl_max_gpuclk_show,
 	kgsl_pwrctrl_max_gpuclk_store);
@@ -706,8 +697,8 @@ DEVICE_ATTR(gpubusy, 0444, kgsl_pwrctrl_gpubusy_show,
 DEVICE_ATTR(gputop, 0444, kgsl_pwrctrl_gputop_show,
 	NULL);
 DEVICE_ATTR(gpu_available_frequencies, 0444,
-	kgsl_pwrctrl_gpu_available_frequencies_show,
-	NULL);
+        kgsl_pwrctrl_gpu_available_frequencies_show,
+        NULL);
 DEVICE_ATTR(max_pwrlevel, 0644,
 	kgsl_pwrctrl_max_pwrlevel_show,
 	kgsl_pwrctrl_max_pwrlevel_store);
