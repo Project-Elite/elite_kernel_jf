@@ -37,7 +37,6 @@ struct ion_heap *ion_heap_create(struct ion_platform_heap *heap_data)
 	case ION_HEAP_TYPE_IOMMU:
 		heap = ion_iommu_heap_create(heap_data);
 		break;
-<<<<<<< HEAD
 	case ION_HEAP_TYPE_CP:
 		heap = ion_cp_heap_create(heap_data);
 		break;
@@ -46,11 +45,6 @@ struct ion_heap *ion_heap_create(struct ion_platform_heap *heap_data)
 		heap = ion_cma_heap_create(heap_data);
 		break;
 #endif
-=======
-	case ION_HEAP_TYPE_DMA:
-		heap = ion_cma_heap_create(heap_data);
-		break;
->>>>>>> 73260c8... gpu: ion: add CMA heap
 	default:
 		pr_err("%s: Invalid heap type %d\n", __func__,
 		       heap_data->type);
@@ -95,13 +89,7 @@ void ion_heap_destroy(struct ion_heap *heap)
 	case ION_HEAP_TYPE_DMA:
 		ion_cma_heap_destroy(heap);
 		break;
-<<<<<<< HEAD
 #endif
-=======
-	case ION_HEAP_TYPE_DMA:
-		ion_cma_heap_destroy(heap);
-		break;
->>>>>>> 73260c8... gpu: ion: add CMA heap
 	default:
 		pr_err("%s: Invalid heap type %d\n", __func__,
 		       heap->type);
