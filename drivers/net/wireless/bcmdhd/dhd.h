@@ -24,7 +24,11 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
  * $Id: dhd.h 393894 2013-03-29 07:14:35Z $
+=======
+ * $Id: dhd.h 407649 2013-06-13 19:55:14Z $
+>>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
  */
 
 /****************
@@ -43,6 +47,7 @@
 #include <linux/random.h>
 #include <linux/spinlock.h>
 #include <linux/ethtool.h>
+#include <linux/string.h>
 #include <asm/uaccess.h>
 #include <asm/unaligned.h>
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)) && defined(CONFIG_HAS_WAKELOCK)
@@ -87,7 +92,8 @@ enum dhd_op_flags {
 	/* Current P2P mode for P2P connection */
 	DHD_FLAG_P2P_GC_MODE				= (1 << (5)),
 	DHD_FLAG_P2P_GO_MODE				= (1 << (6)),
-	DHD_FLAG_MBSS_MODE				= (1 << (7)) /* MBSS in future */
+	DHD_FLAG_MBSS_MODE				= (1 << (7)), /* MBSS in future */
+	DHD_FLAG_IBSS_MODE				= (1 << (8))
 };
 
 #define MANUFACTRING_FW 	"WLTEST"
@@ -149,6 +155,13 @@ typedef enum  {
 	DHD_IF_CHANGE,
 	DHD_IF_DELETING
 } dhd_if_state_t;
+
+
+typedef enum  {
+	DHD_IPV6_ADDR_NONE = 0,
+	DHD_IPV6_ADDR_ADD,
+	DHD_IPV6_ADDR_DELETE
+} dhd_ipv6_op_t;
 
 
 #if defined(CONFIG_DHD_USE_STATIC_BUF)
@@ -306,6 +319,7 @@ typedef struct dhd_pub {
 	bool tdls_enable;
 #endif
 	struct reorder_info *reorder_bufs[WLHOST_REORDERDATA_MAXFLOWS];
+	char  fw_capabilities[WLC_IOCTL_SMLEN];
 #ifdef RXFRAME_THREAD
 #ifdef CUSTOMER_HW4
 #define MAXSKBPEND 1024
@@ -952,7 +966,7 @@ extern void dhd_wait_event_wakeup(dhd_pub_t*dhd);
 	NdisStallExecution(1);
 #define IFUNLOCK(lock)  InterlockedExchange((lock), 0)
 #define IFLOCK_FREE(lock)
-
+#define FW_SUPPORTED(dhd, capa) ((strstr(dhd->fw_capabilities, #capa) != NULL))
 #ifdef PNO_SUPPORT
 extern int dhd_pno_enable(dhd_pub_t *dhd, int pfn_enabled);
 extern int dhd_pnoenable(dhd_pub_t *dhd, int pfn_enabled);
@@ -981,6 +995,10 @@ void dhd_arp_offload_add_ip(dhd_pub_t *dhd, uint32 ipaddr, int idx);
 int dhd_tdls_enable_disable(dhd_pub_t *dhd, bool flag);
 #endif
 
+/* Neighbor Discovery Offload Support */
+int dhd_ndo_enable(dhd_pub_t *dhd, int ndo_enable);
+int dhd_ndo_add_ip(dhd_pub_t *dhd, char *ipaddr, int idx);
+int dhd_ndo_remove_ip(dhd_pub_t *dhd, int idx);
 /* ioctl processing for nl80211 */
 int dhd_ioctl_process(dhd_pub_t *pub, int ifidx, struct dhd_ioctl *ioc);
 

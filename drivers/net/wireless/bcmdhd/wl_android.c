@@ -21,7 +21,11 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
+<<<<<<< HEAD
  * $Id: wl_android.c 400963 2013-05-08 05:11:51Z $
+=======
+ * $Id: wl_android.c 408788 2013-06-20 18:06:11Z $
+>>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
  */
 
 #include <linux/module.h>
@@ -143,6 +147,7 @@ typedef struct cmd_tlv {
 #define CMD_OKC_ENABLE		"OKC_ENABLE"
 
 
+<<<<<<< HEAD
 #ifdef CUSTOMER_HW4
 
 #ifdef ROAM_API
@@ -210,6 +215,37 @@ typedef struct android_wifi_af_params {
 #define CMD_CHANGE_RL	"CHANGE_RL"
 #define CMD_RESTORE_RL  "RESTORE_RL"
 #endif /* CUSTOMER_HW4 */
+=======
+/* miracast related definition */
+#define MIRACAST_MODE_OFF	0
+#define MIRACAST_MODE_SOURCE	1
+#define MIRACAST_MODE_SINK	2
+
+#ifndef MIRACAST_AMPDU_SIZE
+#define MIRACAST_AMPDU_SIZE	8
+#endif
+
+#ifndef MIRACAST_MCHAN_ALGO
+#define MIRACAST_MCHAN_ALGO     1
+#endif
+
+#ifndef MIRACAST_MCHAN_BW
+#define MIRACAST_MCHAN_BW       25
+#endif
+
+static LIST_HEAD(miracast_resume_list);
+static u8 miracast_cur_mode;
+
+struct io_cfg {
+	s8 *iovar;
+	s32 param;
+	u32 ioctl;
+	void *arg;
+	u32 len;
+	struct list_head list;
+};
+
+>>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
 typedef struct android_wifi_priv_cmd {
 	char *buf;
 	int used_len;
@@ -1586,8 +1622,63 @@ wl_android_set_lpc(struct net_device *dev, const char* string_num)
 	int lpc_enabled, ret;
 	s32 val = 1;
 
+<<<<<<< HEAD
 	lpc_enabled = bcm_atoi(string_num);
 	DHD_INFO(("%s : HAPD_LPC_ENABLED = %d\n", __FUNCTION__, lpc_enabled));
+=======
+	wl_android_iolist_resume(dev, &miracast_resume_list);
+	miracast_cur_mode = MIRACAST_MODE_OFF;
+
+	switch (mode) {
+	case MIRACAST_MODE_SOURCE:
+		/* setting mchan_algo to platform specific value */
+		config.iovar = "mchan_algo";
+		config.param = MIRACAST_MCHAN_ALGO;
+		ret = wl_android_iolist_add(dev, &miracast_resume_list, &config);
+		if (ret)
+			goto resume;
+
+		/* setting mchan_bw to platform specific value */
+		config.iovar = "mchan_bw";
+		config.param = MIRACAST_MCHAN_BW;
+		ret = wl_android_iolist_add(dev, &miracast_resume_list, &config);
+		if (ret)
+			goto resume;
+
+		/* setting apmdu to platform specific value */
+		config.iovar = "ampdu_mpdu";
+		config.param = MIRACAST_AMPDU_SIZE;
+		ret = wl_android_iolist_add(dev, &miracast_resume_list, &config);
+		if (ret)
+			goto resume;
+		/* FALLTROUGH */
+		/* Source mode shares most configurations with sink mode.
+		 * Fall through here to avoid code duplication
+		 */
+	case MIRACAST_MODE_SINK:
+		/* disable internal roaming */
+		config.iovar = "roam_off";
+		config.param = 1;
+		ret = wl_android_iolist_add(dev, &miracast_resume_list, &config);
+		if (ret)
+			goto resume;
+		/* tunr off pm */
+		val = 0;
+		config.iovar = NULL;
+		config.ioctl = WLC_GET_PM;
+		config.arg = &val;
+		config.len = sizeof(int);
+		ret = wl_android_iolist_add(dev, &miracast_resume_list, &config);
+		if (ret)
+			goto resume;
+
+		break;
+	case MIRACAST_MODE_OFF:
+	default:
+		break;
+	}
+	miracast_cur_mode = mode;
+>>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
 
 	ret = wldev_ioctl(dev, WLC_DOWN, &val, sizeof(s32), true);
 	if (ret < 0)

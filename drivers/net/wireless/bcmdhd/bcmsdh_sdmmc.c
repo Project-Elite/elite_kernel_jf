@@ -1007,7 +1007,10 @@ void
 sdioh_glom_clear(sdioh_info_t *sd)
 {
 	void *pnow, *pnext;
+<<<<<<< HEAD
 	uint8 i = 0;
+=======
+>>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
 
 	pnext = sd->glom_info.glom_pkt_head;
 
@@ -1021,7 +1024,10 @@ sdioh_glom_clear(sdioh_info_t *sd)
 		pnext = PKTNEXT(sd->osh, pnow);
 		PKTSETNEXT(sd->osh, pnow, NULL);
 		sd->glom_info.count--;
+<<<<<<< HEAD
 		i++;
+=======
+>>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
 	}
 
 	sd->glom_info.glom_pkt_head = NULL;
