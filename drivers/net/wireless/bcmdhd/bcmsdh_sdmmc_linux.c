@@ -21,11 +21,7 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
-<<<<<<< HEAD
  * $Id: bcmsdh_sdmmc_linux.c 381717 2013-01-29 07:10:21Z $
-=======
- * $Id: bcmsdh_sdmmc_linux.c 404103 2013-05-23 20:07:27Z $
->>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
  */
 
 #include <typedefs.h>
@@ -114,9 +110,6 @@ static int bcmsdh_sdmmc_probe(struct sdio_func *func,
 	int ret = 0;
 	static struct sdio_func sdio_func_0;
 
-	if (!gInstance)
-		return -EINVAL;
-
 	if (func) {
 		sd_trace(("bcmsdh_sdmmc: %s Enter\n", __FUNCTION__));
 		sd_trace(("sdio_bcmsdh: func->class=%x\n", func->class));
@@ -143,7 +136,7 @@ static int bcmsdh_sdmmc_probe(struct sdio_func *func,
 	#endif
 			sd_trace(("F2 found, calling bcmsdh_probe...\n"));
 			ret = bcmsdh_probe(&func->dev);
-			if (ret < 0)
+			if (ret < 0 && gInstance)
 				gInstance->func[2] = NULL;
 		}
 	} else {

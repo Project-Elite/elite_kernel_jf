@@ -21,11 +21,7 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
-<<<<<<< HEAD
  * $Id: bcmsdh_sdmmc.h 393684 2013-03-28 11:03:49Z $
-=======
- * $Id: bcmsdh_sdmmc.h 396592 2013-04-13 16:14:38Z $
->>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
  */
 
 #ifndef __BCMSDH_SDMMC_H__
@@ -71,22 +67,15 @@ extern void sdioh_sdmmc_osfree(sdioh_info_t *sd);
 #define CLIENT_INTR			0x100	/* Get rid of this! */
 
 #ifdef BCMSDIOH_TXGLOM
-<<<<<<< HEAD
 /* Setting the MAX limit to 10 */
 #define SDIOH_MAXGLOM_SIZE	16
-=======
->>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
 
 typedef struct glom_buf {
 	void *glom_pkt_head;
 	void *glom_pkt_tail;
 	uint32 count;				/* Total number of pkts queued */
 } glom_buf_t;
-<<<<<<< HEAD
 #endif
-=======
-#endif /* BCMSDIOH_TXGLOM */
->>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
 
 struct sdioh_info {
 	osl_t		*osh;			/* osh handler */

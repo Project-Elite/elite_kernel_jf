@@ -30,17 +30,12 @@
 
 #define	EPI_MINOR_VERSION	61
 
-<<<<<<< HEAD
 #define	EPI_RC_NUMBER		56
-=======
-#define	EPI_RC_NUMBER		27
->>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
 
 #define	EPI_INCREMENTAL_NUMBER	0
 
 #define	EPI_BUILD_NUMBER	0
 
-<<<<<<< HEAD
 #define	EPI_VERSION		1, 61, 56, 0
 
 #define	EPI_VERSION_NUM		0x013d3800
@@ -55,22 +50,6 @@
 #define	EPI_VERSION_STR		"1.61.56 (r WLTEST)"
 #else
 #define	EPI_VERSION_STR		"1.61.56 (r)"
-=======
-#define	EPI_VERSION		1, 88, 27, 0
-
-#define	EPI_VERSION_NUM		0x01581b00
-
-#define EPI_VERSION_DEV		1.88.27
-
-/* Driver Version String, ASCII, 32 chars max */
-#ifdef BCMINTERNAL
-#define	EPI_VERSION_STR		"1.88.27 (r BCMINT)"
-#else
-#ifdef WLTEST
-#define	EPI_VERSION_STR		"1.88.27 (r WLTEST)"
-#else
-#define	EPI_VERSION_STR		"1.88.27 (r)"
->>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
 #endif
 #endif /* BCMINTERNAL */
 

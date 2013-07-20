@@ -22,11 +22,7 @@
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
  *
-<<<<<<< HEAD
  * $Id: linuxver.h 387186 2013-02-24 08:45:22Z $
-=======
- * $Id: linuxver.h 407802 2013-06-14 13:59:38Z $
->>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
  */
 
 #ifndef _linuxver_h_
@@ -72,7 +68,6 @@
 #include <linux/string.h>
 #include <linux/pci.h>
 #include <linux/interrupt.h>
-#include <linux/kthread.h>
 #include <linux/netdevice.h>
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
 #include <linux/semaphore.h>
@@ -155,11 +150,7 @@ typedef irqreturn_t(*FN_ISR) (int irq, void *dev_id, struct pt_regs *ptregs);
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 32)
 #include <linux/sched.h>
-#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 32) */
-
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 9, 0))
-#include <linux/sched/rt.h>
-#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3, 9, 0) */
+#endif
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 29)
 #include <net/lib80211.h>
@@ -173,13 +164,10 @@ typedef irqreturn_t(*FN_ISR) (int irq, void *dev_id, struct pt_regs *ptregs);
 #endif 
 
 
-<<<<<<< HEAD
 #ifdef CUSTOMER_HW4
 #include <linux/kthread.h>
 #endif
 
-=======
->>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
 #ifndef __exit
 #define __exit
 #endif
@@ -524,6 +512,7 @@ typedef struct {
 #define SMP_RD_BARRIER_DEPENDS(x) smp_rmb(x)
 #endif
 
+#ifdef USE_KTHREAD_API
 #define PROC_START(thread_func, owner, tsk_ctl, flags, name) \
 { \
 	sema_init(&((tsk_ctl)->sema), 0); \
@@ -534,7 +523,6 @@ typedef struct {
 	(tsk_ctl)->thr_pid = (tsk_ctl)->p_task->pid; \
 	DBG_THR(("%s thr:%lx created\n", __FUNCTION__, (tsk_ctl)->thr_pid)); \
 }
-<<<<<<< HEAD
 #else
 #define PROC_START(thread_func, owner, tsk_ctl, flags, name) \
 { \
@@ -548,8 +536,6 @@ typedef struct {
 	DBG_THR(("%s thr:%lx started\n", __FUNCTION__, (tsk_ctl)->thr_pid)); \
 }
 #endif
-=======
->>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
 
 #define PROC_STOP(tsk_ctl) \
 { \
@@ -645,20 +631,4 @@ do {									\
 #define netdev_priv(dev) dev->priv
 #endif 
 
-<<<<<<< HEAD
 #endif 
-=======
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0))
-#define RANDOM32	prandom_u32
-#else
-#define RANDOM32	random32
-#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0) */
-
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0))
-#define SRANDOM32(entropy)	prandom_seed(entropy)
-#else
-#define SRANDOM32(entropy)	srandom32(entropy)
-#endif /* LINUX_VERSION_CODE >= KERNEL_VERSION(3, 8, 0) */
-
-#endif /* _linuxver_h_ */
->>>>>>> e21818c... net: wireless: bcmdhd: Update to version 1.88.27
