@@ -11,22 +11,22 @@ echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_booted;
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 ## Create the kernel data directory
-if [ ! -d /data/.elite ];
+if [ ! -d /data/.ktoonsez ];
 then
-  mkdir /data/.elite
-  chmod 777 /data/.elite
+  mkdir /data/.ktoonsez
+  chmod 777 /data/.ktoonsez
 fi
 
 ## Enable "post-init" ...
-if [ -f /data/.elite/post-init.log ];
+if [ -f /data/.ktoonsez/post-init.log ];
 then
   # BackUp old post-init log
-  mv /data/.elite/post-init.log /data/.elite/post-init.log.BAK
+  mv /data/.ktoonsez/post-init.log /data/.ktoonsez/post-init.log.BAK
 fi
 
 # Start logging
-date >/data/.elite/post-init.log
-exec >>/data/.elite/post-init.log 2>&1
+date >/data/.ktoonsez/post-init.log
+exec >>/data/.ktoonsez/post-init.log 2>&1
 
 echo "Running Post-Init Script"
 
