@@ -1,0 +1,5 @@
+#!/system/bin/sh
+
+# Load /sys/etc/sysctl.conf
+
+sysctl -p

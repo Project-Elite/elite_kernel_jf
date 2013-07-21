@@ -1,0 +1,24 @@
+#!/system/bin/sh
+
+# IO
+BLOCK_DEVS=`ls -d /sys/block/mmc*`;
+
+for i in $BLOCK_DEVS;
+do
+    echo "0" > $i/queue/rotational;
+    echo "256" > $i/queue/max_sectors_kb;
+done;
+
+# File System Mounts
+#
+busybox mount -o remount,noatime,barrier=0,nobh /system
+busybox mount -o remount,noatime /data
+busybox mount -o remount,noatime,barrier=0,nobh /cache
+
+
+# maintain caches
+busybox rm -f /cache/*.apk
+busybox rm -f /cache/*.tmp
+busybox rm -f /data/dalvik-cache/*.apk
+busybox rm -f /data/dalvik-cache/*.tmp
+

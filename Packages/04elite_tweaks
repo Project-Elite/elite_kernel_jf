@@ -1,0 +1,23 @@
+#!/system/bin/sh
+#
+#
+# Created by Einherjar Development Team
+#
+
+
+# Remount all partitions with noatime
+for k in $(busybox mount | grep relatime | cut -d " " -f3) ; do
+	sync
+	busybox mount -o remount,noatime $k
+done
+
+# One-time tweaks to apply on every boot
+MMC=`ls -d /sys/block/mmc*`
+
+# Tweak deadline io scheduler
+for i in $STL $BML $MMC $TFSR; do
+	echo 0 > $i/queue/rotational
+	echo deadline > $i/queue/scheduler
+done
+
+# End EDT Tweaks - For Now
