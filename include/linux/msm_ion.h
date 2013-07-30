@@ -1,28 +1,38 @@
-/****************************************************************************
- ****************************************************************************
- ***
- ***   This header was automatically generated from a Linux kernel header
- ***   of the same name, to make information necessary for userspace to
- ***   call into the kernel available to libc.  It contains only constants,
- ***   structures, and macros generated from the original header, and thus,
- ***   contains no copyrightable information.
- ***
- ***   To edit the content of this header, modify the corresponding
- ***   source file (e.g. under external/kernel-headers/original/) then
- ***   run bionic/libc/kernel/tools/update_all.py
- ***
- ***   Any manual change here will be lost the next time this script will
- ***   be run. You've been warned!
- ***
- ****************************************************************************
- ****************************************************************************/
+/*
+ *
+ * Copyright (c) 2012-2013, The Linux Foundation. All rights reserved.
+ *
+ * This software is licensed under the terms of the GNU General Public
+ * License version 2, as published by the Free Software Foundation, and
+ * may be copied, distributed, and modified under those terms.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ */
+
 #ifndef _LINUX_MSM_ION_H
 #define _LINUX_MSM_ION_H
+
 #include <linux/ion.h>
-#define ION_HEAP_TYPE_MSM_START (ION_HEAP_TYPE_CUSTOM + 1)
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-#define ION_HEAP_TYPE_IOMMU (ION_HEAP_TYPE_MSM_START)
-#define ION_HEAP_TYPE_CP (ION_HEAP_TYPE_IOMMU + 1)
+
+enum msm_ion_heap_types {
+	ION_HEAP_TYPE_MSM_START = ION_HEAP_TYPE_CUSTOM + 1,
+	ION_HEAP_TYPE_IOMMU = ION_HEAP_TYPE_MSM_START,
+	ION_HEAP_TYPE_CP,
+};
+
+/**
+ * These are the only ids that should be used for Ion heap ids.
+ * The ids listed are the order in which allocation will be attempted
+ * if specified. Don't swap the order of heap ids unless you know what
+ * you are doing!
+ * Id's are spaced by purpose to allow new Id's to be inserted in-between (for
+ * possible fallbacks)
+ */
+
 enum ion_heap_ids {
 	INVALID_HEAP_ID = -1,
 	ION_CP_MM_HEAP_ID = 8,
@@ -41,21 +51,20 @@ enum ion_heap_ids {
 
 	ION_HEAP_ID_RESERVED = 31 /** Bit reserved for ION_SECURE flag */
 };
+
 enum ion_fixed_position {
- NOT_FIXED,
- FIXED_LOW,
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
- FIXED_MIDDLE,
- FIXED_HIGH,
+	NOT_FIXED,
+	FIXED_LOW,
+	FIXED_MIDDLE,
+	FIXED_HIGH,
 };
+
 enum cp_mem_usage {
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
- VIDEO_BITSTREAM = 0x1,
- VIDEO_PIXEL = 0x2,
- VIDEO_NONPIXEL = 0x3,
- MAX_USAGE = 0x4,
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
- UNKNOWN = 0x7FFFFFFF,
+	VIDEO_BITSTREAM = 0x1,
+	VIDEO_PIXEL = 0x2,
+	VIDEO_NONPIXEL = 0x3,
+	MAX_USAGE = 0x4,
+	UNKNOWN = 0x7FFFFFFF,
 };
 
 #define ION_HEAP_CP_MASK		(1 << ION_HEAP_TYPE_CP)
@@ -265,49 +274,79 @@ static inline int msm_ion_unsecure_heap_2_0(int heap_id,
  * of the handle, p + offset through p + offset + length will have
  * the cache operations performed
  */
-#define ION_HEAP_CP_MASK (1 << ION_HEAP_TYPE_CP)
-#define ION_SECURE (1 << ION_HEAP_ID_RESERVED)
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-#define ION_FORCE_CONTIGUOUS (1 << 30)
-#define ION_HEAP(bit) (1 << (bit))
-#define ION_ADSP_HEAP_NAME "adsp"
-#define ION_VMALLOC_HEAP_NAME "vmalloc"
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-#define ION_AUDIO_HEAP_NAME "audio"
-#define ION_SF_HEAP_NAME "sf"
-#define ION_MM_HEAP_NAME "mm"
-#define ION_CAMERA_HEAP_NAME "camera_preview"
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-#define ION_IOMMU_HEAP_NAME "iommu"
-#define ION_MFC_HEAP_NAME "mfc"
-#define ION_WB_HEAP_NAME "wb"
-#define ION_MM_FIRMWARE_HEAP_NAME "mm_fw"
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-#define ION_QSECOM_HEAP_NAME "qsecom"
-#define ION_FMEM_HEAP_NAME "fmem"
-#define ION_SET_CACHED(__cache) (__cache | ION_FLAG_CACHED)
-#define ION_SET_UNCACHED(__cache) (__cache & ~ION_FLAG_CACHED)
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-#define ION_IS_CACHED(__flags) ((__flags) & ION_FLAG_CACHED)
 struct ion_flush_data {
- struct ion_handle *handle;
- int fd;
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
- void *vaddr;
- unsigned int offset;
- unsigned int length;
+	struct ion_handle *handle;
+	int fd;
+	void *vaddr;
+	unsigned int offset;
+	unsigned int length;
 };
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-struct ion_flag_data {
- struct ion_handle *handle;
- unsigned long flags;
-};
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-#define ION_IOC_MSM_MAGIC 'M'
-#define ION_IOC_CLEAN_CACHES _IOWR(ION_IOC_MSM_MAGIC, 0,   struct ion_flush_data)
-#define ION_IOC_INV_CACHES _IOWR(ION_IOC_MSM_MAGIC, 1,   struct ion_flush_data)
-#define ION_IOC_CLEAN_INV_CACHES _IOWR(ION_IOC_MSM_MAGIC, 2,   struct ion_flush_data)
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-#define ION_IOC_GET_FLAGS _IOWR(ION_IOC_MSM_MAGIC, 3,   struct ion_flag_data)
-#endif
 
+/* struct ion_flag_data - information about flags for this buffer
+ *
+ * @handle:	handle to get flags from
+ * @flags:	flags of this handle
+ *
+ * Takes handle as an input and outputs the flags from the handle
+ * in the flag field.
+ */
+struct ion_flag_data {
+	struct ion_handle *handle;
+	unsigned long flags;
+};
+
+/* struct ion_buffer_data
+ *
+ * @handle:	handle for the buffer being queried
+ * @paddr:	The physical address of the buffer referenced by the handle
+ * @length:	The length of the buffer referenced by the handle
+ *
+ * Gets the physicial address of the given handle
+ */
+struct ion_buffer_data {
+	struct ion_handle *handle;
+	unsigned long paddr;
+	unsigned int length;
+};
+
+#define ION_IOC_MSM_MAGIC 'M'
+
+/**
+ * DOC: ION_IOC_CLEAN_CACHES - clean the caches
+ *
+ * Clean the caches of the handle specified.
+ */
+#define ION_IOC_CLEAN_CACHES	_IOWR(ION_IOC_MSM_MAGIC, 0, \
+						struct ion_flush_data)
+/**
+ * DOC: ION_IOC_INV_CACHES - invalidate the caches
+ *
+ * Invalidate the caches of the handle specified.
+ */
+#define ION_IOC_INV_CACHES	_IOWR(ION_IOC_MSM_MAGIC, 1, \
+						struct ion_flush_data)
+/**
+ * DOC: ION_IOC_CLEAN_INV_CACHES - clean and invalidate the caches
+ *
+ * Clean and invalidate the caches of the handle specified.
+ */
+#define ION_IOC_CLEAN_INV_CACHES	_IOWR(ION_IOC_MSM_MAGIC, 2, \
+						struct ion_flush_data)
+
+/**
+ * DOC: ION_IOC_GET_FLAGS - get the flags of the handle
+ *
+ * Gets the flags of the current handle which indicate cachability,
+ * secure state etc.
+ */
+#define ION_IOC_GET_FLAGS		_IOWR(ION_IOC_MSM_MAGIC, 3, \
+						struct ion_flag_data)
+/**
+ * DOC: ION_IOC_GET_PHYS - get the physical address of the handle
+ *
+ * Gets the physicial address of the given handle
+ */
+#define ION_IOC_GET_PHYS	_IOWR(ION_IOC_MSM_MAGIC, 4, \
+						struct ion_buffer_data)
+
+#endif
