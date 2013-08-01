@@ -105,6 +105,9 @@ on boot
     # Allow QMUX daemon to assign port open wait time
     chown radio radio /sys/devices/virtual/hsicctl/hsicctl0/modem_wait
 
+    # 4.3 requires this
+    chmod 0644 /proc/cmdline
+
     setprop wifi.interface wlan0
 
     setprop ro.telephony.call_ring.multiple false
@@ -391,7 +394,7 @@ service wpa_supplicant /system/bin/wpa_supplicant \
     #   user wifi
     #   group wifi inet keystore
     class main
-    socket wpa_wlan0 dgram 660 wifi wifi
+    socket wpa_wlan0 dgram 660 wifi wifi  u:object_r:wpa_socket:s0
     disabled
     oneshot
 
@@ -403,7 +406,7 @@ service p2p_supplicant /system/bin/wpa_supplicant \
     #   user wifi
     #   group wifi inet keystore
     class main
-    socket wpa_wlan0 dgram 660 wifi wifi
+    socket wpa_wlan0 dgram 660 wifi wifi u:object_r:wpa_socket:s0
     disabled
     oneshot
 
@@ -621,6 +624,17 @@ service profiler_daemon /system/bin/profiler_daemon
 # virtual sdcard daemon running as media_rw (1023)
 service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
     class late_start
+    oneshot
+
+on property:ro.fuse_sdcard=true
+    start sdcard
+
+# This will make sure that sdcard service starts as late_start.
+on nonencrypted
+    setprop ro.fuse_sdcard ${persist.fuse_sdcard}
+
+on property:vold.decrypt=trigger_restart_framework
+    setprop ro.fuse_sdcard ${persist.fuse_sdcard}
 
 service ssr_diag /system/bin/ssr_diag
     class late_start
@@ -639,8 +653,4 @@ on property:service.bootanim.exit=1
     write /proc/sys/net/ipv6/conf/rmnet_usb1/accept_ra 2
     write /proc/sys/net/ipv6/conf/rmnet_usb2/accept_ra 2
     write /proc/sys/net/ipv6/conf/rmnet_usb3/accept_ra 2
-    write /proc/sys/net/ipv6/conf/rmnet_usb0/accept_ra_defrtr 0
-    write /proc/sys/net/ipv6/conf/rmnet_usb1/accept_ra_defrtr 0
-    write /proc/sys/net/ipv6/conf/rmnet_usb2/accept_ra_defrtr 0
-    write /proc/sys/net/ipv6/conf/rmnet_usb3/accept_ra_defrtr 0
 
