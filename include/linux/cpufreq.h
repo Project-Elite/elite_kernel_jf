@@ -26,9 +26,9 @@
 extern int GLOBALKT_MIN_FREQ_LIMIT;
 extern int GLOBALKT_MAX_FREQ_LIMIT;
 
-#define FREQ_TABLE_SIZE		45
+#define FREQ_TABLE_SIZE		38
 #define FREQ_TABLE_SIZE_OFFSET	8
-#define FREQ_STEPS		26
+#define FREQ_STEPS		18
 
 #define MAX_VDD_SC		1500000 /* uV */
 #define MIN_VDD_SC		700000 /* uV */
