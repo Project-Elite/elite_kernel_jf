@@ -34,18 +34,13 @@
 #include <linux/blktrace_api.h>
 #include <linux/hash.h>
 #include <linux/uaccess.h>
-#include <linux/pm_runtime.h>
 
 #include <trace/events/block.h>
 
 #include "blk.h"
 
-extern void set_cur_sched(const char *name);
-
 static DEFINE_SPINLOCK(elv_list_lock);
 static LIST_HEAD(elv_list);
-static struct request_queue *globalq[50];
-static unsigned int queue_size = 0;
 
 /*
  * Merge hash stuff.
@@ -274,14 +269,6 @@ int elevator_init(struct request_queue *q, char *name)
 	}
 
 	q->elevator = eq;
-	
-	q->index = queue_size;
-	globalq[queue_size] = q;
-	pr_alert("ELEVATOR_INIT:  %s-%d\n", q->elevator->type->elevator_name, queue_size);
-	queue_size += 1;
-	if (queue_size > 40)
-		queue_size = 10;
-
 	return 0;
 }
 EXPORT_SYMBOL(elevator_init);
@@ -517,7 +504,6 @@ static bool elv_attempt_insert_merge(struct request_queue *q,
 				     struct request *rq)
 {
 	struct request *__rq;
-	bool ret;
 
 	if (blk_queue_nomerges(q))
 		return false;
@@ -531,21 +517,14 @@ static bool elv_attempt_insert_merge(struct request_queue *q,
 	if (blk_queue_noxmerges(q))
 		return false;
 
-	ret = false;
 	/*
 	 * See if our hash lookup can find a potential backmerge.
 	 */
-	while (1) {
-		__rq = elv_rqhash_find(q, blk_rq_pos(rq));
-		if (!__rq || !blk_attempt_req_merge(q, __rq, rq))
-			break;
+	__rq = elv_rqhash_find(q, blk_rq_pos(rq));
+	if (__rq && blk_attempt_req_merge(q, __rq, rq))
+		return true;
 
-		/* The merged request could be merged with others, try again */
-		ret = true;
-		rq = __rq;
-	}
-
-	return ret;
+	return false;
 }
 
 void elv_merged_request(struct request_queue *q, struct request *rq, int type)
@@ -589,27 +568,6 @@ void elv_bio_merged(struct request_queue *q, struct request *rq,
 		e->type->ops.elevator_bio_merged_fn(q, rq, bio);
 }
 
-#ifdef CONFIG_PM_RUNTIME
-static void blk_pm_requeue_request(struct request *rq)
-{
-	if (rq->q->dev && !(rq->cmd_flags & REQ_PM))
-		rq->q->nr_pending--;
-}
-
-static void blk_pm_add_request(struct request_queue *q, struct request *rq)
-{
-	if (q->dev && !(rq->cmd_flags & REQ_PM) && q->nr_pending++ == 0 &&
-	    (q->rpm_status == RPM_SUSPENDED || q->rpm_status == RPM_SUSPENDING))
-		pm_request_resume(q->dev);
-}
-#else
-static inline void blk_pm_requeue_request(struct request *rq) {}
-static inline void blk_pm_add_request(struct request_queue *q,
-				      struct request *rq)
-{
-}
-#endif
-
 void elv_requeue_request(struct request_queue *q, struct request *rq)
 {
 	/*
@@ -623,8 +581,6 @@ void elv_requeue_request(struct request_queue *q, struct request *rq)
 	}
 
 	rq->cmd_flags &= ~REQ_STARTED;
-
-	blk_pm_requeue_request(rq);
 
 	__elv_add_request(q, rq, ELEVATOR_INSERT_REQUEUE);
 }
@@ -701,8 +657,6 @@ void elv_quiesce_end(struct request_queue *q)
 void __elv_add_request(struct request_queue *q, struct request *rq, int where)
 {
 	trace_block_rq_insert(q, rq);
-
-	blk_pm_add_request(q, rq);
 
 	rq->q = q;
 
@@ -1080,17 +1034,6 @@ fail_register:
 	return err;
 }
 
-int elevator_change_relay(const char *name, int screen_status)
-{
-	int i = 0;
-	for (i = 0; i < queue_size; i++)
-	{
-		if (i != 1 && i != 2)
-			elevator_change(globalq[i], name);
-	}
-	return 0;
-}
-
 /*
  * Switch this queue to the given IO scheduler.
  */
@@ -1127,10 +1070,6 @@ ssize_t elv_iosched_store(struct request_queue *q, const char *name,
 		return count;
 
 	ret = elevator_change(q, name);
-	globalq[q->index] = q;
-	//pr_alert("IOSCHED_STORE: %s-%s-%s-%d\n", name, q->elevator->type->elevator_name, globalq[q->index]->elevator->type->elevator_name, q->index);
-	set_cur_sched(name);
-	
 	if (!ret)
 		return count;
 
