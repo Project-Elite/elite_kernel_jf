@@ -34,6 +34,10 @@
 #define UPDATE_BUSY_VAL		1000000
 #define UPDATE_BUSY		50
 
+struct kgsl_device *Gbldevice;
+unsigned long orig_max;
+unsigned long internal_max = 450000000;
+
 struct clk_pair {
 	const char *name;
 	uint map;
@@ -372,6 +376,36 @@ static int _get_nearest_pwrlevel(struct kgsl_pwrctrl *pwr, unsigned int clock)
 	return -ERANGE;
 }
 
+void set_max_gpuclk_so(unsigned long val)
+{
+	struct kgsl_pwrctrl *pwr;
+	int ret, level;
+
+	pwr = &Gbldevice->pwrctrl;
+	
+	if (val == 0)
+		val = orig_max;
+	else if (val != 0 && orig_max == 0)
+		orig_max = pwr->pwrlevels[pwr->thermal_pwrlevel].gpu_freq;
+		
+	mutex_lock(&Gbldevice->mutex);
+	level = _get_nearest_pwrlevel(pwr, val);
+	if (level < 0)
+		goto done;
+
+	pwr->thermal_pwrlevel = level;
+
+	if (pwr->thermal_pwrlevel > pwr->active_pwrlevel)
+		kgsl_pwrctrl_pwrlevel_change(Gbldevice, pwr->thermal_pwrlevel);
+
+done:
+	mutex_unlock(&Gbldevice->mutex);
+	
+}
+
+extern void SetGPUpll_config(u32 loc, unsigned long freq);
+extern void SetMAXGPUFreq(unsigned long freq);
+
 static int kgsl_pwrctrl_max_gpuclk_store(struct device *dev,
 					 struct device_attribute *attr,
 					 const char *buf, size_t count)
@@ -390,6 +424,39 @@ static int kgsl_pwrctrl_max_gpuclk_store(struct device *dev,
 	if (ret != 1)
 		return count;
 
+	if (val == 450000000)
+	{
+		//pwr->pwrlevels[0].gpu_freq = val;
+		//SetMAXGPUFreq(val);
+		SetGPUpll_config(0x21, val);
+	}
+	else if (val == 504000000)
+	{
+		//pwr->pwrlevels[0].gpu_freq = val;
+		//SetMAXGPUFreq(val);
+		SetGPUpll_config(0x25, val);
+	}
+	else if (val == 545000000)
+	{
+		//pwr->pwrlevels[0].gpu_freq = val;
+		//SetMAXGPUFreq(val);
+		SetGPUpll_config(0x28, val);
+	}
+	else if (val == 600000000)
+	{
+		//pwr->pwrlevels[0].gpu_freq = val;
+		//SetMAXGPUFreq(val);
+		SetGPUpll_config(0x2C, val);
+	}
+	else if (val == 627000000)
+	{
+		//pwr->pwrlevels[0].gpu_freq = val;
+		//SetMAXGPUFreq(val);
+		SetGPUpll_config(0x2E, val);
+	}
+
+	internal_max = val;
+		
 	mutex_lock(&device->mutex);
 	level = _get_nearest_pwrlevel(pwr, val);
 	if (level < 0)
@@ -404,7 +471,8 @@ static int kgsl_pwrctrl_max_gpuclk_store(struct device *dev,
 
 	if (pwr->thermal_pwrlevel > pwr->active_pwrlevel)
 		kgsl_pwrctrl_pwrlevel_change(device, pwr->thermal_pwrlevel);
-
+	
+	orig_max = val;
 done:
 	mutex_unlock(&device->mutex);
 	return count;
@@ -420,8 +488,8 @@ static int kgsl_pwrctrl_max_gpuclk_show(struct device *dev,
 	if (device == NULL)
 		return 0;
 	pwr = &device->pwrctrl;
-	return snprintf(buf, PAGE_SIZE, "%d\n",
-			pwr->pwrlevels[pwr->thermal_pwrlevel].gpu_freq);
+	return snprintf(buf, PAGE_SIZE, "%ld\n",
+			internal_max);
 }
 
 static int kgsl_pwrctrl_gpuclk_store(struct device *dev,
@@ -460,8 +528,12 @@ static int kgsl_pwrctrl_gpuclk_show(struct device *dev,
 	if (device == NULL)
 		return 0;
 	pwr = &device->pwrctrl;
-	return snprintf(buf, PAGE_SIZE, "%d\n",
+	if (pwr->active_pwrlevel != 0)
+		return snprintf(buf, PAGE_SIZE, "%d\n",
 			pwr->pwrlevels[pwr->active_pwrlevel].gpu_freq);
+	else
+		return snprintf(buf, PAGE_SIZE, "%ld\n",
+			internal_max);
 }
 
 static int kgsl_pwrctrl_pwrnap_store(struct device *dev,
@@ -635,8 +707,8 @@ DEVICE_ATTR(gpubusy, 0444, kgsl_pwrctrl_gpubusy_show,
 DEVICE_ATTR(gputop, 0444, kgsl_pwrctrl_gputop_show,
 	NULL);
 DEVICE_ATTR(gpu_available_frequencies, 0444,
-	kgsl_pwrctrl_gpu_available_frequencies_show,
-	NULL);
+        kgsl_pwrctrl_gpu_available_frequencies_show,
+        NULL);
 DEVICE_ATTR(max_pwrlevel, 0644,
 	kgsl_pwrctrl_max_pwrlevel_show,
 	kgsl_pwrctrl_max_pwrlevel_store);
@@ -874,6 +946,8 @@ int kgsl_pwrctrl_init(struct kgsl_device *device)
 	struct kgsl_pwrctrl *pwr = &device->pwrctrl;
 	struct kgsl_device_platform_data *pdata = pdev->dev.platform_data;
 
+	Gbldevice = device;
+	
 	/*acquire clocks */
 	for (i = 0; i < KGSL_MAX_CLKS; i++) {
 		if (pdata->clk_map & clks[i].map) {
