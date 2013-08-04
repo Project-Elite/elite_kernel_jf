@@ -2643,6 +2643,13 @@ static int select_idle_sibling(struct task_struct *p, int target)
 	int cpu = smp_processor_id();
 	int prev_cpu = task_cpu(p);
 	struct sched_domain *sd;
+	struct sched_group *sg;
+	int i;
+
+	/*
+	 * If the task is going to be woken-up on this cpu and if it is
+	 * already idle, then it is the right target.
+	 */
 	if (target == cpu && idle_cpu(cpu))
 		return cpu;
 
@@ -2663,11 +2670,25 @@ static int select_idle_sibling(struct task_struct *p, int target)
 	 */
 	sd = rcu_dereference(per_cpu(sd_llc, target));
 	for_each_lower_domain(sd) {
-	    if (!cpumask_test_cpu(sd->idle_buddy, tsk_cpus_allowed(p)))
-	      continue;
-	    if (idle_cpu(sd->idle_buddy))
-	      return sd->idle_buddy; 
+		sg = sd->groups;
+		do {
+			if (!cpumask_intersects(sched_group_cpus(sg),
+						tsk_cpus_allowed(p)))
+				goto next;
+
+			for_each_cpu(i, sched_group_cpus(sg)) {
+				if (!idle_cpu(i))
+					goto next;
+			}
+
+			target = cpumask_first_and(sched_group_cpus(sg),
+					tsk_cpus_allowed(p));
+			goto done;
+next:
+			sg = sg->next;
+		} while (sg != sd->groups);
 	}
+done:
 	return target;
 }
 
@@ -4856,20 +4877,15 @@ static inline void set_cpu_sd_state_busy(void)
 {
 	struct sched_domain *sd;
 	int cpu = smp_processor_id();
-	int clear = 0; 
 
 	if (!test_bit(NOHZ_IDLE, nohz_flags(cpu)))
 		return;
-	
-	rcu_read_lock();
-	for_each_domain(cpu, sd) {
-		atomic_inc(&sd->groups->sgp->nr_busy_cpus);
-		clear = 1; 
-	}
-	rcu_read_unlock();
+	clear_bit(NOHZ_IDLE, nohz_flags(cpu));
 
-	if (likely(clear))
-    		clear_bit(NOHZ_IDLE, nohz_flags(cpu)); 
+	rcu_read_lock();
+	for_each_domain(cpu, sd)
+		atomic_inc(&sd->groups->sgp->nr_busy_cpus);
+	rcu_read_unlock();
 }
 
 void set_cpu_sd_state_idle(void)

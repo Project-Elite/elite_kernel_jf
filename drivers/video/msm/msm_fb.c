@@ -90,10 +90,10 @@ static struct ion_client *iclient;
 
 u32 msm_fb_debug_enabled;
 /* Setting msm_fb_msg_level to 8 prints out ALL messages */
-u32 msm_fb_msg_level = 0;
+u32 msm_fb_msg_level = 7;
 
 /* Setting mddi_msg_level to 8 prints out ALL messages */
-u32 mddi_msg_level = 0;
+u32 mddi_msg_level = 5;
 
 extern int32 mdp_block_power_cnt[MDP_MAX_BLOCK];
 extern unsigned long mdp_timer_duration;
@@ -1135,12 +1135,10 @@ static int msm_fb_mmap(struct fb_info *info, struct vm_area_struct * vma)
 		((vma->vm_end - vma->vm_start) > (len - off)))
 		return -EINVAL;
 	msm_fb_pan_idle(mfd);
+
 	/* Set VM flags. */
 	start &= PAGE_MASK;
 	off += start;
-	if (off < start)
-		return -EINVAL;
-
 	vma->vm_pgoff = off >> PAGE_SHIFT;
 	/* This is an IO map - tell maydump to skip this VMA */
 	vma->vm_flags |= VM_IO | VM_RESERVED;

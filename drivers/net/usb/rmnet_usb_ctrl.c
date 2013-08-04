@@ -192,7 +192,7 @@ static void notification_available_cb(struct urb *urb)
 	case 0:
 	/*if non zero lenght of data received while unlink*/
 	case -ENOENT:
-		//pr_info("[NACB:%d]<", iface_num);
+		pr_debug("[NACB:%d]<", iface_num);
 		/*success*/
 		break;
 
@@ -216,7 +216,7 @@ static void notification_available_cb(struct urb *urb)
 	}
 
 	if (!urb->actual_length) {
-		//pr_err("Received Zero actual length: %d", urb->actual_length);
+		pr_err("Received Zero actual length: %d", urb->actual_length);
 		return;
 	}
 	ctrl = urb->transfer_buffer;
@@ -337,7 +337,7 @@ resubmit_int_urb:
 			dev_err(dev->devicep, "%s: Error re-submitting Int URB %d\n",
 					__func__, status);
 		}
-		//pr_info("[CHKRA:%d]>", iface_num);
+		pr_debug("[CHKRA:%d]>", iface_num);
 	}
 }
 
@@ -354,8 +354,8 @@ int rmnet_usb_ctrl_start_rx(struct rmnet_ctrl_dev *dev)
 		usb_unanchor_urb(dev->inturb);
 		dev_err(dev->devicep, "%s Intr submit %d\n", __func__,
 				retval);
-	} //else
-	//	pr_info("[CHKRA:%d]>", iface_num);
+	} else
+		pr_debug("[CHKRA:%d]>", iface_num);
 
 	return retval;
 }
@@ -615,7 +615,7 @@ static ssize_t rmnet_ctl_read(struct file *file, char __user *buf, size_t count,
 	struct rmnet_ctrl_dev		*dev;
 	struct ctrl_pkt_list_elem	*list_elem = NULL;
 	unsigned long			flags;
-	//char temp[100];
+	char temp[100];
 
 	dev = file->private_data;
 	if (!dev)
@@ -668,8 +668,8 @@ ctrl_read:
 	DBG("%s: Returning %d bytes to %s\n", __func__, bytes_to_read,
 			dev->name);
 
-	//snprintf(temp, sizeof(temp), "[%lluns]READ :", rd_poll_delta_time);
-	//DUMP_BUFFER(temp, bytes_to_read, buf);
+	snprintf(temp, sizeof(temp), "[%lluns]READ :", rd_poll_delta_time);
+	DUMP_BUFFER(temp, bytes_to_read, buf);
 
 	return bytes_to_read;
 }
@@ -704,7 +704,7 @@ static ssize_t rmnet_ctl_write(struct file *file, const char __user * buf,
 		kfree(wbuf);
 		return status;
 	}
-	//DUMP_BUFFER("Write: ", size, buf);
+	DUMP_BUFFER("Write: ", size, buf);
 
 	status = rmnet_usb_ctrl_write(dev, wbuf, size);
 	if (status == size)
@@ -1029,7 +1029,7 @@ int rmnet_usb_ctrl_init(void)
 {
 	struct rmnet_ctrl_dev	*dev;
 	int			n;
-	int			status = 0;
+	int			status;
 
 	for (n = 0; n < NUM_CTRL_CHANNELS; ++n) {
 
