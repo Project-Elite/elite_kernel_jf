@@ -294,7 +294,7 @@ static void ks8851_rdreg(struct ks8851_net *ks, unsigned op,
 */
 static unsigned ks8851_rdreg8(struct ks8851_net *ks, unsigned reg)
 {
-	u8 rxb[1];
+	u8 rxb[1] = {0};
 
 	ks8851_rdreg(ks, MK_OP(1 << (reg & 3), reg), rxb, 1);
 	return rxb[0];
@@ -556,7 +556,7 @@ static void ks8851_rx_pkts(struct ks8851_net *ks)
 	for (; rxfc != 0; rxfc--) {
 		rxh = ks8851_rdreg32(ks, KS_RXFHSR);
 		rxstat = rxh & 0xffff;
-		rxlen = rxh >> 16;
+		rxlen = (rxh >> 16) & 0xfff;
 
 		netif_dbg(ks, rx_status, ks->netdev,
 			  "rx: stat 0x%04x, len 0x%04x\n", rxstat, rxlen);

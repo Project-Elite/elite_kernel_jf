@@ -1029,6 +1029,7 @@ static void l2cap_le_conn_ready(struct l2cap_conn *conn)
 	write_lock_bh(&list->lock);
 
 	hci_conn_hold(conn->hcon);
+	conn->hcon->disc_timeout = HCI_DISCONN_TIMEOUT;
 
 	l2cap_sock_init(sk, parent);
 	bacpy(&bt_sk(sk)->src, conn->src);
@@ -1764,7 +1765,7 @@ struct sk_buff *l2cap_create_iframe_pdu(struct sock *sk,
 					u16 sdulen, int reseg)
 {
 	struct sk_buff *skb;
-	int err, count, hlen;
+	int err = 0, count = 0, hlen = 0;
 	int reserve = 0;
 	struct l2cap_hdr *lh;
 	u8 fcs = l2cap_pi(sk)->fcs;
@@ -2812,6 +2813,9 @@ static struct sk_buff *l2cap_build_cmd(struct l2cap_conn *conn,
 
 	BT_DBG("conn %p, code 0x%2.2x, ident 0x%2.2x, len %d",
 			conn, code, ident, dlen);
+
+	if (conn->mtu < L2CAP_HDR_SIZE + L2CAP_CMD_HDR_SIZE)
+		return NULL;
 
 	len = L2CAP_HDR_SIZE + L2CAP_CMD_HDR_SIZE + dlen;
 	count = min_t(unsigned int, mtu, len);
@@ -3983,7 +3987,7 @@ static void l2cap_conf_ext_fs_get(struct sock *sk, void *rsp, int len)
 static int l2cap_finish_amp_move(struct sock *sk)
 {
 	struct l2cap_pinfo *pi;
-	int err;
+	int err =0;
 
 	BT_DBG("sk %p", sk);
 
@@ -5706,7 +5710,7 @@ static inline int l2cap_conn_param_update_req(struct l2cap_conn *conn,
 	struct l2cap_conn_param_update_rsp rsp;
 	struct sock *sk;
 	u16 min, max, latency, timeout, cmd_len;
-	int err;
+	int err = 0;
 
 	if (!(hcon->link_mode & HCI_LM_MASTER))
 		return -EINVAL;
