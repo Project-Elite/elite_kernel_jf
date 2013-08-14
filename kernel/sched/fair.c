@@ -2640,18 +2640,18 @@ find_idlest_cpu(struct sched_group *group, struct task_struct *p, int this_cpu)
  */
 static int select_idle_sibling(struct task_struct *p, int target)
 {
-	int cpu = smp_processor_id();
-	int prev_cpu = task_cpu(p);
 	struct sched_domain *sd;
-	if (target == cpu && idle_cpu(cpu))
-		return cpu;
+	struct sched_group *sg;
+	int i = task_cpu(p);
+
+	if (idle_cpu(target))
+		return target;
 
 	/*
-	 * If the task is going to be woken-up on the cpu where it previously
-	 * ran and if it is currently idle, then it the right target.
+	 * If the prevous cpu is cache affine and idle, don't be stupid.
 	 */
-	if (target == prev_cpu && idle_cpu(prev_cpu))
-		return prev_cpu;
+	if (i != target && cpus_share_cache(i, target) && idle_cpu(i))
+		return i;
 
 	if (!sysctl_sched_wake_to_idle &&
 	    !(current->flags & PF_WAKE_UP_IDLE) &&
@@ -2663,11 +2663,25 @@ static int select_idle_sibling(struct task_struct *p, int target)
 	 */
 	sd = rcu_dereference(per_cpu(sd_llc, target));
 	for_each_lower_domain(sd) {
-	    if (!cpumask_test_cpu(sd->idle_buddy, tsk_cpus_allowed(p)))
-	      continue;
-	    if (idle_cpu(sd->idle_buddy))
-	      return sd->idle_buddy; 
+		sg = sd->groups;
+		do {
+			if (!cpumask_intersects(sched_group_cpus(sg),
+						tsk_cpus_allowed(p)))
+				goto next;
+
+			for_each_cpu(i, sched_group_cpus(sg)) {
+				if (i == target || !idle_cpu(i))
+					goto next;
+			}
+
+			target = cpumask_first_and(sched_group_cpus(sg),
+					tsk_cpus_allowed(p));
+			goto done;
+next:
+			sg = sg->next;
+		} while (sg != sd->groups);
 	}
+done:
 	return target;
 }
 
@@ -4856,20 +4870,15 @@ static inline void set_cpu_sd_state_busy(void)
 {
 	struct sched_domain *sd;
 	int cpu = smp_processor_id();
-	int clear = 0; 
 
 	if (!test_bit(NOHZ_IDLE, nohz_flags(cpu)))
 		return;
-	
-	rcu_read_lock();
-	for_each_domain(cpu, sd) {
-		atomic_inc(&sd->groups->sgp->nr_busy_cpus);
-		clear = 1; 
-	}
-	rcu_read_unlock();
+	clear_bit(NOHZ_IDLE, nohz_flags(cpu));
 
-	if (likely(clear))
-    		clear_bit(NOHZ_IDLE, nohz_flags(cpu)); 
+	rcu_read_lock();
+	for_each_domain(cpu, sd)
+		atomic_inc(&sd->groups->sgp->nr_busy_cpus);
+	rcu_read_unlock();
 }
 
 void set_cpu_sd_state_idle(void)
