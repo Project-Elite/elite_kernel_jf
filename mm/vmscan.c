@@ -1742,13 +1742,8 @@ out:
 		unsigned long scan;
 
 		scan = zone_nr_lru_pages(mz, lru);
-<<<<<<< HEAD
-		if (priority || noswap || !vmscan_swappiness(mz, sc)) {
-			scan >>= priority;
-=======
 		if (sc->priority || noswap || !vmscan_swappiness(sc)) {
 			scan >>= sc->priority;
->>>>>>> remotes/cm/cm-10.2
 			if (!scan && force_scan)
 				scan = SWAP_CLUSTER_MAX;
 			scan = div64_u64(scan * fraction[file], denominator);
@@ -2123,12 +2118,7 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
 	if (global_reclaim(sc))
 		count_vm_event(ALLOCSTALL);
 
-<<<<<<< HEAD
-	for (priority = DEF_PRIORITY; priority >= 0; priority--) {
-		vmpressure_prio(sc->gfp_mask, sc->target_mem_cgroup, priority);
-=======
 	do {
->>>>>>> remotes/cm/cm-10.2
 		sc->nr_scanned = 0;
 		aborted_reclaim = shrink_zones(zonelist, sc);
 
@@ -2803,8 +2793,6 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int order, int classzone_idx)
 
 		set_pgdat_percpu_threshold(pgdat, calculate_normal_threshold);
 
-<<<<<<< HEAD
-=======
 		/*
 		 * Compaction records what page blocks it recently failed to
 		 * isolate pages from and skips them in the future scanning.
@@ -2813,7 +2801,6 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int order, int classzone_idx)
 		 */
 		reset_isolation_suitable(pgdat);
 
->>>>>>> remotes/cm/cm-10.2
 		if (!kthread_should_stop())
 			schedule();
 
