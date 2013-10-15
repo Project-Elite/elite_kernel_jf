@@ -2,7 +2,7 @@
 export KERNELDIR=`readlink -f .`
 export PARENT_DIR=`readlink -f ..`
 export INITRAMFS_DEST=$KERNELDIR/kernel/usr/initramfs
-export INITRAMFS_SOURCE=`readlink -f ..`/elite_kernel_jf/Ramdisks/AOSP_TMO
+export INITRAMFS_SOURCE=`readlink -f ..`/elite_kernel_jf/Ramdisks/AOSP_VZW
 export CONFIG_AOSP_BUILD=y
 export PACKAGEDIR=$KERNELDIR/Packages/AOSP
 # enable ccache
@@ -55,6 +55,7 @@ fi;
 
 echo "Copy modules to Package"
 cp -a $(find . -name *.ko -print |grep -v initramfs) $PACKAGEDIR/system/lib/modules/
+cp Packages/03elite $PACKAGEDIR/system/etc/init.d/03elite
 
 if [ -e $KERNELDIR/arch/arm/boot/zImage ]; then
 	echo "Copy zImage to Package"
